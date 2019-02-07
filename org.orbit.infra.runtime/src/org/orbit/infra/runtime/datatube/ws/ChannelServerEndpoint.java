@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @ServerEndpoint(value = "/channel/{channelId}")
-public class DataTubeWebSocketServerEndpoint implements MessageListener {
+public class ChannelServerEndpoint implements MessageListener {
 
-	private static Logger LOG = LoggerFactory.getLogger(DataTubeWebSocketServerEndpoint.class);
+	private static Logger LOG = LoggerFactory.getLogger(ChannelServerEndpoint.class);
 
 	protected Session session;
 
-	public DataTubeWebSocketServerEndpoint() {
+	public ChannelServerEndpoint() {
 		LOG.info("ChannelServerEndpoint()");
 		LOG.info("\ttoString() = " + this.toString());
 		LOG.info("\thashCode() = " + String.valueOf(this.hashCode()));
@@ -50,7 +50,7 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 			service = (DataTubeService) obj;
 		}
 		if (service == null) {
-			throw new RuntimeException("ChannelService is not available.");
+			throw new RuntimeException("DataTubeService is not available.");
 		}
 		return service;
 	}
@@ -63,12 +63,12 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 	protected void registerMessageListener(Session session, String channelId) {
 		LOG.info("registerMessageListener() channelId = " + channelId);
 
-		DataTubeService channelService = getService(session);
-		if (channelService != null) {
+		DataTubeService service = getService(session);
+		if (service != null) {
 
 			RuntimeChannel channel = null;
 			try {
-				channel = channelService.getRuntimeChannelById(channelId);
+				channel = service.getRuntimeChannelById(channelId);
 			} catch (ServerException e) {
 				e.printStackTrace();
 			}
@@ -98,11 +98,11 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 	protected void unregisterMessageListener(Session session, String channelId) {
 		LOG.info("unregisterMessageListener() channelId = " + channelId);
 
-		DataTubeService channelService = getService(session);
-		if (channelService != null) {
+		DataTubeService service = getService(session);
+		if (service != null) {
 			RuntimeChannel channel = null;
 			try {
-				channel = channelService.getRuntimeChannelById(channelId);
+				channel = service.getRuntimeChannelById(channelId);
 			} catch (ServerException e) {
 				e.printStackTrace();
 			}
@@ -165,6 +165,8 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		onMessage(channelId, "[eche from channel [" + channelId + "] --- " + message);
 	}
 
 	@OnClose
@@ -175,7 +177,7 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 	}
 
 	@OnError
-	public void onError(Session session, @PathParam("channelId") String channelId) {
+	public void onError(Session session, @PathParam("channelId") String channelId, Throwable throwable) {
 		LOG.info(this + ".onError() channelId = " + channelId);
 	}
 

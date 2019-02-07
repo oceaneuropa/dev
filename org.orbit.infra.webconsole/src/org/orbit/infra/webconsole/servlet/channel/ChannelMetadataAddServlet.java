@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet.datacast;
+package org.orbit.infra.webconsole.servlet.channel;
 
 import java.io.IOException;
 import java.util.List;

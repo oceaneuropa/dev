@@ -32,6 +32,8 @@
 		channelMetadatas = new ChannelMetadata[] {};
 	}
 
+	String groupBy = (String) request.getAttribute("groupBy");
+
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -57,26 +59,44 @@
 		<div class="top_tools_div01">
 			<a id="actionCreateChannel" class="button02">Create</a>
 			<a id="actionStartChannels" class="button02" onClick="onChannelAction('start', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Start</a>
+			<a id="actionSuspendChannels" class="button02" onClick="onChannelAction('suspend', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Suspend</a> 
 			<a id="actionStopChannels" class="button02" onClick="onChannelAction('stop', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Stop</a>
-			<a id="actionSyncChannels" class="button02" onClick="onChannelAction('sync', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Synchronize Instances</a>
+			<a id="actionSyncChannels" class="button02" onClick="onChannelAction('sync', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Synchronize Channel Instances</a>
 			<a id="actionDeleteChannels" class="button02">Delete</a>
-			<a class="button02" href="<%=contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId%>">Refresh</a>
+			<a class="button02" href="<%=contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId + "&groupBy=" + groupBy%>">Refresh</a>
+		</div>
+		<div style="float: right;">
+			(
+			group by: 
+			<% if ("".equals(groupBy)) { %>
+				none
+			<% } else { %>
+				<a href="<%=contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId%>">none</a>
+			<% } %>
+			|
+			<% if ("datatube".equals(groupBy)) { %>
+				DataTube
+			<% } else { %>
+				<a href="<%=contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId%>&groupBy=datatube">DataTube</a>
+			<% } %>
+			)
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post">
+			<input type="hidden" name="groupBy" value="<%=groupBy%>">
 			<input type="hidden" name="dataCastId" value="<%=dataCastId%>">
 			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
 				<th class="th1" width="12">
 					<input type="checkbox" onClick="toggleSelection(this, 'channelId')" />
 				</th>
-				<th class="th1" width="100">Data Tube Id</th>
-				<th class="th1" width="100">Channel Id</th>
-				<th class="th1" width="100">Channel Name</th>
-				<th class="th1" width="100">Status</th>
-				<th class="th1" width="100">Instance</th>
-				<th class="th1" width="200">Properties</th>
-				<th class="th1" width="100">Action</th>
+				<th class="th1" width="80">Data Tube Id</th>
+				<th class="th1" width="120">Channel Id</th>
+				<th class="th1" width="80">Channel Name</th>
+				<th class="th1" width="100">Runtime Status</th>
+				<th class="th1" width="100">Access</th>
+				<th class="th1" width="120">Owner Account Id</th>
+				<th class="th1" width="80">Action</th>
 			</tr>
 			<%
 				if (channelMetadatas.length == 0) {
@@ -154,13 +174,8 @@
 						String dataTubeStatusText = (serviceMetadata != null) ? "Online" : "Offline";
 						String dataTubeStatusColor = (serviceMetadata != null) ? "#2eb82e" : "#cccccc";
 
-						String runtimeInstanceStr = "Instance";
+						String runtimeInstanceStr = "Runtime Instance";
 						String runtimeInstanceColor = (runtimeChannel != null) ? "#2eb82e" : "#cccccc";
-						
-						String propertiesStr = "";
-						propertiesStr += "accessType = " + accessType + "<br/>";
-						propertiesStr += "accessCode = " + accessCode + "<br/>";
-						propertiesStr += "ownerAccountId = " + ownerAccountId + "<br/>";
 			%>
 			<tr>
 				<td class="td1">
@@ -169,22 +184,21 @@
 				<td class="td1">
 					<font color="<%=dataTubeStatusColor%>"><%=dataTubeId%></font>
 				</td>
-				<td class="td1">
+				<td class="td2">
 					<%=channelId%>
 				</td>
 				<td class="td1">
 					<%=name%>
 				</td>
 				<td class="td1">
+					<font color="<%=runtimeInstanceColor%>"><%=runtimeInstanceStr%></font> | 
 					<font color="<%=channelStatusColor%>"><%=channelStatusStr%></font>
 				</td>
 				<td class="td1">
-					<font color="<%=runtimeInstanceColor%>"><%=runtimeInstanceStr%></font>
+					<%=accessType%> | <%=accessCode%>
 				</td>
-				<td class="td2">
-					<div class="tooltip">properties...
-  						<span class="tooltiptext"><%=propertiesStr%></span>
-					</div>
+				<td class="td1">
+					<%=ownerAccountId%>
 				</td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeChannelMetadata('<%=channelId%>', '<%=dataTubeId%>', '<%=name%>', <%=channelStatusMode%>, '<%=accessType%>', '<%=accessCode%>', '<%=ownerAccountId%>')">Edit</a>
@@ -202,6 +216,7 @@
 	<dialog id="newChannelDialog">
 	<div class="dialog_title_div01">Create Channel Metadata</div>
 	<form id="new_form" method="post" action="<%=contextRoot + "/admin/channelmetadataadd"%>">
+		<input type="hidden" name="groupBy" value="<%=groupBy%>">
 		<input type="hidden" name="dataCastId" value="<%=dataCastId%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
@@ -250,6 +265,7 @@
 	<dialog id="changeChannelDialog">
 	<div class="dialog_title_div01">Change Channel Metadata</div>
 	<form id="update_form" name="update_form_name" method="post" action="<%=contextRoot + "/admin/channelmetadataupdate"%>">
+		<input type="hidden" name="groupBy" value="<%=groupBy%>">
 		<input type="hidden" name="dataCastId" value="<%=dataCastId%>">
 		<input type="hidden" id="update__channel_id" name="channel_id" value="">
 		<div class="dialog_main_div01">
@@ -294,6 +310,7 @@
 
 	<dialog id="deleteChannelsDialog">
 	<form id="delete_form" method="post" action="<%=contextRoot + "/admin/channelmetadatadelete"%>">
+		<input type="hidden" name="groupBy" value="<%=groupBy%>">
 		<input type="hidden" name="dataCastId" value="<%=dataCastId%>">
 		<div class="dialog_title_div01">Delete Channel Metadatas</div>
 		<div class="dialog_main_div01" id="deleteChannelsDialogMessageDiv">Are you sure you want to delete selected channel metadatas?</div>

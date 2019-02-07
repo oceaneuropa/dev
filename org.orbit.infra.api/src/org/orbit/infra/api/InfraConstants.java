@@ -103,7 +103,8 @@ public class InfraConstants {
 	// index item properties
 	public static String IDX_PROP__DATATUBE__DATACAST_ID = "data_tube.data_cast_id";
 	public static String IDX_PROP__DATATUBE__ID = "data_tube.id";
-	public static String IDX_PROP__DATATUBE__HTTP_PORT = "data_tube.http_port";
+	public static String IDX_PROP__DATATUBE__WEB_SOCKET_PORT = "data_tube.web_socket.port";
+	public static String IDX_PROP__DATATUBE__CHANNEL_WEB_SOCKET_URL = "data_tube.channel_web_socket.url";
 
 	// EditPolicy values
 	public static String DATATUBE__EDITPOLICY_ID = "infra.data_tube.editpolicy";

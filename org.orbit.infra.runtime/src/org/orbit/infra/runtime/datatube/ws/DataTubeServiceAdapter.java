@@ -28,7 +28,7 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<DataTubeService, DataTubeService> serviceTracker;
-	protected DataTubeWebSocketHandler webSocketHandler;
+	protected DataTubeWebSocketApplication webSocketApp;
 	protected DataTubeWSApplication webApp;
 	protected ServiceIndexTimer<DataTubeService> indexTimer;
 	protected ExtensibleServiceEditPolicy editPolicy;
@@ -101,8 +101,8 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 
 		// Start web socket
 		LOG.debug("start web socket");
-		this.webSocketHandler = new DataTubeWebSocketHandler(service);
-		this.webSocketHandler.start(bundleContext);
+		this.webSocketApp = new DataTubeWebSocketApplication(service);
+		this.webSocketApp.start(bundleContext);
 
 		// Start web service
 		LOG.debug("start web service");
@@ -142,9 +142,9 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 
 		// Stop web socket
 		LOG.debug("stop web socket");
-		if (this.webSocketHandler != null) {
-			this.webSocketHandler.stop(bundleContext);
-			this.webSocketHandler = null;
+		if (this.webSocketApp != null) {
+			this.webSocketApp.stop(bundleContext);
+			this.webSocketApp = null;
 		}
 
 		// Uninstall edit policies

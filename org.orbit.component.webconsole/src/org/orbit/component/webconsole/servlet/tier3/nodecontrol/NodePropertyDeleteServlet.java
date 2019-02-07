@@ -48,7 +48,8 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (names == null || names.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
+			// message = MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "Properties are not selected.");
 		}
 
 		// ---------------------------------------------------------------

@@ -48,8 +48,8 @@
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div class="top_breadcrumbs_div01">
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
-		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
-		<%=name%>
+		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>">Platforms</a> (of <%=machineName%>) >
+		Platform [<%=name%>]
 	</div>
 	<div class="main_div01">
 		<h2>Platform Properties</h2>

@@ -4,7 +4,7 @@ import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimer;
 import org.orbit.infra.runtime.datatube.ws.DataTubeWSApplication;
-import org.orbit.infra.runtime.datatube.ws.DataTubeWebSocketHandler;
+import org.orbit.infra.runtime.datatube.ws.DataTubeWebSocketApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -21,7 +21,7 @@ public class ChannelServiceAdapterV1 {
 
 	protected ServiceTracker<DataTubeService, DataTubeService> serviceTracker;
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected DataTubeWebSocketHandler webSocket;
+	protected DataTubeWebSocketApplication webSocket;
 	protected DataTubeWSApplication webService;
 	protected DataTubeServiceIndexTimer serviceIndexTimer;
 
@@ -74,7 +74,7 @@ public class ChannelServiceAdapterV1 {
 	protected void doStart(BundleContext bundleContext, DataTubeService service) {
 		// 1. start web socket
 		LOG.debug("start web socket");
-		this.webSocket = new DataTubeWebSocketHandler(service);
+		this.webSocket = new DataTubeWebSocketApplication(service);
 		this.webSocket.start(bundleContext);
 
 		// 2. start web service

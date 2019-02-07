@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet.datacast;
+package org.orbit.infra.webconsole.servlet.datatube;
 
 import java.io.IOException;
 import java.util.Map;

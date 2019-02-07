@@ -85,9 +85,10 @@
 				<input id="main_list__action" type="hidden" name="action" value="">
 				<tr>
 					<th class="th1" width="20"><input type="checkbox" onClick="toggleSelection(this, 'channelId')" /></th>
-					<th class="th1" width="150">Channel</th>
+					<th class="th1" width="150">Channel Id</th>
+					<th class="th1" width="100">Channel Name</th>
 					<th class="th1" width="100">Channel Status</th>
-					<th class="th1" width="150">Channel Metadata</th>
+					<th class="th1" width="100">Channel Metadata</th>
 					<th class="th1" width="150">Owner Account Id</th>
 					<th class="th1" width="100">Action</th>
 				</tr>
@@ -95,7 +96,7 @@
 					if (runtimeChannels.length == 0) {
 				%>
 				<tr>
-					<td colspan="6">(n/a)</td>
+					<td colspan="7">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -156,9 +157,10 @@
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="channelId" value="<%=channelId%>"></td>
-					<td class="td2"><%=channelId%> | <%=name%></td>
+					<td class="td2"><%=channelId%></td>
+					<td class="td1"><%=name%></td>
 					<td class="td1"><font color="<%=channelStatusColor%>"><%=channelStatusStr%></font></td>
-					<td class="td2"><%=channelMetadataStr%></td>
+					<td class="td1"><%=channelMetadataStr%></td>
 					<td class="td1"><%=ownerAccountId%></td>
 					<td class="td1">
 						<a class="action01" href="javascript:changeRuntimeChannel('<%=dataCastId%>', '<%=dataTubeId%>', '<%=channelId%>', '<%=name%>')">Edit</a>

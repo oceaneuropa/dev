@@ -14,7 +14,7 @@ public interface DataTubeService extends WebServiceAware, EditPoliciesAware {
 
 	String getDataTubeId();
 
-	String getWebSocketHttpPort();
+	String getWebSocketPort();
 
 	RuntimeChannel[] getRuntimeChannels() throws ServerException;
 

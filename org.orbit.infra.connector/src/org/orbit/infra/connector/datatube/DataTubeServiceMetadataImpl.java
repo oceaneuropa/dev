@@ -7,6 +7,7 @@ public class DataTubeServiceMetadataImpl extends ServiceMetadataImpl implements 
 
 	public static String PROP__DATA_CAST_ID = "data_cast_id";
 	public static String PROP__DATA_TUBE_ID = "data_tube_id";
+	public static String PROP__WEB_SOCKET_PORT = "web_socket_port";
 
 	@Override
 	public String getDataCastId() {
@@ -27,3 +28,12 @@ public class DataTubeServiceMetadataImpl extends ServiceMetadataImpl implements 
 	}
 
 }
+
+// String getWebSocketPort();
+// public String getWebSocketPort() {
+// String webSocketPort = null;
+// if (hasProperty(PROP__WEB_SOCKET_PORT)) {
+// webSocketPort = getProperty(PROP__WEB_SOCKET_PORT, String.class);
+// }
+// return webSocketPort;
+// }

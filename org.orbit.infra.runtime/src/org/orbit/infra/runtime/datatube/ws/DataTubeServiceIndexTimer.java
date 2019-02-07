@@ -40,12 +40,16 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
 		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(service);
-		String webSocketHttpPort = service.getWebSocketHttpPort();
+		String webSocketPort = service.getWebSocketPort();
+		String webSocketURL = DataTubeWebSocketApplication.getChannelWebSocketURL(hostURL, webSocketPort);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_PORT, webSocketPort);
+		if (webSocketURL != null) {
+			props.put(InfraConstants.IDX_PROP__DATATUBE__CHANNEL_WEB_SOCKET_URL, webSocketURL);
+		}
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
@@ -64,12 +68,16 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
 		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(service);
-		String webSocketHttpPort = service.getWebSocketHttpPort();
+		String webSocketPort = service.getWebSocketPort();
+		String webSocketURL = DataTubeWebSocketApplication.getChannelWebSocketURL(hostURL, webSocketPort);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_PORT, webSocketPort);
+		if (webSocketURL != null) {
+			props.put(InfraConstants.IDX_PROP__DATATUBE__CHANNEL_WEB_SOCKET_URL, webSocketURL);
+		}
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);

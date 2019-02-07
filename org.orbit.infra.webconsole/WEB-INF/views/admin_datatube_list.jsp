@@ -69,10 +69,10 @@
 				</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Data Tube Id</th>
-				<th class="th1" width="60">Enabled</th>
-				<th class="th1" width="60">Status</th>
-				<th class="th1" width="120">Metadata</th>
-				<th class="th1" width="120">Action</th>
+				<th class="th1" width="100">Enabled</th>
+				<th class="th1" width="100">Service Status</th>
+				<th class="th1" width="150">Service Metadata</th>
+				<th class="th1" width="150">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -144,7 +144,7 @@
 						String statusText = isOnline ? "Online" : "Offline";
 						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 						String enabledStr = enabled ? "true" : "false";
-						
+
 						int runtimeChannelsNum = 0;
 						RuntimeChannel[] runtimeChannels = configElement.getTransientProperty("runtimeChannels");
 						if (runtimeChannels != null) {
@@ -161,7 +161,11 @@
 				<td class="td1">
 					<font color="<%=statusColor%>"><%=statusText%></font>
 				</td>
-				<td class="td2"><%=metadataStr%></td>
+				<td class="td2">
+					<div class="tooltip">properties...
+  						<span class="tooltiptext"><%=propStr%></span>
+					</div>
+				</td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataTubeNode('<%=elementId%>', '<%=dataTubeId%>', '<%=name%>', <%=enabled%>)">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/runtimechannellist?dataCastId=<%=dataCastId%>&dataTubeId=<%=dataTubeId%>">Channel Instances (<%=runtimeChannelsNum%>)</a>

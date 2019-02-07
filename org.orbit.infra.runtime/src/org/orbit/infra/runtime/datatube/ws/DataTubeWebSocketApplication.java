@@ -1,12 +1,18 @@
 package org.orbit.infra.runtime.datatube.ws;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.websocket.server.ServerEndpointConfig;
 
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
-import org.orbit.service.websocket.WebSocketEndpoint;
-import org.orbit.service.websocket.impl.WebSocketEndpointImpl;
+import org.orbit.service.websocket.EndpointService;
+import org.orbit.service.websocket.impl.EndpointServiceImpl;
+import org.origin.common.service.WebSocketAware;
+import org.origin.common.service.WebSocketAwareImpl;
+import org.origin.common.service.WebSocketAwareRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -14,10 +20,10 @@ import org.slf4j.LoggerFactory;
 
 /*
  * Note:
- * 1. This class handles the deployment/undeployment of the ChannelWebSocketServerEndpoint by registering/unregistering WebSocketEndpoint service.
+ * 1. This class handles the deployment/undeployment of the ChannelServerEndpoint by registering/unregistering a org.orbit.service.websocket.EndpointAdapter service.
  * 
- * 2. WebSocketDeployer tracks both ServerContainerService services and WebSocketEndpoint services and deploy WebSocketEndpoint service 
- *    (providing javax.websocket.server.ServerEndpointConfig) to ServerContainerService service (providing javax.websocket.server.ServerContainer).
+ * 2. WebSocketDeployer tracks both ServerContainerService services and EndpointAdapter services and deploy WebSocketEndpoint service 
+ *    (which provides javax.websocket.server.ServerEndpointConfig) to ServerContainerService service (which provides javax.websocket.server.ServerContainer).
  * 
  * 3. ServerContainerServiceImpl deploys javax.websocket.server.ServerEndpointConfig (from ServerContainerService) to javax.websocket.server.ServerContainer (from ServerContainerServiceImpl).
  *    (javax.websocket.server.ServerContainer doesn't have API for undeploying javax.websocket.server.ServerEndpointConfig.)
@@ -37,18 +43,35 @@ import org.slf4j.LoggerFactory;
  *    https://www.programcreek.com/java-api-examples/index.php?source_dir=jetty-web-sockets-jsr356-master/src/main/java/com/example/ws/ServerStarter.java
  * 
  */
-public class DataTubeWebSocketHandler {
+public class DataTubeWebSocketApplication {
 
-	protected static Logger LOG = LoggerFactory.getLogger(DataTubeWebSocketHandler.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DataTubeWebSocketApplication.class);
 
 	protected DataTubeService service;
+	protected WebSocketAware webSocketAware;
 	protected ServiceRegistration<?> serviceRegistration;
+
+	/**
+	 * 
+	 * @param hostURL
+	 * @param webSocketPort
+	 * @return
+	 */
+	public static String getChannelWebSocketURL(String hostURL, String webSocketPort) {
+		String channelWebSocketURL = null;
+		if (hostURL != null && webSocketPort != null) {
+			URI uri = URI.create(hostURL);
+			String host = uri.getHost();
+			channelWebSocketURL = "ws://" + host + ":" + webSocketPort + "/channel/{channelId}";
+		}
+		return channelWebSocketURL;
+	}
 
 	/**
 	 * 
 	 * @param service
 	 */
-	public DataTubeWebSocketHandler(DataTubeService service) {
+	public DataTubeWebSocketApplication(DataTubeService service) {
 		this.service = service;
 	}
 
@@ -58,13 +81,26 @@ public class DataTubeWebSocketHandler {
 	 */
 	public void start(final BundleContext bundleContext) {
 		LOG.info("start()");
+		String port = this.service.getWebSocketPort();
 
-		ServerEndpointConfig channelEndpointConfig = createChannelEndpointConfig(this.service);
-		WebSocketEndpoint channelEndpoint = new WebSocketEndpointImpl(channelEndpointConfig);
+		// Register EndpointService for Channels
+		ServerEndpointConfig channelEndpointConfig = createEndpointConfigForChannel(this.service);
+		EndpointService channelEndpoint = new EndpointServiceImpl(channelEndpointConfig);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("http.port", this.service.getWebSocketHttpPort());
-		this.serviceRegistration = bundleContext.registerService(WebSocketEndpoint.class, channelEndpoint, props);
+		props.put("http.port", port);
+		this.serviceRegistration = bundleContext.registerService(EndpointService.class, channelEndpoint, props);
+
+		// Register WebSocketAware service
+		List<String> urls = new ArrayList<String>();
+		String name = this.service.getName();
+		String hostURL = this.service.getHostURL();
+		String channelWebSocketURL = getChannelWebSocketURL(hostURL, port);
+		if (channelWebSocketURL != null) {
+			urls.add(channelWebSocketURL);
+		}
+		this.webSocketAware = new WebSocketAwareImpl(name, urls);
+		WebSocketAwareRegistry.getInstance().register(bundleContext, this.webSocketAware);
 	}
 
 	/**
@@ -74,6 +110,12 @@ public class DataTubeWebSocketHandler {
 	public void stop(final BundleContext bundleContext) {
 		LOG.info("stop()");
 
+		// Unregister WebSocketAware service
+		if (this.webSocketAware != null) {
+			WebSocketAwareRegistry.getInstance().unregister(bundleContext, this.webSocketAware);
+		}
+
+		// Unregister EndpointService
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
@@ -85,8 +127,8 @@ public class DataTubeWebSocketHandler {
 	 * @param service
 	 * @return
 	 */
-	protected ServerEndpointConfig createChannelEndpointConfig(DataTubeService service) {
-		ServerEndpointConfig.Builder configBuilder = ServerEndpointConfig.Builder.create(DataTubeWebSocketServerEndpoint.class, "/channel/{channelId}");
+	protected ServerEndpointConfig createEndpointConfigForChannel(DataTubeService service) {
+		ServerEndpointConfig.Builder configBuilder = ServerEndpointConfig.Builder.create(ChannelServerEndpoint.class, "/channel/{channelId}");
 		ServerEndpointConfig.Configurator configConfigurator = new ServerEndpointConfig.Configurator();
 		configBuilder.configurator(configConfigurator);
 		ServerEndpointConfig endpointConfig = configBuilder.build();

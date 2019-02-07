@@ -1,7 +1,6 @@
 package org.orbit.infra.runtime.datatube.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.SynchronousQueue;
@@ -28,7 +27,6 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 	protected int maxThreadsNum = DEFAULT_MAX_THREADS_NUM;
 	protected int keepAliveSeconds = DEFAULT_KEEP_ALIVE_SECONDS;
 
-	protected List<MessageListener> messageListeners;
 	protected MessageListenerSupportImpl messageListenerSupport = new MessageListenerSupportImpl();
 	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
 	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
@@ -40,7 +38,6 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 	 */
 	public RuntimeChannelImpl(ChannelMetadata channelMetadata) {
 		this.channelMetadata = channelMetadata;
-		this.messageListeners = new ArrayList<MessageListener>();
 		this.threadPoolExecutor = createThreadPoolExecutor();
 	}
 
@@ -76,7 +73,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 	/** MessageListener */
 	@Override
 	public int onMessage(final String senderId, final String message) throws IOException {
-		for (Iterator<MessageListener> itor = this.messageListeners.iterator(); itor.hasNext();) {
+		for (Iterator<MessageListener> itor = getMessageListeners().iterator(); itor.hasNext();) {
 			final MessageListener listener = itor.next();
 			this.threadPoolExecutor.execute(new Runnable() {
 				@Override

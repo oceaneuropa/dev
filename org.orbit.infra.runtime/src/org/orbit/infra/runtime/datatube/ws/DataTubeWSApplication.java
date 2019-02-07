@@ -8,6 +8,10 @@ import org.origin.common.rest.server.AbstractJerseyWSApplication;
 
 public class DataTubeWSApplication extends AbstractJerseyWSApplication {
 
+	public static String PROP__DATA_CAST_ID = "data_cast_id";
+	public static String PROP__DATA_TUBE_ID = "data_tube_id";
+	public static String PROP__WEB_SOCKET_PORT = "web_socket_port";
+
 	/**
 	 * 
 	 * @param service
@@ -36,11 +40,11 @@ public class DataTubeWSApplication extends AbstractJerseyWSApplication {
 		if (metadata instanceof ServiceMetadataImpl && service != null) {
 			String dataCastId = service.getDataCastId();
 			String dataTubeId = service.getDataTubeId();
-			String webSocketHttpPort = service.getWebSocketHttpPort();
+			String webSocketPort = service.getWebSocketPort();
 
-			((ServiceMetadataImpl) metadata).setProperty("data_cast_id", dataCastId);
-			((ServiceMetadataImpl) metadata).setProperty("data_tube_id", dataTubeId);
-			((ServiceMetadataImpl) metadata).setProperty("web_socket__http_port", webSocketHttpPort);
+			((ServiceMetadataImpl) metadata).setProperty(PROP__DATA_CAST_ID, dataCastId);
+			((ServiceMetadataImpl) metadata).setProperty(PROP__DATA_TUBE_ID, dataTubeId);
+			((ServiceMetadataImpl) metadata).setProperty(PROP__WEB_SOCKET_PORT, webSocketPort);
 		}
 
 		return metadata;

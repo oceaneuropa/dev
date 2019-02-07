@@ -77,13 +77,13 @@ public class DataTubeClientCommand implements Annotated, CommandActivator {
 		this.properties = properties;
 	}
 
-	protected DataTubeClient getChannels(String url) throws ClientException {
-		DataTubeClient channels = InfraClientsHelper.DATA_TUBE.getDataTubeClient(url, null);
-		if (channels == null) {
-			LOG.error("Channels is not available.");
-			throw new IllegalStateException("Channels is not available. url = " + url);
+	protected DataTubeClient getDataTubeClient(String url) throws ClientException {
+		DataTubeClient dataTube = InfraClientsHelper.DATA_TUBE.getDataTubeClient(url, null);
+		if (dataTube == null) {
+			LOG.error("DataTubeClient is not available.");
+			throw new IllegalStateException("DataTubeClient is not available. url = " + url);
 		}
-		return channels;
+		return dataTube;
 	}
 
 	@Descriptor("channel_ping")
@@ -92,9 +92,9 @@ public class DataTubeClientCommand implements Annotated, CommandActivator {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "channel_ping", new String[] { "url", url });
 
-		DataTubeClient channel = getChannels(url);
+		DataTubeClient dataTube = getDataTubeClient(url);
 
-		boolean result = channel.ping();
+		boolean result = dataTube.ping();
 		LOG.info("result = " + result);
 	}
 
@@ -112,9 +112,11 @@ public class DataTubeClientCommand implements Annotated, CommandActivator {
 				, new String[] { "message", message } //
 		);
 
-		DataTubeClient channel = getChannels(url);
+		DataTubeClient dataTube = getDataTubeClient(url);
 
-		boolean result = channel.send(channelId, senderId, message);
+		// e.g.
+		// channel_send -url http://127.0.0.1:9201/orbit/v1/datatube -channelId grQMNe7fQfSzXSUCcTVLnQ -senderId ocean -message hello
+		boolean result = dataTube.send(channelId, senderId, message);
 		LOG.info("result = " + result);
 	}
 

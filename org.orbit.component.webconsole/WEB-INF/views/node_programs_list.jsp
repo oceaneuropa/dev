@@ -51,10 +51,10 @@
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div class="top_breadcrumbs_div01">
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
-		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
-		<a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a> >
+		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>">Platforms</a> (of <%=machineName%>)>
+		<a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Nodes</a> (of Platform [<%=platformName%>]) >
 		<!-- <a href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"><%=name%></a> -->
-		<%=name%>
+		Node [<%=name%>]
 	</div>
 
 	<div class="main_div01">

@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet.datatube;
+package org.orbit.infra.webconsole.servlet.channel;
 
 import java.io.IOException;
 

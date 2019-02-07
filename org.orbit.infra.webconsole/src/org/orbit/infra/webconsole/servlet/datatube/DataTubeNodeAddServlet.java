@@ -1,6 +1,8 @@
-package org.orbit.infra.webconsole.servlet.datacast;
+package org.orbit.infra.webconsole.servlet.datatube;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.NodeConfigHelper;
 import org.orbit.infra.webconsole.WebConstants;
@@ -15,11 +19,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataTubeNodeDeleteServlet extends HttpServlet {
+public class DataTubeNodeAddServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 884583393284559470L;
-
-	private static String[] EMPTY_ELEMENT_IDS = new String[] {};
+	private static final long serialVersionUID = -2372849439735213448L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,52 +31,50 @@ public class DataTubeNodeDeleteServlet extends HttpServlet {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
-		String[] elementIds = ServletUtil.getParameterValues(request, "elementId", EMPTY_ELEMENT_IDS);
+		String dataTubeId = ServletUtil.getParameter(request, "data_tube_id", "");
+		String name = ServletUtil.getParameter(request, "name", "");
+		String enabledStr = ServletUtil.getParameter(request, "enabled", "");
+		boolean enabled = ("true".equals(enabledStr)) ? true : false;
 
 		String message = "";
-		if (elementIds.length == 0) {
-			// message = MessageHelper.INSTANCE.add(message, "'elementIds' parameter is not set.");
-			message = MessageHelper.INSTANCE.add(message, "Data tube nodes are not selected.");
+		if (dataTubeId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'data_tube_id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		boolean succeed = false;
-		boolean hasSucceed = false;
-		boolean hasFailed = false;
-
-		if (elementIds.length > 0) {
+		IConfigElement dataCastConfigElement = null;
+		IConfigElement configElement = null;
+		if (!dataTubeId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				IConfigRegistry cfgReg = NodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
-				if (cfgReg == null) {
-					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+				if (cfgReg != null) {
+					dataCastConfigElement = NodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					if (dataCastConfigElement != null) {
+						Map<String, Object> attributes = new HashMap<String, Object>();
+						attributes.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+						attributes.put("enabled", enabled);
+						configElement = dataCastConfigElement.createMemberConfigElement(name, attributes, true);
 
-				} else {
-					for (String elementId : elementIds) {
-						boolean currIsDeleted = cfgReg.deleteConfigElement(elementId);
-						if (currIsDeleted) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
-						}
+					} else {
+						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
+				} else {
+					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
 				}
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 			}
 		}
-		if (hasSucceed && !hasFailed) {
-			succeed = true;
-		}
 
-		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are deleted successfully." : "Data tube node is deleted successfully.");
+		if (configElement == null) {
+			message = MessageHelper.INSTANCE.add(message, "Config element is not created.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are not deleted." : "Data tube node is not deleted.");
+			message = MessageHelper.INSTANCE.add(message, "Config element is created successfully.");
 		}
 
 		// ---------------------------------------------------------------

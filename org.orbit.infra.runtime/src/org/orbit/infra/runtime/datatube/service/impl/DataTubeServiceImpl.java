@@ -178,8 +178,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	}
 
 	@Override
-	public String getWebSocketHttpPort() {
-		// return (String) this.properties.get(InfraConstants.DATATUBE__HTTP_PORT);
+	public String getWebSocketPort() {
 		return DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.DATATUBE__HTTP_PORT, this.initProperties);
 	}
 

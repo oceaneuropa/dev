@@ -57,12 +57,12 @@
 				<th class="th1" width="15">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="150">Name</th>
-				<th class="th1" width="150">Data Cast Id</th>
-				<th class="th1" width="50">Enabled</th>
-				<th class="th1" width="50">Status</th>
-				<th class="th1" width="150">Metadata</th>
-				<th class="th1" width="250">Action</th>
+				<th class="th1" width="100">Name</th>
+				<th class="th1" width="100">Data Cast Id</th>
+				<th class="th1" width="100">Enabled</th>
+				<th class="th1" width="100">Service Status</th>
+				<th class="th1" width="150">Service Metadata</th>
+				<th class="th1" width="150">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -154,7 +154,11 @@
 				<td class="td1">
 					<font color="<%=statusColor%>"><%=statusText%></font>
 				</td>
-				<td class="td2"><%=metadataStr%></td>
+				<td class="td2">
+					<div class="tooltip">metadatas...
+  						<span class="tooltiptext"><%=metadataStr%></span>
+					</div>
+				</td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', <%=enabled%>)">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">DataTube Nodes</a>

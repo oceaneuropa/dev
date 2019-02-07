@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet.datacast;
+package org.orbit.infra.webconsole.servlet.channel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class ChannelMetadataListServlet extends HttpServlet {
+public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 
 	private static final long serialVersionUID = -4798595665452356829L;
 
@@ -131,7 +131,7 @@ public class ChannelMetadataListServlet extends HttpServlet {
 								}
 							}
 
-							// Set DataTube service metadata and RuntimeChannel to ChannelMetadatas
+							// Attache DataTube service metadata and RuntimeChannel to ChannelMetadatas
 							for (ChannelMetadata channelMetadata : channelMetadatas) {
 								String channelId = channelMetadata.getChannelId();
 								String dataTubeId = channelMetadata.getDataTubeId();
