@@ -5,7 +5,7 @@ import java.util.Map;
 import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
-import org.orbit.component.api.tier1.identity.IdentityClient;
+import org.orbit.component.api.tier1.identity.IdentityServiceClient;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
@@ -35,7 +35,7 @@ public final class ComponentClients implements LifecycleAware {
 	}
 
 	// tier1
-	protected ServiceConnectorAdapter<IdentityClient> identityServiceConnector;
+	protected ServiceConnectorAdapter<IdentityServiceClient> identityServiceConnector;
 	protected ServiceConnectorAdapter<UserAccountClient> userAccountsConnector;
 	protected ServiceConnectorAdapter<AuthClient> authConnector;
 	protected ServiceConnectorAdapter<ConfigRegistryClient> registryConnector;
@@ -56,7 +56,7 @@ public final class ComponentClients implements LifecycleAware {
 	@Override
 	public void start(final BundleContext bundleContext) {
 		// tier1
-		this.identityServiceConnector = new ServiceConnectorAdapter<IdentityClient>(IdentityClient.class);
+		this.identityServiceConnector = new ServiceConnectorAdapter<IdentityServiceClient>(IdentityServiceClient.class);
 		this.identityServiceConnector.start(bundleContext);
 
 		this.userAccountsConnector = new ServiceConnectorAdapter<UserAccountClient>(UserAccountClient.class);
@@ -136,8 +136,8 @@ public final class ComponentClients implements LifecycleAware {
 	 * @param properties
 	 * @return
 	 */
-	public IdentityClient getIdentityClient(Map<String, Object> properties) {
-		IdentityClient identityClient = this.identityServiceConnector.getService(properties);
+	public IdentityServiceClient getIdentityClient(Map<String, Object> properties) {
+		IdentityServiceClient identityClient = this.identityServiceConnector.getService(properties);
 		if (identityClient == null) {
 			throw new RuntimeException("IdentityClient is not available.");
 		}

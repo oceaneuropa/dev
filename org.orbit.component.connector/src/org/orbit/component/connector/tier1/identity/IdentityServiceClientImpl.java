@@ -2,7 +2,7 @@ package org.orbit.component.connector.tier1.identity;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier1.identity.IdentityClient;
+import org.orbit.component.api.tier1.identity.IdentityServiceClient;
 import org.orbit.component.api.tier1.identity.LoginRequest;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.LogoutRequest;
@@ -19,14 +19,14 @@ import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
 
-public class IdentityClientImpl extends ServiceClientImpl<IdentityClient, IdentityWSClient> implements IdentityClient {
+public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityServiceClient, IdentityWSClient> implements IdentityServiceClient {
 
 	/**
 	 * 
 	 * @param connector
 	 * @param properties
 	 */
-	public IdentityClientImpl(IdentityConnector connector, Map<String, Object> properties) {
+	public IdentityServiceClientImpl(IdentityConnector connector, Map<String, Object> properties) {
 		super(connector, properties);
 	}
 

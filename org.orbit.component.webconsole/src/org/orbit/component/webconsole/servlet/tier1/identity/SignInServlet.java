@@ -56,7 +56,7 @@ public class SignInServlet extends HttpServlet {
 					String username = usernameExists ? username_or_email_value : null;
 					String email = emailExists ? username_or_email_value : null;
 
-					LoginResponse loginResponse = ComponentClientsUtil.Identity.login(identityServiceUrl, username, email, password);
+					LoginResponse loginResponse = ComponentClientsUtil.IDENTITY_SERVICE.login(identityServiceUrl, username, email, password);
 					if (loginResponse != null) {
 						signInSucceed = loginResponse.isSucceed();
 						if (signInSucceed) {

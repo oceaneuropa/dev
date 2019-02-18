@@ -11,6 +11,7 @@ import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountAddSe
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountListServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramsListServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppAddServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppDownloadServlet;
@@ -50,6 +51,7 @@ import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
 import org.orbit.service.servlet.impl.ServletMetadataImpl;
+import org.orbit.substance.api.SubstanceConstants;
 import org.osgi.framework.BundleContext;
 
 public class WebApplication extends PlatformWebApplication {
@@ -78,6 +80,7 @@ public class WebApplication extends PlatformWebApplication {
 				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
 				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
 				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //
+				SubstanceConstants.ORBIT_DFS_URL, //
 		};
 		return propNames;
 	}
@@ -119,6 +122,7 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/useraccountadd", new UserAccountAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountupdate", new UserAccountUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountdelete", new UserAccountDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userprograms", new UserProgramsListServlet(), dicts));
 
 		// Machines
 		addServlet(new ServletMetadataImpl("/domain/machines", new MachineListServlet(), dicts));

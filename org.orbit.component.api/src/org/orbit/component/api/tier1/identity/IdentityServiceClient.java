@@ -3,7 +3,7 @@ package org.orbit.component.api.tier1.identity;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
 
-public interface IdentityClient extends ServiceClient {
+public interface IdentityServiceClient extends ServiceClient {
 
 	boolean usernameExists(String username) throws ClientException;
 

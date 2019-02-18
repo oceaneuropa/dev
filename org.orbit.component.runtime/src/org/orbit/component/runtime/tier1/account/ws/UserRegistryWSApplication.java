@@ -17,7 +17,7 @@ public class UserRegistryWSApplication extends OrbitWSApplication {
 	 */
 	public UserRegistryWSApplication(final UserRegistryService service, int feature) {
 		super(service, feature);
-		// adapt(UserRegistryService.class, service);
+		adapt(UserRegistryService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

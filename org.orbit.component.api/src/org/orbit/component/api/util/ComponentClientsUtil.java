@@ -12,7 +12,7 @@ import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.api.tier1.auth.AuthClient;
-import org.orbit.component.api.tier1.identity.IdentityClient;
+import org.orbit.component.api.tier1.identity.IdentityServiceClient;
 import org.orbit.component.api.tier1.identity.LoginRequest;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.RegisterRequest;
@@ -38,7 +38,7 @@ import org.origin.common.rest.client.WSClientConstants;
 
 public class ComponentClientsUtil {
 
-	public static Identity Identity = new Identity();
+	public static IDENTITY_SERVICE IDENTITY_SERVICE = new IDENTITY_SERVICE();
 	public static UserAccounts UserAccounts = new UserAccounts();
 	public static Auth Auth = new Auth();
 	public static AppStore AppStore = new AppStore();
@@ -46,7 +46,7 @@ public class ComponentClientsUtil {
 	public static NodeControl NodeControl = new NodeControl();
 	public static MissionControl MissionControl = new MissionControl();
 
-	public static class Identity {
+	public static class IDENTITY_SERVICE {
 		/**
 		 * 
 		 * @param identityServiceUrl
@@ -58,7 +58,7 @@ public class ComponentClientsUtil {
 		 */
 		public RegisterResponse register(String identityServiceUrl, String username, String email, String password) throws ClientException {
 			RegisterResponse response = null;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl, username);
+			IdentityServiceClient identityClient = getIdentityClient(identityServiceUrl, username);
 			if (identityClient != null) {
 				RegisterRequest request = new RegisterRequest(username, email, password);
 				response = identityClient.register(request);
@@ -77,7 +77,7 @@ public class ComponentClientsUtil {
 		 */
 		public LoginResponse login(String identityServiceUrl, String username, String email, String password) throws ClientException {
 			LoginResponse response = null;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl, username);
+			IdentityServiceClient identityClient = getIdentityClient(identityServiceUrl, username);
 			if (identityClient != null) {
 				LoginRequest request = new LoginRequest("orbit", "password", username, email, password);
 				response = identityClient.login(request);
@@ -91,8 +91,8 @@ public class ComponentClientsUtil {
 		 * @param accessToken
 		 * @return
 		 */
-		public IdentityClient getIdentityClient(String identityServiceUrl, String accessToken) {
-			IdentityClient identityClient = null;
+		public IdentityServiceClient getIdentityClient(String identityServiceUrl, String accessToken) {
+			IdentityServiceClient identityClient = null;
 			if (identityServiceUrl != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
 				properties.put(WSClientConstants.REALM, null);

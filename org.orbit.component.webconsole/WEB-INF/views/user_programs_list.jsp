@@ -3,119 +3,82 @@
 <%@ page import="org.origin.common.util.*"%>
 <%@ page import="org.orbit.component.api.tier1.account.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
+<%@ page import="org.orbit.spirit.model.userprograms.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
-	UserAccount[] userAccounts = (UserAccount[]) request.getAttribute("userAccounts");
-	if (userAccounts == null) {
-		userAccounts = new UserAccount[0];
+	String accountId = (String) request.getAttribute("accountId");
+	String username = (String) request.getAttribute("username");
+
+	List<UserProgram> userPrograms = null;
+	UserPrograms userProgramsObj = (UserPrograms) request.getAttribute("userPrograms");
+	if (userProgramsObj != null) {
+		userPrograms = userProgramsObj.getChildren();
+	}
+	if (userPrograms == null) {
+		userPrograms = new ArrayList<UserProgram>();
 	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>User Accounts</title>
+<title>User Programs</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
+
+	<div class="top_breadcrumbs_div01">
+		<a href="<%=contextRoot%>/useraccounts">User Accounts</a> >
+		User [<%=username%>] (Account Id: '<%=accountId%>')
+	</div>
+
 	<div class="main_div01">
-		<h2>User Accounts</h2>
+		<h2>User Programs</h2>
 		<div class="top_tools_div01">
-			<!-- 
-			<button onclick="addUser()">Add</button>
-			<button onclick="deleteUsers()">Delete</button>
-			<button onclick="location.href='<%=contextRoot + "/useraccount"%>'">Refresh</button>
-			 -->
-			<a class="button02" href="javascript:addUser()">Add</a>
-			<a class="button02" href="javascript:deleteUsers()">Delete</a>
-			<a class="button02" href="<%=contextRoot + "/useraccounts"%>">Refresh</a>
+			<a class="button02" href="javascript:addProgram()">Add</a>
+			<a class="button02" href="javascript:deletePrograms()">Delete</a>
+			<a class="button02" href="<%=contextRoot + "/userprograms?accountId=" + accountId%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list">
 			<tr>
 				<th class="th1" width="11"></th>
-				<th class="th1" width="150">Account Id</th>
-				<th class="th1" width="100">Username</th>
-				<th class="th1" width="100">Name</th>
-				<th class="th1" width="150">Email</th>
-				<th class="th1" width="100">Phone</th>
-				<th class="th1" width="200">More</th>
-				<th class="th1" width="200">Actions</th>
+				<th class="th1" width="250">Id</th>
+				<th class="th1" width="250">Version</th>
+				<th class="th1" width="150">Actions</th>
 			</tr>
 			<%
-				if (userAccounts.length == 0) {
+				if (userPrograms.isEmpty()) {
 			%>
 			<tr>
-				<td colspan="7">(n/a)</td>
+				<td colspan="4">(n/a)</td>
 			</tr>
 			<%
 				} else {
-					for (UserAccount userAccount : userAccounts) {
-						String accountId = userAccount.getAccountId();
-						String username = userAccount.getUsername();
-						String password = userAccount.getPassword();
-						String firstName = userAccount.getFirstName();
-						String lastName = userAccount.getLastName();
-						String email = userAccount.getEmail();
-						String phone = userAccount.getPhone();
-						Date creationTime = userAccount.getCreationTime();
-						Date lastUpdateTime = userAccount.getLastUpdateTime();
-
-						password = StringUtil.get(password);
-						firstName = StringUtil.get(firstName);
-						lastName = StringUtil.get(lastName);
-						email = StringUtil.get(email);
-						phone = StringUtil.get(phone);
-						String creationTimeStr = (creationTime != null) ? DateUtil.toString(creationTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
-						String lastUpdateTimeStr = (lastUpdateTime != null) ? DateUtil.toString(lastUpdateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
+					for (UserProgram userProgram : userPrograms) {
+						String programId = userProgram.getId();
+						String programVersion = userProgram.getVersion();
 			%>
 			<tr>
 				<td class="td1">
-					<input type="checkbox" name="id" value="<%=accountId%>">
+					<input type="checkbox" name="programId" value="<%=programId%>">
 				</td>
 				<td class="td2">
-					<%=accountId%>
+					<%=programId%>
 				</td>
 				<td class="td2">
-					<%=username%>
-				</td>
-				<td class="td2"><%=firstName%>&nbsp;&nbsp;<%=lastName%></td>
-				<td class="td2"><%=email%></td>
-				<td class="td1"><%=phone%></td>
-				<td class="td1">
-					<!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details -->
-					<details>
-  						<summary>...</summary>
-  						<div style="text-align: left;">
-  						<table class="detail_table01" style="font-size: 12px;">
-  							<tr>
-  								<td>Password: </td>
-  								<td><%=password%></td>
-  							</tr>
-  							<tr>
-  								<td>Creation Time: </td>
-  								<td><%=creationTimeStr%></td>
-  							</tr>
-  							<tr>
-  								<td>Last Update Time: </td>
-  								<td><%=lastUpdateTimeStr%></td>
-  							</tr>
-  						</table>
-  						</div>
-					</details>
+					<%=programVersion%>
 				</td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeUser('<%=accountId%>', '<%=username%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Edit</a> 
-					<a class="action01" href="javascript:deleteUser('<%=accountId%>')">Delete</a>
-					<a class="action01" href="<%=contextRoot + "/userprograms?accountId=" + accountId%>">User Programs</a>
+					<a class="action01" href="javascript:changeProgram('<%=programId%>', '<%=programVersion%>')">Edit</a> 
 				</td>
 			</tr>
 			<%
-				    }
+				}
 				}
 			%>
 			</form>

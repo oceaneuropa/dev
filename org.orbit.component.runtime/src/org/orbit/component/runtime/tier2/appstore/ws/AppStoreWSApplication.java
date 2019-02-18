@@ -14,7 +14,7 @@ public class AppStoreWSApplication extends OrbitWSApplication {
 	 */
 	public AppStoreWSApplication(final AppStoreService service, int feature) {
 		super(service, feature);
-		// adapt(AppStoreService.class, service);
+		adapt(AppStoreService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

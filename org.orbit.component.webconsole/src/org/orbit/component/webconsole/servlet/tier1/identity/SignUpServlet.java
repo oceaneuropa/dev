@@ -68,7 +68,7 @@ public class SignUpServlet extends HttpServlet {
 				}
 
 				if (!usernameExists && !emailExists) {
-					RegisterResponse registerResponse = ComponentClientsUtil.Identity.register(identityServiceUrl, username, email, password);
+					RegisterResponse registerResponse = ComponentClientsUtil.IDENTITY_SERVICE.register(identityServiceUrl, username, email, password);
 					if (registerResponse != null) {
 						signUpSucceed = registerResponse.isSucceed();
 						String responseMessage = registerResponse.getMessage();
@@ -86,7 +86,7 @@ public class SignUpServlet extends HttpServlet {
 		boolean signInSucceed = false;
 		if (signUpSucceed) {
 			try {
-				LoginResponse loginResponse = ComponentClientsUtil.Identity.login(identityServiceUrl, username, email, password);
+				LoginResponse loginResponse = ComponentClientsUtil.IDENTITY_SERVICE.login(identityServiceUrl, username, email, password);
 				if (loginResponse != null) {
 					signInSucceed = loginResponse.isSucceed();
 					if (signInSucceed) {

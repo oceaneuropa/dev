@@ -66,7 +66,7 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 			UserRegistryService service = getService();
 			UserAccount userAccount = service.getUserAccountByAccountId(accountId);
 			if (userAccount == null) {
-				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with accountId '%s' cannot be found.", accountId));
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with accountId '%s' is not found.", accountId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
 			userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
@@ -80,14 +80,14 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 
 	/**
 	 * Check whether a user account is activated.
-	 * 
+	 *
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?accountId={accountId}
-	 * 
+	 *
 	 * @param accountId
 	 * @return
 	 */
 	@GET
-	@Path("/accountId")
+	@Path("/activated")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isActivated(@QueryParam("v") String accountId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
