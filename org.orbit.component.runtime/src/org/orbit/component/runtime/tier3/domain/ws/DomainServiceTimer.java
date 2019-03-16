@@ -19,22 +19,25 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 
 	/**
 	 * 
-	 * @param indexProvider
 	 * @param service
 	 */
-	public DomainServiceTimer(IndexServiceClient indexProvider, DomainManagementService service) {
-		super(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public DomainServiceTimer(DomainManagementService service) {
+		super(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, DomainManagementService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		DomainManagementService service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.DOMAIN_SERVICE_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, DomainManagementService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		DomainManagementService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -53,7 +56,9 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, DomainManagementService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		DomainManagementService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -74,7 +79,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, DomainManagementService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

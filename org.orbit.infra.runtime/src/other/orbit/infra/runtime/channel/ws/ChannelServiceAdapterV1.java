@@ -1,6 +1,5 @@
 package other.orbit.infra.runtime.channel.ws;
 
-import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimer;
 import org.orbit.infra.runtime.datatube.ws.DataTubeWSApplication;
@@ -84,8 +83,8 @@ public class ChannelServiceAdapterV1 {
 
 		// 3. start index timer
 		LOG.debug("start index timer");
-		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new DataTubeServiceIndexTimer(indexProvider, service);
+		// IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		this.serviceIndexTimer = new DataTubeServiceIndexTimer(service);
 		this.serviceIndexTimer.start();
 	}
 

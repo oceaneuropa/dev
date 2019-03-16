@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -25,7 +24,7 @@ public class AppDeleteServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
+		// String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 
 		String[] appIdVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
 
@@ -45,7 +44,7 @@ public class AppDeleteServlet extends HttpServlet {
 				String currId = currIdVersion.substring(0, index);
 				String currVersion = currIdVersion.substring(index + 1);
 
-				boolean currSucceed = ComponentClientsUtil.AppStore.deleteApp(appStoreUrl, accessToken, currId, currVersion);
+				boolean currSucceed = ComponentClientsUtil.AppStore.deleteApp(accessToken, currId, currVersion);
 				if (currSucceed) {
 					hasSucceed = true;
 				} else {

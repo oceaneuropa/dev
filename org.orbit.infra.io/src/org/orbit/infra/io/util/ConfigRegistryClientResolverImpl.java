@@ -13,26 +13,9 @@ import org.origin.common.service.WebServiceAwareHelper;
 
 public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientResolver {
 
-	protected String indexServiceUrl;
-
-	/**
-	 * 
-	 * @param indexServiceUrl
-	 */
-	public ConfigRegistryClientResolverImpl(String indexServiceUrl) {
-		if (indexServiceUrl == null || indexServiceUrl.isEmpty()) {
-			throw new IllegalArgumentException("indexServiceUrl is empty.");
-		}
-		this.indexServiceUrl = indexServiceUrl;
-	}
-
 	@Override
-	public ConfigRegistryClient resolve(String configRegistryUrl, String accessToken) {
-		if (configRegistryUrl == null || configRegistryUrl.isEmpty()) {
-			throw new IllegalArgumentException("configRegistryUrl is empty.");
-		}
-
-		ConfigRegistryClient configRegistryClient = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryClient(configRegistryUrl, accessToken);
+	public ConfigRegistryClient resolve(String accessToken) {
+		ConfigRegistryClient configRegistryClient = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryClient(accessToken);
 		return configRegistryClient;
 	}
 
@@ -43,7 +26,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		}
 
 		IndexItem cfgIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currConfigRegistryName = (String) currIndexItem.getProperties().get(InfraConstants.SERVICE__NAME);

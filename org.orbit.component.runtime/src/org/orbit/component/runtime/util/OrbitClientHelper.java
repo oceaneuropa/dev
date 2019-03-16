@@ -52,10 +52,10 @@ public class OrbitClientHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public IndexItem getNodeIndexItem(String indexServiceUrl, String accessToken, String platformParentId, String nodePlatformid) throws IOException {
+	public IndexItem getNodeIndexItem(String accessToken, String platformParentId, String nodePlatformid) throws IOException {
 		IndexItem nodeIndexItem = null;
-		if (indexServiceUrl != null && platformParentId != null && nodePlatformid != null) {
-			IndexServiceClient indexService = getIndexService(indexServiceUrl, accessToken);
+		if (platformParentId != null && nodePlatformid != null) {
+			IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -77,19 +77,19 @@ public class OrbitClientHelper {
 		return nodeIndexItem;
 	}
 
-	/**
-	 * 
-	 * @param indexServiceUrl
-	 * @param accessToken
-	 * @return
-	 */
-	protected IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
-		IndexServiceClient indexService = null;
-		if (indexServiceUrl != null) {
-			indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
-		}
-		return indexService;
-	}
+	// /**
+	// *
+	// * @param indexServiceUrl
+	// * @param accessToken
+	// * @return
+	// */
+	// protected IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
+	// IndexServiceClient indexService = null;
+	// if (indexServiceUrl != null) {
+	// indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+	// }
+	// return indexService;
+	// }
 
 }
 

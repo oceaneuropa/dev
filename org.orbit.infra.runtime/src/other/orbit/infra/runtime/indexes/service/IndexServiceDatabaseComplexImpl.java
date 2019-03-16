@@ -102,6 +102,12 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		this.indexServiceConfig = indexServiceConfig;
 	}
 
+	/** AccessTokenAware */
+	@Override
+	public String getAccessToken() {
+		return null;
+	}
+
 	protected String getClassName() {
 		return this.getClass().getSimpleName();
 	}

@@ -12,6 +12,8 @@ import java.util.Properties;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
@@ -30,12 +32,21 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	protected AppCategoryTableHandler categoryTableHandler;
 	protected AppMetadataTableHandler appTableHandler;
 
+	protected AccessTokenSupport accessTokenSupport;
+
 	/**
 	 * 
 	 * @param initProperties
 	 */
 	public AppStoreServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
+		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.APP_STORE_ADMIN);
+	}
+
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	/**

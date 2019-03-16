@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.orbit.component.runtime.ComponentConstants;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
@@ -23,6 +25,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<String, ConfigRegistry> accountIdToRegistryMap = new HashMap<String, ConfigRegistry>();
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -30,6 +33,13 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	 */
 	public ConfigRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
+		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
+	}
+
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	/**

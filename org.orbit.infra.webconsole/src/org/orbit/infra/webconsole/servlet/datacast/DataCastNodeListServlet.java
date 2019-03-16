@@ -35,7 +35,7 @@ public class DataCastNodeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -66,9 +66,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 			// 2. Each IConfigElement represents one DataCast node
 			// - find IndexItem and DataCastServiceMetadata and attach them (if available) to IConfigElement.
 			if (configElements != null) {
-				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
+				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(accessToken);
 
-				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
 
 				for (IConfigElement configElement : configElements) {
 					String dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);

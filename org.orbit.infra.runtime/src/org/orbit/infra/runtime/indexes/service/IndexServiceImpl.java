@@ -14,6 +14,8 @@ import java.util.Properties;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.orbit.infra.runtime.InfraConstants;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -33,6 +35,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -40,6 +43,14 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 */
 	public IndexServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
+		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
+	}
+
+	/** AccessTokenAware */
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	/**

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.platform.sdk.IPlatform;
@@ -17,7 +16,6 @@ import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class ExtensionsRegister implements ExtensionListener {
 		this.startListening = false;
 
 		this.properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, this.properties, InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// PropertyUtil.loadProperty(bundleContext, this.properties, InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
 
 		if (this.timerTask != null) {
 			this.timerTask.cancel();
@@ -98,14 +96,14 @@ public class ExtensionsRegister implements ExtensionListener {
 		return platformId;
 	}
 
-	protected String getExtensionRegistryUrl() {
-		String url = (String) this.properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		return url;
-	}
+	// protected String getExtensionRegistryUrl() {
+	// String url = (String) this.properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+	// return url;
+	// }
 
 	protected ExtensionRegistryClient getExtensionRegistry() {
-		String extensionRegistryUrl = getExtensionRegistryUrl();
-		ExtensionRegistryClient extensionRegistry = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionRegistryClient(extensionRegistryUrl, null);
+		// String extensionRegistryUrl = getExtensionRegistryUrl();
+		ExtensionRegistryClient extensionRegistry = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionRegistryClient(null);
 		if (extensionRegistry != null && !extensionRegistry.isProxy()) {
 			boolean match1 = false;
 			try {

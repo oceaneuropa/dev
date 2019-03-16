@@ -27,7 +27,7 @@ public class NodesProgramBatchUninstallServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = "";
@@ -57,7 +57,7 @@ public class NodesProgramBatchUninstallServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				for (String nodeId : nodeIds) {
-					IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (nodeIndexItem == null) {
 						continue;
 					}

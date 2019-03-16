@@ -32,7 +32,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
@@ -60,15 +60,15 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 					if (isDataCastOnline) {
 						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
-						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
-						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
+						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
 						ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 
@@ -108,8 +108,8 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 							isChannelMetadataUpdated = InfraClientsHelper.DATA_CAST.updateChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, isDataTubeChanged, dataTubeId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
 
 							if (isChannelMetadataUpdated) {
-								IndexItem oldDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, oldDataTubeId);
-								IndexItem newDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+								IndexItem oldDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, oldDataTubeId);
+								IndexItem newDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, dataTubeId);
 
 								if (isDataTubeChanged) {
 									boolean isOldRuntimeChannelRemoved = false;

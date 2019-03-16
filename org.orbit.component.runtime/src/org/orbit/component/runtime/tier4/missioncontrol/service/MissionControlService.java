@@ -5,9 +5,10 @@ import java.util.List;
 import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface MissionControlService extends WebServiceAware {
+public interface MissionControlService extends WebServiceAware, AccessTokenAware {
 
 	ServiceEditPolicies getEditPolicies();
 

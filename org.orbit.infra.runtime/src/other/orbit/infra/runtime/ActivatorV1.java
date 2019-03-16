@@ -141,7 +141,7 @@ public class ActivatorV1 implements BundleActivator {
 		// Get IndexProvider load balancer
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
 
 		if (hasChannelService) {

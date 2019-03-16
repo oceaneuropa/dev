@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemUpdater;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
@@ -161,6 +162,24 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 			// TODO Auto-generated method stub
 			return false;
 		}
+
+		@Override
+		public List<IndexItemUpdater> getIndexItemUpdaters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addIndexItemUpdater(IndexItemUpdater updater) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeIndexItemUpdater(IndexItemUpdater updater) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	public static class IndexServiceUnsupportedImpl implements IndexServiceClient {
@@ -285,6 +304,24 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 			// TODO Auto-generated method stub
 			return false;
+		}
+
+		@Override
+		public List<IndexItemUpdater> getIndexItemUpdaters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addIndexItemUpdater(IndexItemUpdater updater) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeIndexItemUpdater(IndexItemUpdater updater) {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

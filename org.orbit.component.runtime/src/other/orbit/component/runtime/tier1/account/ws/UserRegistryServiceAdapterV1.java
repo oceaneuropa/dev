@@ -88,7 +88,7 @@ public class UserRegistryServiceAdapterV1 {
 
 		// Start a timer to update the indexing of the service
 		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
+		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(service);
 		this.serviceIndexTimer.start();
 	}
 

@@ -45,21 +45,25 @@ public class InfraClientsHelper {
 	public static class INDEX_SERVICE {
 		/**
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @return
 		 */
-		public IndexServiceClient getIndexServiceClient(String indexServiceUrl, String accessToken) {
-			IndexServiceClient indexServiceClient = null;
-			if (indexServiceUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, indexServiceUrl);
-				indexServiceClient = InfraClients.getInstance().getIndexService(properties, true);
-			}
-			return indexServiceClient;
+		public IndexServiceClient getIndexServiceClient(String accessToken) {
+			String indexServiceUrl = InfraServicesPropertiesHandler.getInstance().getIndexServiceURL();
+			IndexServiceClient indexService = InfraClients.getInstance().getIndexService(indexServiceUrl, accessToken);
+			return indexService;
 		}
+
+		// /**
+		// *
+		// * @param indexServiceUrl
+		// * @param accessToken
+		// * @return
+		// */
+		// protected IndexServiceClient getIndexServiceClient(String indexServiceUrl, String accessToken) {
+		// IndexServiceClient indexService = InfraClients.getInstance().getIndexService(indexServiceUrl, accessToken);
+		// return indexService;
+		// }
 
 		/**
 		 * Get all index items of a indexer.
@@ -70,10 +74,10 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws IOException
 		 */
-		public List<IndexItem> getIndexItems(String indexServiceUrl, String accessToken, String indexerId) throws IOException {
+		public List<IndexItem> getIndexItems(String accessToken, String indexerId) throws IOException {
 			List<IndexItem> indexItems = null;
-			if (indexServiceUrl != null && indexerId != null) {
-				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			if (indexerId != null) {
+				IndexServiceClient indexService = getIndexServiceClient(accessToken);
 				if (indexService != null) {
 					indexItems = indexService.getIndexItems(indexerId);
 				}
@@ -87,17 +91,16 @@ public class InfraClientsHelper {
 		/**
 		 * Get all index items of a indexer of a platform.
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @param indexerId
 		 * @param platformId
 		 * @return
 		 * @throws IOException
 		 */
-		public List<IndexItem> getIndexItemsOfPlatform(String indexServiceUrl, String accessToken, String indexerId, String platformId) throws IOException {
+		public List<IndexItem> getIndexItemsOfPlatform(String accessToken, String indexerId, String platformId) throws IOException {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
-			if (indexServiceUrl != null && indexerId != null) {
-				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			if (indexerId != null) {
+				IndexServiceClient indexService = getIndexServiceClient(accessToken);
 				if (indexService != null) {
 					List<IndexItem> allIndexItems = indexService.getIndexItems(indexerId);
 					if (allIndexItems != null) {
@@ -116,16 +119,15 @@ public class InfraClientsHelper {
 		/**
 		 * Get the index item of a platform.
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @param platformId
 		 * @return
 		 * @throws IOException
 		 */
-		public IndexItem getIndexItemOfPlatform(String indexServiceUrl, String accessToken, String platformId) throws IOException {
+		public IndexItem getIndexItemOfPlatform(String accessToken, String platformId) throws IOException {
 			IndexItem platformIndexItem = null;
-			if (indexServiceUrl != null && platformId != null) {
-				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			if (platformId != null) {
+				IndexServiceClient indexService = getIndexServiceClient(accessToken);
 				if (indexService != null) {
 					List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 					if (indexItems != null) {
@@ -144,17 +146,16 @@ public class InfraClientsHelper {
 
 		/**
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @param parentPlatformId
 		 * @param platformTypes
 		 * @return
 		 * @throws IOException
 		 */
-		public Map<String, IndexItem> getPlatformIdToIndexItem(String indexServiceUrl, String accessToken, String parentPlatformId, String... platformTypes) throws IOException {
+		public Map<String, IndexItem> getPlatformIdToIndexItem(String accessToken, String parentPlatformId, String... platformTypes) throws IOException {
 			Map<String, IndexItem> platformIdToIndexItem = new HashMap<String, IndexItem>();
 
-			IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			IndexServiceClient indexService = getIndexServiceClient(accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -196,7 +197,6 @@ public class InfraClientsHelper {
 
 		/**
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @param parentPlatformId
 		 * @param platformId
@@ -204,11 +204,11 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws IOException
 		 */
-		public IndexItem getIndexItem(String indexServiceUrl, String accessToken, String parentPlatformId, String platformId, String... platformTypes) throws IOException {
+		public IndexItem getIndexItem(String accessToken, String parentPlatformId, String platformId, String... platformTypes) throws IOException {
 			IndexItem indexItem = null;
 
 			if (parentPlatformId != null && platformId != null) {
-				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				IndexServiceClient indexService = getIndexServiceClient(accessToken);
 				if (indexService != null) {
 					List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 					if (indexItems != null) {
@@ -253,17 +253,16 @@ public class InfraClientsHelper {
 		/**
 		 * Delete an index item.
 		 * 
-		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @param indexProviderId
 		 * @param indexItemId
 		 * @return
 		 * @throws IOException
 		 */
-		public boolean deleteIndexItem(String indexServiceUrl, String accessToken, String indexProviderId, Integer indexItemId) throws IOException {
+		public boolean deleteIndexItem(String accessToken, String indexProviderId, Integer indexItemId) throws IOException {
 			boolean isDeleted = false;
-			if (indexServiceUrl != null && indexProviderId != null && !indexProviderId.isEmpty() && indexItemId != null) {
-				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			if (indexProviderId != null && !indexProviderId.isEmpty() && indexItemId != null) {
+				IndexServiceClient indexService = getIndexServiceClient(accessToken);
 				if (indexService != null) {
 					isDeleted = indexService.deleteIndexItem(indexProviderId, indexItemId);
 				}
@@ -279,31 +278,35 @@ public class InfraClientsHelper {
 		 * @param accessToken
 		 * @return
 		 */
-		public ExtensionRegistryClient getExtensionRegistryClient(String extensionRegistryUrl, String accessToken) {
-			ExtensionRegistryClient extensionRegistry = null;
-			if (extensionRegistryUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, extensionRegistryUrl);
-				extensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, true);
-			}
+		public ExtensionRegistryClient getExtensionRegistryClient(String accessToken) {
+			String extensionRegistryUrl = InfraServicesPropertiesHandler.getInstance().getExtensionRegistryURL();
+			ExtensionRegistryClient extensionRegistry = InfraClients.getInstance().getExtensionRegistryClient(extensionRegistryUrl, accessToken);
 			return extensionRegistry;
 		}
+
+		// /**
+		// *
+		// * @param extensionRegistryUrl
+		// * @param accessToken
+		// * @return
+		// */
+		// protected ExtensionRegistryClient getExtensionRegistryClient(String extensionRegistryUrl, String accessToken) {
+		// ExtensionRegistryClient extensionRegistry = InfraClients.getInstance().getExtensionRegistryClient(extensionRegistryUrl, accessToken);
+		// return extensionRegistry;
+		// }
 
 		/**
 		 * Get all extension items from a platform.
 		 * 
-		 * @param extensionRegistryUrl
 		 * @param accessToken
 		 * @param platformId
 		 * @return
 		 * @throws IOException
 		 */
-		public List<ExtensionItem> getExtensionItemsOfPlatform(String extensionRegistryUrl, String accessToken, String platformId) throws IOException {
+		public List<ExtensionItem> getExtensionItemsOfPlatform(String accessToken, String platformId) throws IOException {
 			List<ExtensionItem> extensionItems = null;
-			if (extensionRegistryUrl != null && platformId != null) {
-				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(extensionRegistryUrl, accessToken);
+			if (platformId != null) {
+				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(accessToken);
 				if (extensionRegistry != null) {
 					extensionItems = extensionRegistry.getExtensionItems(platformId);
 				}
@@ -317,17 +320,16 @@ public class InfraClientsHelper {
 		/**
 		 * Get extension items of specified extension type from a platform.
 		 * 
-		 * @param extensionRegistryUrl
 		 * @param accessToken
 		 * @param platformId
 		 * @param extensionTypeId
 		 * @return
 		 * @throws IOException
 		 */
-		public List<ExtensionItem> getExtensionItemsOfPlatform(String extensionRegistryUrl, String accessToken, String platformId, String extensionTypeId) throws IOException {
+		public List<ExtensionItem> getExtensionItemsOfPlatform(String accessToken, String platformId, String extensionTypeId) throws IOException {
 			List<ExtensionItem> extensionItems = null;
-			if (extensionRegistryUrl != null && platformId != null) {
-				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(extensionRegistryUrl, accessToken);
+			if (platformId != null) {
+				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(accessToken);
 				if (extensionRegistry != null) {
 					extensionItems = extensionRegistry.getExtensionItems(platformId, extensionTypeId);
 				}
@@ -340,17 +342,16 @@ public class InfraClientsHelper {
 
 		/**
 		 * 
-		 * @param extensionRegistryUrl
 		 * @param accessToken
 		 * @param platformId
 		 * @param typeId
 		 * @return
 		 * @throws IOException
 		 */
-		public List<String> getExtensionIdsOfPlatform(String extensionRegistryUrl, String accessToken, String platformId, String typeId) throws IOException {
+		public List<String> getExtensionIdsOfPlatform(String accessToken, String platformId, String typeId) throws IOException {
 			List<String> extensionIds = new ArrayList<String>();
-			if (extensionRegistryUrl != null && platformId != null) {
-				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(extensionRegistryUrl, accessToken);
+			if (platformId != null) {
+				ExtensionRegistryClient extensionRegistry = getExtensionRegistryClient(accessToken);
 				if (extensionRegistry != null) {
 					List<ExtensionItem> extensionItems = extensionRegistry.getExtensionItems(platformId, typeId);
 					if (extensionItems != null) {
@@ -400,10 +401,22 @@ public class InfraClientsHelper {
 		 * @param accessToken
 		 * @return
 		 */
-		public ConfigRegistryClient getConfigRegistryClient(String configRegistryServiceUrl, String accessToken) {
+		public ConfigRegistryClient getConfigRegistryClient(String accessToken) {
+			String configRegistryServiceUrl = InfraServicesPropertiesHandler.getInstance().getConfigRegistryURL();
 			ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryServiceUrl, accessToken);
 			return configRegistryClient;
 		}
+
+		// /**
+		// *
+		// * @param configRegistryServiceUrl
+		// * @param accessToken
+		// * @return
+		// */
+		// protected ConfigRegistryClient getConfigRegistryClient(String configRegistryServiceUrl, String accessToken) {
+		// ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryServiceUrl, accessToken);
+		// return configRegistryClient;
+		// }
 
 		/**
 		 * 
@@ -412,10 +425,10 @@ public class InfraClientsHelper {
 		 * @param accessToken
 		 * @return
 		 */
-		public ConfigRegistryClient getConfigRegistryClient(ConfigRegistryClientResolver clientResolver, String configRegistryServiceUrl, String accessToken) {
+		public ConfigRegistryClient getConfigRegistryClient(ConfigRegistryClientResolver clientResolver, String accessToken) {
 			ConfigRegistryClient configRegistryClient = null;
-			if (clientResolver != null && configRegistryServiceUrl != null) {
-				configRegistryClient = clientResolver.resolve(configRegistryServiceUrl, accessToken);
+			if (clientResolver != null) {
+				configRegistryClient = clientResolver.resolve(accessToken);
 			}
 			return configRegistryClient;
 		}
@@ -423,14 +436,13 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
+		public ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver clientResolver, String accessToken) throws ClientException {
 			ServiceMetadata metadata = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				metadata = client.getMetadata();
 			}
@@ -443,14 +455,13 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
+		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String accessToken) throws ClientException {
 			ConfigRegistry[] configRegistries = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configRegistries = client.getConfigRegistries();
 			}
@@ -463,15 +474,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param type
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type) throws ClientException {
+		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String accessToken, String type) throws ClientException {
 			ConfigRegistry[] configRegistries = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configRegistries = client.getConfigRegistries(type);
 			}
@@ -484,15 +494,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+		public ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configRegistry = client.getConfigRegistryById(id);
 			}
@@ -502,15 +511,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param name
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+		public ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configRegistry = client.getConfigRegistryByName(name);
 			}
@@ -520,15 +528,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean configRegistryExistsById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+		public boolean configRegistryExistsById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				exists = client.configRegistryExistsById(id);
 			}
@@ -538,15 +545,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param name
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean configRegistryExistsByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+		public boolean configRegistryExistsByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				exists = client.configRegistryExistsByName(name);
 			}
@@ -556,7 +562,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param type
 		 * @param name
@@ -565,9 +570,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
+		public ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver clientResolver, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configRegistry = client.createConfigRegistry(type, name, properties, generateUniqueName);
 			}
@@ -577,16 +582,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @param type
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateConfigRegistryType(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String type) throws ClientException {
+		public boolean updateConfigRegistryType(ConfigRegistryClientResolver clientResolver, String accessToken, String id, String type) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigRegistryType(id, type);
 			}
@@ -596,16 +600,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @param name
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateConfigRegistryName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String name) throws ClientException {
+		public boolean updateConfigRegistryName(ConfigRegistryClientResolver clientResolver, String accessToken, String id, String name) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigRegistryName(id, name);
 			}
@@ -615,16 +618,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @param properties
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean setConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, Map<String, Object> properties) throws ClientException {
+		public boolean setConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String accessToken, String id, Map<String, Object> properties) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.setConfigRegistryProperties(id, properties);
 			}
@@ -634,16 +636,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @param propertyNames
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean removeConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, List<String> propertyNames) throws ClientException {
+		public boolean removeConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String accessToken, String id, List<String> propertyNames) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.removeConfigRegistryProperties(id, propertyNames);
 			}
@@ -653,15 +654,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param id
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+		public boolean deleteConfigRegistryById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigRegistryById(id);
 			}
@@ -671,15 +671,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param name
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+		public boolean deleteConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigRegistryByName(name);
 			}
@@ -692,15 +691,14 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement[] listRootConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId) throws ClientException {
+		public ConfigElement[] listRootConfigElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElements = client.listRootConfigElements(configRegistryId);
 			}
@@ -713,16 +711,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param parentElementId
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
+		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElements = client.listConfigElements(configRegistryId, parentElementId);
 			}
@@ -735,16 +732,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param parentPath
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
+		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElements = client.listConfigElements(configRegistryId, parentPath);
 			}
@@ -757,16 +753,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, elementId);
 			}
@@ -776,16 +771,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param path
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, path);
 			}
@@ -795,7 +789,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param parentElementId
@@ -803,9 +796,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, parentElementId, name);
 			}
@@ -815,16 +808,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
 		 * @return
 		 * @throws ClientException
 		 */
-		public Path getConfigElementPath(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+		public Path getConfigElementPath(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			Path path = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				path = client.getConfigElementPath(configRegistryId, elementId);
 			}
@@ -834,16 +826,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, elementId);
 			}
@@ -853,16 +844,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param path
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, path);
 			}
@@ -872,7 +862,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param parentElementId
@@ -880,9 +869,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, parentElementId, name);
 			}
@@ -892,7 +881,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param path
@@ -901,9 +889,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElement = client.createConfigElement(configRegistryId, path, attributes, generateUniqueName);
 			}
@@ -913,7 +901,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param parentElementId
@@ -923,9 +910,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				configElement = client.createConfigElement(configRegistryId, parentElementId, name, attributes, generateUniqueName);
 			}
@@ -935,7 +922,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
@@ -943,9 +929,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateConfigElementName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
+		public boolean updateConfigElementName(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigElementName(configRegistryId, elementId, newName);
 			}
@@ -955,7 +941,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
@@ -963,9 +948,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean setConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
+		public boolean setConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.setConfigElementAttributes(configRegistryId, elementId, attributes);
 			}
@@ -975,7 +960,6 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
@@ -983,9 +967,9 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean removeConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, List<String> attributeName) throws ClientException {
+		public boolean removeConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, List<String> attributeName) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isUpdated = client.removeConfigElementAttributes(configRegistryId, elementId, attributeName);
 			}
@@ -995,16 +979,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param elementId
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigElement(configRegistryId, elementId);
 			}
@@ -1014,16 +997,15 @@ public class InfraClientsHelper {
 		/**
 		 * 
 		 * @param clientResolver
-		 * @param serviceUrl
 		 * @param accessToken
 		 * @param configRegistryId
 		 * @param path
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigElement(configRegistryId, path);
 			}

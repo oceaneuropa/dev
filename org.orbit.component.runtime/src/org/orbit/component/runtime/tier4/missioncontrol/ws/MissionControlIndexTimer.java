@@ -22,19 +22,23 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	 * @param indexProvider
 	 * @param service
 	 */
-	public MissionControlIndexTimer(IndexServiceClient indexProvider, MissionControlService service) {
-		super(ComponentConstants.MISSION_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public MissionControlIndexTimer(MissionControlService service) {
+		super(ComponentConstants.MISSION_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, MissionControlService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		MissionControlService service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.MISSION_CONTROL_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, MissionControlService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		MissionControlService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -53,7 +57,9 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, MissionControlService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		MissionControlService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -74,7 +80,7 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, MissionControlService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

@@ -3,10 +3,8 @@ package org.orbit.infra.runtime.datacast.ws;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.platform.sdk.PlatformSDKActivator;
@@ -43,9 +41,9 @@ public class DataCastServiceAdapter implements LifecycleAware {
 		}
 	}
 
-	public IndexServiceClient getIndexProvider() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
-	}
+	// public IndexServiceClient getIndexProvider() {
+	// return InfraClients.getInstance().getIndexService(this.properties, true);
+	// }
 
 	public DataCastService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
@@ -105,13 +103,13 @@ public class DataCastServiceAdapter implements LifecycleAware {
 
 		// Start index timer
 		LOG.debug("start index timer");
-		IndexServiceClient indexProvider = getIndexProvider();
+		// IndexServiceClient indexProvider = getIndexProvider();
 		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__DATACAST__INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<DataCastService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
 					this.indexTimer.start();
 				}

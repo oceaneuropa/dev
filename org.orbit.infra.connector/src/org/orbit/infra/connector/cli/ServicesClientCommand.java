@@ -17,7 +17,6 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 	protected static String[] CHANNEL_SERVICES_COLUMNS = new String[] { "index_item_id", "channel.name", "channel.host.url", "channel.context_root", "Heartbeat Time", "" };
 
 	protected String scheme = "infra";
-	protected String indexServiceUrl = null;
+	// protected String indexServiceUrl = null;
 
 	protected String getScheme() {
 		return this.scheme;
@@ -51,9 +50,9 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.register(bundleContext, ServicesClientCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		this.indexServiceUrl = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// Map<Object, Object> properties = new Hashtable<Object, Object>();
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// this.indexServiceUrl = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 	}
 
 	@Override
@@ -63,10 +62,10 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 	}
 
 	protected IndexServiceClient getIndexService() {
-		if (this.indexServiceUrl == null) {
-			throw new IllegalStateException("indexServiceUrl is null.");
-		}
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, null);
+		// if (this.indexServiceUrl == null) {
+		// throw new IllegalStateException("indexServiceUrl is null.");
+		// }
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(null);
 		return indexService;
 	}
 

@@ -21,7 +21,7 @@ public class RegistryGetServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String registryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_REGISTRY_URL);
+		// String registryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_REGISTRY_URL);
 
 		String message = null;
 		HttpSession session = request.getSession(false);

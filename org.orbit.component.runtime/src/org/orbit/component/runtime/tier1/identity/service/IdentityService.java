@@ -7,9 +7,10 @@ import org.orbit.component.runtime.model.identity.LogoutResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface IdentityService extends WebServiceAware {
+public interface IdentityService extends WebServiceAware, AccessTokenAware {
 
 	boolean usernameExists(String username) throws ServerException;
 

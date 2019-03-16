@@ -18,8 +18,8 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -34,7 +34,7 @@ public class DataTubeNodeListServletV0 extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -59,10 +59,10 @@ public class DataTubeNodeListServletV0 extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
-				dataTubeIndexItems = InfraIndexItemHelper.getDataTubeIndexItems(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
+				dataTubeIndexItems = InfraIndexItemHelper.getDataTubeIndexItems(accessToken, dataCastId);
 
-				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
 				for (IndexItem dataTubeIndexItem : dataTubeIndexItems) {
 					String dataTubeId = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__ID);

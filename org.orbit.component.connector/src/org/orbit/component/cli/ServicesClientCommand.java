@@ -18,8 +18,10 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClients;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -27,6 +29,7 @@ import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
@@ -40,7 +43,7 @@ import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
-public class ServicesClientCommand implements Annotated, CommandActivator {
+public class ServicesClientCommand implements Annotated, CommandActivator, AccessTokenAware {
 
 	public static final String ID = "org.orbit.component.cli.ServicesClientCommand";
 
@@ -73,6 +76,12 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 	@Dependency
 	protected DomainServiceConnectorV1 domainServiceConnector;
 
+	protected AccessTokenSupport accessTokenSupport;
+
+	public ServicesClientCommand() {
+		this.accessTokenSupport = new AccessTokenSupport("orbit", OrbitRoles.DFS_ADMIN);
+	}
+
 	protected String getScheme() {
 		return this.scheme;
 	}
@@ -91,8 +100,8 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 		this.properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_AUTH_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_REGISTRY_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_REGISTRY_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_NODE_CONTROL_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_MISSION_CONTROL_URL);
@@ -103,8 +112,14 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected IndexServiceClient getIndexService() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
+	// protected IndexServiceClient getIndexService() {
+	// return InfraClients.getInstance().getIndexService(this.properties);
+	// }
+	/** AccessTokenAware */
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	@DependencyFullfilled
@@ -252,7 +267,9 @@ public class ServicesClientCommand implements Annotated, CommandActivator {
 
 	protected void listTransferAgents() throws ClientException {
 		try {
-			IndexServiceClient indexService = getIndexService();
+			// IndexServiceClient indexService = getIndexService();
+			String accessToken = getAccessToken();
+			IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 
 			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_CONTROL_INDEXER_ID, IndexConstants.NODE_CONTROL_TYPE);
 

@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -19,7 +18,7 @@ import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.util.DataCastConfigPropertiesHandler;
-import org.orbit.platform.sdk.http.JWTTokenHandler;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.ranking.RankingProvider;
 import org.orbit.platform.sdk.util.ExtensionUtil;
@@ -27,7 +26,6 @@ import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.model.AccountConfig;
-import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.server.ServerException;
@@ -46,6 +44,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
 	// protected Map<Object, Object> properties = new HashMap<Object, Object>();
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -54,27 +53,13 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	public DataCastServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = (initProperties != null) ? initProperties : new HashMap<Object, Object>();
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataCastService.class, this);
+		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DATACAST_ADMIN);
 	}
 
-	protected String getAccessToken() {
-		String tokenValue = null;
-		try {
-			JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT);
-			if (tokenHandler != null) {
-				String roles = OrbitRoles.DATACAST_ADMIN;
-				int securityLevel = Secured.SecurityLevels.LEVEL_1;
-				String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
-
-				Map<String, String> payload = new LinkedHashMap<String, String>();
-				payload.put(JWTTokenHandler.PAYLOAD__ROLES, roles);
-				payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
-				payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
-
-				tokenValue = tokenHandler.createToken(payload);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	/** AccessTokenAware */
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
 		return tokenValue;
 	}
 
@@ -275,10 +260,10 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		return null;
 	}
 
-	protected String getIndexServiceURL() {
-		// String indexServiceUrl = (String) getProperties().get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		return DataCastConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL, this.initProperties);
-	}
+	// protected String getIndexServiceURL() {
+	// // String indexServiceUrl = (String) getProperties().get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+	// return DataCastConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL, this.initProperties);
+	// }
 
 	@Override
 	public String getContextRoot() {
@@ -714,8 +699,8 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		}
 
 		String dataTubeId = null;
-		String indexServiceUrl = getIndexServiceURL();
-		DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+		// String indexServiceUrl = getIndexServiceURL();
+		DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 		for (IConfigElement dataTubeConfigElement : dataTubeConfigElements) {
 			String currDataTubeId = dataTubeConfigElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);
 			try {

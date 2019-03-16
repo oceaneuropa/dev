@@ -11,6 +11,8 @@ import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountAddSe
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountListServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramActionServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramAddServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramsListServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppAddServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppDeleteServlet;
@@ -46,7 +48,6 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatc
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallProviderServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.ProgramsProviderServlet;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -67,16 +68,16 @@ public class WebApplication extends PlatformWebApplication {
 	@Override
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
-				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
-				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				// InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
 				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
 				ComponentConstants.ORBIT_AUTH_URL, //
-				ComponentConstants.ORBIT_REGISTRY_URL, //
-				ComponentConstants.ORBIT_APP_STORE_URL, //
+				// ComponentConstants.ORBIT_REGISTRY_URL, //
+				// ComponentConstants.ORBIT_APP_STORE_URL, //
 				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
 				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
 				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //
@@ -123,6 +124,8 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/useraccountupdate", new UserAccountUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountdelete", new UserAccountDeleteServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/userprograms", new UserProgramsListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userprogramadd", new UserProgramAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userprogramaction", new UserProgramActionServlet(), dicts));
 
 		// Machines
 		addServlet(new ServletMetadataImpl("/domain/machines", new MachineListServlet(), dicts));

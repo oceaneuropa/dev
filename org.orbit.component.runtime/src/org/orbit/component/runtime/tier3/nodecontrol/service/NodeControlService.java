@@ -7,9 +7,10 @@ import java.util.Map;
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.node.INode;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface NodeControlService extends WebServiceAware {
+public interface NodeControlService extends WebServiceAware, AccessTokenAware {
 
 	ServiceEditPolicies getEditPolicies();
 

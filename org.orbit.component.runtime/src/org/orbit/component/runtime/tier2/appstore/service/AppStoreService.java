@@ -6,9 +6,10 @@ import java.util.List;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface AppStoreService extends WebServiceAware {
+public interface AppStoreService extends WebServiceAware, AccessTokenAware {
 
 	/**
 	 * Get apps.

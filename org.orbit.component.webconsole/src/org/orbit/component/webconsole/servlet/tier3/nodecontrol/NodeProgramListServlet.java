@@ -37,7 +37,7 @@ public class NodeProgramListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -77,10 +77,10 @@ public class NodeProgramListServlet extends HttpServlet {
 				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
-				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
+				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(indexServiceUrl, accessToken);
+				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
 				programs = PlatformClientsUtil.Platform.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
 			} catch (Exception e) {

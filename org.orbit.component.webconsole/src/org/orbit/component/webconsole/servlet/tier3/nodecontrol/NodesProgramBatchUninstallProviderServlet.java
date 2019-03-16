@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
@@ -33,8 +32,8 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
@@ -43,11 +42,11 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 		List<AppManifest> appManifests = new ArrayList<AppManifest>();
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-			PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(indexServiceUrl, accessToken);
+			PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
 
 			List<String> programIdAndVersionList = new ArrayList<String>();
 			for (String nodeId : nodeIds) {
-				IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem == null) {
 					continue;
 				}
@@ -75,7 +74,7 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 				String programId = programIdAndVersion.substring(0, index);
 				String programVersion = programIdAndVersion.substring(index + 1);
 
-				AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(appStoreUrl, accessToken, programId, programVersion);
+				AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, programId, programVersion);
 				if (appManifest != null) {
 					appManifests.add(appManifest);
 				}

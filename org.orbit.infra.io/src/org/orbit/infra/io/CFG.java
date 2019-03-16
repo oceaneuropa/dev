@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
-import org.orbit.infra.api.util.ConfigRegistryConfigPropertiesHandler;
 import org.orbit.infra.io.impl.CFGImpl;
 import org.orbit.infra.io.util.ConfigRegistryClientResolverImpl;
 import org.origin.common.rest.model.ServiceMetadata;
@@ -22,24 +20,23 @@ public abstract class CFG {
 	 * @return
 	 */
 	public synchronized static CFG getDefault(String accessToken) {
-		String indexServiceUrl = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
-		String configRegistryServiceUrl = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
-		CFG cfg = get(indexServiceUrl, configRegistryServiceUrl, accessToken);
+		// String indexServiceUrl = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
+		// String configRegistryServiceUrl = InfraConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
+		CFG cfg = get(accessToken);
 		return cfg;
 	}
 
 	/**
 	 * 
-	 * @param configRegistryServiceUrl
-	 * @param indexServiceUrl
 	 * @param accessToken
 	 * @return
 	 */
-	public synchronized static CFG get(String configRegistryServiceUrl, String indexServiceUrl, String accessToken) {
-		String key = configRegistryServiceUrl + "|" + indexServiceUrl + "|" + accessToken;
+	public synchronized static CFG get(String accessToken) {
+		// String key = configRegistryServiceUrl + "|" + indexServiceUrl + "|" + accessToken;
+		String key = accessToken;
 		CFG cfg = CFG_MAP.get(key);
 		if (cfg == null) {
-			cfg = new CFGImpl(configRegistryServiceUrl, indexServiceUrl, accessToken);
+			cfg = new CFGImpl(accessToken);
 			CFG_MAP.put(key, cfg);
 		}
 		return cfg;
@@ -49,39 +46,37 @@ public abstract class CFG {
 		CFG_MAP.clear();
 	}
 
-	protected String configRegistryServiceUrl;
-	protected String indexServiceUrl;
+	// protected String configRegistryServiceUrl;
+	// protected String indexServiceUrl;
 	protected String accessToken;
 	protected ConfigRegistryClientResolver clientResolver;
 
 	/**
 	 * 
-	 * @param configRegistryServiceUrl
-	 * @param indexServiceUrl
 	 * @param accessToken
 	 */
-	public CFG(String configRegistryServiceUrl, String indexServiceUrl, String accessToken) {
-		if (configRegistryServiceUrl == null) {
-			throw new IllegalArgumentException("configRegistryServiceUrl is null.");
-		}
-		if (indexServiceUrl == null) {
-			throw new IllegalArgumentException("indexServiceUrl is null.");
-		}
+	public CFG(String accessToken) {
+		// if (configRegistryServiceUrl == null) {
+		// throw new IllegalArgumentException("configRegistryServiceUrl is null.");
+		// }
+		// if (indexServiceUrl == null) {
+		// throw new IllegalArgumentException("indexServiceUrl is null.");
+		// }
 
-		this.configRegistryServiceUrl = configRegistryServiceUrl;
-		this.indexServiceUrl = indexServiceUrl;
+		// this.configRegistryServiceUrl = configRegistryServiceUrl;
+		// this.indexServiceUrl = indexServiceUrl;
 		this.accessToken = accessToken;
 
-		this.clientResolver = new ConfigRegistryClientResolverImpl(indexServiceUrl);
+		this.clientResolver = new ConfigRegistryClientResolverImpl();
 	}
 
-	public String getConfigRegistryServiceUrl() {
-		return this.configRegistryServiceUrl;
-	}
+	// public String getConfigRegistryServiceUrl() {
+	// return this.configRegistryServiceUrl;
+	// }
 
-	public String getIndexServiceUrl() {
-		return this.indexServiceUrl;
-	}
+	// public String getIndexServiceUrl() {
+	// return this.indexServiceUrl;
+	// }
 
 	public String getAccessToken() {
 		return this.accessToken;

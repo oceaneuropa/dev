@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlClientImpl;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.ServiceRegistration;
 
@@ -21,6 +22,11 @@ public class TransferAgentConnectorImplV3 extends ServiceConnector<NodeControlCl
 	@Override
 	protected NodeControlClient create(Map<String, Object> properties) {
 		return new NodeControlClientImpl(null, properties);
+	}
+
+	@Override
+	public boolean update(NodeControlClient agent, Map<String, Object> properties) throws ClientException {
+		return false;
 	}
 
 }

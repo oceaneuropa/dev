@@ -14,27 +14,9 @@ public interface ComponentConstants {
 	// ----------------------------------------------------------------------------------------
 	public static String OSGI_SERVICE_HTTP_PORT = "org.osgi.service.http.port";
 	public static String ORBIT_HOST_URL = "orbit.host.url";
-	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
-	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
 
 	// global index item properties
 	public static String TOKEN_PROVIDER__ORBIT = "orbit";
-
-	// tier1
-	public static String ORBIT_IDENTITY_SERVICE_URL = "orbit.identity_service.url";
-	public static String ORBIT_USER_ACCOUNTS_URL = "orbit.user_registry.url";
-	public static String ORBIT_AUTH_URL = "orbit.auth.url";
-	public static String ORBIT_REGISTRY_URL = "orbit.config_registry.url";
-
-	// tier2
-	public static String ORBIT_APP_STORE_URL = "orbit.app_store.url";
-
-	// tier3
-	public static String ORBIT_DOMAIN_SERVICE_URL = "orbit.domain_service.url";
-	public static String ORBIT_NODE_CONTROL_URL = "orbit.node_control.url";
-
-	// tier4
-	public static String ORBIT_MISSION_CONTROL_URL = "orbit.mission_control.url";
 
 	// ----------------------------------------------------------------------------------------
 	// Platform

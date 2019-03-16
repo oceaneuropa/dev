@@ -58,7 +58,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, org.orbit.component.api.ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, NodeControlRuntimeCommand.class.getName(), this, props);

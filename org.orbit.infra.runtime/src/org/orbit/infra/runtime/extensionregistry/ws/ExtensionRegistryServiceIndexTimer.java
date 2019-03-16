@@ -21,19 +21,23 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ExtensionRegistryServiceIndexTimer(IndexServiceClient indexProvider, ExtensionRegistryService service) {
-		super(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, "ExtensionRegistry Timer [" + service.getName() + "]", indexProvider, service);
+	public ExtensionRegistryServiceIndexTimer(ExtensionRegistryService service) {
+		super(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, "ExtensionRegistry Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, ExtensionRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		ExtensionRegistryService service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), InfraConstants.EXTENSION_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, ExtensionRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		ExtensionRegistryService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -52,7 +56,9 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, ExtensionRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		ExtensionRegistryService service = getService();
+
 		Integer indexItemId = indexItem.getIndexItemId();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
@@ -72,7 +78,7 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, ExtensionRegistryService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

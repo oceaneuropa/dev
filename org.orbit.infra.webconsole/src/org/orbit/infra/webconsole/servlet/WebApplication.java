@@ -40,8 +40,8 @@ public class WebApplication extends PlatformWebApplication {
 	@Override
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
-				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
-				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				// InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT, //
 				InfraConstants.ORBIT_DATACAST_URL, //

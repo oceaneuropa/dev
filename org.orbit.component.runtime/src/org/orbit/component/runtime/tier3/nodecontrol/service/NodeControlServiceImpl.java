@@ -20,6 +20,8 @@ import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 import org.origin.common.launch.LaunchInstance;
@@ -57,6 +59,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected ServiceEditPolicies wsEditPolicies;
 
 	protected boolean useScriptLaunch = false;
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -66,6 +69,13 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new ServiceEditPoliciesImpl();
 		this.wsEditPolicies.setService(NodeControlService.class, this);
+		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.NODE_CONTROL_ADMIN);
+	}
+
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	@Override
@@ -77,9 +87,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties.putAll(this.initProperties);
 		}
 
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_INDEX_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, org.orbit.component.api.ComponentConstants.ORBIT_APP_STORE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.NODESPACE_LOCATION);
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_HOST_URL);
@@ -122,9 +132,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties = new HashMap<Object, Object>();
 		}
 
-		String indexServiceUrl = (String) properties.get(ComponentConstants.ORBIT_INDEX_SERVICE_URL);
-		String extensionRegistryUrl = (String) properties.get(ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		String appStoreUrl = (String) properties.get(ComponentConstants.ORBIT_APP_STORE_URL);
+		// String indexServiceUrl = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String extensionRegistryUrl = (String) properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// String appStoreUrl = (String) properties.get(org.orbit.component.api.ComponentConstants.ORBIT_APP_STORE_URL);
 		String platformHome = (String) properties.get(ComponentConstants.PLATFORM_HOME);
 		String nodespaceHome = (String) properties.get(ComponentConstants.NODESPACE_LOCATION);
 		String globalHostURL = (String) properties.get(ComponentConstants.ORBIT_HOST_URL);
@@ -137,9 +147,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			System.out.println();
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
-			System.out.println(ComponentConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
-			System.out.println(ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
-			System.out.println(ComponentConstants.ORBIT_APP_STORE_URL + " = " + appStoreUrl);
+			// System.out.println(InfraConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
+			// System.out.println(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
+			// System.out.println(org.orbit.component.api.ComponentConstants.ORBIT_APP_STORE_URL + " = " + appStoreUrl);
 			System.out.println(ComponentConstants.PLATFORM_HOME + " = " + platformHome);
 			System.out.println(ComponentConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
 			System.out.println(ComponentConstants.ORBIT_HOST_URL + " = " + globalHostURL);
@@ -197,10 +207,10 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		return nodespaceLocation;
 	}
 
-	protected String getIndexServiceURL() {
-		String indexServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_INDEX_SERVICE_URL);
-		return indexServiceUrl;
-	}
+	// protected String getIndexServiceURL() {
+	// String indexServiceUrl = (String) this.properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+	// return indexServiceUrl;
+	// }
 
 	@Override
 	public IWorkspace getWorkspace() {
@@ -468,7 +478,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				return false;
 			}
 
-			String indexServiceUrl = getIndexServiceURL();
+			// String indexServiceUrl = getIndexServiceURL();
 
 			// 1. Direct shutdown node platform
 			boolean isDirectShutdownSucceed = false;
@@ -477,7 +487,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 			if (currPlatform != null) {
 				String platformId = currPlatform.getId();
-				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, accessToken, platformId, id);
+				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
 				}
@@ -536,12 +546,12 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public boolean isNodeStarted(String id, String accessToken) throws IOException {
-		String indexServiceUrl = getIndexServiceURL();
+		// String indexServiceUrl = getIndexServiceURL();
 
 		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, accessToken, platformId, id);
+			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				if (isOnline) {
@@ -559,12 +569,12 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public boolean isNodeStopped(String id, String accessToken) throws IOException {
-		String indexServiceUrl = getIndexServiceURL();
+		// String indexServiceUrl = getIndexServiceURL();
 
 		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, accessToken, platformId, id);
+			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				boolean isStopped = false;

@@ -4,10 +4,8 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
@@ -32,9 +30,9 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexServiceClient getIndexProvider() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
-	}
+	// public IndexServiceClient getIndexProvider() {
+	// return InfraClients.getInstance().getIndexService(this.properties, true);
+	// }
 
 	public IdentityService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
@@ -97,14 +95,14 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer
-		IndexServiceClient indexProvider = getIndexProvider();
+		// IndexServiceClient indexProvider = getIndexProvider();
 
 		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.IDENTITY_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<IdentityService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
 					this.indexTimer.start();
 				}

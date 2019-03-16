@@ -37,7 +37,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
@@ -79,10 +79,10 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 					ownerAccountId = OrbitTokenUtil.INSTANCE.getAccountIdFromSession(request);
 				}
 
-				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
-				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
+				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
-				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
@@ -98,7 +98,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 							message = MessageHelper.INSTANCE.add(message, "Channel metadata is created.");
 							String channelId = channelMetadata.getChannelId();
 
-							IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+							IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, dataTubeId);
 							if (dataTubeIndexItem != null) {
 								boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 

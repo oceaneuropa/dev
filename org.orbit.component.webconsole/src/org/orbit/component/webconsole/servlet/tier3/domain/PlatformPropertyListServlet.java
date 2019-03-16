@@ -16,7 +16,6 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
@@ -35,8 +34,8 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		String extensionRegistryUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String extensionRegistryUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -78,22 +77,22 @@ public class PlatformPropertyListServlet extends HttpServlet {
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
 				// Get index item of the platform
-				platformIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItemOfPlatform(indexServiceUrl, accessToken, platformId);
+				platformIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItemOfPlatform(accessToken, platformId);
 
 				// Get all extensions from the platform
-				extensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, platformId);
+				extensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(accessToken, platformId);
 
 				// extensionItemMap = OrbitExtensionHelper.INSTANCE.getExtensionItemMapOfPlatform(extensionRegistryUrl, id);
 				extensionItemMap = InfraClientsHelper.EXTENSION_REGISTRY.toExtensionItemMap(extensionItems);
 
 				// Get indexer extensions from the platform
-				List<ExtensionItem> indexerExtensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+				List<ExtensionItem> indexerExtensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 
 				// Get index items from the platform
 				for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
 					String indexerId = indexerExtensionItem.getExtensionId();
 
-					List<IndexItem> currIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, platformId);
+					List<IndexItem> currIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, indexerId, platformId);
 					if (currIndexItems != null && !currIndexItems.isEmpty()) {
 						indexItems.addAll(currIndexItems);
 					}

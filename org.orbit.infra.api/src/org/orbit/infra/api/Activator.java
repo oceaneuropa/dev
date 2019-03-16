@@ -1,8 +1,8 @@
 package org.orbit.infra.api;
 
-import org.orbit.infra.api.util.ConfigRegistryConfigPropertiesHandler;
 import org.orbit.infra.api.util.ExtensionsRegister;
 import org.orbit.infra.api.util.InfraClients;
+import org.orbit.infra.api.util.InfraServicesPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -26,7 +26,7 @@ public class Activator implements BundleActivator {
 		Activator.plugin = this;
 		Activator.context = bundleContext;
 
-		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
+		InfraServicesPropertiesHandler.getInstance().start(bundleContext);
 
 		InfraClients infraClients = InfraClients.getInstance();
 		infraClients.start(bundleContext);
@@ -43,7 +43,7 @@ public class Activator implements BundleActivator {
 
 		InfraClients.getInstance().stop(bundleContext);
 
-		ConfigRegistryConfigPropertiesHandler.getInstance().stop(bundleContext);
+		InfraServicesPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 		Activator.plugin = null;

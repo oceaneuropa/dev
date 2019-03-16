@@ -9,7 +9,6 @@ public class InfraConstants {
 	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
 	public static String ORBIT_CONFIG_REGISTRY_URL = "orbit.config_registry.url";
 	public static String ORBIT_DATACAST_URL = "orbit.data_cast.url";
-	public static String ORBIT_DATATUBE_URL = "orbit.data_tube.url";
 
 	public static String INDEX_ITEM_ID = "index_item_id";
 

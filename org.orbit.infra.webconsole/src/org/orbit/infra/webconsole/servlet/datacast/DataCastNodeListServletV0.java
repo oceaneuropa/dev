@@ -33,7 +33,7 @@ public class DataCastNodeListServletV0 extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -54,9 +54,9 @@ public class DataCastNodeListServletV0 extends HttpServlet {
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			dataCastIndexItems = InfraIndexItemHelper.getDataCastIndexItemsList(indexServiceUrl, accessToken);
+			dataCastIndexItems = InfraIndexItemHelper.getDataCastIndexItemsList(accessToken);
 
-			DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+			DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
 			for (IndexItem dataCastIndexItem : dataCastIndexItems) {
 				String dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);

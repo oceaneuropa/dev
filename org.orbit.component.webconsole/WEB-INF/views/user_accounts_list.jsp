@@ -72,6 +72,12 @@
 						phone = StringUtil.get(phone);
 						String creationTimeStr = (creationTime != null) ? DateUtil.toString(creationTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
 						String lastUpdateTimeStr = (lastUpdateTime != null) ? DateUtil.toString(lastUpdateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
+						
+						
+						String metadataStr = "";
+						metadataStr += "Password = " + password + "<br/>";
+						metadataStr += "Creation Time = " + creationTimeStr + "<br/>";
+						metadataStr += "Last Update Time = " + lastUpdateTimeStr + "<br/>";
 			%>
 			<tr>
 				<td class="td1">
@@ -86,27 +92,10 @@
 				<td class="td2"><%=firstName%>&nbsp;&nbsp;<%=lastName%></td>
 				<td class="td2"><%=email%></td>
 				<td class="td1"><%=phone%></td>
-				<td class="td1">
-					<!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details -->
-					<details>
-  						<summary>...</summary>
-  						<div style="text-align: left;">
-  						<table class="detail_table01" style="font-size: 12px;">
-  							<tr>
-  								<td>Password: </td>
-  								<td><%=password%></td>
-  							</tr>
-  							<tr>
-  								<td>Creation Time: </td>
-  								<td><%=creationTimeStr%></td>
-  							</tr>
-  							<tr>
-  								<td>Last Update Time: </td>
-  								<td><%=lastUpdateTimeStr%></td>
-  							</tr>
-  						</table>
-  						</div>
-					</details>
+				<td class="td2">
+					<div class="tooltip">metadatas...
+  						<span class="tooltiptext"><%=metadataStr%></span>
+					</div>
 				</td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeUser('<%=accountId%>', '<%=username%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Edit</a> 

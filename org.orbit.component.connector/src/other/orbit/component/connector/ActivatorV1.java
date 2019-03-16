@@ -1,23 +1,17 @@
 package other.orbit.component.connector;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.orbit.component.connector.tier1.account.UserAccountConnector;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
 import org.orbit.component.connector.tier3.domain.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import other.orbit.component.connector.tier1.account.UserRegistryManager;
 import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
 import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
-import other.orbit.infra.api.indexes.IndexServiceLoadBalancer;
-import other.orbit.infra.api.indexes.IndexServiceUtil;
 
 public class ActivatorV1 implements BundleActivator {
 
@@ -79,9 +73,9 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected void doStart(BundleContext bundleContext, IndexServiceConnectorV1 connector) {
 		// Get load balancer for IndexProvider
-		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
+		// Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
 
 		// Register ManagedServiceFactories and connector services
 		// tier1

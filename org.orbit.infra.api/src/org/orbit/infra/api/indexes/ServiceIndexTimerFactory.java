@@ -4,6 +4,6 @@ public interface ServiceIndexTimerFactory<SERVICE> {
 
 	public static final String EXTENSION_TYPE_ID = "infra.extension.IndexProvider";
 
-	ServiceIndexTimer<SERVICE> create(IndexServiceClient indexProvider, SERVICE service);
+	ServiceIndexTimer<SERVICE> create(SERVICE service);
 
 }

@@ -70,7 +70,6 @@ public class UserProgramsListServlet extends HttpServlet {
 				if (loginResponse != null) {
 					// @see org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet
 					boolean signInSucceed = loginResponse.isSucceed();
-
 					if (signInSucceed) {
 						String accessToken = loginResponse.getTokenValue();
 						try {

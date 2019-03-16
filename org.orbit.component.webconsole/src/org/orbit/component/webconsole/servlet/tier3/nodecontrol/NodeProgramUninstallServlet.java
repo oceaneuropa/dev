@@ -26,7 +26,7 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String message = "";
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -56,7 +56,7 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(indexServiceUrl, accessToken);
+				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
 				PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
 				// Instruct the node to self uninstall the program

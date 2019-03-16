@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.util.InfraClients;
 import org.origin.common.rest.client.ServiceClientProxy;
 
 public class ExtensionRegistryClientProxy extends ServiceClientProxy<ExtensionRegistryClient> implements ExtensionRegistryClient {
@@ -13,14 +12,15 @@ public class ExtensionRegistryClientProxy extends ServiceClientProxy<ExtensionRe
 	 * 
 	 * @param properties
 	 */
-	public ExtensionRegistryClientProxy(Map<String, Object> properties) {
+	private ExtensionRegistryClientProxy(Map<String, Object> properties) {
 		super(properties);
 	}
 
 	@Override
 	protected ExtensionRegistryClient resolveClient(Map<String, Object> properties) {
-		ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, false);
-		return resolvedExtensionRegistry;
+		// ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, false);
+		// return resolvedExtensionRegistry;
+		return null;
 	}
 
 	@Override

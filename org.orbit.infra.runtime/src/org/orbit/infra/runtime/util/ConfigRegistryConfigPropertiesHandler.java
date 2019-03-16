@@ -15,8 +15,8 @@ public class ConfigRegistryConfigPropertiesHandler extends AbstractConfigPropert
 	public String[] getConfigPropertyNames() {
 		String[] propNames = new String[] { //
 				InfraConstants.ORBIT_HOST_URL, //
-				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
-				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				// org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				// org.orbit.infra.api.InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 
 				// For service
 				InfraConstants.CONFIG_REGISTRY__AUTOSTART, //

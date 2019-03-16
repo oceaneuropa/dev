@@ -12,10 +12,8 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
@@ -46,9 +44,9 @@ public class UserRegistryServiceAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexServiceClient getIndexProvider() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
-	}
+	// public IndexServiceClient getIndexProvider() {
+	// return InfraClients.getInstance().getIndexService(this.properties, true);
+	// }
 
 	public UserRegistryService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
@@ -111,7 +109,7 @@ public class UserRegistryServiceAdapter implements LifecycleAware {
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer
-		IndexServiceClient indexProvider = getIndexProvider();
+		// IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
@@ -121,7 +119,7 @@ public class UserRegistryServiceAdapter implements LifecycleAware {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<UserRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
 					this.indexTimer.start();
 				}

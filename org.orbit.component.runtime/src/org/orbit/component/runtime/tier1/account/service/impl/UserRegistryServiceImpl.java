@@ -12,6 +12,8 @@ import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
@@ -31,6 +33,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected UserAccountPersistence userAccountPersistence;
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -38,6 +41,13 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 */
 	public UserRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
+		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.USER_ACCOUNTS_ADMIN);
+	}
+
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
+		return tokenValue;
 	}
 
 	@Override

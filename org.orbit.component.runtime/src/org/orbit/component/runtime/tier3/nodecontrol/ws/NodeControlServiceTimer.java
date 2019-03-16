@@ -19,22 +19,25 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 
 	/**
 	 * 
-	 * @param indexProvider
 	 * @param service
 	 */
-	public NodeControlServiceTimer(IndexServiceClient indexProvider, NodeControlService service) {
-		super(ComponentConstants.NODE_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public NodeControlServiceTimer(NodeControlService service) {
+		super(ComponentConstants.NODE_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, NodeControlService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		NodeControlService service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.NODE_CONTROL_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, NodeControlService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		NodeControlService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -55,7 +58,9 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, NodeControlService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		NodeControlService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -77,7 +82,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, NodeControlService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

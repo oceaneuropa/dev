@@ -38,7 +38,7 @@ public class DataTubeNodeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -75,9 +75,9 @@ public class DataTubeNodeListServlet extends HttpServlet {
 				}
 
 				if (configElements != null) {
-					Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+					Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(accessToken, dataCastId);
 
-					DataTubeClientResolver clientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+					DataTubeClientResolver clientResolver = new DefaultDataTubeClientResolver();
 
 					for (IConfigElement configElement : configElements) {
 						String dataTubeId = configElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);

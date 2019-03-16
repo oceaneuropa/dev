@@ -112,13 +112,31 @@ public class ComponentClientsUtil {
 		 * @param userRegistryUrl
 		 * @param accessToken
 		 * @return
+		 */
+		public UserAccountClient getUserAccountsClient(String userRegistryUrl, String accessToken) {
+			UserAccountClient userRegistry = null;
+			if (userRegistryUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, userRegistryUrl);
+				userRegistry = ComponentClients.getInstance().getUserAccounts(properties);
+			}
+			return userRegistry;
+		}
+
+		/**
+		 * 
+		 * @param userRegistryUrl
+		 * @param accessToken
+		 * @return
 		 * @throws ClientException
 		 */
 		public UserAccount[] getUserAccounts(String userRegistryUrl, String accessToken) throws ClientException {
 			UserAccount[] userAccounts = null;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
-				userAccounts = userRegistry.getUserAccounts();
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
+				userAccounts = userAccountClient.getUserAccounts();
 			}
 			if (userAccounts == null) {
 				userAccounts = EMPTY_USER_ACCOUNTS;
@@ -136,9 +154,9 @@ public class ComponentClientsUtil {
 		 */
 		public UserAccount getUserAccount(String userRegistryUrl, String accessToken, String accountId) throws ClientException {
 			UserAccount userAccount = null;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
-				userAccount = userRegistry.getUserAccount(accountId);
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
+				userAccount = userAccountClient.getUserAccount(accountId);
 			}
 			return userAccount;
 		}
@@ -153,9 +171,9 @@ public class ComponentClientsUtil {
 		 */
 		public boolean usernameExists(String userRegistryUrl, String accessToken, String username) throws ClientException {
 			boolean exists = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
-				exists = userRegistry.usernameExists(username);
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
+				exists = userAccountClient.usernameExists(username);
 			}
 			return exists;
 		}
@@ -170,9 +188,9 @@ public class ComponentClientsUtil {
 		 */
 		public boolean emailExists(String userRegistryUrl, String accessToken, String email) throws ClientException {
 			boolean exists = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
-				exists = userRegistry.emailExists(email);
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
+				exists = userAccountClient.emailExists(email);
 			}
 			return exists;
 		}
@@ -192,8 +210,8 @@ public class ComponentClientsUtil {
 		 */
 		public boolean addUserAccount(String userRegistryUrl, String accessToken, String username, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
 				CreateUserAccountRequest request = new CreateUserAccountRequest();
 
 				request.setUsername(username);
@@ -203,7 +221,7 @@ public class ComponentClientsUtil {
 				request.setEmail(email);
 				request.setPhone(phone);
 
-				succeed = userRegistry.register(request);
+				succeed = userAccountClient.register(request);
 			}
 			return succeed;
 		}
@@ -224,8 +242,8 @@ public class ComponentClientsUtil {
 		 */
 		public boolean updateUserAccount(String userRegistryUrl, String accessToken, String accountId, String username, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
 				UpdateUserAccountRequest request = new UpdateUserAccountRequest();
 
 				request.setAccountId(accountId);
@@ -236,7 +254,7 @@ public class ComponentClientsUtil {
 				request.setLastName(lastName);
 				request.setPhone(phone);
 
-				succeed = userRegistry.update(request);
+				succeed = userAccountClient.update(request);
 			}
 			return succeed;
 		}
@@ -251,29 +269,11 @@ public class ComponentClientsUtil {
 		 */
 		public boolean deleteUserAccount(String userRegistryUrl, String accessToken, String accountId) throws ClientException {
 			boolean exists = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
-			if (userRegistry != null) {
-				exists = userRegistry.delete(accountId);
+			UserAccountClient userAccountClient = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userAccountClient != null) {
+				exists = userAccountClient.delete(accountId);
 			}
 			return exists;
-		}
-
-		/**
-		 * 
-		 * @param userRegistryUrl
-		 * @param accessToken
-		 * @return
-		 */
-		public UserAccountClient getUserAccountsClient(String userRegistryUrl, String accessToken) {
-			UserAccountClient userRegistry = null;
-			if (userRegistryUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, userRegistryUrl);
-				userRegistry = ComponentClients.getInstance().getUserAccounts(properties);
-			}
-			return userRegistry;
 		}
 	}
 
@@ -303,18 +303,37 @@ public class ComponentClientsUtil {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @return
+		 */
+		public AppStoreClient getAppStoreClient(String accessToken) {
+			String appStoreUrl = ComponentServicesPropertiesHandler.getInstance().getAppStoreURL();
+			AppStoreClient appStoreClient = ComponentClients.getInstance().getAppStoreClient(appStoreUrl, accessToken);
+			return appStoreClient;
+		}
+
+		// /**
+		// *
+		// * @param appStoreUrl
+		// * @param accessToken
+		// * @return
+		// */
+		// protected AppStoreClient getAppStoreClient(String appStoreUrl, String accessToken) {
+		// AppStoreClient appStoreClient = ComponentClients.getInstance().getAppStoreClient(appStoreUrl, accessToken);
+		// return appStoreClient;
+		// }
+
+		/**
+		 * 
 		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public AppManifest[] getApps(String appStoreUrl, String accessToken) throws ClientException {
+		public AppManifest[] getApps(String accessToken) throws ClientException {
 			AppManifest[] appManifests = null;
-			if (appStoreUrl != null) {
-				AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
-				if (appStore != null) {
-					AppQuery query = new AppQuery();
-					appManifests = appStore.getApps(query);
-				}
+			AppStoreClient appStore = getAppStoreClient(accessToken);
+			if (appStore != null) {
+				AppQuery query = new AppQuery();
+				appManifests = appStore.getApps(query);
 			}
 			if (appManifests == null) {
 				appManifests = EMPTY_APPS;
@@ -324,16 +343,15 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param appId
 		 * @param appVersion
 		 * @return
 		 * @throws ClientException
 		 */
-		public AppManifest getApp(String appStoreUrl, String accessToken, String appId, String appVersion) throws ClientException {
+		public AppManifest getApp(String accessToken, String appId, String appVersion) throws ClientException {
 			AppManifest appManifest = null;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				appManifest = appStore.getApp(appId, appVersion);
 			}
@@ -342,7 +360,6 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param id
 		 * @param version
@@ -353,9 +370,9 @@ public class ComponentClientsUtil {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addApp(String appStoreUrl, String accessToken, String id, String version, String type, String name, String desc, String fileName) throws ClientException {
+		public boolean addApp(String accessToken, String id, String version, String type, String name, String desc, String fileName) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				CreateAppRequest createAppRequest = new CreateAppRequest();
 				createAppRequest.setAppId(id);
@@ -372,7 +389,6 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param id
 		 * @param appId
@@ -384,9 +400,9 @@ public class ComponentClientsUtil {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateApp(String appStoreUrl, String accessToken, int id, String appId, String appVersion, String type, String name, String desc, String fileName) throws ClientException {
+		public boolean updateApp(String accessToken, int id, String appId, String appVersion, String type, String name, String desc, String fileName) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				UpdateAppRequest updateAppRequest = new UpdateAppRequest();
 				updateAppRequest.setId(id);
@@ -404,16 +420,15 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param id
 		 * @param version
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteApp(String appStoreUrl, String accessToken, String id, String version) throws ClientException {
+		public boolean deleteApp(String accessToken, String id, String version) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				succeed = appStore.delete(id, version);
 			}
@@ -422,7 +437,6 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param id
 		 * @param appId
@@ -431,9 +445,9 @@ public class ComponentClientsUtil {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean uploadAppFile(String appStoreUrl, String accessToken, int id, String appId, String appVersion, List<File> files) throws ClientException {
+		public boolean uploadAppFile(String accessToken, int id, String appId, String appVersion, List<File> files) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				File file = (files != null && !files.isEmpty()) ? files.get(0) : null;
 				if (file != null && file.exists()) {
@@ -445,35 +459,17 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param appStoreUrl
 		 * @param accessToken
 		 * @param appId
 		 * @param appVersion
 		 * @param output
 		 * @throws ClientException
 		 */
-		public void downloadAppFile(String appStoreUrl, String accessToken, String appId, String appVersion, OutputStream output) throws ClientException {
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
+		public void downloadAppFile(String accessToken, String appId, String appVersion, OutputStream output) throws ClientException {
+			AppStoreClient appStore = getAppStoreClient(accessToken);
 			if (appStore != null) {
 				appStore.downloadAppArchive(appId, appVersion, output);
 			}
-		}
-
-		/**
-		 * 
-		 * @param appStoreUrl
-		 * @return
-		 */
-		public AppStoreClient getAppStoreClient(String appStoreUrl, String accessToken) {
-			AppStoreClient appStoreClient = null;
-			if (appStoreUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, appStoreUrl);
-				appStoreClient = ComponentClients.getInstance().getAppStore(properties);
-			}
-			return appStoreClient;
 		}
 	}
 

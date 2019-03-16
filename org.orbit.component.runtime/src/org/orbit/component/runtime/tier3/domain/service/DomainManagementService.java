@@ -7,9 +7,10 @@ import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.origin.common.resources.IWorkspaceService;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DomainManagementService extends WebServiceAware {
+public interface DomainManagementService extends WebServiceAware, AccessTokenAware {
 
 	// ------------------------------------------------------
 	// Machine management

@@ -73,11 +73,11 @@ public class UserRegistryClientCommand implements CommandActivator {
 
 	protected UserAccountClient getUserRegistry() {
 		String userRegistryUrl = (String) this.properties.get(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
-		UserAccountClient userRegistry = ComponentClientsUtil.UserAccounts.getUserAccountsClient(userRegistryUrl, null);
-		if (userRegistry == null) {
+		UserAccountClient userAccountClient = ComponentClientsUtil.UserAccounts.getUserAccountsClient(userRegistryUrl, null);
+		if (userAccountClient == null) {
 			throw new IllegalStateException("UserRegistry is null.");
 		}
-		return userRegistry;
+		return userAccountClient;
 	}
 
 	@Descriptor("list_users")

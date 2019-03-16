@@ -1,5 +1,6 @@
 package org.orbit.component.api.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserAccountClient;
@@ -11,6 +12,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
+import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -185,16 +187,32 @@ public final class ComponentClients implements LifecycleAware {
 
 	/**
 	 * 
-	 * @param properties
+	 * @param appStoreUrl
+	 * @param accessToken
 	 * @return
 	 */
-	public AppStoreClient getAppStore(Map<String, Object> properties) {
-		AppStoreClient appStore = this.appStoreConnector.getService(properties);
-		if (appStore == null) {
-			throw new RuntimeException("AppStore is not available.");
-		}
-		return appStore;
+	public AppStoreClient getAppStoreClient(String appStoreUrl, String accessToken) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(WSClientConstants.REALM, null);
+		properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		properties.put(WSClientConstants.URL, appStoreUrl);
+
+		AppStoreClient appStoreClient = this.appStoreConnector.getService(properties);
+		return appStoreClient;
 	}
+
+	// /**
+	// *
+	// * @param properties
+	// * @return
+	// */
+	// public AppStoreClient getAppStore(Map<String, Object> properties) {
+	// AppStoreClient appStoreClient = this.appStoreConnector.getService(properties);
+	// if (appStoreClient == null) {
+	// throw new RuntimeException("AppStore is not available.");
+	// }
+	// return appStoreClient;
+	// }
 
 	/**
 	 * 

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -26,7 +25,7 @@ public class AppAddServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
+		// String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 		String message = "";
 
 		String appId = ServletUtil.getParameter(request, "id", "");
@@ -50,7 +49,7 @@ public class AppAddServlet extends HttpServlet {
 		if (!appId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-				succeed = ComponentClientsUtil.AppStore.addApp(appStoreUrl, accessToken, appId, appVersion, type, name, desc, fileName);
+				succeed = ComponentClientsUtil.AppStore.addApp(accessToken, appId, appVersion, type, name, desc, fileName);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

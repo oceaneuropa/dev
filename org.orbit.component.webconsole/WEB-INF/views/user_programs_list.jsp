@@ -25,7 +25,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>User Programs</title>
+
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
+<link rel="stylesheet" href="<%=contextRoot + "/views/css/treetable.css"%>">
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/user_programs_list.js"%>"></script>
+
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
@@ -39,14 +45,18 @@
 	<div class="main_div01">
 		<h2>User Programs</h2>
 		<div class="top_tools_div01">
-			<a class="button02" href="javascript:addProgram()">Add</a>
-			<a class="button02" href="javascript:deletePrograms()">Delete</a>
+			<a id="actionAddProgram" class="button02">Add</a> 
+			<a id="actionRemovePrograms" class="button02" onClick="onProgramAction('remove', '<%=contextRoot + "/userprogramaction"%>')">Remove</a>
 			<a class="button02" href="<%=contextRoot + "/userprograms?accountId=" + accountId%>">Refresh</a>
 		</div>
 		<table class="main_table01">
-			<form id="main_list">
+			<form id="main_list" method="post" action="">
+			<input type="hidden" name="accountId" value="<%=accountId%>">
+			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
-				<th class="th1" width="11"></th>
+				<th class="th1" width="11">
+					<input type="checkbox" onClick="toggleSelection(this, 'id_version')" />
+				</th>
 				<th class="th1" width="250">Id</th>
 				<th class="th1" width="250">Version</th>
 				<th class="th1" width="150">Actions</th>
@@ -65,7 +75,7 @@
 			%>
 			<tr>
 				<td class="td1">
-					<input type="checkbox" name="programId" value="<%=programId%>">
+					<input type="checkbox" name="id_version" value="<%=programId + "_" + programVersion%>">
 				</td>
 				<td class="td2">
 					<%=programId%>
@@ -85,192 +95,27 @@
 		</table>
 	</div>
 
-	<dialog id="newUserDialog">
-	<div class="dialog_title_div01">Add User</div>
-		<form method="post" action="<%=contextRoot + "/useraccountadd"%>">
-		<div class="dialog_main_div01">
-			<table class="dialog_table01">
-				<tr>
-					<td width="25%">Id:</td>
-					<td width="75%"><input type="text" name="username" class="input01" size="35"></td>
-				</tr>
-				<tr>
-					<td>Password:</td>
-					<td><input type="password" name="password"></td>
-				</tr>
-				<tr>
-					<td>First Name:</td>
-					<td><input type="text" name="firstName"></td>
-				</tr>
-				<tr>
-					<td>Last Name:</td>
-					<td><input type="text" name="lastName"></td>
-				</tr>
-				<tr>
-					<td>Email:</td>
-					<td><input type="text" name="email"></td>
-				</tr>
-				<tr>
-					<td>Phone:</td>
-					<td><input type="text" name="phone"></td>
-				</tr>
-			</table>
+	<dialog id="programsSelectionDialog">
+	<div class="dialog_title_div01">Programs</div>
+	<form id="programs_add_form" method="post" action="<%=contextRoot + "/userprogramadd"%>">
+		<input type="hidden" name="accountId" value="<%=accountId%>">
+		<div id="programsSelectionDiv" class="dialog_main_div02">
 		</div>
 		<div class="dialog_button_div01">
-			<button type="submit">OK</button>
-			<button id="cancelAddUser" type="reset">Cancel</button>
+			<a id="okAddProgram" class="button02" href="javascript:document.getElementById('programs_add_form').submit();">OK</a> 
+			<a id="cancelAddProgram" class="button02b" href="javascript:document.getElementById('programs_add_form').reset();">Cancel</a>
 		</div>
-		</form>
+	</form>
 	</dialog>
 
-	<dialog id="changeUserDialog">
-	<div class="dialog_title_div01">Change User</div>
-		<form method="post" action="<%=contextRoot + "/useraccountupdate"%>">
-		<input type="hidden" id="user_id" name = "id"/>
-		<div class="dialog_main_div01">
-			<table class="dialog_table01">
-				<tr>
-					<td width="25%">Id:</td>
-					<td width="75%"><input type="text" id="user_username" name="username" class="input01" size="35"></td>
-				</tr>
-				<tr>
-					<td>Password:</td>
-					<td><input id="user_password" type="password" name="password"></td>
-				</tr>
-				<tr>
-					<td>First Name:</td>
-					<td><input id="user_firstName" type="text" name="firstName"></td>
-				</tr>
-				<tr>
-					<td>Last Name:</td>
-					<td><input id="user_lastName" type="text" name="lastName"></td>
-				</tr>
-				<tr>
-					<td>Email:</td>
-					<td><input id="user_email" type="text" name="email"></td>
-				</tr>
-				<tr>
-					<td>Phone:</td>
-					<td><input id="user_phone" type="text" name="phone"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="dialog_button_div01">
-			<button type="submit">OK</button>
-			<button id="cancelChangeUser" type="reset">Cancel</button>
-		</div>
-		</form>
+	<dialog id="programActionDialog">
+	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Programs</div>
+	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the programs?</div>
+	<div class="dialog_button_div01">
+		<a id="okProgramAction" class="button02">OK</a> 
+		<a id="cancelProgramAction" class="button02b">Cancel</a>
+	</div>
 	</dialog>
 
-	<dialog id="deleteUserDialog">
-		<div class="dialog_title_div01">Delete User</div>
-		<div class="dialog_main_div01" id="deleteUserDialogMessageDiv">Are you sure you want to delete the user?</div>
-		<div class="dialog_button_div01">
-			<button id="doDeleteUser">OK</button>
-			<button id="cancelDeleteUser">Cancel</button>
-		</div>
-	</dialog>
-
-	<dialog id="deleteUsersDialog">
-		<div class="dialog_title_div01">Delete User</div>
-		<div class="dialog_main_div01" id="deleteUsersDialogMessageDiv">Are you sure you want to delete selected users?</div>
-		<div class="dialog_button_div01">
-			<button id="doDeleteUsers">OK</button>
-			<button id="cancelDeleteUsers">Cancel</button>
-		</div>
-	</dialog>
-
-<script>
-	function addUser() {
-		var addUserDialog = document.getElementById('newUserDialog');
-		addUserDialog.showModal();
-	}
-
-	function changeUser(accountId, username, password, firstName, lastName, email, phone) {
-		document.getElementById("user_id").setAttribute('value',accountId);
-		document.getElementById("user_username").setAttribute('value',username);
-		document.getElementById("user_password").setAttribute('value',password);
-		document.getElementById("user_firstName").setAttribute('value',firstName);
-		document.getElementById("user_lastName").setAttribute('value',lastName);
-		document.getElementById("user_email").setAttribute('value',email);
-		document.getElementById("user_phone").setAttribute('value',phone);
-
-		var changeUserDialog = document.getElementById('changeUserDialog');
-		changeUserDialog.showModal();
-	}
-
-	function deleteUser(accountId, username) {
-		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
-		var dialog = document.getElementById('deleteUserDialog');
-
-		var messageDiv = document.getElementById('deleteUserDialogMessageDiv');
-		messageDiv.innerHTML="Are you sure you want to delete user '"+username+"'?";
-
-		var okButton = document.getElementById('doDeleteUser');
-		okButton.addEventListener('click', function() {
-			var form = document.createElement("form");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", actionURL);
-
-			var idField = document.createElement("input");
-			idField.setAttribute("type", "hidden");
-			idField.setAttribute("name", "id");
-			idField.setAttribute("value", accountId);
-
-			form.appendChild(idField);
-
-			document.body.appendChild(form);
-			form.submit();
-			document.body.removeChild(form);
-		});
-
-		dialog.showModal();
-	}
-
-	function deleteUsers() {
-		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
-		var dialog = document.getElementById('deleteUsersDialog');
-
-		var messageDiv = document.getElementById('deleteUsersDialogMessageDiv');
-		messageDiv.innerHTML="Are you sure you want to delete selected users?";
-
-		var okButton = document.getElementById('doDeleteUsers');
-		okButton.addEventListener('click', function() {
-			var form = document.getElementById("main_list");
-			form.setAttribute("method", "post");
-			form.setAttribute("action", actionURL);
-			form.submit();
-		});
-
-		dialog.showModal();
-	}
-
-	(function() {
-		var newUserDialog = document.getElementById('newUserDialog');
-		var cancelAddUserButton = document.getElementById('cancelAddUser');
-		cancelAddUserButton.addEventListener('click', function() {
-			newUserDialog.close();
-		});
-
-		var changeUserDialog = document.getElementById('changeUserDialog');
-		var cancelChangeUserButton = document.getElementById('cancelChangeUser');
-		cancelChangeUserButton.addEventListener('click', function() {
-			changeUserDialog.close();
-		});
-
-		var deleteUserDialog = document.getElementById('deleteUserDialog');
-		var cancelDeleteUserButton = document.getElementById('cancelDeleteUser');
-		cancelDeleteUserButton.addEventListener('click', function() {
-			deleteUserDialog.close();
-		});
-
-		var deleteUsersDialog = document.getElementById('deleteUsersDialog');
-		var cancelDeleteUsersButton = document.getElementById('cancelDeleteUsers');
-		cancelDeleteUsersButton.addEventListener('click', function() {
-			document.getElementById("main_list").reset();
-			deleteUsersDialog.close();
-		});
-	})();
-</script>
 </body>
 </html>

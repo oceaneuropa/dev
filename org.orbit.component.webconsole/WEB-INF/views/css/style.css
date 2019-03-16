@@ -471,3 +471,30 @@ a.action01b {
 	cursor: pointer;
 	position: relative;
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /* border-bottom: 1px dotted black; */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 400px;
+  background-color: #b0b0b0;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px 5px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: 25px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

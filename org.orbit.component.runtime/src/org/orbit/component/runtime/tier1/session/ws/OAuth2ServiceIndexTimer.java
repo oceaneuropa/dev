@@ -22,18 +22,22 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	 * @param indexProvider
 	 * @param service
 	 */
-	public OAuth2ServiceIndexTimer(IndexServiceClient indexProvider, OAuth2Service service) {
-		super(ComponentConstants.OAUTH2_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public OAuth2ServiceIndexTimer(OAuth2Service service) {
+		super(ComponentConstants.OAUTH2_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, OAuth2Service service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		OAuth2Service service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.OAUTH2_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, OAuth2Service service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		OAuth2Service service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -50,7 +54,9 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, OAuth2Service service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		OAuth2Service service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -68,7 +74,7 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, OAuth2Service service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

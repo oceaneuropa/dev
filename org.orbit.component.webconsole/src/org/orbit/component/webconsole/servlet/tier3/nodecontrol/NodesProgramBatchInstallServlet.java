@@ -33,7 +33,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String message = "";
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -69,7 +69,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 					options.put("-clean", true);
 				}
 
-				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(accessToken, platformId);
 
 				for (String nodeId : nodeIds) {
 					NodeInfo nodeInfo = nodeControlClient.getNode(nodeId);
@@ -78,7 +78,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						continue;
 					}
 
-					IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (autoStartNode) {
 						boolean doStartNode = false;
 						if (nodeIndexItem == null) {
@@ -99,7 +99,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 
 							long totalWaitingTime = 0;
 							while (nodeIndexItem == null) {
-								nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+								nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 								try {
 									Thread.sleep(1000);
 								} catch (Exception e) {

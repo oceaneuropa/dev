@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.datacast.ChannelMetadata;
@@ -21,12 +20,10 @@ import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.util.DataTubeConfigPropertiesHandler;
-import org.orbit.platform.sdk.http.JWTTokenHandler;
+import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
-import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
@@ -42,6 +39,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
 	// protected Map<Object, Object> properties;
+	protected AccessTokenSupport accessTokenSupport;
 
 	/**
 	 * 
@@ -52,6 +50,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataTubeService.class, this);
 		this.runtimeChannelMap = Collections.synchronizedMap(new HashMap<String, RuntimeChannel>());
 		// this.properties = new HashMap<Object, Object>();
+		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DATATUBE_ADMIN);
 	}
 
 	@Override
@@ -59,25 +58,10 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		return this.initProperties;
 	}
 
-	protected String getAccessToken() {
-		String tokenValue = null;
-		try {
-			JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT);
-			if (tokenHandler != null) {
-				String roles = OrbitRoles.DATATUBE_ADMIN;
-				int securityLevel = Secured.SecurityLevels.LEVEL_1;
-				String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
-
-				Map<String, String> payload = new LinkedHashMap<String, String>();
-				payload.put(JWTTokenHandler.PAYLOAD__ROLES, roles);
-				payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
-				payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
-
-				tokenValue = tokenHandler.createToken(payload);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	/** AccessTokenAware */
+	@Override
+	public String getAccessToken() {
+		String tokenValue = this.accessTokenSupport.getAccessToken();
 		return tokenValue;
 	}
 
@@ -154,9 +138,9 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		return DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.DATATUBE__CONTEXT_ROOT, this.initProperties);
 	}
 
-	protected String getIndexServiceURL() {
-		return DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL, this.initProperties);
-	}
+	// protected String getIndexServiceURL() {
+	// return DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL, this.initProperties);
+	// }
 
 	/** EditPoliciesAwareService */
 	@Override
@@ -193,14 +177,14 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		String dataCastId = getDataCastId();
 		String dataTubeId = getDataTubeId();
 		String accessToken = getAccessToken();
-		String indexServiceUrl = getIndexServiceURL();
+		// String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
-				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
 				channelMetadatas = InfraClientsHelper.DATA_CAST.getChannelMetadatas(clientResolver, dataCastServiceUrl, accessToken, dataTubeId, ChannelMetadataComparator.ASC);
 
 			} else {
@@ -222,14 +206,14 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 
 		String dataCastId = getDataCastId();
 		String accessToken = getAccessToken();
-		String indexServiceUrl = getIndexServiceURL();
+		// String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
-				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
 				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(clientResolver, dataCastServiceUrl, accessToken, channelId);
 			} else {
 				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
@@ -251,14 +235,14 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 
 		String dataCastId = getDataCastId();
 		String accessToken = getAccessToken();
-		String indexServiceUrl = getIndexServiceURL();
+		// String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
-				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
 				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelName(clientResolver, dataCastServiceUrl, accessToken, name);
 			} else {
 				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");

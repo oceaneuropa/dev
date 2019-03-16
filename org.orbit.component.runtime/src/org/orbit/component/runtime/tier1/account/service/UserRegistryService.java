@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface UserRegistryService extends WebServiceAware {
+public interface UserRegistryService extends WebServiceAware, AccessTokenAware {
 
 	List<UserAccount> getUserAccounts() throws ServerException;
 

@@ -13,20 +13,6 @@ import org.origin.common.service.WebServiceAwareHelper;
 
 public class DefaultDataCastClientResolver implements DataCastClientResolver {
 
-	protected String indexServiceUrl;
-
-	/**
-	 * 
-	 * @param indexServiceUrl
-	 */
-	public DefaultDataCastClientResolver(String indexServiceUrl) {
-		if (indexServiceUrl == null || indexServiceUrl.isEmpty()) {
-			throw new IllegalArgumentException("indexServiceUrl is empty.");
-		}
-
-		this.indexServiceUrl = indexServiceUrl;
-	}
-
 	@Override
 	public DataCastClient resolve(String dataCastServiceUrl, String accessToken) {
 		if (dataCastServiceUrl == null || dataCastServiceUrl.isEmpty()) {
@@ -44,7 +30,7 @@ public class DefaultDataCastClientResolver implements DataCastClientResolver {
 		}
 
 		IndexItem dataCastIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);

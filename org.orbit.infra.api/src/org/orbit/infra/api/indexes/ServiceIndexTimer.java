@@ -1,17 +1,31 @@
 package org.orbit.infra.api.indexes;
 
-import java.io.IOException;
 import java.util.Map;
 
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.thread.IndexTimerImpl;
 
-public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexServiceClient, SERVICE, IndexItem> {
+public abstract class ServiceIndexTimer<RUNTIME_SERVICE> extends IndexTimerImpl<IndexServiceClient, RUNTIME_SERVICE, IndexItem> {
 
-	public static class MyIndexServiceProxy extends IndexServiceClientWrapper {
-		public MyIndexServiceProxy() {
+	public static class IndexItemUpdaterImpl implements IndexItemUpdater {
+		@Override
+		public void addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) {
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
+			}
+		}
+
+		@Override
+		public void setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) {
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
+			}
 		}
 
 		protected String getPlatformId() {
@@ -24,72 +38,46 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 			}
 			return platformId;
 		}
-
-		@Override
-		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
-			String platformId = getPlatformId();
-			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
-				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
-			}
-			return super.addIndexItem(indexProviderId, type, name, properties);
-		}
-
-		@Override
-		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
-			String platformId = getPlatformId();
-			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
-				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
-			}
-			return super.setProperties(indexProviderId, indexItemId, properties);
-		}
 	}
 
-	// automatically set platformId
-	protected IndexServiceClientWrapper indexProviderWrapper = new MyIndexServiceProxy();
+	protected IndexItemUpdater indexItemUpdater = new IndexItemUpdaterImpl();
+	protected IndexServiceClient indexService;
 
 	/**
 	 * 
 	 * @param indexProviderId
 	 * @param name
-	 * @param indexProvider
 	 * @param service
 	 */
-	public ServiceIndexTimer(String indexProviderId, String name, IndexServiceClient indexProvider, SERVICE service) {
-		super(indexProviderId, name, indexProvider, service);
+	public ServiceIndexTimer(String indexProviderId, String name, RUNTIME_SERVICE service) {
+		super(indexProviderId, name, service);
 	}
 
 	@Override
-	public synchronized IndexServiceClient getIndexProvider() {
-		if (this.indexProviderWrapper.get() != this.indexProvider) {
-			this.indexProviderWrapper.set(this.indexProvider);
+	public synchronized IndexServiceClient getIndexService() {
+		if (this.indexService != null) {
+			return this.indexService;
 		}
-		return this.indexProviderWrapper;
-	}
 
-	@Override
-	public synchronized void setIndexProvider(IndexServiceClient indexProvider) {
-		this.indexProvider = indexProvider;
-	}
-
-	@Override
-	protected synchronized void performIndexing() {
-		if (getIndexProvider() != null) {
-			try {
-				String time1 = String.valueOf(System.currentTimeMillis());
-				String time2 = getIndexProvider().echo(time1);
-				if (time1.equals(time2)) {
-					super.performIndexing();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		String accessToken = null;
+		RUNTIME_SERVICE service = getService();
+		if (service instanceof AccessTokenAware) {
+			accessToken = ((AccessTokenAware) service).getAccessToken();
 		}
+
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		if (indexService != null) {
+			indexService.addIndexItemUpdater(this.indexItemUpdater);
+		}
+		this.indexService = indexService;
+		return indexService;
 	}
 
 }
 
-// public static class MyIndexProviderWrapper extends IndexProviderClientWrapper {
-// public MyIndexProviderWrapper() {
+// public static class IndexServiceClientInterceptorImpl extends IndexServiceClientInterceptor {
+//
+// public IndexServiceClientInterceptorImpl() {
 // }
 //
 // protected String getPlatformId() {
@@ -106,8 +94,8 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 // @Override
 // public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
 // String platformId = getPlatformId();
-// if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
-// properties.put(PlatformConstants.PLATFORM_ID, platformId);
+// if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+// properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 // }
 // return super.addIndexItem(indexProviderId, type, name, properties);
 // }
@@ -115,9 +103,32 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 // @Override
 // public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
 // String platformId = getPlatformId();
-// if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
-// properties.put(PlatformConstants.PLATFORM_ID, platformId);
+// if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+// properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 // }
 // return super.setProperties(indexProviderId, indexItemId, properties);
+// }
+// }
+
+// automatically set platformId
+// protected IndexServiceClientInterceptor indexProviderWithInterceptor = new IndexServiceClientInterceptorImpl();
+
+// @Override
+// public synchronized void setIndexService(IndexServiceClient indexService) {
+// this.indexService = indexService;
+// }
+
+// @Override
+// protected synchronized void performIndexing() {
+// if (getIndexService() != null) {
+// try {
+// String time1 = String.valueOf(System.currentTimeMillis());
+// String time2 = getIndexService().echo(time1);
+// if (time1.equals(time2)) {
+// super.performIndexing();
+// }
+// } catch (Exception e) {
+// e.printStackTrace();
+// }
 // }
 // }

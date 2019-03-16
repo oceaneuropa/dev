@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
@@ -23,13 +22,13 @@ public class ProgramsProviderServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
+		// String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 
 		AppManifest[] appManifests = null;
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			appManifests = ComponentClientsUtil.AppStore.getApps(appStoreUrl, accessToken);
+			appManifests = ComponentClientsUtil.AppStore.getApps(accessToken);
 
 		} catch (ClientException e) {
 			e.printStackTrace();

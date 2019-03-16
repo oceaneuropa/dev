@@ -5,9 +5,10 @@ import java.util.Map;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface ConfigRegistryService extends WebServiceAware, ConnectionAware, EditPoliciesAware {
+public interface ConfigRegistryService extends WebServiceAware, ConnectionAware, EditPoliciesAware, AccessTokenAware {
 
 	ConfigRegistry[] getConfigRegistries() throws ServerException;
 

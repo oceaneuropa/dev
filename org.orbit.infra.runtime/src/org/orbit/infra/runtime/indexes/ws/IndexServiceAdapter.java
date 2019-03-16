@@ -91,7 +91,8 @@ public class IndexServiceAdapter {
 
 		// 2. start index timer
 		LOG.debug("start index timer");
-		this.serviceIndexTimer = new IndexServiceIndexTimer(service, service);
+		// this.serviceIndexTimer = new IndexServiceIndexTimer(service, service);
+		this.serviceIndexTimer = new IndexServiceIndexTimer(service);
 		this.serviceIndexTimer.start();
 	}
 

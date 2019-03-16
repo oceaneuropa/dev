@@ -41,7 +41,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -84,13 +84,13 @@ public class RuntimeChannelListServlet extends HttpServlet {
 					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
-				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
-				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
+				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
 				// Get DataCast service index item and check whether the service is online
 				boolean isDataCastOnline = false;
 				String dataCastServiceUrl = null;
-				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
@@ -104,7 +104,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 				}
 
 				// Get DataTube service index item and check whether the service is online
-				IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+				IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, dataTubeId);
 				if (dataTubeIndexItem != null) {
 					String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);

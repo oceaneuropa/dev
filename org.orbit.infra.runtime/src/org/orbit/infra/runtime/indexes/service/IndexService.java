@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface IndexService extends WebServiceAware {
+public interface IndexService extends WebServiceAware, AccessTokenAware {
 
 	public String getName();
 

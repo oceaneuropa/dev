@@ -8,9 +8,10 @@ import org.origin.common.model.AccountConfig;
 import org.origin.common.model.UniqueValueAware;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataCastService extends UniqueValueAware, WebServiceAware, ConnectionAware, EditPoliciesAware {
+public interface DataCastService extends UniqueValueAware, WebServiceAware, ConnectionAware, EditPoliciesAware, AccessTokenAware {
 
 	Map<Object, Object> getInitProperties();
 

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -14,7 +13,6 @@ import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class IndexServiceClientCommand implements Annotated, CommandActivator {
 	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.INDEX_SERVICE_NAME);
 		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.INDEX_SERVICE_HOST_URL);
 		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
@@ -80,21 +78,21 @@ public class IndexServiceClientCommand implements Annotated, CommandActivator {
 	}
 
 	protected IndexServiceClient getIndexService() throws ClientException {
-		String url = getIndexServiceURL();
-		LOG.debug("### ### ### ### url = " + url);
+		// String url = getIndexServiceURL();
+		// LOG.debug("### ### ### ### url = " + url);
 
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(url, null);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(null);
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
-			throw new IllegalStateException("IndexService is not available. url = " + url);
+			// throw new IllegalStateException("IndexService is not available. url = " + url);
 		}
 		return indexService;
 	}
 
-	protected String getIndexServiceURL() {
-		String url = (String) this.properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		return url;
-	}
+	// protected String getIndexServiceURL() {
+	// String url = (String) this.properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+	// return url;
+	// }
 
 	/**
 	 * <pre>

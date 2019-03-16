@@ -12,10 +12,8 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
@@ -42,9 +40,9 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexServiceClient getIndexProvider() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
-	}
+	// public IndexServiceClient getIndexProvider() {
+	// return InfraClients.getInstance().getIndexService(this.properties, true);
+	// }
 
 	public ConfigRegistryService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
@@ -104,7 +102,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer
-		IndexServiceClient indexProvider = getIndexProvider();
+		// IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new ConfigRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
@@ -114,7 +112,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<ConfigRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
 					this.indexTimer.start();
 				}

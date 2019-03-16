@@ -26,19 +26,23 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ConfigRegistryServiceIndexTimer(IndexServiceClient indexProvider, ConfigRegistryService service) {
-		super(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public ConfigRegistryServiceIndexTimer(ConfigRegistryService service) {
+		super(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, ConfigRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
+		ConfigRegistryService service = getService();
+
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.CONFIG_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, ConfigRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
+		ConfigRegistryService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -57,7 +61,9 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, ConfigRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+		ConfigRegistryService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -77,7 +83,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, ConfigRegistryService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

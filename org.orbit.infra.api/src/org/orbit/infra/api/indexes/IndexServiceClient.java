@@ -109,4 +109,22 @@ public interface IndexServiceClient extends ServiceClient {
 	 */
 	boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException;
 
+	/**
+	 * 
+	 * @return
+	 */
+	List<IndexItemUpdater> getIndexItemUpdaters();
+
+	/**
+	 * 
+	 * @param updater
+	 */
+	void addIndexItemUpdater(IndexItemUpdater updater);
+
+	/**
+	 * 
+	 * @param updater
+	 */
+	void removeIndexItemUpdater(IndexItemUpdater updater);
+
 }

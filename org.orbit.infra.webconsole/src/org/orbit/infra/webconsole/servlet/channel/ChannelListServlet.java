@@ -29,7 +29,7 @@ public class ChannelListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -52,7 +52,7 @@ public class ChannelListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 				if (dataCastIndexItem == null) {
 					message = MessageHelper.INSTANCE.add(message, "DataCast index item doesn't exist. dataCastId: '" + dataCastId + "'.");
 				}
@@ -68,7 +68,7 @@ public class ChannelListServlet extends HttpServlet {
 						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 						if (dataCastServiceUrl != null) {
 							try {
-								DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+								DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
 								dataCastClient = dataCastClientResolver.resolve(dataCastServiceUrl, accessToken);
 
 								if (dataCastClient == null) {
@@ -84,7 +84,7 @@ public class ChannelListServlet extends HttpServlet {
 					}
 				}
 
-				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

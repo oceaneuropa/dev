@@ -22,7 +22,6 @@ import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapter
 import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +69,7 @@ public class OrbitServices {
 	 */
 	public void start(final BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_INDEX_SERVICE_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		this.properties = properties;
 
 		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProviderClient>(IndexProviderClient.class) {

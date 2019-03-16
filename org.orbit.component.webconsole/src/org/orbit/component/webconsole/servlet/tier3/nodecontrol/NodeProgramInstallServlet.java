@@ -27,7 +27,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String message = "";
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -58,7 +58,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 
 				// Get platform client of the node
 				PlatformClient nodePlatformClient = null;
-				IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
 				}

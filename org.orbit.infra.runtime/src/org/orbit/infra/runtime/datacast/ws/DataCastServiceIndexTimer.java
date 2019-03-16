@@ -21,19 +21,23 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 	 * @param indexService
 	 * @param service
 	 */
-	public DataCastServiceIndexTimer(IndexServiceClient indexService, DataCastService service) {
-		super(InfraConstants.IDX__DATACAST__INDEXER_ID, "Index Timer [" + service.getName() + "]", indexService, service);
+	public DataCastServiceIndexTimer(DataCastService service) {
+		super(InfraConstants.IDX__DATACAST__INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexService, DataCastService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService) throws IOException {
+		DataCastService service = getService();
+
 		String name = service.getName();
 		return indexService.getIndexItem(getIndexProviderId(), InfraConstants.IDX__DATACAST__TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexService, DataCastService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService) throws IOException {
+		DataCastService service = getService();
+
 		String dataCastId = service.getDataCastId();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
@@ -52,7 +56,9 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexService, DataCastService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		DataCastService service = getService();
+
 		Integer indexItemId = indexItem.getIndexItemId();
 
 		String dataCastId = service.getDataCastId();
@@ -73,7 +79,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, DataCastService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

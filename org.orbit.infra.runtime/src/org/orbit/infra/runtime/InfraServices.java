@@ -48,8 +48,8 @@ public class InfraServices {
 	 */
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// PropertyUtil.loadProperty(bundleContext, properties, org.orbit.infra.api.InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
 
 		// Start service adapters

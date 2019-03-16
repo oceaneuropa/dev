@@ -3,14 +3,11 @@ package org.orbit.infra.api.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
-import org.orbit.infra.api.extensionregistry.ExtensionRegistryClientProxy;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.indexes.IndexServiceClientProxy;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.util.LifecycleAware;
@@ -90,56 +87,61 @@ public class InfraClients implements LifecycleAware {
 
 	/**
 	 * 
-	 * @param properties
-	 * @param useProxy
+	 * @param accessToken
 	 * @return
 	 */
-	public IndexServiceClient getIndexService(Map<?, ?> properties, boolean useProxy) {
-		String realm = (String) properties.get(WSClientConstants.REALM);
-		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(WSClientConstants.URL);
-		if (url == null) {
-			url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		}
+	public IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(WSClientConstants.REALM, null);
+		properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		properties.put(WSClientConstants.URL, indexServiceUrl);
 
-		Map<String, Object> theProperties = new HashMap<String, Object>();
-		theProperties.put(WSClientConstants.REALM, realm);
-		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-		theProperties.put(WSClientConstants.URL, url);
-
-		IndexServiceClient indexService = this.indexServiceConnector.getService(theProperties);
-		if (indexService == null && useProxy) {
-			indexService = new IndexServiceClientProxy(theProperties);
-		}
+		IndexServiceClient indexService = this.indexServiceConnector.getService(properties);
 		return indexService;
 	}
 
 	/**
 	 * 
-	 * @param properties
-	 * @param useProxy
+	 * @param extensionRegistryUrl
+	 * @param accessToken
 	 * @return
 	 */
-	public ExtensionRegistryClient getExtensionRegistry(Map<?, ?> properties, boolean useProxy) {
-		String realm = (String) properties.get(WSClientConstants.REALM);
-		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(WSClientConstants.URL);
-		if (url == null) {
-			url = (String) properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		}
+	public ExtensionRegistryClient getExtensionRegistryClient(String extensionRegistryUrl, String accessToken) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(WSClientConstants.REALM, null);
+		properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		properties.put(WSClientConstants.URL, extensionRegistryUrl);
 
-		Map<String, Object> theProperties = new HashMap<String, Object>();
-		theProperties.put(WSClientConstants.REALM, realm);
-		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-		theProperties.put(WSClientConstants.URL, url);
-
-		ExtensionRegistryClient extensionRegistry = this.extensionRegistryConnector.getService(theProperties);
-		if (extensionRegistry == null && useProxy) {
-			// throw new RuntimeException("ExtensionRegistryClient is not available.");
-			extensionRegistry = new ExtensionRegistryClientProxy(theProperties);
-		}
+		ExtensionRegistryClient extensionRegistry = this.extensionRegistryConnector.getService(properties);
 		return extensionRegistry;
 	}
+
+	// /**
+	// *
+	// * @param properties
+	// * @param useProxy
+	// * @return
+	// */
+	// public ExtensionRegistryClient getExtensionRegistry(Map<?, ?> properties, boolean useProxy) {
+	// String realm = (String) properties.get(WSClientConstants.REALM);
+	// String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+	// String url = (String) properties.get(WSClientConstants.URL);
+	// if (url == null) {
+	// url = (String) properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+	// }
+	//
+	// Map<String, Object> theProperties = new HashMap<String, Object>();
+	// theProperties.put(WSClientConstants.REALM, realm);
+	// theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+	// theProperties.put(WSClientConstants.URL, url);
+	//
+	// ExtensionRegistryClient extensionRegistry = this.extensionRegistryConnector.getService(theProperties);
+	// if (extensionRegistry == null && useProxy) {
+	// // throw new RuntimeException("ExtensionRegistryClient is not available.");
+	// extensionRegistry = new ExtensionRegistryClientProxy(theProperties);
+	// }
+	// return extensionRegistry;
+	// }
 
 	/**
 	 * 
@@ -148,29 +150,27 @@ public class InfraClients implements LifecycleAware {
 	 * @return
 	 */
 	public ConfigRegistryClient getConfigRegistryClient(String configRegistryUrl, String accessToken) {
-		ConfigRegistryClient configRegistryClient = null;
-		if (configRegistryUrl != null) {
-			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put(WSClientConstants.REALM, null);
-			properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-			properties.put(WSClientConstants.URL, configRegistryUrl);
-			configRegistryClient = getConfigRegistryClient(properties);
-		}
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(WSClientConstants.REALM, null);
+		properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		properties.put(WSClientConstants.URL, configRegistryUrl);
+
+		ConfigRegistryClient configRegistryClient = this.configRegistryConnector.getService(properties);
 		return configRegistryClient;
 	}
 
-	/**
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	public ConfigRegistryClient getConfigRegistryClient(Map<String, Object> properties) {
-		ConfigRegistryClient configRegistryClient = this.configRegistryConnector.getService(properties);
-		if (configRegistryClient == null) {
-			throw new RuntimeException("ConfigRegistryClient is not available.");
-		}
-		return configRegistryClient;
-	}
+	// /**
+	// *
+	// * @param properties
+	// * @return
+	// */
+	// public ConfigRegistryClient getConfigRegistryClient(Map<String, Object> properties) {
+	// ConfigRegistryClient configRegistryClient = this.configRegistryConnector.getService(properties);
+	// if (configRegistryClient == null) {
+	// throw new RuntimeException("ConfigRegistryClient is not available.");
+	// }
+	// return configRegistryClient;
+	// }
 
 	/**
 	 * 
@@ -208,6 +208,31 @@ public class InfraClients implements LifecycleAware {
 // if (this.indexProviderConnector != null) {
 // this.indexProviderConnector.stop(bundleContext);
 // this.indexProviderConnector = null;
+// }
+
+// /**
+// *
+// * @param properties
+// * @return
+// */
+// public IndexServiceClient getIndexService(Map<?, ?> properties) {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(WSClientConstants.URL);
+// if (url == null) {
+// url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// }
+//
+// Map<String, Object> theProperties = new HashMap<String, Object>();
+// theProperties.put(WSClientConstants.REALM, realm);
+// theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+// theProperties.put(WSClientConstants.URL, url);
+//
+// IndexServiceClient indexService = this.indexServiceConnector.getService(theProperties);
+// // if (indexService == null && useProxy) {
+// // indexService = new IndexServiceClientProxy(theProperties);
+// // }
+// return indexService;
 // }
 
 // /**

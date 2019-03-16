@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface ExtensionRegistryService extends WebServiceAware {
+public interface ExtensionRegistryService extends WebServiceAware, AccessTokenAware {
 
 	/**
 	 * 

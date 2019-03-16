@@ -50,18 +50,17 @@ public class OrbitClientHelper {
 
 	/**
 	 * 
-	 * @param indexServiceUrl
 	 * @param accessToken
 	 * @param platformId
 	 * @return
 	 * @throws IOException
 	 */
-	public NodeControlClient getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException {
+	public NodeControlClient getNodeControlClient(String accessToken, String platformId) throws IOException {
 		NodeControlClient nodeControlClient = null;
-		if (indexServiceUrl != null && platformId != null) {
+		if (platformId != null) {
 
 			IndexItem nodeControlIndexItem = null;
-			List<IndexItem> nodeControlIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
+			List<IndexItem> nodeControlIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
 			if (nodeControlIndexItems != null && !nodeControlIndexItems.isEmpty()) {
 				for (IndexItem currNodeControlIndexItem : nodeControlIndexItems) {
 					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(currNodeControlIndexItem);

@@ -5,6 +5,11 @@ import org.osgi.framework.BundleContext;
 public class OAuth2ServiceImpl implements OAuth2Service {
 
 	@Override
+	public String getAccessToken() {
+		return null;
+	}
+
+	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 
 	}

@@ -23,22 +23,25 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 
 	/**
 	 * 
-	 * @param indexProvider
 	 * @param service
 	 */
-	public UserRegistryServiceIndexTimer(IndexServiceClient indexProvider, UserRegistryService service) {
-		super(ComponentConstants.USER_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public UserRegistryServiceIndexTimer(UserRegistryService service) {
+		super(ComponentConstants.USER_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, UserRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService) throws IOException {
+		UserRegistryService service = getService();
+
 		String name = service.getName();
-		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name);
+		return indexService.getIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, UserRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService) throws IOException {
+		UserRegistryService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -53,11 +56,13 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name, props);
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, UserRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		UserRegistryService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -73,11 +78,11 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(getIndexProviderId(), indexItemId, props);
+		indexService.setProperties(getIndexProviderId(), indexItemId, props);
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, UserRegistryService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
@@ -85,9 +90,9 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	}
 
 	@Override
-	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
+		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

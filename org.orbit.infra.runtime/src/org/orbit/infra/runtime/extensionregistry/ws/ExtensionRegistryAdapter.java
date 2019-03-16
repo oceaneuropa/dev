@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
@@ -48,9 +46,9 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
-	public IndexServiceClient getIndexProvider() {
-		return InfraClients.getInstance().getIndexService(this.properties, true);
-	}
+	// public IndexServiceClient getIndexProvider() {
+	// return InfraClients.getInstance().getIndexService(this.properties, true);
+	// }
 
 	/**
 	 * 
@@ -108,7 +106,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 
 		// 2. start index timer
 		LOG.debug("start index timer");
-		IndexServiceClient indexProvider = getIndexProvider();
+		// IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new ExtensionRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
@@ -117,7 +115,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<ExtensionRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
 					this.indexTimer.start();
 				}

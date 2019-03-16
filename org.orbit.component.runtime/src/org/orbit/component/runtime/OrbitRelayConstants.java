@@ -6,7 +6,6 @@ public class OrbitRelayConstants {
 	// Global
 	// ----------------------------------------------------------------------------------------
 	public static String ORBIT_HOST_URL = "orbit.host.url";
-	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry

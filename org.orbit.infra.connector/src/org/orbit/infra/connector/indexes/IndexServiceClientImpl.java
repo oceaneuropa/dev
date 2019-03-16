@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemUpdater;
+import org.orbit.infra.api.indexes.IndexItemUpdaterSupport;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.util.ModelConverter;
 import org.orbit.infra.model.indexes.IndexItemDTO;
@@ -15,11 +17,11 @@ import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.service.InternalProxyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient, IndexServiceWSClient> implements IndexServiceClient, InternalProxyService {
+public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient, IndexServiceWSClient>
+		implements IndexServiceClient /* , InternalProxyService */ {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceClientImpl.class);
 
@@ -174,6 +176,8 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
 		IndexItem newIndexItem = null;
 		try {
+			this.indexItemUpdaterSupport.addIndexItem(indexProviderId, type, name, properties);
+
 			IndexItemDTO indexItemDTO = getWSClient().addIndexItem(indexProviderId, type, name, properties);
 			if (indexItemDTO != null) {
 				// Integer currIndexItemId = indexItemDTO.getIndexItemId();
@@ -215,6 +219,8 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	@Override
 	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
 		try {
+			this.indexItemUpdaterSupport.setProperties(indexProviderId, indexItemId, properties);
+
 			StatusDTO status = getWSClient().setProperties(indexProviderId, indexItemId, properties);
 			if (status != null && status.success()) {
 				return true;
@@ -262,6 +268,23 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	@Override
 	public void setProxy(boolean isProxy) {
 		this.isProxy = isProxy;
+	}
+
+	protected IndexItemUpdaterSupport indexItemUpdaterSupport = new IndexItemUpdaterSupport();
+
+	@Override
+	public List<IndexItemUpdater> getIndexItemUpdaters() {
+		return this.indexItemUpdaterSupport.getUpdaters();
+	}
+
+	@Override
+	public void addIndexItemUpdater(IndexItemUpdater updater) {
+		this.indexItemUpdaterSupport.addUpdater(updater);
+	}
+
+	@Override
+	public void removeIndexItemUpdater(IndexItemUpdater updater) {
+		this.indexItemUpdaterSupport.removeUpdater(updater);
 	}
 
 }

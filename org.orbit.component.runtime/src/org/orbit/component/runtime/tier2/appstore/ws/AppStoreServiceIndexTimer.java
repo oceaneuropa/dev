@@ -23,22 +23,25 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 
 	/**
 	 * 
-	 * @param indexProvider
 	 * @param service
 	 */
-	public AppStoreServiceIndexTimer(IndexServiceClient indexProvider, AppStoreService service) {
-		super(ComponentConstants.APP_STORE_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
+	public AppStoreServiceIndexTimer(AppStoreService service) {
+		super(ComponentConstants.APP_STORE_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexService, AppStoreService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService) throws IOException {
+		AppStoreService service = getService();
+
 		String name = service.getName();
 		return indexService.getIndexItem(getIndexProviderId(), ComponentConstants.APP_STORE_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexService, AppStoreService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService) throws IOException {
+		AppStoreService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -57,7 +60,9 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexService, AppStoreService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		AppStoreService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -77,7 +82,7 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, AppStoreService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

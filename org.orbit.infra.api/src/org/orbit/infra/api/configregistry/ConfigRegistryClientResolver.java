@@ -6,11 +6,10 @@ public interface ConfigRegistryClientResolver {
 
 	/**
 	 * 
-	 * @param dfsServiceUrl
 	 * @param accessToken
 	 * @return
 	 */
-	ConfigRegistryClient resolve(String configRegistryServiceUrl, String accessToken);
+	ConfigRegistryClient resolve(String accessToken);
 
 	/**
 	 * 

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.util.ComponentClientsUtil;
-import org.orbit.component.connector.Activator;
 import org.orbit.platform.sdk.downloader.Downloader;
 import org.origin.common.rest.client.ClientException;
 
@@ -17,8 +15,7 @@ public class AppStoreDownloader implements Downloader {
 
 	@Override
 	public boolean download(Map<String, Object> args, OutputStream... output) throws IOException {
-		String appStoreUrl = Activator.getInstance().getProperty(ComponentConstants.ORBIT_APP_STORE_URL);
-
+		// String appStoreUrl = Activator.getInstance().getProperty(ComponentConstants.ORBIT_APP_STORE_URL);
 		String accessToken = (String) args.get("access_token");
 		String appId = (String) args.get("appId");
 		String appVersion = (String) args.get("appVersion");
@@ -27,7 +24,7 @@ public class AppStoreDownloader implements Downloader {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 
-		AppStoreClient appStore = ComponentClientsUtil.AppStore.getAppStoreClient(appStoreUrl, accessToken);
+		AppStoreClient appStore = ComponentClientsUtil.AppStore.getAppStoreClient(accessToken);
 		if (appStore != null) {
 			for (OutputStream currOutput : output) {
 				try {

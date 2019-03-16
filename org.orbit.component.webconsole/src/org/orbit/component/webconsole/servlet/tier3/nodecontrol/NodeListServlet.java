@@ -18,7 +18,6 @@ import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
@@ -39,7 +38,7 @@ public class NodeListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -76,12 +75,12 @@ public class NodeListServlet extends HttpServlet {
 				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
-				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
+				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
 				nodeInfos = ComponentClientsUtil.NodeControl.getNodes(nodeControlClientResolver, accessToken, platformId);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					nodeIdToIndexItemMap = InfraClientsHelper.INDEX_SERVICE.getPlatformIdToIndexItem(indexServiceUrl, accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
+					nodeIdToIndexItemMap = InfraClientsHelper.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();

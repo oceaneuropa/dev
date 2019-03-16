@@ -29,16 +29,16 @@ public class PublicWebApplication extends PlatformWebApplication {
 	@Override
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
-				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
-				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				// InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
 				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
 				ComponentConstants.ORBIT_AUTH_URL, //
-				ComponentConstants.ORBIT_REGISTRY_URL, //
-				ComponentConstants.ORBIT_APP_STORE_URL, //
+				// ComponentConstants.ORBIT_REGISTRY_URL, //
+				// ComponentConstants.ORBIT_APP_STORE_URL, //
 				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
 				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
 				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //

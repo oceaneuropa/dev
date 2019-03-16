@@ -22,19 +22,23 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 	 * @param indexService
 	 * @param service
 	 */
-	public AuthServiceIndexTimer(IndexServiceClient indexService, AuthService service) {
-		super(ComponentConstants.AUTH_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexService, service);
+	public AuthServiceIndexTimer(AuthService service) {
+		super(ComponentConstants.AUTH_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
-	public IndexItem getIndex(IndexServiceClient indexService, AuthService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService) throws IOException {
+		AuthService service = getService();
+
 		String name = service.getName();
 		return indexService.getIndexItem(getIndexProviderId(), ComponentConstants.AUTH_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexService, AuthService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService) throws IOException {
+		AuthService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -53,7 +57,9 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexService, AuthService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		AuthService service = getService();
+
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -74,7 +80,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 	}
 
 	@Override
-	public void cleanupIndex(IndexServiceClient indexService, AuthService service, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = indexItem.getProperties();
 		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);

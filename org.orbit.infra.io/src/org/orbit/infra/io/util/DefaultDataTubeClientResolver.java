@@ -16,20 +16,6 @@ import org.origin.common.service.WebServiceAwareHelper;
 
 public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 
-	protected String indexServiceUrl;
-
-	/**
-	 * 
-	 * @param indexServiceUrl
-	 */
-	public DefaultDataTubeClientResolver(String indexServiceUrl) {
-		if (indexServiceUrl == null || indexServiceUrl.isEmpty()) {
-			throw new IllegalArgumentException("indexServiceUrl is empty.");
-		}
-
-		this.indexServiceUrl = indexServiceUrl;
-	}
-
 	@Override
 	public DataTubeClient resolve(String dataTubeServiceUrl, String accessToken) {
 		if (dataTubeServiceUrl == null || dataTubeServiceUrl.isEmpty()) {
@@ -50,7 +36,7 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 		}
 
 		IndexItem dataTubeIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);
@@ -79,7 +65,7 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 		List<DataTubeClient> dataTubeClients = new ArrayList<DataTubeClient>();
 
 		List<IndexItem> dataTubeIndexItems = new ArrayList<IndexItem>();
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);

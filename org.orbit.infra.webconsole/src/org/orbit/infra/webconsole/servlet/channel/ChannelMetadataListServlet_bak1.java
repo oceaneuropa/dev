@@ -47,7 +47,7 @@ public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = null;
@@ -84,10 +84,10 @@ public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 				}
 
 				// Get DataCast service index item and check whether the service is online
-				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
-				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
+				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
+				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
-				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
+				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(accessToken);
 				IndexItem dataCastIndexItem = dataCastIndexItemMap.get(dataCastId);
 
 				if (dataCastIndexItem != null) {
@@ -102,7 +102,7 @@ public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 							Map<String, DataTubeServiceMetadata> dataTubeServiceMetadataMap = new HashMap<String, DataTubeServiceMetadata>();
 							Map<String, Map<String, RuntimeChannel>> dataTubeRuntimeChannelsMap = new HashMap<String, Map<String, RuntimeChannel>>();
 
-							Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+							Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(accessToken, dataCastId);
 							for (Iterator<String> dataTubeItor = dataTubeIndexItemMap.keySet().iterator(); dataTubeItor.hasNext();) {
 								String dataTubeId = dataTubeItor.next();
 
