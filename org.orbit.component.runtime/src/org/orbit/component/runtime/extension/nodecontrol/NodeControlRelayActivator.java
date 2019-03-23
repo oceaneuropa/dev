@@ -10,7 +10,7 @@ package org.orbit.component.runtime.extension.nodecontrol;
 import java.util.Map;
 
 import org.orbit.component.runtime.OrbitRelays;
-import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcessContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.server.WSRelayApplication;
@@ -23,7 +23,7 @@ public class NodeControlRelayActivator implements ServiceActivator {
 	public static NodeControlRelayActivator INSTANCE = new NodeControlRelayActivator();
 
 	@Override
-	public void start(IPlatformContext context, IProcess process) {
+	public void start(IProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -36,7 +36,7 @@ public class NodeControlRelayActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IPlatformContext context, IProcess process) {
+	public void stop(IProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop relay

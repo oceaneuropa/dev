@@ -158,6 +158,16 @@ public class ConfigElementImpl implements ConfigElement {
 	}
 
 	@Override
+	public Object getAttribute(String attrName) {
+		Object attrValue = null;
+		if (attrName != null && this.attributes != null) {
+			attrValue = this.attributes.get(attrName);
+		}
+		return attrValue;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
 	public <T> T getAttribute(String attrName, Class<T> attrValueClass) {
 		T attrValue = null;
 		if (attrName != null && attrValueClass != null && this.attributes != null) {

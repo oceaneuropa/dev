@@ -46,6 +46,8 @@ public interface IConfigRegistry {
 	// -----------------------------------------------------------------------------------
 	IConfigElement[] listRootConfigElements() throws IOException;
 
+	IConfigElement getRootConfigElement(String name) throws IOException;
+
 	IConfigElement[] listConfigElements(String parentElementId) throws IOException;
 
 	IConfigElement[] listConfigElements(Path parentPath) throws IOException;
@@ -67,7 +69,7 @@ public interface IConfigRegistry {
 	IConfigElement createConfigElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	IConfigElement createConfigElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
-	
+
 	IConfigElement createRootConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	boolean updateConfigElementName(String elementId, String newName) throws IOException;

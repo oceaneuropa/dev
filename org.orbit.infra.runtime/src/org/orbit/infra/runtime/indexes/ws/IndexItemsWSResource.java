@@ -166,9 +166,19 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			System.out.println(propertiesString);
 			Printer.pl(properties);
 
-			IndexItem newIndexItem = indexService.addIndexItem(indexProviderId, type, name, properties);
-			if (newIndexItem != null) {
-				newIndexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(newIndexItem);
+			IndexItem existingIndexItem = indexService.getIndexItem(indexProviderId, type, name);
+			if (existingIndexItem != null) {
+				Integer indexItemId = existingIndexItem.getIndexItemId();
+				indexService.setProperties(indexProviderId, indexItemId, properties);
+
+				existingIndexItem = indexService.getIndexItem(indexProviderId, indexItemId);
+				newIndexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(existingIndexItem);
+
+			} else {
+				IndexItem newIndexItem = indexService.addIndexItem(indexProviderId, type, name, properties);
+				if (newIndexItem != null) {
+					newIndexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(newIndexItem);
+				}
 			}
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

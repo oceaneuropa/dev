@@ -17,19 +17,18 @@ import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
-import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.api.ExtensionInfo;
 import org.orbit.platform.api.PlatformClientResolver;
-import org.orbit.platform.api.ProgramManifest;
 import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeProgramListServlet extends HttpServlet {
+public class NodeExtensionListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 2284649451336905223L;
+	private static final long serialVersionUID = -7911590298114595244L;
 
-	private static final ProgramManifest[] EMPTY_PROGRAMS = new ProgramManifest[0];
+	private static final ExtensionInfo[] EMPTY_EXTENSIONS = new ExtensionInfo[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +36,6 @@ public class NodeProgramListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -68,7 +66,7 @@ public class NodeProgramListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
-		ProgramManifest[] programs = null;
+		ExtensionInfo[] extensions = null;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
@@ -81,7 +79,7 @@ public class NodeProgramListServlet extends HttpServlet {
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				programs = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				extensions = PlatformClientsUtil.INSTANCE.getExtensions(platformClientResolver, parentPlatformId, nodeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -91,8 +89,8 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeInfo == null) {
 			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
 		}
-		if (programs == null) {
-			programs = EMPTY_PROGRAMS;
+		if (extensions == null) {
+			extensions = EMPTY_EXTENSIONS;
 		}
 
 		// ---------------------------------------------------------------
@@ -110,9 +108,11 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}
-		request.setAttribute("programs", programs);
+		request.setAttribute("extensions", extensions);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_programs_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_extensions_list.jsp").forward(request, response);
 	}
 
 }
+
+// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);

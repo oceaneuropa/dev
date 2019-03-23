@@ -13,11 +13,14 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.launch.LaunchActivator;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.LaunchType;
+import org.origin.common.launch.util.LaunchArgumentsHelper;
 import org.origin.common.resources.IFile;
 import org.origin.common.resources.IFolder;
 import org.origin.common.resources.node.INode;
+import org.origin.common.resources.util.WorkspaceHelper;
 
 public class LaunchServiceHelper {
 
@@ -45,7 +48,15 @@ public class LaunchServiceHelper {
 		//
 		// OSGI_JAR="org.eclipse.osgi_3.10.101.v20150820-1432.jar"
 		// java -jar ${ROOT_DIR}/plugins/${OSGI_JAR} -configuration ${NODE_DIR}/configuration -console
+		// java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6000 -jar ...
 		// -----------------------------------------------------------------------------------------------------------------------------------------
+		boolean enableRemoteDebug = false;
+		String xdebugValue = null;
+		Map<String, String> configIniPropertiesFromNode = WorkspaceHelper.INSTANCE.getNodeProperties(node, LaunchConfig.PROP__CONFIG_INI);
+		if (LaunchArgumentsHelper.INSTANCE.isXDebugEnabled(configIniPropertiesFromNode)) {
+			xdebugValue = LaunchArgumentsHelper.INSTANCE.getXDebugValue(configIniPropertiesFromNode);
+			enableRemoteDebug = true;
+		}
 
 		StringBuilder content = new StringBuilder();
 		content.append("BIN_DIR=\"$(cd \"$(dirname \"$0\")\"; pwd -P)\"").append("\n");
@@ -53,7 +64,18 @@ public class LaunchServiceHelper {
 		content.append("NODESPACES_DIR=\"$(dirname \"$NODE_DIR\")\"").append("\n");
 		content.append("ROOT_DIR=\"$(dirname \"$NODESPACES_DIR\")\"").append("\n");
 		content.append("OSGI_JAR=\"org.eclipse.osgi_3.10.101.v20150820-1432.jar\"").append("\n");
-		content.append("java -jar ${ROOT_DIR}/plugins/${OSGI_JAR} -configuration ${NODE_DIR}/configuration -console").append("\n");
+		content.append("java");
+		if (enableRemoteDebug) {
+			content.append(" " + LaunchConfig.XDEBUG + " " + xdebugValue);
+		}
+
+		// remove -console from sh file.
+		// telnet support can be enabled by adding the following in config.ini file
+		// ----------------------------------------
+		// osgi.console.enable.builtin=false
+		// osgi.console=<port>
+		// ----------------------------------------
+		content.append(" -jar ${ROOT_DIR}/plugins/${OSGI_JAR} -configuration ${NODE_DIR}/configuration").append("\n");
 
 		byte[] bytes = content.toString().getBytes();
 
@@ -89,6 +111,8 @@ public class LaunchServiceHelper {
 	 * Create {node_path}/configuration/config.ini file.
 	 * 
 	 * @param node
+	 * @param properties
+	 *            Common properties from parent platform for the child node.
 	 * @return
 	 * @throws IOException
 	 */

@@ -35,6 +35,8 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 
 	Map<String, Object> getAttributes();
 
+	Object getAttribute(String attrName);
+
 	<T> T getAttribute(String attrName, Class<T> attrValueClass);
 
 	boolean isEnabled();
@@ -56,6 +58,8 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 	IConfigElement[] memberConfigElements() throws IOException;
 
 	boolean memberConfigElementExists(String name) throws IOException;
+
+	IConfigElement getMemberConfigElement(String name) throws IOException;
 
 	IConfigElement createMemberConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 

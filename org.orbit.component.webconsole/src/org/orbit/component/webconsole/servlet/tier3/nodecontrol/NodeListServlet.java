@@ -1,6 +1,9 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -14,6 +17,7 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.util.Comparators;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
@@ -66,6 +70,7 @@ public class NodeListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo[] nodeInfos = null;
+		NodeInfo[] nodeInfos2 = null;
 		Map<String, IndexItem> nodeIdToIndexItemMap = null;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty()) {
@@ -82,13 +87,15 @@ public class NodeListServlet extends HttpServlet {
 				if (nodeInfos != null) {
 					nodeIdToIndexItemMap = InfraClientsHelper.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
+					List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();
+					List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
+
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
 						boolean isOnline = false;
 						String runtimeState = "";
 
 						IndexItem indexItem = nodeIdToIndexItemMap.get(nodeId);
-
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_RUNTIME_STATE);
@@ -111,9 +118,25 @@ public class NodeListServlet extends HttpServlet {
 								}
 							}
 						}
+
+						if (isOnline) {
+							onlineNodes.add(nodeInfo);
+						} else {
+							offlineNodes.add(nodeInfo);
+						}
+
 						nodeInfo.getRuntimeStatus().setOnline(isOnline);
 						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
 					}
+
+					// sort onlineNodes and offlineNodes
+					Collections.sort(onlineNodes, Comparators.NodeInfoIdComparator_ASC);
+					Collections.sort(offlineNodes, Comparators.NodeInfoIdComparator_ASC);
+
+					List<NodeInfo> allNodes = new ArrayList<NodeInfo>();
+					allNodes.addAll(onlineNodes);
+					allNodes.addAll(offlineNodes);
+					nodeInfos2 = allNodes.toArray(new NodeInfo[allNodes.size()]);
 				}
 
 			} catch (Exception e) {
@@ -135,7 +158,7 @@ public class NodeListServlet extends HttpServlet {
 			request.setAttribute("platformConfig", platformConfig);
 		}
 		if (nodeInfos != null) {
-			request.setAttribute("nodeInfos", nodeInfos);
+			request.setAttribute("nodeInfos", nodeInfos2);
 		}
 		if (nodeIdToIndexItemMap != null) {
 			request.setAttribute("nodeIdToIndexItemMap", nodeIdToIndexItemMap);

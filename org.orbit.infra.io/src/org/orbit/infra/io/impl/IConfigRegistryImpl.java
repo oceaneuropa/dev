@@ -208,6 +208,26 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
+	public IConfigElement getRootConfigElement(String name) throws IOException {
+		String configRegistryId = getId();
+
+		IConfigElement cfgEle = null;
+		try {
+			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
+			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
+			String accessToken = this.cfg.getAccessToken();
+
+			ConfigElement configElement = InfraClientsHelper.CONFIG_REGISTRY.getConfigElement(clientResolver, accessToken, configRegistryId, null, name);
+			if (configElement != null) {
+				cfgEle = toConfigElement(configElement);
+			}
+		} catch (ClientException e) {
+			handle(e);
+		}
+		return cfgEle;
+	}
+
+	@Override
 	public IConfigElement[] listConfigElements(String parentElementId) throws IOException {
 		String configRegistryId = getId();
 

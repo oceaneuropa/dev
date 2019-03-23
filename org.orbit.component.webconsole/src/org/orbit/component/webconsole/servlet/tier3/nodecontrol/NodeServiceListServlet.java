@@ -17,19 +17,18 @@ import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.platform.api.PlatformClientResolver;
-import org.orbit.platform.api.ProgramManifest;
+import org.orbit.platform.api.ServiceInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeProgramListServlet extends HttpServlet {
+public class NodeServiceListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 2284649451336905223L;
+	private static final long serialVersionUID = -6412957916398327923L;
 
-	private static final ProgramManifest[] EMPTY_PROGRAMS = new ProgramManifest[0];
+	private static final ServiceInfo[] EMPTY_SERVICES = new ServiceInfo[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -68,7 +67,7 @@ public class NodeProgramListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
-		ProgramManifest[] programs = null;
+		ServiceInfo[] services = null;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
@@ -81,7 +80,7 @@ public class NodeProgramListServlet extends HttpServlet {
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				programs = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				services = PlatformClientsUtil.INSTANCE.getServices(platformClientResolver, parentPlatformId, nodeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -91,8 +90,8 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeInfo == null) {
 			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
 		}
-		if (programs == null) {
-			programs = EMPTY_PROGRAMS;
+		if (services == null) {
+			services = EMPTY_SERVICES;
 		}
 
 		// ---------------------------------------------------------------
@@ -110,9 +109,9 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}
-		request.setAttribute("programs", programs);
+		request.setAttribute("services", services);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_programs_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_services_list.jsp").forward(request, response);
 	}
 
 }

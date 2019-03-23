@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,14 +21,17 @@ import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
+import org.orbit.platform.sdk.common.PropertiesRegulator;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
+import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.launcher.JavaLauncher;
 import org.origin.common.launch.launcher.ScriptLauncher;
+import org.origin.common.launch.util.LaunchArgumentsHelper;
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.ResourcesFactory;
 import org.origin.common.resources.node.INode;
@@ -397,7 +401,18 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			// 1. Create {node_path}/bin/start_node.sh file and {node_path}/configuration/config.ini file
 			// (Ideally should use resource builder to generate both when .node file is changed. Then only need to trigger a build here.)
 			LaunchServiceHelper.INSTANCE.generateStartNodeScript(node);
-			LaunchServiceHelper.INSTANCE.generateConfigIni(node, this.properties);
+
+			// Put necessary properties, from the current platform, in config.ini file, for the child node to re-use.
+			Map<Object, Object> configIniProperties = new HashMap<Object, Object>();
+			configIniProperties.putAll(this.properties);
+
+			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+			List<PropertiesRegulator> regulators = ExtensionUtil.PROPERTIES.getPropertiesRegulators(PropertiesRegulator.TYPE__NODE__CONFIG_INI);
+			for (PropertiesRegulator regulator : regulators) {
+				regulator.update(platform, node, configIniProperties);
+			}
+
+			LaunchServiceHelper.INSTANCE.generateConfigIni(node, configIniProperties);
 
 			// 2. Create launch configuration
 			String launchTypeId = LaunchServiceHelper.INSTANCE.getLaunchTypeId();
@@ -416,21 +431,34 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			} else {
 				launchConfig.setAttribute(LaunchConfig.LAUNCHER_ID, JavaLauncher.ID);
 
-				Map<String, String> vmArgumentsMap = new HashMap<String, String>();
+				Map<String, String> vmArgumentsMap = new LinkedHashMap<String, String>();
+
+				// -Xdebug
+				Map<String, String> configIniPropertiesFromNode = WorkspaceHelper.INSTANCE.getNodeProperties(node, LaunchConfig.PROP__CONFIG_INI);
+				if (LaunchArgumentsHelper.INSTANCE.isXDebugEnabled(configIniPropertiesFromNode)) {
+					String xdebugValue = LaunchArgumentsHelper.INSTANCE.getXDebugValue(configIniPropertiesFromNode);
+					vmArgumentsMap.put(LaunchConfig.XDEBUG, xdebugValue);
+				}
+
+				// -jar
 				String jarFileLocation = homeLocation + "/plugins/org.eclipse.osgi_3.10.101.v20150820-1432.jar";
 				vmArgumentsMap.put("-jar", jarFileLocation);
 				launchConfig.setAttribute(LaunchConstants.VM_ARGUMENTS_MAP, vmArgumentsMap);
 
+				// -configuration
 				Map<String, String> systemArgumentsMap = new HashMap<String, String>();
 				String nodeConfigurationLocation = nodeLocation + "/configuration";
 				systemArgumentsMap.put("-configuration", nodeConfigurationLocation);
 				launchConfig.setAttribute(LaunchConstants.SYSTEM_ARGUMENTS_MAP, systemArgumentsMap);
 
 				List<String> programArgs = new ArrayList<String>();
-				programArgs.add("-console");
+				// -console
+				// programArgs.add("-console");
+				// -clean
 				if (doClean) {
 					programArgs.add("-clean");
 				}
+
 				launchConfig.setAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, programArgs);
 			}
 			launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
@@ -484,9 +512,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			boolean isDirectShutdownSucceed = false;
 			PlatformClient nodePlatformClient = null;
 
-			IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
-			if (currPlatform != null) {
-				String platformId = currPlatform.getId();
+			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+			if (platform != null) {
+				String platformId = platform.getId();
 				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
@@ -577,12 +605,16 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
+				if (isOnline) {
+					return false;
+				}
+
 				boolean isStopped = false;
 				String runtimeState = (String) nodeIndexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_RUNTIME_STATE);
 				if ("stopped".equalsIgnoreCase(runtimeState)) {
 					isStopped = true;
 				}
-				if (!isOnline || isStopped) {
+				if (isStopped) {
 					return true;
 				}
 			}

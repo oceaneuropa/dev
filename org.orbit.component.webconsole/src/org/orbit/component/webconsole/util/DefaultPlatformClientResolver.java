@@ -20,6 +20,11 @@ public class DefaultPlatformClientResolver implements PlatformClientResolver {
 	}
 
 	@Override
+	public PlatformClient resolve(String parentPlatformId, String platformId) throws IOException {
+		return resolve(parentPlatformId, platformId, (String[]) null);
+	}
+
+	@Override
 	public PlatformClient resolve(String parentPlatformId, String platformId, String... platformTypes) throws IOException {
 		PlatformClient platformClient = null;
 

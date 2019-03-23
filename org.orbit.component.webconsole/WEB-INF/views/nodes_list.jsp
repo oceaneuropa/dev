@@ -70,19 +70,18 @@
 					<th class="th1" width="20">
 						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
 					</th>
-					<th class="th1" width="120">JVM</th>
-					<th class="th1" width="80">Id</th>
-					<th class="th1" width="80">Name</th>
-					<th class="th1" width="80">Platform URL</th>
-					<th class="th1" width="80">Platform Home</th>
-					<th class="th1" width="40">Status</th>
-					<th class="th1" width="180">Actions</th>
+					<th class="th1" width="100">JVM</th>
+					<th class="th1" width="100">Id</th>
+					<th class="th1" width="100">Name</th>
+					<th class="th1" width="100">Status</th>
+					<th class="th1" width="100">Metadata</th>
+					<th class="th1" width="200">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="8">(n/a)</td>
+					<td colspan="7">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -99,33 +98,21 @@
 							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
 							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 
-							String hostURL = null;
-							String currContextRoot = null;
-							String nodePlatformId = null;
-							String platformHome = null;
-							IndexItem indexItem = nodeIdToIndexItemMap.get(id);
-							if (indexItem != null) {
-								hostURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
-								currContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
-								nodePlatformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
-								platformHome = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_HOME);
-							}
-
-							String currUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, currContextRoot);
-
-							id = StringUtil.get(id);
-							name = StringUtil.get(name);
-							hostURL = StringUtil.get(hostURL, "");
-							currContextRoot = StringUtil.get(currContextRoot, "");
-							platformHome = StringUtil.get(platformHome, "");
+							String metadataStr = "";
 							
 							String jvmName = null;
 							String pid = null;
 							if (nodeInfo.getRuntimeProperties().containsKey("jvm_name")) {
-								jvmName = (String) nodeInfo.getRuntimeProperties().get("jvm_name");	
+								jvmName = (String) nodeInfo.getRuntimeProperties().get("jvm_name");
+								metadataStr += "jvm_name = " + jvmName;
 							}
 							if (nodeInfo.getRuntimeProperties().containsKey("pid")) {
-								pid = (String) nodeInfo.getRuntimeProperties().get("pid");	
+								pid = (String) nodeInfo.getRuntimeProperties().get("pid");
+
+								if (!metadataStr.isEmpty()) {
+									metadataStr += "<br/>";
+								}
+								metadataStr += "pid = " + pid;
 							}
 							if (jvmName == null) {
 								jvmName = "";
@@ -133,19 +120,57 @@
 							if (pid == null) {
 								pid = "";
 							}
+
+							String hostURL = null;
+							String currContextRoot = null;
+							String nodePlatformId = null;
+							String currUrl = null;
+							String platformHome = null;
+							IndexItem indexItem = nodeIdToIndexItemMap.get(id);
+
+							if (indexItem != null) {
+								hostURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+								currContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+								nodePlatformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
+								currUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, currContextRoot);
+								platformHome = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_HOME);
+
+								if (!metadataStr.isEmpty()) {
+									metadataStr += "<br/>";
+								}
+								metadataStr += InfraConstants.SERVICE__HOST_URL + " = " + hostURL + "<br/>";
+								metadataStr += InfraConstants.SERVICE__CONTEXT_ROOT + " = " + currContextRoot + "<br/>";
+								metadataStr += PlatformConstants.IDX_PROP__PLATFORM_ID + " = " + nodePlatformId + "<br/>";
+								if (currUrl != null) {
+									metadataStr += "Platform URL = " + currUrl + "<br/>";	
+								}
+								if (platformHome != null) {
+									metadataStr += PlatformConstants.IDX_PROP__PLATFORM_HOME + " = " + platformHome + "<br/>";	
+								}
+							}
+
+							id = StringUtil.get(id);
+							name = StringUtil.get(name);
+							hostURL = StringUtil.get(hostURL, "");
+							currContextRoot = StringUtil.get(currContextRoot, "");
+							platformHome = StringUtil.get(platformHome, "");
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
 					<td class="td1"><%=jvmName%></td>
 					<td class="td1"><%=id%></td>
 					<td class="td1"><%=name%></td>
-					<td class="td2"><%=currUrl%></td>
-					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
+					<td class="td2">
+						<div class="tooltip">metadatas...
+  							<span class="tooltiptext"><%=metadataStr%></span>
+						</div>
+					</td>
 					<td class="td1">
 						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Edit</a>
 						<a class="action01" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a>
 						<a class="action01" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a>
+						<a class="action01" href="<%=contextRoot%>/domain/nodeservices?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Services</a>
 						<!-- 
 						 | <a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 

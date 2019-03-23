@@ -91,7 +91,7 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function", new String[] { //
 				// show available services
-				"lservices", //
+				"old_lservices", //
 		});
 
 		OSGiServiceUtil.register(bundleContext, ServicesClientCommand.class.getName(), this, props);
@@ -146,7 +146,7 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 	// lservices
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List services")
-	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "") String service) throws ClientException {
+	public void old_lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "") String service) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
 
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {

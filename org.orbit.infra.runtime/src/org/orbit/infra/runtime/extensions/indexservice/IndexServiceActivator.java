@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
-import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcessContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
@@ -21,7 +21,7 @@ public class IndexServiceActivator implements ServiceActivator {
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceActivator.class);
 
 	@Override
-	public void start(IPlatformContext context, IProcess process) throws Exception {
+	public void start(IProcessContext context, IProcess process) throws Exception {
 		LOG.debug("start()");
 
 		BundleContext bundleContext = context.getBundleContext();
@@ -35,7 +35,7 @@ public class IndexServiceActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IPlatformContext context, IProcess process) throws Exception {
+	public void stop(IProcessContext context, IProcess process) throws Exception {
 		LOG.debug("stop()");
 
 		BundleContext bundleContext = context.getBundleContext();

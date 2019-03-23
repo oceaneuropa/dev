@@ -32,6 +32,7 @@ import org.orbit.component.webconsole.servlet.tier3.domain.PlatformPropertyListS
 import org.orbit.component.webconsole.servlet.tier3.domain.PlatformUpdateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeCreateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeExtensionListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramActionServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramInstallServlet;
@@ -41,6 +42,7 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyAddS
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServiceListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeUpdateServlet;
@@ -165,6 +167,12 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/domain/nodeprograminstall", new NodeProgramInstallServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprogramuninstall", new NodeProgramUninstallServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprogramaction", new NodeProgramActionServlet(), dicts));
+
+		// Node extensions
+		addServlet(new ServletMetadataImpl("/domain/nodeextensions", new NodeExtensionListServlet(), dicts));
+
+		// Node services
+		addServlet(new ServletMetadataImpl("/domain/nodeservices", new NodeServiceListServlet(), dicts));
 
 		// AppStore
 		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));

@@ -37,7 +37,7 @@ public class OrbitClientHelper {
 			}
 
 			if (platformUrl != null) {
-				platformClient = PlatformClientsUtil.Platform.getPlatformClient(accessToken, platformUrl);
+				platformClient = PlatformClientsUtil.INSTANCE.getPlatformClient(accessToken, platformUrl);
 			}
 		}
 		return platformClient;

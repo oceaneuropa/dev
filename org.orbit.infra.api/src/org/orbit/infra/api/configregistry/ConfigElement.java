@@ -30,6 +30,8 @@ public interface ConfigElement {
 
 	Map<String, Object> getAttributes();
 
+	Object getAttribute(String attrName);
+
 	<T> T getAttribute(String attrName, Class<T> attrValueClass);
 
 	void setAttributes(Map<String, Object> attributes);

@@ -75,7 +75,7 @@ import org.orbit.platform.sdk.ranking.RankingProvider;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
-import org.origin.common.extensions.Parameter;
+import org.origin.common.extensions.ParameterDefinition;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
@@ -120,13 +120,13 @@ public class Extensions extends ProgramExtensions {
 		// Index Service
 		Extension extension11 = new Extension(extensionTypeId, IndexServiceActivator.ID, "Index Service Activator", "Index Service activator description");
 		InterfaceDescription desc11 = new InterfaceDescription(ServiceActivator.class, IndexServiceActivator.class);
-		desc11.setParameters( //
-				new Parameter("component.index_service.name", "instance name"), //
-				new Parameter("component.index_service.context_root", "web service context root"), //
-				new Parameter("component.index_service.jdbc.driver", "JDBC driver"), //
-				new Parameter("component.index_service.jdbc.url", "JDBC URL"), //
-				new Parameter("component.index_service.jdbc.username", "JDBC username"), //
-				new Parameter("component.index_service.jdbc.password", "JDBC password") //
+		desc11.setParameterDefinitions( //
+				new ParameterDefinition("component.index_service.name", "instance name", true, null), //
+				new ParameterDefinition("component.index_service.context_root", "web service context root", true, null), //
+				new ParameterDefinition("component.index_service.jdbc.driver", "JDBC driver", true, null), //
+				new ParameterDefinition("component.index_service.jdbc.url", "JDBC URL", true, null), //
+				new ParameterDefinition("component.index_service.jdbc.username", "JDBC username", true, null), //
+				new ParameterDefinition("component.index_service.jdbc.password", "JDBC password", true, null) //
 		);
 		desc11.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(IndexServicePropertyTester.ID));
 		extension11.addInterface(desc11);
@@ -135,13 +135,13 @@ public class Extensions extends ProgramExtensions {
 		// ExtensionRegistry Service
 		Extension extension12 = new Extension(extensionTypeId, ExtensionRegistryActivator.ID, "Extension Registry Service Activator", "Extension Registry Service activator description");
 		InterfaceDescription desc12 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryActivator.class);
-		desc12.setParameters( //
-				new Parameter("component.extension_registry.name", "instance name"), //
-				new Parameter("component.extension_registry.context_root", "web service context root"), //
-				new Parameter("component.extension_registry.jdbc.driver", "JDBC driver"), //
-				new Parameter("component.extension_registry.jdbc.url", "JDBC URL"), //
-				new Parameter("component.extension_registry.jdbc.username", "JDBC username"), //
-				new Parameter("component.extension_registry.jdbc.password", "JDBC password") //
+		desc12.setParameterDefinitions( //
+				new ParameterDefinition("component.extension_registry.name", "instance name", true, null), //
+				new ParameterDefinition("component.extension_registry.context_root", "web service context root", true, null), //
+				new ParameterDefinition("component.extension_registry.jdbc.driver", "JDBC driver", true, null), //
+				new ParameterDefinition("component.extension_registry.jdbc.url", "JDBC URL", true, null), //
+				new ParameterDefinition("component.extension_registry.jdbc.username", "JDBC username", true, null), //
+				new ParameterDefinition("component.extension_registry.jdbc.password", "JDBC password", true, null) //
 		);
 		desc12.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ExtensionRegistryPropertyTester.ID));
 		extension12.addInterface(desc12);
@@ -150,13 +150,13 @@ public class Extensions extends ProgramExtensions {
 		// Config Registry Service
 		Extension extension13 = new Extension(extensionTypeId, ConfigRegistryServiceActivator.ID, "Config Registry Service Activator", "Config Registry Service activator description");
 		InterfaceDescription desc13 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryServiceActivator.class);
-		desc13.setParameters( //
-				new Parameter("infra.config_registry.name", "instance name"), //
-				new Parameter("infra.config_registry.context_root", "web service context root"), //
-				new Parameter("infra.config_registry.jdbc.driver", "JDBC driver"), //
-				new Parameter("infra.config_registry.jdbc.url", "JDBC URL"), //
-				new Parameter("infra.config_registry.jdbc.username", "JDBC username"), //
-				new Parameter("infra.config_registry.jdbc.password", "JDBC password") //
+		desc13.setParameterDefinitions( //
+				new ParameterDefinition("infra.config_registry.name", "instance name", true, null), //
+				new ParameterDefinition("infra.config_registry.context_root", "web service context root", true, null), //
+				new ParameterDefinition("infra.config_registry.jdbc.driver", "JDBC driver", true, null), //
+				new ParameterDefinition("infra.config_registry.jdbc.url", "JDBC URL", true, null), //
+				new ParameterDefinition("infra.config_registry.jdbc.username", "JDBC username", true, null), //
+				new ParameterDefinition("infra.config_registry.jdbc.password", "JDBC password", true, null) //
 		);
 		desc13.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ConfigRegistryServicePropertyTester.ID));
 		extension13.addInterface(desc13);
@@ -165,10 +165,10 @@ public class Extensions extends ProgramExtensions {
 		// Data Cast Service
 		Extension extension14 = new Extension(extensionTypeId, DataCastServiceActivator.ID, "DataCast Service Activator", "DataCast Service activator description");
 		InterfaceDescription desc14 = new InterfaceDescription(ServiceActivator.class, DataCastServiceActivator.class);
-		desc14.setParameters( //
-				new Parameter("infra.data_cast.id", "data tube id"), //
-				new Parameter("infra.data_cast.name", "service name"), //
-				new Parameter("infra.data_cast.context_root", "web service context root") //
+		desc14.setParameterDefinitions( //
+				new ParameterDefinition("infra.data_cast.id", "data tube id", true, null), //
+				new ParameterDefinition("infra.data_cast.name", "service name", true, null), //
+				new ParameterDefinition("infra.data_cast.context_root", "web service context root", true, null) //
 		);
 		desc14.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataCastServicePropertyTester.ID));
 		extension14.addInterface(desc14);
@@ -177,12 +177,12 @@ public class Extensions extends ProgramExtensions {
 		// Data Tube Service
 		Extension extension15 = new Extension(extensionTypeId, DataTubeServiceActivator.ID, "DataTube Service Activator", "DataTube Service activator description");
 		InterfaceDescription desc15 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceActivator.class);
-		desc15.setParameters( //
-				new Parameter("infra.data_tube.data_cast_id", "data cast id"), //
-				new Parameter("infra.data_tube.id", "data tube id"), //
-				new Parameter("infra.data_tube.name", "service name"), //
-				new Parameter("infra.data_tube.context_root", "web service context root"), //
-				new Parameter("infra.data_tube.http_port", "web socket http port") //
+		desc15.setParameterDefinitions( //
+				new ParameterDefinition("infra.data_tube.data_cast_id", "data cast id", true, null), //
+				new ParameterDefinition("infra.data_tube.id", "data tube id", true, null), //
+				new ParameterDefinition("infra.data_tube.name", "service name", true, null), //
+				new ParameterDefinition("infra.data_tube.context_root", "web service context root", true, null), //
+				new ParameterDefinition("infra.data_tube.http_port", "web socket http port", true, null) //
 		);
 		desc15.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataTubeServicePropertyTester.ID));
 		extension15.addInterface(desc15);
@@ -191,9 +191,9 @@ public class Extensions extends ProgramExtensions {
 		// Index Service Relay
 		Extension extension21 = new Extension(extensionTypeId, IndexServiceRelayActivator.ID, "Index Service Relay Activator");
 		InterfaceDescription desc21 = new InterfaceDescription(ServiceActivator.class, IndexServiceRelayActivator.class);
-		desc21.setParameters( //
-				new Parameter(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS, "target urls") //
+		desc21.setParameterDefinitions( //
+				new ParameterDefinition(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
+				new ParameterDefinition(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS, "target urls", false, null) //
 		);
 		desc21.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(IndexServiceRelayPropertyTester.ID));
 		extension21.addInterface(desc21);
@@ -202,9 +202,9 @@ public class Extensions extends ProgramExtensions {
 		// Extension Registry Service Relay
 		Extension extension22 = new Extension(extensionTypeId, ExtensionRegistryRelayActivator.ID, "Extension Registry Service Relay Activator");
 		InterfaceDescription desc22 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryRelayActivator.class);
-		desc22.setParameters( //
-				new Parameter(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_URLS, "target urls") //
+		desc22.setParameterDefinitions( //
+				new ParameterDefinition(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
+				new ParameterDefinition(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_URLS, "target urls", false, null) //
 		);
 		desc22.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ExtensionRegistryRelayPropertyTester.ID));
 		extension22.addInterface(desc22);
@@ -213,9 +213,9 @@ public class Extensions extends ProgramExtensions {
 		// Config Registry Service Relay
 		Extension extension23 = new Extension(extensionTypeId, ConfigRegistryRelayActivator.ID, "Config Registry Service Relay Activator");
 		InterfaceDescription desc223 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryRelayActivator.class);
-		desc223.setParameters( //
-				new Parameter(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.CONFIG_REGISTRY__RELAY_URLS, "target urls") //
+		desc223.setParameterDefinitions( //
+				new ParameterDefinition(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
+				new ParameterDefinition(InfraConstants.CONFIG_REGISTRY__RELAY_URLS, "target urls", false, null) //
 		);
 		desc223.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ConfigRegistryRelayPropertyTester.ID));
 		extension23.addInterface(desc223);
@@ -224,9 +224,9 @@ public class Extensions extends ProgramExtensions {
 		// DataCast Service Relay
 		Extension extension24 = new Extension(extensionTypeId, DataCastServiceRelayActivator.ID, "DataCast Service Relay Activator");
 		InterfaceDescription desc24 = new InterfaceDescription(ServiceActivator.class, DataCastServiceRelayActivator.class);
-		desc24.setParameters( //
-				new Parameter(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.DATATUBE__RELAY_URLS, "target urls") //
+		desc24.setParameterDefinitions( //
+				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
+				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_URLS, "target urls", false, null) //
 		);
 		desc24.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataCastServiceRelayPropertyTester.ID));
 		extension24.addInterface(desc24);
@@ -235,9 +235,9 @@ public class Extensions extends ProgramExtensions {
 		// DataTube Service Relay
 		Extension extension25 = new Extension(extensionTypeId, DataTubeServiceRelayActivator.ID, "DataTube Service Relay Activator");
 		InterfaceDescription desc25 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceRelayActivator.class);
-		desc25.setParameters( //
-				new Parameter(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.DATATUBE__RELAY_URLS, "target urls") //
+		desc25.setParameterDefinitions( //
+				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
+				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_URLS, "target urls", false, null) //
 		);
 		desc25.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataTubeServiceRelayPropertyTester.ID));
 		extension25.addInterface(desc25);

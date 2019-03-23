@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
-import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcessContext;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.osgi.framework.BundleContext;
 
@@ -17,8 +17,8 @@ public class ConfigRegistryRelayPropertyTester implements IPropertyTester {
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {
 		BundleContext bundleContext = null;
-		if (context instanceof IPlatformContext) {
-			IPlatformContext platformContext = (IPlatformContext) context;
+		if (context instanceof IProcessContext) {
+			IProcessContext platformContext = (IProcessContext) context;
 			bundleContext = platformContext.getBundleContext();
 		}
 		if (bundleContext != null) {

@@ -16,7 +16,7 @@ import org.origin.common.resource.Path;
 
 public class IConfigElementImpl implements IConfigElement {
 
-	protected IConfigRegistry cfgReg;
+	protected IConfigRegistry registry;
 	protected ConfigElement configElement;
 
 	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
@@ -25,22 +25,22 @@ public class IConfigElementImpl implements IConfigElement {
 
 	/**
 	 * 
-	 * @param cfgReg
+	 * @param registry
 	 * @param configElement
 	 */
-	public IConfigElementImpl(IConfigRegistry cfgReg, ConfigElement configElement) {
-		this.cfgReg = cfgReg;
+	public IConfigElementImpl(IConfigRegistry registry, ConfigElement configElement) {
+		this.registry = registry;
 		this.configElement = configElement;
 	}
 
 	@Override
 	public CFG getCFG() {
-		return this.cfgReg.getCFG();
+		return this.registry.getCFG();
 	}
 
 	@Override
 	public IConfigRegistry getIConfigRegistry() {
-		return this.cfgReg;
+		return this.registry;
 	}
 
 	@Override
@@ -87,6 +87,11 @@ public class IConfigElementImpl implements IConfigElement {
 	}
 
 	@Override
+	public Object getAttribute(String attrName) {
+		return this.configElement.getAttribute(attrName);
+	}
+
+	@Override
 	public <T> T getAttribute(String attrName, Class<T> attrValueClass) {
 		return this.configElement.getAttribute(attrName, attrValueClass);
 	}
@@ -104,7 +109,7 @@ public class IConfigElementImpl implements IConfigElement {
 	public boolean sync() throws IOException {
 		boolean isSynced = false;
 		String elementId = getElementId();
-		IConfigElement cfgEle = this.cfgReg.getConfigElement(elementId);
+		IConfigElement cfgEle = this.registry.getConfigElement(elementId);
 		if (cfgEle != null) {
 			this.configElement = cfgEle.getConfigElement();
 			isSynced = true;
@@ -119,7 +124,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.cfgReg.updateConfigElementName(elementId, newName);
+		boolean isUpdated = this.registry.updateConfigElementName(elementId, newName);
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.setName(newName);
@@ -136,7 +141,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.cfgReg.setConfigElementAttributes(elementId, attributes);
+		boolean isUpdated = this.registry.setConfigElementAttributes(elementId, attributes);
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.getAttributes().putAll(attributes);
@@ -153,7 +158,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.cfgReg.removeConfigElementAttributes(elementId, attributeNames);
+		boolean isUpdated = this.registry.removeConfigElementAttributes(elementId, attributeNames);
 		if (isUpdated) {
 			if (!sync()) {
 				for (String attributeName : attributeNames) {
@@ -171,19 +176,25 @@ public class IConfigElementImpl implements IConfigElement {
 	@Override
 	public IConfigElement[] memberConfigElements() throws IOException {
 		String parentElementId = getElementId();
-		return this.cfgReg.listConfigElements(parentElementId);
+		return this.registry.listConfigElements(parentElementId);
+	}
+
+	@Override
+	public IConfigElement getMemberConfigElement(String name) throws IOException {
+		String parentElementId = getElementId();
+		return this.registry.getConfigElement(parentElementId, name);
 	}
 
 	@Override
 	public boolean memberConfigElementExists(String name) throws IOException {
 		String parentElementId = getElementId();
-		return this.cfgReg.configElementExists(parentElementId, name);
+		return this.registry.configElementExists(parentElementId, name);
 	}
 
 	@Override
 	public IConfigElement createMemberConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		String parentElementId = getElementId();
-		return this.cfgReg.createConfigElement(parentElementId, name, attributes, generateUniqueName);
+		return this.registry.createConfigElement(parentElementId, name, attributes, generateUniqueName);
 	}
 
 	/** DateRecordAware */

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.lb.IndexServiceWSApplicationRelay;
 import org.orbit.infra.runtime.lb.InfraRelays;
-import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcessContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.osgi.framework.BundleContext;
@@ -16,7 +16,7 @@ public class IndexServiceRelayActivator implements ServiceActivator {
 	public static IndexServiceRelayActivator INSTANCE = new IndexServiceRelayActivator();
 
 	@Override
-	public void start(IPlatformContext context, IProcess process) {
+	public void start(IProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -29,7 +29,7 @@ public class IndexServiceRelayActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IPlatformContext context, IProcess process) {
+	public void stop(IProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop IndexService relay

@@ -55,7 +55,7 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 					continue;
 				}
 
-				ProgramManifest[] currPrograms = PlatformClientsUtil.Platform.getPrograms(platformClientResolver, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				ProgramManifest[] currPrograms = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (currPrograms != null) {
 					for (ProgramManifest currProgram : currPrograms) {
 						String programId = currProgram.getId();

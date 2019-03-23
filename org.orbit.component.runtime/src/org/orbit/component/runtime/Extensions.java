@@ -34,6 +34,7 @@ import org.orbit.component.runtime.extension.missioncontrol.MissionControlRelayA
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlRelayPropertyTester;
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlServiceActivator;
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlServicePropertyTester;
+import org.orbit.component.runtime.extension.nodecontrol.NodeConfigIniPropertiesRegulator;
 import org.orbit.component.runtime.extension.nodecontrol.NodeControlRelayActivator;
 import org.orbit.component.runtime.extension.nodecontrol.NodeControlRelayPropertyTester;
 import org.orbit.component.runtime.extension.nodecontrol.NodeControlServiceActivator;
@@ -65,6 +66,7 @@ import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeUpdateWSComm
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimeractory;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.common.PropertiesRegulator;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
@@ -105,6 +107,8 @@ public class Extensions extends ProgramExtensions {
 		createIndexProvideExtensions();
 
 		createNodeControlEditPolicyCommandExtensions();
+
+		createPropertiesRegulatorExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -485,6 +489,18 @@ public class Extensions extends ProgramExtensions {
 		desc12.setSingleton(false);
 		extension12.addInterface(desc12);
 		addExtension(extension12);
+	}
+
+	protected void createPropertiesRegulatorExtensions() {
+		String typeId = PropertiesRegulator.EXTENSION_TYPE_ID;
+
+		// Node config.ini properties regulator
+		Extension extension1 = new Extension(typeId, NodeConfigIniPropertiesRegulator.ID, "Node config.ini properties regulator");
+		extension1.setProperty(PropertiesRegulator.PROP__TYPE, PropertiesRegulator.TYPE__NODE__CONFIG_INI);
+		InterfaceDescription desc1 = new InterfaceDescription(PropertiesRegulator.class, NodeConfigIniPropertiesRegulator.class);
+		desc1.setSingleton(true);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
 	}
 
 }
