@@ -118,7 +118,7 @@ public class Extensions extends ProgramExtensions {
 		String extensionTypeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// Index Service
-		Extension extension11 = new Extension(extensionTypeId, IndexServiceActivator.ID, "Index Service Activator", "Index Service activator description");
+		Extension extension11 = new Extension(extensionTypeId, IndexServiceActivator.ID, "Index Service", "Service for indexing.");
 		InterfaceDescription desc11 = new InterfaceDescription(ServiceActivator.class, IndexServiceActivator.class);
 		desc11.setParameterDefinitions( //
 				new ParameterDefinition("component.index_service.name", "instance name", true, null), //
@@ -133,7 +133,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension11);
 
 		// ExtensionRegistry Service
-		Extension extension12 = new Extension(extensionTypeId, ExtensionRegistryActivator.ID, "Extension Registry Service Activator", "Extension Registry Service activator description");
+		Extension extension12 = new Extension(extensionTypeId, ExtensionRegistryActivator.ID, "Extension Registry Service", "Servicefor registering extensions.");
 		InterfaceDescription desc12 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryActivator.class);
 		desc12.setParameterDefinitions( //
 				new ParameterDefinition("component.extension_registry.name", "instance name", true, null), //
@@ -148,7 +148,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension12);
 
 		// Config Registry Service
-		Extension extension13 = new Extension(extensionTypeId, ConfigRegistryServiceActivator.ID, "Config Registry Service Activator", "Config Registry Service activator description");
+		Extension extension13 = new Extension(extensionTypeId, ConfigRegistryServiceActivator.ID, "Config Registry Service", "Service for configuration registry.");
 		InterfaceDescription desc13 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryServiceActivator.class);
 		desc13.setParameterDefinitions( //
 				new ParameterDefinition("infra.config_registry.name", "instance name", true, null), //
@@ -163,7 +163,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension13);
 
 		// Data Cast Service
-		Extension extension14 = new Extension(extensionTypeId, DataCastServiceActivator.ID, "DataCast Service Activator", "DataCast Service activator description");
+		Extension extension14 = new Extension(extensionTypeId, DataCastServiceActivator.ID, "DataCast Service", "Service for pushing data to clients through data tubes.");
 		InterfaceDescription desc14 = new InterfaceDescription(ServiceActivator.class, DataCastServiceActivator.class);
 		desc14.setParameterDefinitions( //
 				new ParameterDefinition("infra.data_cast.id", "data tube id", true, null), //
@@ -175,7 +175,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension14);
 
 		// Data Tube Service
-		Extension extension15 = new Extension(extensionTypeId, DataTubeServiceActivator.ID, "DataTube Service Activator", "DataTube Service activator description");
+		Extension extension15 = new Extension(extensionTypeId, DataTubeServiceActivator.ID, "DataTube Service", "Service for broadcasting data to client.");
 		InterfaceDescription desc15 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceActivator.class);
 		desc15.setParameterDefinitions( //
 				new ParameterDefinition("infra.data_tube.data_cast_id", "data cast id", true, null), //
@@ -189,7 +189,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension15);
 
 		// Index Service Relay
-		Extension extension21 = new Extension(extensionTypeId, IndexServiceRelayActivator.ID, "Index Service Relay Activator");
+		Extension extension21 = new Extension(extensionTypeId, IndexServiceRelayActivator.ID, "Index Service Relay", "Gateway for accessing distributed Index services.");
 		InterfaceDescription desc21 = new InterfaceDescription(ServiceActivator.class, IndexServiceRelayActivator.class);
 		desc21.setParameterDefinitions( //
 				new ParameterDefinition(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
@@ -200,7 +200,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension21);
 
 		// Extension Registry Service Relay
-		Extension extension22 = new Extension(extensionTypeId, ExtensionRegistryRelayActivator.ID, "Extension Registry Service Relay Activator");
+		Extension extension22 = new Extension(extensionTypeId, ExtensionRegistryRelayActivator.ID, "Extension Registry Service Relay", "Gateway for accessing distributed Extension Registry services.");
 		InterfaceDescription desc22 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryRelayActivator.class);
 		desc22.setParameterDefinitions( //
 				new ParameterDefinition(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
@@ -211,7 +211,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension22);
 
 		// Config Registry Service Relay
-		Extension extension23 = new Extension(extensionTypeId, ConfigRegistryRelayActivator.ID, "Config Registry Service Relay Activator");
+		Extension extension23 = new Extension(extensionTypeId, ConfigRegistryRelayActivator.ID, "Config Registry Service Relay", "Gateway for accessing distributed Config Registry services.");
 		InterfaceDescription desc223 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryRelayActivator.class);
 		desc223.setParameterDefinitions( //
 				new ParameterDefinition(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
@@ -222,7 +222,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension23);
 
 		// DataCast Service Relay
-		Extension extension24 = new Extension(extensionTypeId, DataCastServiceRelayActivator.ID, "DataCast Service Relay Activator");
+		Extension extension24 = new Extension(extensionTypeId, DataCastServiceRelayActivator.ID, "DataCast Service Relay", "Gateway for accessing distributed DataCast services.");
 		InterfaceDescription desc24 = new InterfaceDescription(ServiceActivator.class, DataCastServiceRelayActivator.class);
 		desc24.setParameterDefinitions( //
 				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //
@@ -233,7 +233,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension24);
 
 		// DataTube Service Relay
-		Extension extension25 = new Extension(extensionTypeId, DataTubeServiceRelayActivator.ID, "DataTube Service Relay Activator");
+		Extension extension25 = new Extension(extensionTypeId, DataTubeServiceRelayActivator.ID, "DataTube Service Relay", "Gateway for accessing distributed DataTube services.");
 		InterfaceDescription desc25 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceRelayActivator.class);
 		desc25.setParameterDefinitions( //
 				new ParameterDefinition(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root", true, null), //

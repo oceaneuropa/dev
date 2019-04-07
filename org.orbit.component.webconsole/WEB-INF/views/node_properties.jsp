@@ -43,7 +43,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management</title>
+<title>Properties</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 <link rel="stylesheet" href="../views/css/treetable.css">
 

@@ -16,7 +16,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management</title>
+<title>Machines</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 <script type="text/javascript" src="<%=contextRoot + "/views/js/machines_list.js"%>" defer></script>
 </head>

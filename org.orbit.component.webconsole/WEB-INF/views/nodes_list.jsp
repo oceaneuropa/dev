@@ -35,7 +35,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management</title>
+<title>Nodes</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
