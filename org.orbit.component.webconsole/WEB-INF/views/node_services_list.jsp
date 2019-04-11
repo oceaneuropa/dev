@@ -61,8 +61,8 @@
 	<div class="main_div01">
 		<h2>Services</h2>
 		<div class="top_tools_div01">  
-			<a id="actionStartProgram" class="button02" onClick="onProgramAction('start', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Start</a> 
-			<a id="actionStopPrograms" class="button02" onClick="onProgramAction('stop', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Stop</a> 
+			<a id="actionStartServices" class="button02" onClick="onPlatformServiceAction('start', '<%=contextRoot + "/domain/nodeserviceaction"%>')">Start</a> 
+			<a id="actionStopServices" class="button02" onClick="onPlatformServiceAction('stop', '<%=contextRoot + "/domain/nodeserviceaction"%>')">Stop</a> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeservices?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
 		<table class="main_table01">
@@ -128,36 +128,12 @@
 	</div>
 	<br/>
 
-	<dialog id="programsSelectionDialog">
-	<div class="dialog_title_div01">Programs</div>
-	<form id="install_form" method="post" action="<%=contextRoot + "/domain/nodeprograminstall"%>">
-		<input type="hidden" name="machineId" value="<%=machineId%>">
-		<input type="hidden" name="platformId" value="<%=platformId%>">
-		<input type="hidden" name="id" value="<%=id%>">
-		<div id="programsSelectionDiv" class="dialog_main_div02">
-		</div>
-		<div class="dialog_button_div01">
-			<a id="okInstallProgram" class="button02" href="javascript:document.getElementById('install_form').submit();">Install</a> 
-			<a id="cancelInstallProgram" class="button02b" href="javascript:document.getElementById('install_form').reset();">Cancel</a>
-		</div>
-	</form>
-	</dialog>
-
-	<dialog id="uninstallProgramsDialog">
-		<div class="dialog_title_div01">Uninstall Programs</div>
-		<div class="dialog_main_div01" id="uninstallProgramsDialogMessageDiv">Are you sure you want to uninstall selected programs?</div>
-		<div class="dialog_button_div01">
-			<a id="okUninstallPrograms" class="button02">OK</a> 
-			<a id="cancelUninstallPrograms" class="button02b">Cancel</a>
-		</div>
-	</dialog>
-
-	<dialog id="programActionDialog">
-	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Programs</div>
-	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the programs?</div>
+	<dialog id="serviceActionDialog">
+	<div class="dialog_title_div01" id="serviceActionDialogTitleDiv" >{Action} Services</div>
+	<div class="dialog_main_div01" id="serviceActionDialogMessageDiv">Are you sure you want to {action} the services?</div>
 	<div class="dialog_button_div01">
-		<a id="okProgramAction" class="button02">OK</a> 
-		<a id="cancelProgramAction" class="button02b">Cancel</a>
+		<a id="okServiceAction" class="button02">OK</a> 
+		<a id="cancelServiceAction" class="button02b">Cancel</a>
 	</div>
 	</dialog>
 

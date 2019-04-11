@@ -39,7 +39,7 @@
 				<th class="th1" width="150">Id/Version</th>
 				<th class="th1" width="150">Name</th>
 				<th class="th1" width="200">File Name</th>
-				<th class="th1" width="100">Actions</th>
+				<th class="th1" width="200">Actions</th>
 			</tr>
 			<%
 				if (appManifests.length == 0) {
