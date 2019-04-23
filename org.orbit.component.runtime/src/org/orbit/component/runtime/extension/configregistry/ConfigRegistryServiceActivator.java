@@ -2,8 +2,8 @@ package org.orbit.component.runtime.extension.configregistry;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImpl;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImplV0;
 import org.orbit.platform.sdk.IProcessContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -22,10 +22,10 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start ConfigRegistryService
-		ConfigRegistryServiceImpl configRegistryService = new ConfigRegistryServiceImpl(properties);
+		ConfigRegistryServiceImplV0 configRegistryService = new ConfigRegistryServiceImplV0(properties);
 		configRegistryService.start(bundleContext);
 
-		process.adapt(ConfigRegistryService.class, configRegistryService);
+		process.adapt(ConfigRegistryServiceV0.class, configRegistryService);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop ConfigRegistryService
-		ConfigRegistryService configRegistry = process.getAdapter(ConfigRegistryService.class);
+		ConfigRegistryServiceV0 configRegistry = process.getAdapter(ConfigRegistryServiceV0.class);
 		if (configRegistry instanceof LifecycleAware) {
 			((LifecycleAware) configRegistry).stop(bundleContext);
 		}

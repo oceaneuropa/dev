@@ -25,7 +25,7 @@ import org.orbit.component.model.tier2.appstore.AppQueryDTO;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -80,7 +80,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 			List<AppManifest> apps = service.getApps(type);
 			if (apps != null) {
 				for (AppManifest app : apps) {
-					AppManifestDTO appDTO = ModelConverter.AppStore.toAppDTO(app);
+					AppManifestDTO appDTO = RuntimeModelConverter.AppStore.toAppDTO(app);
 					appDTOs.add(appDTO);
 				}
 			}
@@ -107,11 +107,11 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
 			AppStoreService service = getService();
-			AppQuery query = ModelConverter.AppStore.toAppQuery(queryDTO);
+			AppQuery query = RuntimeModelConverter.AppStore.toAppQuery(queryDTO);
 			List<AppManifest> apps = service.getApps(query);
 			if (apps != null) {
 				for (AppManifest app : apps) {
-					AppManifestDTO appDTO = ModelConverter.AppStore.toAppDTO(app);
+					AppManifestDTO appDTO = RuntimeModelConverter.AppStore.toAppDTO(app);
 					appDTOs.add(appDTO);
 				}
 			}
@@ -178,14 +178,14 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
-			AppManifest appToAdd = ModelConverter.AppStore.toApp(requestDTO);
+			AppManifest appToAdd = RuntimeModelConverter.AppStore.toApp(requestDTO);
 			AppManifest newApp = service.addApp(appToAdd);
 			if (newApp == null) {
 				ErrorDTO newAppNotCreated = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "App is not added.");
 				return Response.status(Status.NOT_FOUND).entity(newAppNotCreated).build();
 			}
 
-			newAppDTO = ModelConverter.AppStore.toAppDTO(newApp);
+			newAppDTO = RuntimeModelConverter.AppStore.toAppDTO(newApp);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -215,7 +215,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		boolean succeed = false;
 		try {
 			AppStoreService service = getService();
-			AppManifest appToUpdate = ModelConverter.AppStore.toApp(requestDTO);
+			AppManifest appToUpdate = RuntimeModelConverter.AppStore.toApp(requestDTO);
 			succeed = service.updateApp(appToUpdate);
 
 		} catch (ServerException e) {

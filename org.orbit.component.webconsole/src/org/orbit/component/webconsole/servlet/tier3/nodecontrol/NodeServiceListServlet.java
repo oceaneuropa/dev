@@ -111,7 +111,7 @@ public class NodeServiceListServlet extends HttpServlet {
 		}
 		request.setAttribute("services", services);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_services_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_services.jsp").forward(request, response);
 	}
 
 }

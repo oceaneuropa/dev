@@ -69,9 +69,13 @@ public interface ConfigRegistryClient extends ServiceClient, Proxy, IAdaptable {
 
 	boolean updateConfigElementName(String configRegistryId, String elementId, String newName) throws ClientException;
 
+	boolean setConfigElementAttribute(String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException;
+
 	boolean setConfigElementAttributes(String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException;
 
-	boolean removeConfigElementAttributes(String configRegistryId, String elementId, List<String> attributeName) throws ClientException;
+	boolean removeConfigElementAttribute(String configRegistryId, String elementId, String attributeName) throws ClientException;
+
+	boolean removeConfigElementAttributes(String configRegistryId, String elementId, List<String> attributeNames) throws ClientException;
 
 	boolean deleteConfigElement(String configRegistryId, String elementId) throws ClientException;
 

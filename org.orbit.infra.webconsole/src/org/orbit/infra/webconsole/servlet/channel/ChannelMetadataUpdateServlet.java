@@ -14,7 +14,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
@@ -70,7 +70,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
 						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
 
-						ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
+						ChannelMetadata channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 
 						if (channelMetadata != null) {
 							boolean isDataTubeChanged = false;
@@ -105,7 +105,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 								updateOwnerAccountId = true;
 							}
 
-							isChannelMetadataUpdated = InfraClientsHelper.DATA_CAST.updateChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, isDataTubeChanged, dataTubeId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
+							isChannelMetadataUpdated = InfraClientsUtil.DATA_CAST.updateChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, isDataTubeChanged, dataTubeId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
 
 							if (isChannelMetadataUpdated) {
 								IndexItem oldDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, oldDataTubeId);
@@ -120,7 +120,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 
 										if (isOldDataTubeOnline) {
 											String dataTubeServiceUrl = (String) oldDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-											isOldRuntimeChannelRemoved = InfraClientsHelper.DATA_TUBE.deleteRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isOldRuntimeChannelRemoved = InfraClientsUtil.DATA_TUBE.deleteRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {
 											message = MessageHelper.INSTANCE.add(message, "DataTube service (dataTubeId='" + oldDataTubeId + "') is not online.");
@@ -134,7 +134,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 
 										if (isDataTubeOnline) {
 											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-											isNewRuntimeChannelCreated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isNewRuntimeChannelCreated = InfraClientsUtil.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {
 											message = MessageHelper.INSTANCE.add(message, "DataTube service (dataTubeId='" + dataTubeId + "') is not online.");
@@ -153,7 +153,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 
 										if (isDataTubeOnline) {
 											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isRuntimeChannelUpdated = InfraClientsUtil.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {
 											message = MessageHelper.INSTANCE.add(message, "DataTube service (dataTubeId='" + dataTubeId + "') is not online.");

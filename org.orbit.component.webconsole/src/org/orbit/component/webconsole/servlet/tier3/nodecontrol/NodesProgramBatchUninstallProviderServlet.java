@@ -16,7 +16,7 @@ import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ProgramManifest;
 import org.orbit.platform.api.util.PlatformClientsUtil;
@@ -46,7 +46,7 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 
 			List<String> programIdAndVersionList = new ArrayList<String>();
 			for (String nodeId : nodeIds) {
-				IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem == null) {
 					continue;
 				}

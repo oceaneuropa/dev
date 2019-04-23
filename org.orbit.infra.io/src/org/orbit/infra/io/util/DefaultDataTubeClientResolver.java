@@ -11,7 +11,7 @@ import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
@@ -22,7 +22,7 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 			throw new IllegalArgumentException("dataTubeServiceUrl is empty.");
 		}
 
-		DataTubeClient dataTubeClient = InfraClientsHelper.DATA_TUBE.getDataTubeClient(dataTubeServiceUrl, accessToken);
+		DataTubeClient dataTubeClient = InfraClientsUtil.DATA_TUBE.getDataTubeClient(dataTubeServiceUrl, accessToken);
 		return dataTubeClient;
 	}
 
@@ -36,7 +36,7 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 		}
 
 		IndexItem dataTubeIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);
@@ -65,7 +65,7 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 		List<DataTubeClient> dataTubeClients = new ArrayList<DataTubeClient>();
 
 		List<IndexItem> dataTubeIndexItems = new ArrayList<IndexItem>();
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);

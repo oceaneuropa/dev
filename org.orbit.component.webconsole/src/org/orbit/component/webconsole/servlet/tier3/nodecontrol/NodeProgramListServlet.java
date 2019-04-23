@@ -112,7 +112,7 @@ public class NodeProgramListServlet extends HttpServlet {
 		}
 		request.setAttribute("programs", programs);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_programs_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_programs.jsp").forward(request, response);
 	}
 
 }

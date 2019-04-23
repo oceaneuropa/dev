@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigRegistry;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
+import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigRegistry;
 import org.origin.common.rest.client.ClientException;
@@ -48,7 +50,7 @@ public class CFGImpl extends CFG {
 	public ServiceMetadata getServiceServiceMetadata() throws IOException {
 		ServiceMetadata metadata = null;
 		try {
-			metadata = InfraClientsHelper.CONFIG_REGISTRY.getServiceMetadata(this.clientResolver, this.accessToken);
+			metadata = InfraClientsUtil.CONFIG_REGISTRY.getServiceMetadata(this.clientResolver, this.accessToken);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -62,7 +64,7 @@ public class CFGImpl extends CFG {
 	public IConfigRegistry[] getConfigRegistries() throws IOException {
 		List<IConfigRegistry> cfgRegs = new ArrayList<IConfigRegistry>();
 		try {
-			ConfigRegistry[] configRegistries = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistries(this.clientResolver, this.accessToken);
+			ConfigRegistry[] configRegistries = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistries(this.clientResolver, this.accessToken);
 			if (configRegistries != null) {
 				for (ConfigRegistry configRegistry : configRegistries) {
 					IConfigRegistry cfgReg = toConfigRegistry(configRegistry);
@@ -79,7 +81,7 @@ public class CFGImpl extends CFG {
 	public IConfigRegistry[] getConfigRegistries(String type) throws IOException {
 		List<IConfigRegistry> cfgRegs = new ArrayList<IConfigRegistry>();
 		try {
-			ConfigRegistry[] configRegistries = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistries(this.clientResolver, this.accessToken, type);
+			ConfigRegistry[] configRegistries = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistries(this.clientResolver, this.accessToken, type);
 			if (configRegistries != null) {
 				for (ConfigRegistry configRegistry : configRegistries) {
 					IConfigRegistry cfgReg = toConfigRegistry(configRegistry);
@@ -96,7 +98,7 @@ public class CFGImpl extends CFG {
 	public IConfigRegistry getConfigRegistryById(String id) throws IOException {
 		IConfigRegistry cfgReg = null;
 		try {
-			ConfigRegistry configRegistry = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryById(this.clientResolver, this.accessToken, id);
+			ConfigRegistry configRegistry = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistryById(this.clientResolver, this.accessToken, id);
 			if (configRegistry != null) {
 				cfgReg = toConfigRegistry(configRegistry);
 			}
@@ -110,7 +112,7 @@ public class CFGImpl extends CFG {
 	public IConfigRegistry getConfigRegistryByName(String name) throws IOException {
 		IConfigRegistry cfgReg = null;
 		try {
-			ConfigRegistry configRegistry = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryByName(this.clientResolver, this.accessToken, name);
+			ConfigRegistry configRegistry = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistryByName(this.clientResolver, this.accessToken, name);
 			if (configRegistry != null) {
 				cfgReg = toConfigRegistry(configRegistry);
 			}
@@ -124,7 +126,7 @@ public class CFGImpl extends CFG {
 	public boolean configRegistryExistsById(String id) throws IOException {
 		boolean exists = false;
 		try {
-			exists = InfraClientsHelper.CONFIG_REGISTRY.configRegistryExistsById(this.clientResolver, this.accessToken, id);
+			exists = InfraClientsUtil.CONFIG_REGISTRY.configRegistryExistsById(this.clientResolver, this.accessToken, id);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -135,7 +137,7 @@ public class CFGImpl extends CFG {
 	public boolean configRegistryExistsByName(String name) throws IOException {
 		boolean exists = false;
 		try {
-			exists = InfraClientsHelper.CONFIG_REGISTRY.configRegistryExistsByName(this.clientResolver, this.accessToken, name);
+			exists = InfraClientsUtil.CONFIG_REGISTRY.configRegistryExistsByName(this.clientResolver, this.accessToken, name);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -146,7 +148,7 @@ public class CFGImpl extends CFG {
 	public IConfigRegistry createConfigRegistry(String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws IOException {
 		IConfigRegistry cfgReg = null;
 		try {
-			ConfigRegistry configRegistry = InfraClientsHelper.CONFIG_REGISTRY.createConfigRegistry(this.clientResolver, this.accessToken, type, name, properties, generateUniqueName);
+			ConfigRegistry configRegistry = InfraClientsUtil.CONFIG_REGISTRY.createConfigRegistry(this.clientResolver, this.accessToken, type, name, properties, generateUniqueName);
 			if (configRegistry == null) {
 				throw new IOException("Config registry cannot be created.");
 			}
@@ -162,7 +164,7 @@ public class CFGImpl extends CFG {
 	public boolean updateConfigRegistryType(String id, String type) throws IOException {
 		boolean isUpdated = false;
 		try {
-			isUpdated = InfraClientsHelper.CONFIG_REGISTRY.updateConfigRegistryType(this.clientResolver, this.accessToken, id, type);
+			isUpdated = InfraClientsUtil.CONFIG_REGISTRY.updateConfigRegistryType(this.clientResolver, this.accessToken, id, type);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -173,7 +175,7 @@ public class CFGImpl extends CFG {
 	public boolean updateConfigRegistryName(String id, String name) throws IOException {
 		boolean isUpdated = false;
 		try {
-			isUpdated = InfraClientsHelper.CONFIG_REGISTRY.updateConfigRegistryName(this.clientResolver, this.accessToken, id, name);
+			isUpdated = InfraClientsUtil.CONFIG_REGISTRY.updateConfigRegistryName(this.clientResolver, this.accessToken, id, name);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -184,7 +186,7 @@ public class CFGImpl extends CFG {
 	public boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws IOException {
 		boolean isUpdated = false;
 		try {
-			isUpdated = InfraClientsHelper.CONFIG_REGISTRY.setConfigRegistryProperties(this.clientResolver, this.accessToken, id, properties);
+			isUpdated = InfraClientsUtil.CONFIG_REGISTRY.setConfigRegistryProperties(this.clientResolver, this.accessToken, id, properties);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -195,7 +197,7 @@ public class CFGImpl extends CFG {
 	public boolean removeConfigRegistryProperties(String id, List<String> propertyNames) throws IOException {
 		boolean isUpdated = false;
 		try {
-			isUpdated = InfraClientsHelper.CONFIG_REGISTRY.removeConfigRegistryProperties(this.clientResolver, this.accessToken, id, propertyNames);
+			isUpdated = InfraClientsUtil.CONFIG_REGISTRY.removeConfigRegistryProperties(this.clientResolver, this.accessToken, id, propertyNames);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -206,7 +208,7 @@ public class CFGImpl extends CFG {
 	public boolean deleteConfigRegistryById(String id) throws IOException {
 		boolean isDeleted = false;
 		try {
-			isDeleted = InfraClientsHelper.CONFIG_REGISTRY.deleteConfigRegistryById(this.clientResolver, this.accessToken, id);
+			isDeleted = InfraClientsUtil.CONFIG_REGISTRY.deleteConfigRegistryById(this.clientResolver, this.accessToken, id);
 		} catch (ClientException e) {
 			handle(e);
 		}
@@ -217,7 +219,7 @@ public class CFGImpl extends CFG {
 	public boolean deleteConfigRegistryByName(String name) throws IOException {
 		boolean isDeleted = false;
 		try {
-			isDeleted = InfraClientsHelper.CONFIG_REGISTRY.deleteConfigRegistryByName(this.clientResolver, this.accessToken, name);
+			isDeleted = InfraClientsUtil.CONFIG_REGISTRY.deleteConfigRegistryByName(this.clientResolver, this.accessToken, name);
 		} catch (ClientException e) {
 			handle(e);
 		}

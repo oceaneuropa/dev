@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datatube.DataTubeClient;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -78,7 +78,7 @@ public class DataTubeClientCommand implements Annotated, CommandActivator {
 	}
 
 	protected DataTubeClient getDataTubeClient(String url) throws ClientException {
-		DataTubeClient dataTube = InfraClientsHelper.DATA_TUBE.getDataTubeClient(url, null);
+		DataTubeClient dataTube = InfraClientsUtil.DATA_TUBE.getDataTubeClient(url, null);
 		if (dataTube == null) {
 			LOG.error("DataTubeClient is not available.");
 			throw new IllegalStateException("DataTubeClient is not available. url = " + url);

@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
@@ -31,10 +31,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class ConfigRegistryServiceAdapter implements LifecycleAware {
 
 	protected Map<Object, Object> properties;
-	protected ServiceTracker<ConfigRegistryService, ConfigRegistryService> serviceTracker;
+	protected ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0> serviceTracker;
 	protected ConfigRegistryWSApplication webApp;
 	// protected ConfigRegistryServiceIndexTimer indexTimer;
-	protected ServiceIndexTimer<ConfigRegistryService> indexTimer;
+	protected ServiceIndexTimer<ConfigRegistryServiceV0> indexTimer;
 
 	public ConfigRegistryServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -44,7 +44,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	// return InfraClients.getInstance().getIndexService(this.properties, true);
 	// }
 
-	public ConfigRegistryService getService() {
+	public ConfigRegistryServiceV0 getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -54,10 +54,10 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	 */
 	@Override
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<ConfigRegistryService, ConfigRegistryService>(bundleContext, ConfigRegistryService.class, new ServiceTrackerCustomizer<ConfigRegistryService, ConfigRegistryService>() {
+		this.serviceTracker = new ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0>(bundleContext, ConfigRegistryServiceV0.class, new ServiceTrackerCustomizer<ConfigRegistryServiceV0, ConfigRegistryServiceV0>() {
 			@Override
-			public ConfigRegistryService addingService(ServiceReference<ConfigRegistryService> reference) {
-				ConfigRegistryService service = bundleContext.getService(reference);
+			public ConfigRegistryServiceV0 addingService(ServiceReference<ConfigRegistryServiceV0> reference) {
+				ConfigRegistryServiceV0 service = bundleContext.getService(reference);
 				// System.out.println("ConfigRegistryService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -65,12 +65,12 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
+			public void modifiedService(ServiceReference<ConfigRegistryServiceV0> reference, ConfigRegistryServiceV0 service) {
 				// System.out.println("ConfigRegistryService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
+			public void removedService(ServiceReference<ConfigRegistryServiceV0> reference, ConfigRegistryServiceV0 service) {
 				// System.out.println("ConfigRegistryService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -96,7 +96,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStart(BundleContext bundleContext, ConfigRegistryService service) {
+	protected void doStart(BundleContext bundleContext, ConfigRegistryServiceV0 service) {
 		// Start web app
 		this.webApp = new ConfigRegistryWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
@@ -110,7 +110,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<ConfigRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<ConfigRegistryServiceV0> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
@@ -125,7 +125,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStop(BundleContext bundleContext, ConfigRegistryService service) {
+	protected void doStop(BundleContext bundleContext, ConfigRegistryServiceV0 service) {
 		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();

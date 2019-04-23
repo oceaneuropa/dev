@@ -8,7 +8,7 @@ import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
@@ -72,7 +72,7 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 		try {
 			List<UserAccountDTO> userAccountDTOs = getWSClient().getList();
 			for (UserAccountDTO userAccountDTO : userAccountDTOs) {
-				userAccounts.add(ModelConverter.Account.toUserAccountImpl(userAccountDTO));
+				userAccounts.add(ClientModelConverter.Account.toUserAccountImpl(userAccountDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -87,7 +87,7 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 		try {
 			UserAccountDTO userAccountDTO = getWSClient().get(accountId);
 			if (userAccountDTO != null) {
-				userAccount = ModelConverter.Account.toUserAccountImpl(userAccountDTO);
+				userAccount = ClientModelConverter.Account.toUserAccountImpl(userAccountDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -114,7 +114,7 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 		String username = createUserAccountRequest.getUsername();
 		checkUsername(username);
 		try {
-			UserAccountDTO createUserAccountRequestDTO = ModelConverter.Account.toDTO(createUserAccountRequest);
+			UserAccountDTO createUserAccountRequestDTO = ClientModelConverter.Account.toDTO(createUserAccountRequest);
 			StatusDTO status = getWSClient().create(createUserAccountRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -130,7 +130,7 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 		String accountId = updateUserAccountRequest.getAccountId();
 		checkAccountId(accountId);
 		try {
-			UserAccountDTO updateUserAccountRequestDTO = ModelConverter.Account.toDTO(updateUserAccountRequest);
+			UserAccountDTO updateUserAccountRequestDTO = ClientModelConverter.Account.toDTO(updateUserAccountRequest);
 			StatusDTO status = getWSClient().update(updateUserAccountRequestDTO);
 			if (status != null && status.success()) {
 				return true;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.resource.Path;
 
 public class ConfigElementImpl implements ConfigElement {
@@ -180,7 +180,7 @@ public class ConfigElementImpl implements ConfigElement {
 
 	@Override
 	public String toString() {
-		String attributesString = ModelConverter.COMMON.toMapString(this.attributes);
+		String attributesString = RuntimeModelConverter.COMMON.toMapString(this.attributes);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("ConfigElementImpl (");

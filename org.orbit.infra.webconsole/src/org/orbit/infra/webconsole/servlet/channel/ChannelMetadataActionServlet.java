@@ -19,7 +19,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
@@ -111,7 +111,7 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 						Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(accessToken, dataCastId);
 
 						for (String channelId : channelIds) {
-							ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
+							ChannelMetadata channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 							if (channelMetadata == null) {
 								message = MessageHelper.INSTANCE.add(message, "Channel metadata (channelId='" + channelId + "') is not found.");
 								continue;
@@ -140,7 +140,7 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 
 							boolean isRuntimeChannelUpdated = false;
 							if (isSyncRuntimeChannelAction) {
-								isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+								isRuntimeChannelUpdated = InfraClientsUtil.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 								if (isRuntimeChannelUpdated) {
 									hasSucceed = true;
@@ -158,19 +158,19 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 									channelStatus = ChannelStatus.STOPPED;
 								}
 
-								boolean isChannelMetadataUpdated = InfraClientsHelper.DATA_CAST.setChannelMetadataStatusById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, channelStatus, false);
+								boolean isChannelMetadataUpdated = InfraClientsUtil.DATA_CAST.setChannelMetadataStatusById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, channelStatus, false);
 								if (isChannelMetadataUpdated) {
 									if (isDataTubeOnline && dataTubeServiceUrl != null) {
 										// delete runtime channel from data tube service
 										isRuntimeChannelUpdated = false;
 										if (isStartAction) {
-											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isRuntimeChannelUpdated = InfraClientsUtil.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else if (isSuspendAction) {
-											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.suspendRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isRuntimeChannelUpdated = InfraClientsUtil.DATA_TUBE.suspendRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else if (isStopAction) {
-											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.stopRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+											isRuntimeChannelUpdated = InfraClientsUtil.DATA_TUBE.stopRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 										}
 									}
 								}

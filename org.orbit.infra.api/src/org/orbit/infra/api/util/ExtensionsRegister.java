@@ -103,7 +103,7 @@ public class ExtensionsRegister implements ExtensionListener {
 
 	protected ExtensionRegistryClient getExtensionRegistry() {
 		// String extensionRegistryUrl = getExtensionRegistryUrl();
-		ExtensionRegistryClient extensionRegistry = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionRegistryClient(null);
+		ExtensionRegistryClient extensionRegistry = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionRegistryClient(null);
 		if (extensionRegistry != null && !extensionRegistry.isProxy()) {
 			boolean match1 = false;
 			try {

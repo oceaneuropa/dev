@@ -14,6 +14,7 @@ public class InfraConstants {
 
 	// global index item properties
 	public static String SERVICE__NAMESPACE = "service.namespace";
+	public static String SERVICE__ID = "service.id";
 	public static String SERVICE__NAME = "service.name";
 	public static String SERVICE__HOST_URL = "service.host_url";
 	public static String SERVICE__CONTEXT_ROOT = "service.context_root";

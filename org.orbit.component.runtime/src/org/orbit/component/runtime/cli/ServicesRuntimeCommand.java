@@ -6,7 +6,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.runtime.tier1.account.service.impl.UserRegistryServiceImpl;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImpl;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImplV0;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
@@ -41,7 +41,7 @@ public class ServicesRuntimeCommand implements CommandActivator {
 
 	protected UserRegistryServiceImpl userRegistryService;
 	protected AuthServiceImpl authService;
-	protected ConfigRegistryServiceImpl configRegistryService;
+	protected ConfigRegistryServiceImplV0 configRegistryService;
 
 	// tier2
 	protected boolean autoStartAppStoreService;
@@ -262,7 +262,7 @@ public class ServicesRuntimeCommand implements CommandActivator {
 	}
 
 	public void startConfigRegistryService(BundleContext bundleContext) {
-		ConfigRegistryServiceImpl configRegistryService = new ConfigRegistryServiceImpl(null);
+		ConfigRegistryServiceImplV0 configRegistryService = new ConfigRegistryServiceImplV0(null);
 		configRegistryService.start(bundleContext);
 		this.configRegistryService = configRegistryService;
 	}

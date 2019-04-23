@@ -48,7 +48,11 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 
 	boolean rename(String newName) throws IOException;
 
+	boolean setAttribute(String oldAttributeName, String attributeName, Object attributeValue) throws IOException;
+
 	boolean setAttributes(Map<String, Object> attributes) throws IOException;
+
+	boolean removeAttribute(String attributeName) throws IOException;
 
 	boolean removeAttributes(List<String> attributeNames) throws IOException;
 

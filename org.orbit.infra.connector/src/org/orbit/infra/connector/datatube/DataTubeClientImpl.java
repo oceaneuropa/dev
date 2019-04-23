@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.datatube.RuntimeChannel;
-import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.origin.common.rest.client.ClientException;
@@ -78,7 +78,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				runtimeChannels = ModelConverter.DATA_TUBE.getRuntimeChannels(this, response);
+				runtimeChannels = ClientModelConverter.DATA_TUBE.getRuntimeChannels(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -102,7 +102,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+				runtimeChannel = ClientModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -123,7 +123,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+				runtimeChannel = ClientModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -141,7 +141,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -159,7 +159,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -178,7 +178,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+				runtimeChannel = ClientModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -197,7 +197,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+				runtimeChannel = ClientModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -262,7 +262,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.COMMON.isSucceed(response);
+				succeed = ClientModelConverter.COMMON.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -287,7 +287,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.COMMON.isSucceed(response);
+				succeed = ClientModelConverter.COMMON.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -305,7 +305,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -323,7 +323,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

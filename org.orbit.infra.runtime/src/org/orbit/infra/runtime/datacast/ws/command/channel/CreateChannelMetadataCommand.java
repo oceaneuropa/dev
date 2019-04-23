@@ -11,7 +11,7 @@ import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.model.AccountConfig;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -45,7 +45,7 @@ public class CreateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 		List<AccountConfig> accountConfigs = null;
 		if (request.hasParameter("account_configs")) {
 			String accountConfigsString = request.getStringParameter("account_configs");
-			accountConfigs = ModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
+			accountConfigs = RuntimeModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
 		}
 		Map<String, Object> properties = null;
 		if (request.hasParameter("properties")) {
@@ -83,7 +83,7 @@ public class CreateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		ChannelMetadataDTO channelMetadataDTO = ModelConverter.DATA_CAST.toDTO(channelMetadata);
+		ChannelMetadataDTO channelMetadataDTO = RuntimeModelConverter.DATA_CAST.toDTO(channelMetadata);
 		return Response.ok().entity(channelMetadataDTO).build();
 	}
 

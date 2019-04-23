@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -163,7 +163,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			parentElementId = "-1";
 		}
 
-		Map<String, Object> attributes = ModelConverter.COMMON.toMap(attributesString);
+		Map<String, Object> attributes = RuntimeModelConverter.COMMON.toMap(attributesString);
 
 		return new ConfigElementImpl(this.configRegistryId, id, elementId, parentElementId, null, name, attributes, dateCreated, dateModified);
 	}
@@ -296,7 +296,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			throw new IOException("Element with same name already exists.");
 		}
 
-		String attributesString = ModelConverter.COMMON.toMapString(attributes);
+		String attributesString = RuntimeModelConverter.COMMON.toMapString(attributes);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
@@ -344,7 +344,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateAttributes(Connection conn, String elementId, Map<String, Object> attributes) throws SQLException {
-		String attributesString = ModelConverter.COMMON.toMapString(attributes);
+		String attributesString = RuntimeModelConverter.COMMON.toMapString(attributes);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET attributes=?, dateModified=? WHERE elementId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { attributesString, getCurrentTime(), elementId }, 1);

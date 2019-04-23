@@ -110,7 +110,7 @@ public class NodeExtensionListServlet extends HttpServlet {
 		}
 		request.setAttribute("extensions", extensions);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_extensions_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_extensions.jsp").forward(request, response);
 	}
 
 }

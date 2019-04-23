@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
-import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.connector.util.ClientModelConverter;
 import org.origin.common.resource.Path;
 
 public class ConfigElementImpl implements ConfigElement {
@@ -206,7 +206,7 @@ public class ConfigElementImpl implements ConfigElement {
 
 	@Override
 	public String toString() {
-		String attributesString = ModelConverter.COMMON.toMapString(this.attributes);
+		String attributesString = ClientModelConverter.COMMON.toMapString(this.attributes);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("ConfigElementImpl (");

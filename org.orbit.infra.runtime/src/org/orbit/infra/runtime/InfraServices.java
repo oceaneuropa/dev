@@ -37,8 +37,8 @@ public class InfraServices {
 	}
 
 	protected IndexServiceAdapter indexServiceAdapter;
-	protected ExtensionRegistryAdapter extensionRegistryAdapter;
 	protected ConfigRegistryServiceAdapter configRegistryAdapter;
+	protected ExtensionRegistryAdapter extensionRegistryAdapter;
 	protected DataCastServiceAdapter dataCastServiceAdapter;
 	protected DataTubeServiceAdapter dataTubeServiceAdapter;
 
@@ -56,11 +56,11 @@ public class InfraServices {
 		this.indexServiceAdapter = new IndexServiceAdapter(properties);
 		this.indexServiceAdapter.start(bundleContext);
 
-		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
-		this.extensionRegistryAdapter.start(bundleContext);
-
 		this.configRegistryAdapter = new ConfigRegistryServiceAdapter(properties);
 		this.configRegistryAdapter.start(bundleContext);
+
+		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
+		this.extensionRegistryAdapter.start(bundleContext);
 
 		this.dataCastServiceAdapter = new DataCastServiceAdapter(properties);
 		this.dataCastServiceAdapter.start(bundleContext);
@@ -85,14 +85,14 @@ public class InfraServices {
 			this.dataCastServiceAdapter = null;
 		}
 
-		if (this.configRegistryAdapter != null) {
-			this.configRegistryAdapter.stop(bundleContext);
-			this.configRegistryAdapter = null;
-		}
-
 		if (this.extensionRegistryAdapter != null) {
 			this.extensionRegistryAdapter.stop(bundleContext);
 			this.extensionRegistryAdapter = null;
+		}
+
+		if (this.configRegistryAdapter != null) {
+			this.configRegistryAdapter.stop(bundleContext);
+			this.configRegistryAdapter = null;
 		}
 
 		if (this.indexServiceAdapter != null) {
@@ -105,12 +105,12 @@ public class InfraServices {
 		return (this.indexServiceAdapter != null) ? this.indexServiceAdapter.getService() : null;
 	}
 
-	public ExtensionRegistryService getExtensionRegistryService() {
-		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
-	}
-
 	public ConfigRegistryService getConfigRegistryService() {
 		return (this.configRegistryAdapter != null) ? this.configRegistryAdapter.getService() : null;
+	}
+
+	public ExtensionRegistryService getExtensionRegistryService() {
+		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
 	}
 
 	public DataCastService getDataCastService() {

@@ -7,6 +7,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
+import org.origin.common.rest.model.ServiceMetadataDTO;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class IndexItemHelper {
@@ -46,14 +47,53 @@ public class IndexItemHelper {
 			// properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
 			properties.put(WSClientConstants.URL, serviceURL);
 
-			WSClientConfiguration config = WSClientConfiguration.create(properties);
-			WSClient wsClient = new WSClient(config);
-			if (wsClient.doPing()) {
-				return true;
+			try {
+				WSClientConfiguration config = WSClientConfiguration.create(properties);
+				WSClient wsClient = new WSClient(config);
+				if (wsClient.doPing()) {
+					return true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param indexItem
+	 * @return
+	 */
+	public Map<String, Object> getMetadata(IndexItem indexItem) {
+		Map<String, Object> metadataProperties = null;
+		if (indexItem != null) {
+			String serviceURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
+			if (serviceURL != null) {
+				if (!serviceURL.endsWith("/")) {
+					serviceURL += "/";
+				}
+				serviceURL += "metadata";
+			}
+
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put(WSClientConstants.URL, serviceURL);
+			try {
+				WSClientConfiguration config = WSClientConfiguration.create(properties);
+				WSClient wsClient = new WSClient(config);
+				ServiceMetadataDTO metadataDTO = wsClient.getMetadata();
+
+				if (metadataDTO != null) {
+					metadataProperties = metadataDTO.getProperties();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (metadataProperties == null) {
+			metadataProperties = new HashMap<String, Object>();
+		}
+		return metadataProperties;
 	}
 
 	/**

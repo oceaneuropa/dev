@@ -135,6 +135,34 @@ public class IConfigElementImpl implements IConfigElement {
 	}
 
 	@Override
+	public boolean setAttribute(String oldName, String attributeName, Object attributeValue) throws IOException {
+		if (attributeName == null || attributeName.isEmpty()) {
+			throw new IllegalArgumentException("attribute name is empty.");
+		}
+		if (attributeValue == null) {
+			throw new IllegalArgumentException("attribute value is null.");
+		}
+
+		String elementId = getElementId();
+		boolean isUpdated = this.registry.setConfigElementAttribute(elementId, oldName, attributeName, attributeValue);
+		if (isUpdated) {
+			if (!sync()) {
+				Map<String, Object> attributes = getAttributes();
+				if (oldName != null && !oldName.equals(attributeName)) {
+					// attribute name is changed
+					attributes.remove(oldName);
+					attributes.put(attributeName, attributeValue);
+				} else {
+					// attribute name is not changed
+					attributes.put(attributeName, attributeValue);
+				}
+				this.configElement.setDateModified(new Date().getTime());
+			}
+		}
+		return isUpdated;
+	}
+
+	@Override
 	public boolean setAttributes(Map<String, Object> attributes) throws IOException {
 		if (attributes == null || attributes.isEmpty()) {
 			throw new IllegalArgumentException("attributes is empty.");
@@ -145,6 +173,22 @@ public class IConfigElementImpl implements IConfigElement {
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.getAttributes().putAll(attributes);
+				this.configElement.setDateModified(new Date().getTime());
+			}
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean removeAttribute(String attributeName) throws IOException {
+		if (attributeName == null || attributeName.isEmpty()) {
+			throw new IllegalArgumentException("attribute name is empty.");
+		}
+		String elementId = getElementId();
+		boolean isUpdated = this.registry.removeConfigElementAttribute(elementId, attributeName);
+		if (isUpdated) {
+			if (!sync()) {
+				this.configElement.getAttributes().remove(attributeName);
 				this.configElement.setDateModified(new Date().getTime());
 			}
 		}

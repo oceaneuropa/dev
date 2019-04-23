@@ -10,7 +10,7 @@ import org.orbit.component.model.RequestConstants;
 import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.common.ws.AbstractOrbitCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.resources.node.INode;
 import org.origin.common.resources.util.WorkspaceHelper;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -39,7 +39,7 @@ public class NodeListWSCommand extends AbstractOrbitCommand<NodeControlService> 
 
 		List<INode> nodes = WorkspaceHelper.INSTANCE.getRootNodes(getService().getWorkspace());
 		for (INode node : nodes) {
-			NodeDTO nodeDTO = ModelConverter.NodeControl.toDTO(node);
+			NodeDTO nodeDTO = RuntimeModelConverter.NodeControl.toDTO(node);
 			nodeDTOs.add(nodeDTO);
 		}
 

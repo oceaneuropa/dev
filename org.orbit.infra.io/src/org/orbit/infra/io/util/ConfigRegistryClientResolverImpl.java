@@ -8,14 +8,14 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientResolver {
 
 	@Override
 	public ConfigRegistryClient resolve(String accessToken) {
-		ConfigRegistryClient configRegistryClient = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryClient(accessToken);
+		ConfigRegistryClient configRegistryClient = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistryClient(accessToken);
 		return configRegistryClient;
 	}
 
@@ -26,7 +26,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		}
 
 		IndexItem cfgIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currConfigRegistryName = (String) currIndexItem.getProperties().get(InfraConstants.SERVICE__NAME);

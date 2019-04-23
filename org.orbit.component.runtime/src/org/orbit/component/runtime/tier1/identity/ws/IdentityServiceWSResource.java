@@ -20,7 +20,7 @@ import org.orbit.component.runtime.model.identity.LogoutResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -70,7 +70,7 @@ public class IdentityServiceWSResource extends AbstractWSApplicationResource {
 
 		try {
 			IdentityService service = getService();
-			RegisterRequest request = ModelConverter.Identity.toRequest(requestDTO);
+			RegisterRequest request = RuntimeModelConverter.Identity.toRequest(requestDTO);
 			RegisterResponse response = service.register(request);
 
 			String status = response.isSucceed() ? StatusDTO.SUCCESS : StatusDTO.FAILED;
@@ -104,9 +104,9 @@ public class IdentityServiceWSResource extends AbstractWSApplicationResource {
 
 		try {
 			IdentityService service = getService();
-			LoginRequest request = ModelConverter.Identity.toRequest(requestDTO);
+			LoginRequest request = RuntimeModelConverter.Identity.toRequest(requestDTO);
 			LoginResponse response = service.login(request);
-			LoginResponseDTO responseDTO = ModelConverter.Identity.toResponse(response);
+			LoginResponseDTO responseDTO = RuntimeModelConverter.Identity.toResponse(response);
 			return Response.ok().entity(responseDTO).build();
 
 		} catch (ServerException e) {
@@ -134,7 +134,7 @@ public class IdentityServiceWSResource extends AbstractWSApplicationResource {
 
 		try {
 			IdentityService service = getService();
-			LogoutRequest request = ModelConverter.Identity.toRequest(requestDTO);
+			LogoutRequest request = RuntimeModelConverter.Identity.toRequest(requestDTO);
 			LogoutResponse response = service.logout(request);
 
 			String status = response.isSucceed() ? StatusDTO.SUCCESS : StatusDTO.FAILED;

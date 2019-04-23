@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
 
@@ -29,7 +29,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						MachineConfig machine = ModelConverter.Domain.toMachineConfig(map);
+						MachineConfig machine = ClientModelConverter.Domain.toMachineConfig(map);
 						if (machine != null) {
 							machineConfigs.add(machine);
 						}
@@ -47,7 +47,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				machineConfig = ModelConverter.Domain.toMachineConfig(map);
+				machineConfig = ClientModelConverter.Domain.toMachineConfig(map);
 			}
 		}
 		return machineConfig;
@@ -63,7 +63,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						PlatformConfig ta = ModelConverter.Domain.toPlatformConfig(map);
+						PlatformConfig ta = ClientModelConverter.Domain.toPlatformConfig(map);
 						if (ta != null) {
 							taConfigs.add(ta);
 						}
@@ -81,7 +81,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				taConfig = ModelConverter.Domain.toPlatformConfig(map);
+				taConfig = ClientModelConverter.Domain.toPlatformConfig(map);
 			}
 		}
 		return taConfig;
@@ -97,7 +97,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						NodeConfig nodeConfig = ModelConverter.Domain.toNodeConfig(map);
+						NodeConfig nodeConfig = ClientModelConverter.Domain.toNodeConfig(map);
 						if (nodeConfig != null) {
 							nodeConfigs.add(nodeConfig);
 						}
@@ -115,7 +115,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				nodeConfig = ModelConverter.Domain.toNodeConfig(map);
+				nodeConfig = ClientModelConverter.Domain.toNodeConfig(map);
 			}
 		}
 		return nodeConfig;

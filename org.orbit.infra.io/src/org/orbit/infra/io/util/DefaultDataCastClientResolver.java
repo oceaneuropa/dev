@@ -8,7 +8,7 @@ import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DefaultDataCastClientResolver implements DataCastClientResolver {
@@ -19,7 +19,7 @@ public class DefaultDataCastClientResolver implements DataCastClientResolver {
 			throw new IllegalArgumentException("dataCastServiceUrl is empty.");
 		}
 
-		DataCastClient dataCastClient = InfraClientsHelper.DATA_CAST.getDataCastClient(dataCastServiceUrl, accessToken);
+		DataCastClient dataCastClient = InfraClientsUtil.DATA_CAST.getDataCastClient(dataCastServiceUrl, accessToken);
 		return dataCastClient;
 	}
 
@@ -30,7 +30,7 @@ public class DefaultDataCastClientResolver implements DataCastClientResolver {
 		}
 
 		IndexItem dataCastIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);

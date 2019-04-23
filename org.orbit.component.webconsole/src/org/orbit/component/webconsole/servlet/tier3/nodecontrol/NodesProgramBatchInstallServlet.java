@@ -18,7 +18,7 @@ import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -78,7 +78,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						continue;
 					}
 
-					IndexItem nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (autoStartNode) {
 						boolean doStartNode = false;
 						if (nodeIndexItem == null) {
@@ -99,7 +99,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 
 							long totalWaitingTime = 0;
 							while (nodeIndexItem == null) {
-								nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+								nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 								try {
 									Thread.sleep(1000);
 								} catch (Exception e) {

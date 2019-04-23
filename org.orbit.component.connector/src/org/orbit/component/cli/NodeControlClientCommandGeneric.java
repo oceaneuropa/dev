@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -163,7 +163,7 @@ public class NodeControlClientCommandGeneric implements CommandActivator {
 			Request request = new Request(RequestConstants.GET_NODES);
 			response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
+			NodeInfo[] nodeInfos = ClientModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {

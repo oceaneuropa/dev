@@ -7,7 +7,7 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceAdapter;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.auth.ws.AuthServiceAdapter;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
 import org.orbit.component.runtime.tier1.identity.ws.IdentityServiceAdapter;
@@ -180,7 +180,7 @@ public class OrbitServices {
 		return (this.authServiceAdapter != null) ? this.authServiceAdapter.getService() : null;
 	}
 
-	public ConfigRegistryService getConfigRegistryService() {
+	public ConfigRegistryServiceV0 getConfigRegistryService() {
 		return (this.configRegistryServiceAdapter != null) ? this.configRegistryServiceAdapter.getService() : null;
 	}
 

@@ -1,7 +1,7 @@
 package other.orbit.component.runtime.tier1.config.ws;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceIndexTimer;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryWSApplication;
 import org.origin.common.rest.server.FeatureConstants;
@@ -20,7 +20,7 @@ import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 public class ConfigRegistryServiceAdapterV1 {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected ServiceTracker<ConfigRegistryService, ConfigRegistryService> serviceTracker;
+	protected ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0> serviceTracker;
 	protected ConfigRegistryWSApplication webServiceApp;
 	protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
 
@@ -28,7 +28,7 @@ public class ConfigRegistryServiceAdapterV1 {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
-	public ConfigRegistryService getService() {
+	public ConfigRegistryServiceV0 getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -37,10 +37,10 @@ public class ConfigRegistryServiceAdapterV1 {
 	 * @param bundleContext
 	 */
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<ConfigRegistryService, ConfigRegistryService>(bundleContext, ConfigRegistryService.class, new ServiceTrackerCustomizer<ConfigRegistryService, ConfigRegistryService>() {
+		this.serviceTracker = new ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0>(bundleContext, ConfigRegistryServiceV0.class, new ServiceTrackerCustomizer<ConfigRegistryServiceV0, ConfigRegistryServiceV0>() {
 			@Override
-			public ConfigRegistryService addingService(ServiceReference<ConfigRegistryService> reference) {
-				ConfigRegistryService service = bundleContext.getService(reference);
+			public ConfigRegistryServiceV0 addingService(ServiceReference<ConfigRegistryServiceV0> reference) {
+				ConfigRegistryServiceV0 service = bundleContext.getService(reference);
 				System.out.println("ConfigRegistryService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -48,12 +48,12 @@ public class ConfigRegistryServiceAdapterV1 {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
+			public void modifiedService(ServiceReference<ConfigRegistryServiceV0> reference, ConfigRegistryServiceV0 service) {
 				System.out.println("ConfigRegistryService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
+			public void removedService(ServiceReference<ConfigRegistryServiceV0> reference, ConfigRegistryServiceV0 service) {
 				System.out.println("ConfigRegistryService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -78,7 +78,7 @@ public class ConfigRegistryServiceAdapterV1 {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStart(BundleContext bundleContext, ConfigRegistryService service) {
+	protected void doStart(BundleContext bundleContext, ConfigRegistryServiceV0 service) {
 		this.webServiceApp = new ConfigRegistryWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
@@ -93,7 +93,7 @@ public class ConfigRegistryServiceAdapterV1 {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStop(BundleContext bundleContext, ConfigRegistryService service) {
+	protected void doStop(BundleContext bundleContext, ConfigRegistryServiceV0 service) {
 		// Stop Timers
 		if (this.serviceIndexTimer != null) {
 			this.serviceIndexTimer.stop();

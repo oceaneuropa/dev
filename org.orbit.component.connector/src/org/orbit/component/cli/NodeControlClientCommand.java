@@ -13,7 +13,7 @@ import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -161,7 +161,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 			Request request = new Request(RequestConstants.GET_NODES);
 			response = nodeControl.sendRequest(request);
 
-			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
+			NodeInfo[] nodeInfos = ClientModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {
@@ -195,7 +195,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 
 			response = nodeControl.sendRequest(request);
 
-			NodeInfo nodeInfo = ModelConverter.NodeControl.getNode(response);
+			NodeInfo nodeInfo = ClientModelConverter.NodeControl.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
@@ -230,7 +230,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 			request.setParameter("nodeId", nodeId);
 
 			response = nodeControl.sendRequest(request);
-			boolean exists = ModelConverter.NodeControl.exists(response);
+			boolean exists = ClientModelConverter.NodeControl.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
@@ -258,7 +258,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 
 			response = nodeControl.sendRequest(request);
 
-			boolean succeed = ModelConverter.NodeControl.isCreated(response);
+			boolean succeed = ClientModelConverter.NodeControl.isCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -286,7 +286,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 
 			response = nodeControl.sendRequest(request);
 
-			boolean succeed = ModelConverter.NodeControl.isDeleted(response);
+			boolean succeed = ClientModelConverter.NodeControl.isDeleted(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -314,7 +314,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 
 			response = nodeControl.sendRequest(request);
 
-			String status = ModelConverter.NodeControl.getStatus(response);
+			String status = ClientModelConverter.NodeControl.getStatus(response);
 			LOG.info("status: " + status);
 
 		} catch (Exception e) {

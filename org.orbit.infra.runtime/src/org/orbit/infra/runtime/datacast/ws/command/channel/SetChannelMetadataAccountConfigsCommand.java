@@ -12,7 +12,7 @@ import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.model.AccessConfig;
 import org.origin.common.model.AccountConfig;
 import org.origin.common.model.RoleConfig;
@@ -51,7 +51,7 @@ public class SetChannelMetadataAccountConfigsCommand extends AbstractInfraComman
 		}
 
 		String accountConfigsString = request.getStringParameter("account_configs");
-		List<AccountConfig> newAccountConfigs = ModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
+		List<AccountConfig> newAccountConfigs = RuntimeModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
 
 		boolean appendAccountConfigs = request.getBooleanParameter("append_account_configs");
 		boolean appendAccountConfig = request.getBooleanParameter("append_account_config");

@@ -22,7 +22,7 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemUpdateRequest;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -98,7 +98,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 			}
 			if (items != null) {
 				for (ExtensionItem item : items) {
-					ExtensionItemDTO DTO = ModelConverter.EXTENSION_REGISTRY.toDTO(item);
+					ExtensionItemDTO DTO = RuntimeModelConverter.EXTENSION_REGISTRY.toDTO(item);
 					DTOs.add(DTO);
 				}
 			}
@@ -140,7 +140,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 
 			ExtensionItem newItem = service.addExtensionItem(platformId, typeId, extensionId, name, description, properties);
 			if (newItem != null) {
-				newDTO = ModelConverter.EXTENSION_REGISTRY.toDTO(newItem);
+				newDTO = RuntimeModelConverter.EXTENSION_REGISTRY.toDTO(newItem);
 			}
 
 		} catch (ServerException e) {

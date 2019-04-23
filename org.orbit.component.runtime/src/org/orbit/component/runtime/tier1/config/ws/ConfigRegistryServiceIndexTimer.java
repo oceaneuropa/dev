@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
@@ -19,21 +19,21 @@ import org.origin.common.service.WebServiceAwareHelper;
  * ConfigRegistry service timer to update index item for the service.
  *
  */
-public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryService> {
+public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryServiceV0> {
 
 	/**
 	 * 
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ConfigRegistryServiceIndexTimer(ConfigRegistryService service) {
+	public ConfigRegistryServiceIndexTimer(ConfigRegistryServiceV0 service) {
 		super(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider) throws IOException {
-		ConfigRegistryService service = getService();
+		ConfigRegistryServiceV0 service = getService();
 
 		String name = service.getName();
 		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.CONFIG_REGISTRY_TYPE, name);
@@ -41,7 +41,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 
 	@Override
 	public IndexItem addIndex(IndexServiceClient indexProvider) throws IOException {
-		ConfigRegistryService service = getService();
+		ConfigRegistryServiceV0 service = getService();
 
 		String name = service.getName();
 		String hostURL = service.getHostURL();
@@ -62,7 +62,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 
 	@Override
 	public void updateIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
-		ConfigRegistryService service = getService();
+		ConfigRegistryServiceV0 service = getService();
 
 		String name = service.getName();
 		String hostURL = service.getHostURL();

@@ -8,7 +8,7 @@ import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -78,7 +78,7 @@ public class GetRuntimeChannelCommand extends AbstractInfraCommand<DataTubeServi
 			return Response.ok().build();
 		}
 
-		RuntimeChannelDTO runtimeChannelDTO = ModelConverter.DATA_TUBE.toDTO(runtimeChannel);
+		RuntimeChannelDTO runtimeChannelDTO = RuntimeModelConverter.DATA_TUBE.toDTO(runtimeChannel);
 		return Response.ok().entity(runtimeChannelDTO).build();
 	}
 

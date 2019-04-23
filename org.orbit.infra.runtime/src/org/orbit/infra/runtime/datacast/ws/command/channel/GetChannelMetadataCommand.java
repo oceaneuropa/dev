@@ -8,7 +8,7 @@ import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -56,7 +56,7 @@ public class GetChannelMetadataCommand extends AbstractInfraCommand<DataCastServ
 			return Response.ok().build();
 		}
 
-		ChannelMetadataDTO channelMetadataDTO = ModelConverter.DATA_CAST.toDTO(channelMetadata);
+		ChannelMetadataDTO channelMetadataDTO = RuntimeModelConverter.DATA_CAST.toDTO(channelMetadata);
 		return Response.ok().entity(channelMetadataDTO).build();
 	}
 

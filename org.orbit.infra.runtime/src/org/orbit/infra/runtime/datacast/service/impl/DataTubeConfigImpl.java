@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 
 public class DataTubeConfigImpl implements DataTubeConfig {
 
@@ -128,7 +128,7 @@ public class DataTubeConfigImpl implements DataTubeConfig {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		String propertiesString = ModelConverter.COMMON.toPropertiesString(this.properties);
+		String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(this.properties);
 
 		sb.append("DataTubeConfigImpl (");
 		sb.append("id='").append(this.id).append("'");

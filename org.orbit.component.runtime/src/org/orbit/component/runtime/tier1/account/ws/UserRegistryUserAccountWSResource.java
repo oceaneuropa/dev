@@ -17,7 +17,7 @@ import org.orbit.component.model.tier1.account.UserAccountActionDTO;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -69,7 +69,7 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with accountId '%s' is not found.", accountId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
+			userAccountDTO = RuntimeModelConverter.Account.toUserAccountDTO(userAccount);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

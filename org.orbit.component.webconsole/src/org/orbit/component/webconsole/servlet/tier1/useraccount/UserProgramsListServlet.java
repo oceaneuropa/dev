@@ -115,7 +115,7 @@ public class UserProgramsListServlet extends HttpServlet {
 			request.setAttribute("userPrograms", userPrograms);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/user_programs_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/user_programs.jsp").forward(request, response);
 	}
 
 }

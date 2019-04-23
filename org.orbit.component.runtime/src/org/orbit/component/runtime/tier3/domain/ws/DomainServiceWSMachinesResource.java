@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -75,7 +75,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 			List<MachineConfig> machineConfigs = service.getMachineConfigs();
 			if (machineConfigs != null) {
 				for (MachineConfig machineConfig : machineConfigs) {
-					MachineConfigDTO machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
+					MachineConfigDTO machineConfigDTO = RuntimeModelConverter.Domain.toMachineConfigDTO(machineConfig);
 					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}
@@ -107,7 +107,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Machine with id '%s' cannot be found.", machineId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
-			machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
+			machineConfigDTO = RuntimeModelConverter.Domain.toMachineConfigDTO(machineConfig);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -146,7 +146,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
-			MachineConfig addMachineRequest = ModelConverter.Domain.toMachineConfig(addMachineRequestDTO);
+			MachineConfig addMachineRequest = RuntimeModelConverter.Domain.toMachineConfig(addMachineRequestDTO);
 			succeed = service.addMachineConfig(addMachineRequest);
 
 		} catch (ServerException e) {
@@ -181,7 +181,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			MachineConfig updateMachineRequest = ModelConverter.Domain.toMachineConfig(updateMachineRequestDTO);
+			MachineConfig updateMachineRequest = RuntimeModelConverter.Domain.toMachineConfig(updateMachineRequestDTO);
 			List<String> fieldsToUpdate = updateMachineRequestDTO.getFieldsToUpdate();
 			succeed = service.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
 

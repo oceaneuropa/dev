@@ -18,7 +18,7 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
@@ -92,7 +92,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 						List<AccountConfig> accountConfigs = null;
 						Map<String, Object> properties = null;
 
-						channelMetadata = InfraClientsHelper.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, dataTubeId, name, channelStatus, accessType, accessCode, ownerAccountId, accountConfigs, properties);
+						channelMetadata = InfraClientsUtil.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, dataTubeId, name, channelStatus, accessType, accessCode, ownerAccountId, accountConfigs, properties);
 
 						if (channelMetadata != null) {
 							message = MessageHelper.INSTANCE.add(message, "Channel metadata is created.");
@@ -104,7 +104,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 
 								if (isDataTubeOnline) {
 									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-									RuntimeChannel runtimeChannel = InfraClientsHelper.DATA_TUBE.createRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, true);
+									RuntimeChannel runtimeChannel = InfraClientsUtil.DATA_TUBE.createRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, true);
 
 									if (runtimeChannel != null) {
 										message = MessageHelper.INSTANCE.add(message, "Runtime channel is created.");

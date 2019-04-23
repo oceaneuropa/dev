@@ -2,13 +2,13 @@ package other.orbit.component.runtime.tier1.config.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryWSResource;
 import org.osgi.framework.ServiceRegistration;
 
 public class ConfigRegistryWSApplicationV1 extends OrbitWSApplication {
 
-	protected ConfigRegistryService service;
+	protected ConfigRegistryServiceV0 service;
 	protected ServiceRegistration<?> serviceRegistration;
 
 	/**
@@ -16,20 +16,20 @@ public class ConfigRegistryWSApplicationV1 extends OrbitWSApplication {
 	 * @param bundleContext
 	 * @param service
 	 */
-	public ConfigRegistryWSApplicationV1(final ConfigRegistryService service, int feature) {
+	public ConfigRegistryWSApplicationV1(final ConfigRegistryServiceV0 service, int feature) {
 		super(service, feature);
 		this.service = service;
 
 		register(new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(service).to(ConfigRegistryService.class);
+				bind(service).to(ConfigRegistryServiceV0.class);
 			}
 		});
 		register(ConfigRegistryWSResource.class);
 	}
 
-	public ConfigRegistryService getConfigRegistryService() {
+	public ConfigRegistryServiceV0 getConfigRegistryService() {
 		return this.service;
 	}
 

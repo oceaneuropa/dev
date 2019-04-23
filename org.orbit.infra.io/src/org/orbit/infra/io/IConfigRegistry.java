@@ -74,9 +74,13 @@ public interface IConfigRegistry {
 
 	boolean updateConfigElementName(String elementId, String newName) throws IOException;
 
+	boolean setConfigElementAttribute(String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws IOException;
+
 	boolean setConfigElementAttributes(String elementId, Map<String, Object> attributes) throws IOException;
 
-	boolean removeConfigElementAttributes(String elementId, List<String> attributeName) throws IOException;
+	boolean removeConfigElementAttribute(String elementId, String attributeName) throws IOException;
+
+	boolean removeConfigElementAttributes(String elementId, List<String> attributeNames) throws IOException;
 
 	boolean deleteConfigElement(String elementId) throws IOException;
 

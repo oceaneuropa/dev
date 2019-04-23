@@ -8,7 +8,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.AddNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.AddPlatformConfigRequest;
@@ -61,7 +61,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<MachineConfigDTO> machineDTOs = this.client.getMachines();
 			for (MachineConfigDTO machineDTO : machineDTOs) {
-				machines.add(ModelConverter.Domain.toMachineConfig(machineDTO));
+				machines.add(ClientModelConverter.Domain.toMachineConfig(machineDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -77,7 +77,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			MachineConfigDTO machineDTO = this.client.getMachine(machineId);
 			if (machineDTO != null) {
-				machine = ModelConverter.Domain.toMachineConfig(machineDTO);
+				machine = ClientModelConverter.Domain.toMachineConfig(machineDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -91,7 +91,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO addMachineRequestDTO = ModelConverter.Domain.toDTO(addMachineRequest);
+			MachineConfigDTO addMachineRequestDTO = ClientModelConverter.Domain.toDTO(addMachineRequest);
 			StatusDTO status = this.client.addMachine(addMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -108,7 +108,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO updateMachineRequestDTO = ModelConverter.Domain.toDTO(updateMachineRequest);
+			MachineConfigDTO updateMachineRequestDTO = ClientModelConverter.Domain.toDTO(updateMachineRequest);
 			StatusDTO status = this.client.updateMachine(updateMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -156,7 +156,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<PlatformConfigDTO> platformConfigDTOs = this.client.getPlatformConfigs(machineId);
 			for (PlatformConfigDTO platformConfigDTO : platformConfigDTOs) {
-				platformConfigs.add(ModelConverter.Domain.toPlatformConfig(machineId, platformConfigDTO));
+				platformConfigs.add(ClientModelConverter.Domain.toPlatformConfig(machineId, platformConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -173,7 +173,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			PlatformConfigDTO platformConfigDTO = this.client.getPlatformConfig(machineId, platformId);
 			if (platformConfigDTO != null) {
-				platformConfig = ModelConverter.Domain.toPlatformConfig(machineId, platformConfigDTO);
+				platformConfig = ClientModelConverter.Domain.toPlatformConfig(machineId, platformConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -188,7 +188,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkPlatformId(platformId);
 
 		try {
-			PlatformConfigDTO addPlatformConfigDTO = ModelConverter.Domain.toDTO(addPlatformConfigRequest);
+			PlatformConfigDTO addPlatformConfigDTO = ClientModelConverter.Domain.toDTO(addPlatformConfigRequest);
 			StatusDTO status = this.client.addPlatformConfig(machineId, addPlatformConfigDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -206,7 +206,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkPlatformId(platformId);
 
 		try {
-			PlatformConfigDTO updatePlatformConfigDTO = ModelConverter.Domain.toDTO(updatePlatformConfigRequest);
+			PlatformConfigDTO updatePlatformConfigDTO = ClientModelConverter.Domain.toDTO(updatePlatformConfigRequest);
 			StatusDTO status = this.client.updatePlatformConfig(machineId, updatePlatformConfigDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -256,7 +256,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<NodeConfigDTO> nodeConfigDTOs = this.client.getNodes(machineId, platformId);
 			for (NodeConfigDTO nodeConfigDTO : nodeConfigDTOs) {
-				nodeConfigs.add(ModelConverter.Domain.toNodeConfig(machineId, platformId, nodeConfigDTO));
+				nodeConfigs.add(ClientModelConverter.Domain.toNodeConfig(machineId, platformId, nodeConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -274,7 +274,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			NodeConfigDTO nodeConfigDTO = this.client.getNode(machineId, platformId, nodeId);
 			if (nodeConfigDTO != null) {
-				nodeConfig = ModelConverter.Domain.toNodeConfig(machineId, platformId, nodeConfigDTO);
+				nodeConfig = ClientModelConverter.Domain.toNodeConfig(machineId, platformId, nodeConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -290,7 +290,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO addNodeRequestDTO = ModelConverter.Domain.toDTO(addNodeRequest);
+			NodeConfigDTO addNodeRequestDTO = ClientModelConverter.Domain.toDTO(addNodeRequest);
 			StatusDTO status = this.client.addNode(machineId, platformId, addNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -309,7 +309,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO updateNodeRequestDTO = ModelConverter.Domain.toDTO(updateNodeRequest);
+			NodeConfigDTO updateNodeRequestDTO = ClientModelConverter.Domain.toDTO(updateNodeRequest);
 			StatusDTO status = this.client.updateNode(machineId, platformId, updateNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;

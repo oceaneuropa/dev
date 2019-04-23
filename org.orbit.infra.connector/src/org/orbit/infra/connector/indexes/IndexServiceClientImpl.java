@@ -9,7 +9,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemUpdater;
 import org.orbit.infra.api.indexes.IndexItemUpdaterSupport;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
@@ -106,7 +106,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				// checkIndexItem(null, indexProviderId, type, null, indexItemDTO);
 				//
 				// IndexItemImpl indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
-				IndexItem indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
+				IndexItem indexItem = ClientModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 				indexItems.add(indexItem);
 			}
 		} catch (ClientException e) {
@@ -134,7 +134,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				// checkIndexItem(null, indexProviderId, type, name, indexItemDTO);
 
 				// indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
-				indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
+				indexItem = ClientModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 		} catch (ClientException e) {
 			LOG.error("ClientException: getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
@@ -163,7 +163,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				// checkIndexItem(indexItemId, null, null, null, indexItemDTO);
 				//
 				// indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
-				indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
+				indexItem = ClientModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 		} catch (ClientException e) {
 			// e.printStackTrace();
@@ -190,7 +190,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				// Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
 				//
 				// newIndexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
-				newIndexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
+				newIndexItem = ClientModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 
 		} catch (ClientException e) {

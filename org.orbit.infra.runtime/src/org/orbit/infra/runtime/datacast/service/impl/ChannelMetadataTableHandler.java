@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -173,8 +173,8 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			dataTubeId = "-1";
 		}
 
-		List<AccountConfig> accountConfigs = ModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
-		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
+		List<AccountConfig> accountConfigs = RuntimeModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
+		Map<String, Object> properties = RuntimeModelConverter.COMMON.toProperties(propertiesString);
 
 		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties, dateCreated, dateModified);
 	}
@@ -309,8 +309,8 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			throw new IOException("Channel with same name already exists.");
 		}
 
-		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
-		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
+		String accountConfigsString = RuntimeModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+		String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
@@ -397,7 +397,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateAccountConfigs(Connection conn, String channelId, List<AccountConfig> accountConfigs) throws SQLException {
-		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+		String accountConfigsString = RuntimeModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET accountConfigs=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { accountConfigsString, getCurrentTime(), channelId }, 1);
@@ -412,7 +412,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String channelId, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
+		String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), channelId }, 1);

@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.connector.tier1.auth.AuthWSClient;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
@@ -104,11 +104,11 @@ public class AuthImplClientV1 implements AuthClient {
 	@Override
 	public AuthorizationResponse authorize(AuthorizationRequest authRequest) throws ClientException {
 		AuthorizationResponse authResponse = null;
-		AuthorizationRequestDTO authRequestDTO = ModelConverter.Auth.toRequestDTO(authRequest);
+		AuthorizationRequestDTO authRequestDTO = ClientModelConverter.Auth.toRequestDTO(authRequest);
 		try {
 			AuthorizationResponseDTO authResponseDTO = this.client.authorize(authRequestDTO);
 			if (authResponseDTO != null) {
-				authResponse = ModelConverter.Auth.toResponseDTO(authResponseDTO);
+				authResponse = ClientModelConverter.Auth.toResponseDTO(authResponseDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -119,11 +119,11 @@ public class AuthImplClientV1 implements AuthClient {
 	@Override
 	public TokenResponse getToken(TokenRequest tokenRequest) throws ClientException {
 		TokenResponse tokenResponse = null;
-		TokenRequestDTO tokenRequestDTO = ModelConverter.Auth.toRequestDTO(tokenRequest);
+		TokenRequestDTO tokenRequestDTO = ClientModelConverter.Auth.toRequestDTO(tokenRequest);
 		try {
 			TokenResponseDTO tokenResponseDTO = this.client.token(tokenRequestDTO);
 			if (tokenResponseDTO != null) {
-				tokenResponse = ModelConverter.Auth.toResponseDTO(tokenResponseDTO);
+				tokenResponse = ClientModelConverter.Auth.toResponseDTO(tokenResponseDTO);
 			}
 		} catch (ClientException e) {
 			throw e;

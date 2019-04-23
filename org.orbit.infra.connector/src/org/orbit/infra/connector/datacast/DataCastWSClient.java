@@ -5,7 +5,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.RequestConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
@@ -42,7 +42,7 @@ public class DataCastWSClient extends WSClient {
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
 
-			dataTubeId = ModelConverter.DATA_CAST.getDataTubeId(response);
+			dataTubeId = ClientModelConverter.DATA_CAST.getDataTubeId(response);
 
 		} catch (ClientException e) {
 			handleException(e);

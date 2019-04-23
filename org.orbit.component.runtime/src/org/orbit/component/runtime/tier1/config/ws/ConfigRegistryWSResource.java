@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier1.configregistry.SetPropertiesDTO;
 import org.orbit.component.runtime.model.configregistry.EPath;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistry;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -43,9 +43,9 @@ public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 	protected static final Map<String, String> EMPTY_MAP = new LinkedHashMap<String, String>();
 
 	@Inject
-	public ConfigRegistryService service;
+	public ConfigRegistryServiceV0 service;
 
-	public ConfigRegistryService getService() throws RuntimeException {
+	public ConfigRegistryServiceV0 getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("ConfigRegistryService is not available.");
 		}
@@ -66,7 +66,7 @@ public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProperties(@PathParam("accountId") String accountId, @QueryParam("path") String path) {
 		// ConfigRegistryService service = getService(ConfigRegistryService.class);
-		ConfigRegistryService service = getService();
+		ConfigRegistryServiceV0 service = getService();
 
 		Map<String, String> properties = null;
 		try {

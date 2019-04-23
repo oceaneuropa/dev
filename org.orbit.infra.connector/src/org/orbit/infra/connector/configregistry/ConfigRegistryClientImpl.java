@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
-import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.RequestConstants;
 import org.origin.common.resource.Path;
 import org.origin.common.rest.client.ClientException;
@@ -47,7 +47,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configRegistries = ModelConverter.CONFIG_REGISTRY.getConfigRegistries(this, response);
+				configRegistries = ClientModelConverter.CONFIG_REGISTRY.getConfigRegistries(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -70,7 +70,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configRegistries = ModelConverter.CONFIG_REGISTRY.getConfigRegistries(this, response);
+				configRegistries = ClientModelConverter.CONFIG_REGISTRY.getConfigRegistries(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -93,7 +93,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configRegistry = ModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
+				configRegistry = ClientModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -113,7 +113,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configRegistry = ModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
+				configRegistry = ClientModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -133,7 +133,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -153,7 +153,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -179,7 +179,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configRegistry = ModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
+				configRegistry = ClientModelConverter.CONFIG_REGISTRY.getConfigRegistry(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -201,7 +201,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -223,7 +223,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -245,7 +245,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -267,7 +267,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -287,7 +287,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -307,7 +307,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -327,7 +327,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElements = ModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
+				configElements = ClientModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -352,7 +352,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElements = ModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
+				configElements = ClientModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -377,7 +377,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElements = ModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
+				configElements = ClientModelConverter.CONFIG_REGISTRY.getConfigElements(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -402,7 +402,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElement = ModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -424,7 +424,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElement = ModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -449,7 +449,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElement = ModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -471,7 +471,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				path = ModelConverter.COMMON.getPath(response);
+				path = ClientModelConverter.COMMON.getPath(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -493,7 +493,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -515,7 +515,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -540,7 +540,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.COMMON.exists(response);
+				exists = ClientModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -566,7 +566,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElement = ModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -595,7 +595,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				configElement = ModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -619,7 +619,34 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean setConfigElementAttribute(String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException {
+		checkNullParameter(configRegistryId, "configRegistryId is null.");
+		checkNullParameter(elementId, "elementId is null.");
+		checkNullParameter(attributeName, "attribute name is null.");
+		checkNullParameter(attributeValue, "attribute value is null.");
+
+		Request request = new Request(RequestConstants.CONFIG_ELEMENT__SET_CONFIG_ELEMENT_ATTRIBUTE);
+		request.setParameter("config_registry_id", configRegistryId);
+		request.setParameter("element_id", elementId);
+		request.setParameter("old_attribute_name", oldAttributeName);
+		request.setParameter("attribute_name", attributeName);
+		request.setParameter("attribute_value", attributeValue);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -643,7 +670,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -652,22 +679,46 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean removeConfigElementAttributes(String configRegistryId, String elementId, List<String> attributeName) throws ClientException {
+	public boolean removeConfigElementAttribute(String configRegistryId, String elementId, String attributeName) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
-		checkNullParameter(attributeName, "attributeName is null.");
+		checkNullParameter(attributeName, "attribute name is null.");
 
-		Request request = new Request(RequestConstants.CONFIG_ELEMENT__REMOVE_CONFIG_ELEMENT_ATTRIBUTES);
+		Request request = new Request(RequestConstants.CONFIG_ELEMENT__REMOVE_CONFIG_ELEMENT_ATTRIBUTE);
 		request.setParameter("config_registry_id", configRegistryId);
 		request.setParameter("element_id", elementId);
-		request.setParameter("attribute_names", attributeName);
+		request.setParameter("attribute_name", attributeName);
 
 		boolean isUpdated = false;
 		Response response = null;
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.COMMON.isUpdated(response);
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean removeConfigElementAttributes(String configRegistryId, String elementId, List<String> attributeNames) throws ClientException {
+		checkNullParameter(configRegistryId, "configRegistryId is null.");
+		checkNullParameter(elementId, "elementId is null.");
+		checkNullParameter(attributeNames, "attributeName is null.");
+
+		Request request = new Request(RequestConstants.CONFIG_ELEMENT__REMOVE_CONFIG_ELEMENT_ATTRIBUTES);
+		request.setParameter("config_registry_id", configRegistryId);
+		request.setParameter("element_id", elementId);
+		request.setParameter("attribute_names", attributeNames);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -689,7 +740,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -711,7 +762,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.COMMON.isDeleted(response);
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

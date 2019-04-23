@@ -17,7 +17,7 @@ import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
@@ -95,7 +95,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 					dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 					if (isDataCastOnline) {
-						dataCastServiceMetadata = InfraClientsHelper.DATA_CAST.getServiceMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken);
+						dataCastServiceMetadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken);
 					} else {
 						message = MessageHelper.INSTANCE.add(message, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
 					}
@@ -112,8 +112,8 @@ public class RuntimeChannelListServlet extends HttpServlet {
 					// Get runtime channels from DataTube service
 					if (isDataTubeOnline) {
 						try {
-							dataTubeServiceMetadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(dataTubeClientResolver, dataTubeServiceUrl, accessToken);
-							runtimeChannels = InfraClientsHelper.DATA_TUBE.getRuntimeChannels(dataTubeClientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
+							dataTubeServiceMetadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(dataTubeClientResolver, dataTubeServiceUrl, accessToken);
+							runtimeChannels = InfraClientsUtil.DATA_TUBE.getRuntimeChannels(dataTubeClientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
 
 							if (isDataCastOnline) {
 								for (RuntimeChannel runtimeChannel : runtimeChannels) {
@@ -121,7 +121,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 
 									// Get channel metadata of the runtime channel from DataCast service
 									try {
-										ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
+										ChannelMetadata channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 										if (channelMetadata != null) {
 											runtimeChannel.adapt(ChannelMetadata.class, channelMetadata);
 										}

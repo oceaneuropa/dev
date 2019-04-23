@@ -1,10 +1,10 @@
 package org.orbit.infra.io;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.io.impl.CFGImpl;
 import org.orbit.infra.io.util.ConfigRegistryClientResolverImpl;
@@ -12,7 +12,7 @@ import org.origin.common.rest.model.ServiceMetadata;
 
 public abstract class CFG {
 
-	protected static Map<String, CFG> CFG_MAP = new HashMap<String, CFG>();
+	// protected static Map<String, CFG> CFG_MAP = new HashMap<String, CFG>();
 
 	/**
 	 * 
@@ -33,17 +33,19 @@ public abstract class CFG {
 	 */
 	public synchronized static CFG get(String accessToken) {
 		// String key = configRegistryServiceUrl + "|" + indexServiceUrl + "|" + accessToken;
-		String key = accessToken;
-		CFG cfg = CFG_MAP.get(key);
-		if (cfg == null) {
-			cfg = new CFGImpl(accessToken);
-			CFG_MAP.put(key, cfg);
-		}
+		// String key = accessToken;
+		// CFG cfg = CFG_MAP.get(key);
+		// if (cfg == null) {
+		// cfg = new CFGImpl(accessToken);
+		// CFG_MAP.put(key, cfg);
+		// }
+		// return cfg;
+		CFG cfg = new CFGImpl(accessToken);
 		return cfg;
 	}
 
 	public synchronized static void clear() {
-		CFG_MAP.clear();
+		// CFG_MAP.clear();
 	}
 
 	// protected String configRegistryServiceUrl;
@@ -84,6 +86,19 @@ public abstract class CFG {
 
 	public ConfigRegistryClientResolver getClientResolver() {
 		return this.clientResolver;
+	}
+
+	public boolean isOnline() {
+		boolean isOnline = false;
+		ConfigRegistryClientResolver clientResolver = getClientResolver();
+		if (clientResolver != null) {
+			String accessToken = getAccessToken();
+			ConfigRegistryClient client = clientResolver.resolve(accessToken);
+			if (client != null && client.ping()) {
+				isOnline = true;
+			}
+		}
+		return isOnline;
 	}
 
 	// -----------------------------------------------------------------------------------

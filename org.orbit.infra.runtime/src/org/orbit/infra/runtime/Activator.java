@@ -31,26 +31,26 @@ public class Activator implements BundleActivator {
 		Activator.instance = this;
 
 		// Load config properties
+		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
 		DataCastConfigPropertiesHandler.getInstance().start(bundleContext);
 		DataTubeConfigPropertiesHandler.getInstance().start(bundleContext);
-		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
-
-		// Register extensions
-		Extensions.INSTANCE.start(bundleContext);
 
 		// Start tracking infra services
 		InfraServices.getInstance().start(bundleContext);
+
+		// Register extensions
+		Extensions.INSTANCE.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.debug("stop");
 
-		// Stop tracking infra services
-		InfraServices.getInstance().stop(bundleContext);
-
 		// Unregister extensions
 		Extensions.INSTANCE.stop(bundleContext);
+
+		// Stop tracking infra services
+		InfraServices.getInstance().stop(bundleContext);
 
 		// Unload config properties
 		DataCastConfigPropertiesHandler.getInstance().stop(bundleContext);

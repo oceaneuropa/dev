@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -18,9 +18,9 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 public class ConfigRegistryServiceWSResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public ConfigRegistryService service;
+	public ConfigRegistryServiceV0 service;
 
-	public ConfigRegistryService getService() throws RuntimeException {
+	public ConfigRegistryServiceV0 getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("ConfigRegistryService is not available.");
 		}
@@ -32,7 +32,7 @@ public class ConfigRegistryServiceWSResource extends AbstractWSApplicationResour
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
 		// ConfigRegistryService configRegistryService = getService(ConfigRegistryService.class);
-		ConfigRegistryService configRegistryService = getService();
+		ConfigRegistryServiceV0 configRegistryService = getService();
 		if (configRegistryService != null) {
 			return Response.ok(1).build();
 		}

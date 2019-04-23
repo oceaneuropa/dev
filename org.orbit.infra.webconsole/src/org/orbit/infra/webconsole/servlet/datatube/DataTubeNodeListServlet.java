@@ -15,7 +15,7 @@ import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
@@ -90,12 +90,12 @@ public class DataTubeNodeListServlet extends HttpServlet {
 							if (isDataTubeOnline) {
 								try {
 									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-									DataTubeServiceMetadata metadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
+									DataTubeServiceMetadata metadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
 									if (metadata != null) {
 										configElement.adapt(DataTubeServiceMetadata.class, metadata);
 									}
 
-									RuntimeChannel[] runtimeChannels = InfraClientsHelper.DATA_TUBE.getRuntimeChannels(clientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
+									RuntimeChannel[] runtimeChannels = InfraClientsUtil.DATA_TUBE.getRuntimeChannels(clientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
 									configElement.setTransientProperty("runtimeChannels", runtimeChannels);
 
 								} catch (Exception e) {

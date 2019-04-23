@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.orbit.component.model.tier3.nodecontrol.NodespaceDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
@@ -38,7 +38,7 @@ public class NodespaceListCommandV1 extends AbstractTransferAgentCommandV1 {
 			for (IResource resource : resources) {
 				if (resource instanceof INodespace) {
 					INodespace nodespace = (INodespace) resource;
-					NodespaceDTO nodespaceDTO = ModelConverter.NodeControl.toDTO(nodespace);
+					NodespaceDTO nodespaceDTO = RuntimeModelConverter.NodeControl.toDTO(nodespace);
 					nodespaceDTOs.add(nodespaceDTO);
 				}
 			}

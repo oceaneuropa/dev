@@ -21,7 +21,7 @@ import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.PlatformServiceMetadata;
@@ -72,7 +72,7 @@ public class PlatformListServlet extends HttpServlet {
 				platformConfigs = ComponentClientsUtil.DomainControl.getPlatformConfigs(domainServiceUrl, accessToken, machineId);
 
 				// Get index items for platforms
-				platformIdToIndexItemMap = InfraClientsHelper.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER, PlatformConstants.PLATFORM_TYPE__NODE);
+				platformIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER, PlatformConstants.PLATFORM_TYPE__NODE);
 
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
@@ -108,9 +108,9 @@ public class PlatformListServlet extends HttpServlet {
 
 						Map<String, List<IndexItem>> indexerIdToIndexItemsMap = new LinkedHashMap<String, List<IndexItem>>();
 						// Get extensions indexer ids from the platform
-						List<String> indexerIds = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionIdsOfPlatform(accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<String> indexerIds = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionIdsOfPlatform(accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (String indexerId : indexerIds) {
-							List<IndexItem> currIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, indexerId, platformId);
+							List<IndexItem> currIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, indexerId, platformId);
 							indexerIdToIndexItemsMap.put(indexerId, currIndexItems);
 						}
 						platformIdToIndexerIdToIndexItemsMap.put(platformId, indexerIdToIndexItemsMap);
@@ -140,7 +140,7 @@ public class PlatformListServlet extends HttpServlet {
 		}
 		request.setAttribute("platformIdToIndexerIdToIndexItemsMap", platformIdToIndexerIdToIndexItemsMap);
 
-		request.getRequestDispatcher(contextRoot + "/views/platforms_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/platforms.jsp").forward(request, response);
 	}
 
 }

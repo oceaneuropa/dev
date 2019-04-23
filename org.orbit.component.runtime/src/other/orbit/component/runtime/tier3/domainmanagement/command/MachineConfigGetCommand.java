@@ -3,7 +3,7 @@ package other.orbit.component.runtime.tier3.domainmanagement.command;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -39,7 +39,7 @@ public class MachineConfigGetCommand extends AbstractCommand {
 
 			MachineConfig machineConfig = this.service.getMachineConfig(machineId);
 			if (machineConfig != null) {
-				machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
+				machineConfigDTO = RuntimeModelConverter.Domain.toMachineConfigDTO(machineConfig);
 			}
 
 		} catch (ServerException e) {

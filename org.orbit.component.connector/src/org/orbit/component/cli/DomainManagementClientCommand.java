@@ -15,7 +15,7 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.util.ComponentClientsUtil;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -110,7 +110,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 			Request request = new Request(RequestConstants.GET_MACHINE_CONFIGS);
 			response = domainClient.sendRequest(request);
 
-			MachineConfig[] machineConfigs = ModelConverter.Domain.convertToMachineConfigs(response);
+			MachineConfig[] machineConfigs = ClientModelConverter.Domain.convertToMachineConfigs(response);
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (MachineConfig machineConfig : machineConfigs) {
@@ -143,7 +143,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 			request.setParameter("machineId", id);
 
 			response = domainClient.sendRequest(request);
-			MachineConfig resultMachineConfig = ModelConverter.Domain.convertToMachineConfig(response);
+			MachineConfig resultMachineConfig = ClientModelConverter.Domain.convertToMachineConfig(response);
 
 			MachineConfig[] machineConfigs = (resultMachineConfig != null) ? new MachineConfig[] { resultMachineConfig } : new MachineConfig[] {};
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
@@ -307,7 +307,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 
 			response = domainClient.sendRequest(request);
 
-			PlatformConfig[] platformConfigs = ModelConverter.Domain.convertToPlatformConfigs(response);
+			PlatformConfig[] platformConfigs = ClientModelConverter.Domain.convertToPlatformConfigs(response);
 			String[][] rows = new String[platformConfigs.length][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (PlatformConfig platformConfig : platformConfigs) {
@@ -354,7 +354,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 			request.setParameter("id", id);
 
 			response = domainClient.sendRequest(request);
-			PlatformConfig resultTaConfig = ModelConverter.Domain.convertToPlatformConfig(response);
+			PlatformConfig resultTaConfig = ClientModelConverter.Domain.convertToPlatformConfig(response);
 
 			PlatformConfig[] taConfigs = (resultTaConfig != null) ? new PlatformConfig[] { resultTaConfig } : new PlatformConfig[] {};
 			String[][] rows = new String[taConfigs.length][PLATFORM_CONFIG_TITLES.length];
@@ -541,7 +541,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 
 			response = domainClient.sendRequest(request);
 
-			NodeConfig[] nodeConfigs = ModelConverter.Domain.convertToNodeConfigs(response);
+			NodeConfig[] nodeConfigs = ClientModelConverter.Domain.convertToNodeConfigs(response);
 			String[][] rows = new String[nodeConfigs.length][NODE_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (NodeConfig nodeConfig : nodeConfigs) {
@@ -595,7 +595,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 			request.setParameter("id", id);
 
 			response = domainClient.sendRequest(request);
-			NodeConfig resultNodeConfig = ModelConverter.Domain.convertToNodeConfig(response);
+			NodeConfig resultNodeConfig = ClientModelConverter.Domain.convertToNodeConfig(response);
 
 			NodeConfig[] nodeConfigs = (resultNodeConfig != null) ? new NodeConfig[] { resultNodeConfig } : new NodeConfig[] {};
 			String[][] rows = new String[nodeConfigs.length][NODE_CONFIG_TITLES.length];

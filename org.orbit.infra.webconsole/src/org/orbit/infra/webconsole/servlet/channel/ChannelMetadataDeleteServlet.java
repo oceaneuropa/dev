@@ -17,7 +17,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
@@ -77,7 +77,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 						Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(accessToken, dataCastId);
 
 						for (String channelId : channelIds) {
-							ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
+							ChannelMetadata channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 							if (channelMetadata == null) {
 								message = MessageHelper.INSTANCE.add(message, "Channel metadata (channelId='" + channelId + "') is not found.");
 								continue;
@@ -85,7 +85,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 
 							String dataTubeId = channelMetadata.getDataTubeId();
 
-							boolean currIsDeleted = InfraClientsHelper.DATA_CAST.deleteChannelMetadataById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
+							boolean currIsDeleted = InfraClientsUtil.DATA_CAST.deleteChannelMetadataById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);
 							if (currIsDeleted) {
 								hasSucceed = true;
 
@@ -96,7 +96,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 									if (isDataTubeOnline) {
 										// delete runtime channel from data tube service
 										String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-										boolean isRuntimeChannelDeleted = InfraClientsHelper.DATA_TUBE.deleteRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+										boolean isRuntimeChannelDeleted = InfraClientsUtil.DATA_TUBE.deleteRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										if (isRuntimeChannelDeleted) {
 											message = MessageHelper.INSTANCE.add(message, "Runtime channel (channelId='" + channelId + "'; dataTubeId='" + dataTubeId + "') is deleted.");

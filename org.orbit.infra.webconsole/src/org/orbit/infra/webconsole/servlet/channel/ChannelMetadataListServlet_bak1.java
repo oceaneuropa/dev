@@ -23,7 +23,7 @@ import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.ChannelMetadataComparator;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
@@ -95,7 +95,7 @@ public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 					if (isDataCastOnline) {
-						channelMetadatas = InfraClientsHelper.DATA_CAST.getChannelMetadatas(dataCastClientResolver, dataCastServiceUrl, accessToken, ChannelMetadataComparator.ASC);
+						channelMetadatas = InfraClientsUtil.DATA_CAST.getChannelMetadatas(dataCastClientResolver, dataCastServiceUrl, accessToken, ChannelMetadataComparator.ASC);
 
 						if (channelMetadatas != null) {
 							// Get service metadata of DataTubes which belong to the DataCast
@@ -116,11 +116,11 @@ public class ChannelMetadataListServlet_bak1 extends HttpServlet {
 									// Get DataTube service metadata
 									if (isDataTubeOnline) {
 										try {
-											DataTubeServiceMetadata metadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(dataTubeClientResolver, dataTubeServiceUrl, accessToken);
+											DataTubeServiceMetadata metadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(dataTubeClientResolver, dataTubeServiceUrl, accessToken);
 											if (metadata != null) {
 												dataTubeServiceMetadataMap.put(dataTubeId, metadata);
 
-												Map<String, RuntimeChannel> runtimeChannelsMap = InfraClientsHelper.DATA_TUBE.getRuntimeChannelsMap(dataTubeClientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
+												Map<String, RuntimeChannel> runtimeChannelsMap = InfraClientsUtil.DATA_TUBE.getRuntimeChannelsMap(dataTubeClientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
 												dataTubeRuntimeChannelsMap.put(dataTubeId, runtimeChannelsMap);
 											}
 										} catch (Exception e) {

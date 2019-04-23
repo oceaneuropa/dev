@@ -60,7 +60,7 @@ public class UserAccountListServlet extends HttpServlet {
 			request.setAttribute("userAccounts", userAccounts);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/user_accounts_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/user_accounts.jsp").forward(request, response);
 	}
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -164,7 +164,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 			dataTubeId = "-1";
 		}
 
-		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
+		Map<String, Object> properties = RuntimeModelConverter.COMMON.toProperties(propertiesString);
 
 		return new DataTubeConfigImpl(id, this.dataCastId, dataTubeId, name, isEnabled, properties, dateCreated, dateModified);
 	}
@@ -289,7 +289,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 	 */
 	public DataTubeConfig create(Connection conn, String dataTubeId, String name, boolean isEnabled, Map<String, Object> properties) throws SQLException, IOException {
 		String id = generateDataTubeConfigId();
-		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
+		String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
 
@@ -341,7 +341,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String configId, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
+		String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE id=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), configId }, 1);

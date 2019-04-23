@@ -2,7 +2,7 @@ package org.orbit.infra.api.indexes;
 
 import java.util.Map;
 
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
@@ -65,7 +65,7 @@ public abstract class ServiceIndexTimer<RUNTIME_SERVICE> extends IndexTimerImpl<
 			accessToken = ((AccessTokenAware) service).getAccessToken();
 		}
 
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null) {
 			indexService.addIndexItemUpdater(this.indexItemUpdater);
 		}

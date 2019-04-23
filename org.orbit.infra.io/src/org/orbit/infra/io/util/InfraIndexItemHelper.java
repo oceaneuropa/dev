@@ -9,7 +9,7 @@ import java.util.Map;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 
 public class InfraIndexItemHelper {
 
@@ -21,7 +21,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static List<IndexItem> getDataCastIndexItemsList(String accessToken) throws IOException {
 		List<IndexItem> dataCastIndexItems = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null) {
 			dataCastIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 		}
@@ -39,7 +39,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static Map<String, IndexItem> getDataCastIndexItemsMap(String accessToken) throws IOException {
 		Map<String, IndexItem> dataCastIndexItemMap = new HashMap<String, IndexItem>();
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null) {
 			List<IndexItem> dataCastIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 			if (dataCastIndexItems != null) {
@@ -61,7 +61,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static IndexItem getDataCastIndexItem(String accessToken, String dataCastId) throws IOException {
 		IndexItem dataCastIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null) {
 			List<IndexItem> dataCastIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 			if (dataCastIndexItems != null) {
@@ -86,7 +86,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static List<IndexItem> getDataTubeIndexItems(String accessToken, String dataCastId) throws IOException {
 		List<IndexItem> dataTubeIndexItems = new ArrayList<IndexItem>();
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null) {
 			List<IndexItem> allDataTubeIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 
@@ -110,7 +110,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static Map<String, IndexItem> getDataTubeIndexItemsMap(String accessToken, String dataCastId) throws IOException {
 		Map<String, IndexItem> dataTubeIndexItemMap = new HashMap<String, IndexItem>();
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (dataCastId != null && indexService != null) {
 			List<IndexItem> allDataTubeIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 
@@ -135,7 +135,7 @@ public class InfraIndexItemHelper {
 	 */
 	public static IndexItem getDataTubeIndexItem(String accessToken, String dataCastId, String dataTubeId) throws IOException {
 		IndexItem dataTubeIndexItem = null;
-		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
 		if (indexService != null && dataCastId != null && dataTubeId != null) {
 			List<IndexItem> allDataTubeIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 

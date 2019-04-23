@@ -43,7 +43,11 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyDele
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyUpdateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServiceActionServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServiceListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyRemoveServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyUpdateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeUpdateServlet;
@@ -175,6 +179,10 @@ public class WebApplication extends PlatformWebApplication {
 		// Node services
 		addServlet(new ServletMetadataImpl("/domain/nodeservices", new NodeServiceListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeserviceaction", new NodeServiceActionServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeserviceproperties", new NodeServicePropertyListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeservicepropertyadd", new NodeServicePropertyAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeservicepropertyupdate", new NodeServicePropertyUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeservicepropertyremove", new NodeServicePropertyRemoveServlet(), dicts));
 
 		// AppStore
 		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));

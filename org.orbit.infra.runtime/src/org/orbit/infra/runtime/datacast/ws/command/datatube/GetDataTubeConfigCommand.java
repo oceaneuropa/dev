@@ -8,7 +8,7 @@ import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -47,7 +47,7 @@ public class GetDataTubeConfigCommand extends AbstractInfraCommand<DataCastServi
 			return Response.ok().build();
 		}
 
-		DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DATA_CAST.toDTO(dataTubeConfig);
+		DataTubeConfigDTO dataTubeConfigDTO = RuntimeModelConverter.DATA_CAST.toDTO(dataTubeConfig);
 		return Response.ok().entity(dataTubeConfigDTO).build();
 	}
 

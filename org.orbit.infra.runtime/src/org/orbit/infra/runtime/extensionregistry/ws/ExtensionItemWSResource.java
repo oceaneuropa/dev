@@ -20,7 +20,7 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemSetPropertiesRequest;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -105,7 +105,7 @@ public class ExtensionItemWSResource extends AbstractWSApplicationResource {
 
 			ExtensionItem item = service.getExtensionItem(platformId, typeId, extensionId);
 			if (item != null) {
-				DTO = ModelConverter.EXTENSION_REGISTRY.toDTO(item);
+				DTO = RuntimeModelConverter.EXTENSION_REGISTRY.toDTO(item);
 			}
 
 		} catch (ServerException e) {

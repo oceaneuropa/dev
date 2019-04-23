@@ -20,7 +20,9 @@ public class RequestConstants {
 	public static String CONFIG_ELEMENT__CONFIG_ELEMENT_EXISTS = "config_element_exists";
 	public static String CONFIG_ELEMENT__CREATE_CONFIG_ELEMENT = "create_config_element";
 	public static String CONFIG_ELEMENT__UPDATE_CONFIG_ELEMENT = "update_config_element";
+	public static String CONFIG_ELEMENT__SET_CONFIG_ELEMENT_ATTRIBUTE = "set_config_element_attribute";
 	public static String CONFIG_ELEMENT__SET_CONFIG_ELEMENT_ATTRIBUTES = "set_config_element_attributes";
+	public static String CONFIG_ELEMENT__REMOVE_CONFIG_ELEMENT_ATTRIBUTE = "remove_config_element_attribute";
 	public static String CONFIG_ELEMENT__REMOVE_CONFIG_ELEMENT_ATTRIBUTES = "remove_config_element_attributes";
 	public static String CONFIG_ELEMENT__DELETE_CONFIG_ELEMENT = "delete_config_element";
 

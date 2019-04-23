@@ -14,7 +14,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
@@ -81,7 +81,7 @@ public class DataCastNodeListServlet extends HttpServlet {
 						if (isOnline) {
 							try {
 								String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-								DataCastServiceMetadata metadata = InfraClientsHelper.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
+								DataCastServiceMetadata metadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
 								if (metadata != null) {
 									configElement.adapt(DataCastServiceMetadata.class, metadata);
 								}

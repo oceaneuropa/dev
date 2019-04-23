@@ -6,7 +6,7 @@ import java.util.List;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -41,7 +41,7 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 			List<MachineConfig> machineConfigs = this.service.getMachineConfigs();
 			if (machineConfigs != null) {
 				for (MachineConfig machineConfig : machineConfigs) {
-					MachineConfigDTO machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
+					MachineConfigDTO machineConfigDTO = RuntimeModelConverter.Domain.toMachineConfigDTO(machineConfig);
 					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}

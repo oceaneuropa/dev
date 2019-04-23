@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.annotation.Secured;
@@ -115,7 +115,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			// System.out.println("-------------------------------------------------------------------------------------------");
 			if (indexItems != null) {
 				for (IndexItem indexItem : indexItems) {
-					IndexItemDTO indexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(indexItem);
+					IndexItemDTO indexItemDTO = RuntimeModelConverter.INDEX_SERVICE.toDTO(indexItem);
 					indexItemDTOs.add(indexItemDTO);
 					// System.out.println(indexItemDTO.getIndexItemId() + " - " + indexItemDTO.getIndexProviderId() + " - " + indexItemDTO.getType() + " - " +
 					// indexItemDTO.getName());
@@ -172,12 +172,12 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 				indexService.setProperties(indexProviderId, indexItemId, properties);
 
 				existingIndexItem = indexService.getIndexItem(indexProviderId, indexItemId);
-				newIndexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(existingIndexItem);
+				newIndexItemDTO = RuntimeModelConverter.INDEX_SERVICE.toDTO(existingIndexItem);
 
 			} else {
 				IndexItem newIndexItem = indexService.addIndexItem(indexProviderId, type, name, properties);
 				if (newIndexItem != null) {
-					newIndexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(newIndexItem);
+					newIndexItemDTO = RuntimeModelConverter.INDEX_SERVICE.toDTO(newIndexItem);
 				}
 			}
 		} catch (ServerException e) {

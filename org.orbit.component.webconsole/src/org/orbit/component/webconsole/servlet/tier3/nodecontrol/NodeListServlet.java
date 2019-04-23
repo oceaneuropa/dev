@@ -24,7 +24,7 @@ import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.PlatformServiceMetadata;
@@ -85,7 +85,7 @@ public class NodeListServlet extends HttpServlet {
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					nodeIdToIndexItemMap = InfraClientsHelper.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
+					nodeIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
 					List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();
 					List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
@@ -167,7 +167,7 @@ public class NodeListServlet extends HttpServlet {
 		// String PID = ManagementFactory.getRuntimeMXBean().getName();
 		// request.setAttribute("PID", PID);
 
-		request.getRequestDispatcher(contextRoot + "/views/nodes_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/nodes.jsp").forward(request, response);
 	}
 
 }

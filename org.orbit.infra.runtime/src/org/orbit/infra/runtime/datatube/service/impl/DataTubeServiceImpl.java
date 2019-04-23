@@ -13,7 +13,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.ChannelMetadataComparator;
-import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.runtime.InfraConstants;
@@ -185,7 +185,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
 				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
-				channelMetadatas = InfraClientsHelper.DATA_CAST.getChannelMetadatas(clientResolver, dataCastServiceUrl, accessToken, dataTubeId, ChannelMetadataComparator.ASC);
+				channelMetadatas = InfraClientsUtil.DATA_CAST.getChannelMetadatas(clientResolver, dataCastServiceUrl, accessToken, dataTubeId, ChannelMetadataComparator.ASC);
 
 			} else {
 				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
@@ -214,7 +214,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
 				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
-				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(clientResolver, dataCastServiceUrl, accessToken, channelId);
+				channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelId(clientResolver, dataCastServiceUrl, accessToken, channelId);
 			} else {
 				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
 			}
@@ -243,7 +243,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			if (isDataCastOnline) {
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL);
 				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver();
-				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelName(clientResolver, dataCastServiceUrl, accessToken, name);
+				channelMetadata = InfraClientsUtil.DATA_CAST.getChannelMetadataByChannelName(clientResolver, dataCastServiceUrl, accessToken, name);
 			} else {
 				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
 			}

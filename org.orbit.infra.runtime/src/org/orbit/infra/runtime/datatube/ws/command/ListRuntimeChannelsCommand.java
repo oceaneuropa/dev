@@ -10,7 +10,7 @@ import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.Request;
 
@@ -40,7 +40,7 @@ public class ListRuntimeChannelsCommand extends AbstractInfraCommand<DataTubeSer
 		List<RuntimeChannelDTO> runtimeChannelDTOs = new ArrayList<RuntimeChannelDTO>();
 		if (runtimeChannels != null) {
 			for (RuntimeChannel currRuntimeChannel : runtimeChannels) {
-				RuntimeChannelDTO runtimeChannelDTO = ModelConverter.DATA_TUBE.toDTO(currRuntimeChannel);
+				RuntimeChannelDTO runtimeChannelDTO = RuntimeModelConverter.DATA_TUBE.toDTO(currRuntimeChannel);
 				if (runtimeChannelDTO != null) {
 					runtimeChannelDTOs.add(runtimeChannelDTO);
 				}

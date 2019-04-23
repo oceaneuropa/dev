@@ -60,7 +60,7 @@ public class MachineListServlet extends HttpServlet {
 			request.setAttribute("machineConfigs", machineConfigs);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/machines_list.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/machines.jsp").forward(request, response);
 	}
 
 }

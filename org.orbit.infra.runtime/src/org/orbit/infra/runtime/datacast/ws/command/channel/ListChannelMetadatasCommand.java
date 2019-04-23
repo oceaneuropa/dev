@@ -10,7 +10,7 @@ import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.Request;
 
@@ -47,7 +47,7 @@ public class ListChannelMetadatasCommand extends AbstractInfraCommand<DataCastSe
 		List<ChannelMetadataDTO> channelMetadataDTOs = new ArrayList<ChannelMetadataDTO>();
 		if (channelMetadatas != null) {
 			for (ChannelMetadata currChannelMetadata : channelMetadatas) {
-				ChannelMetadataDTO channelMetadataDTO = ModelConverter.DATA_CAST.toDTO(currChannelMetadata);
+				ChannelMetadataDTO channelMetadataDTO = RuntimeModelConverter.DATA_CAST.toDTO(currChannelMetadata);
 				if (channelMetadataDTO != null) {
 					channelMetadataDTOs.add(channelMetadataDTO);
 				}

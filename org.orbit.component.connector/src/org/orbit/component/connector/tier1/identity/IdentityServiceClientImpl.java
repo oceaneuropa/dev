@@ -9,7 +9,7 @@ import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.LogoutResponse;
 import org.orbit.component.api.tier1.identity.RegisterRequest;
 import org.orbit.component.api.tier1.identity.RegisterResponse;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
@@ -60,7 +60,7 @@ public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityService
 			throw new IllegalArgumentException("request is null");
 		}
 		RegisterResponse response = new RegisterResponse();
-		RegisterRequestDTO requestDTO = ModelConverter.Identity.toRequestDTO(request);
+		RegisterRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
 		StatusDTO status = getWSClient().register(requestDTO);
 		if (status != null) {
 			boolean success = status.success();
@@ -77,10 +77,10 @@ public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityService
 			throw new IllegalArgumentException("request is null");
 		}
 		LoginResponse response = new LoginResponse();
-		LoginRequestDTO requestDTO = ModelConverter.Identity.toRequestDTO(request);
+		LoginRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
 		LoginResponseDTO responseDTO = getWSClient().login(requestDTO);
 		if (responseDTO != null) {
-			LoginResponse theResponse = ModelConverter.Identity.toResponse(responseDTO);
+			LoginResponse theResponse = ClientModelConverter.Identity.toResponse(responseDTO);
 			if (theResponse != null) {
 				response = theResponse;
 			}
@@ -94,7 +94,7 @@ public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityService
 			throw new IllegalArgumentException("request is null");
 		}
 		LogoutResponse response = new LogoutResponse();
-		LogoutRequestDTO requestDTO = ModelConverter.Identity.toRequestDTO(request);
+		LogoutRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
 		StatusDTO status = getWSClient().logout(requestDTO);
 		if (status != null) {
 			boolean success = status.success();

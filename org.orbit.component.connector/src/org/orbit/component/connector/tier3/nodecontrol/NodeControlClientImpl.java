@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
@@ -58,7 +58,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				nodeInfos = ModelConverter.NodeControl.getNodes(response);
+				nodeInfos = ClientModelConverter.NodeControl.getNodes(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -79,7 +79,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				nodeInfo = ModelConverter.NodeControl.getNode(response);
+				nodeInfo = ClientModelConverter.NodeControl.getNode(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -99,7 +99,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isCreated(response);
+				succeed = ClientModelConverter.NodeControl.isCreated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -126,7 +126,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isDeleted(response);
+				succeed = ClientModelConverter.NodeControl.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -144,7 +144,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isDeleted(response);
+				succeed = ClientModelConverter.NodeControl.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -172,7 +172,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isStarted(response);
+				succeed = ClientModelConverter.NodeControl.isStarted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -200,7 +200,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isStopped(response);
+				succeed = ClientModelConverter.NodeControl.isStopped(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -220,7 +220,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isSucceed(response);
+				succeed = ClientModelConverter.NodeControl.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -241,7 +241,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isSucceed(response);
+				succeed = ClientModelConverter.NodeControl.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -260,7 +260,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ModelConverter.NodeControl.isSucceed(response);
+				succeed = ClientModelConverter.NodeControl.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

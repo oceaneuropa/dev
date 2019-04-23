@@ -3,7 +3,7 @@ package other.orbit.component.runtime.tier3.domainmanagement.command;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -41,7 +41,7 @@ public class NodeConfigGetCommand extends AbstractCommand {
 
 			NodeConfig nodeConfig = this.service.getNodeConfig(machineId, platformId, id);
 			if (nodeConfig != null) {
-				nodeConfigDTO = ModelConverter.Domain.toNodeConfigDTO(nodeConfig);
+				nodeConfigDTO = RuntimeModelConverter.Domain.toNodeConfigDTO(nodeConfig);
 			}
 
 		} catch (ServerException e) {
