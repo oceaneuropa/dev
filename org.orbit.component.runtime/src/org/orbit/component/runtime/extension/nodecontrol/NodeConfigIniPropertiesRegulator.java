@@ -23,6 +23,11 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 		if (node != null) {
 			// Update properties to be generated in node's config.ini file
 
+			// Add "logback.configurationFile" property if not exist
+			if (!properties.containsKey("logback.configurationFile")) {
+				
+			}
+
 			// Add "orbit.index_service.url" property if not exist
 			if (!properties.containsKey(InfraConstants.ORBIT_INDEX_SERVICE_URL)) {
 				String indexServiceUrl = InfraServicesPropertiesHandler.getInstance().getIndexServiceURL();
@@ -36,6 +41,22 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 				String extensionRegistryUrl = InfraServicesPropertiesHandler.getInstance().getExtensionRegistryURL();
 				if (extensionRegistryUrl != null && !extensionRegistryUrl.isEmpty()) {
 					properties.put(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, extensionRegistryUrl);
+				}
+			}
+
+			// Add "orbit.config_registry.url" property if not exist
+			if (!properties.containsKey(InfraConstants.ORBIT_CONFIG_REGISTRY_URL)) {
+				String configRegistryUrl = InfraServicesPropertiesHandler.getInstance().getConfigRegistryURL();
+				if (configRegistryUrl != null && !configRegistryUrl.isEmpty()) {
+					properties.put(InfraConstants.ORBIT_CONFIG_REGISTRY_URL, configRegistryUrl);
+				}
+			}
+
+			// Add "orbit.data_cast.url" property if not exist
+			if (!properties.containsKey(InfraConstants.ORBIT_DATACAST_URL)) {
+				String dataCastUrl = InfraServicesPropertiesHandler.getInstance().getDataCastURL();
+				if (dataCastUrl != null && !dataCastUrl.isEmpty()) {
+					properties.put(InfraConstants.ORBIT_DATACAST_URL, dataCastUrl);
 				}
 			}
 

@@ -414,6 +414,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 			LaunchServiceHelper.INSTANCE.generateConfigIni(node, configIniProperties);
 
+			// Create {node_home}/logback_node.xml file (only when the file does not exist)
+			LaunchServiceHelper.INSTANCE.generateLogbackXml(node, "INFO");
+
 			// 2. Create launch configuration
 			String launchTypeId = LaunchServiceHelper.INSTANCE.getLaunchTypeId();
 			String launchConfigName = LaunchServiceHelper.INSTANCE.getLaunchConfigName(id);
@@ -454,6 +457,12 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				List<String> programArgs = new ArrayList<String>();
 				// -console
 				// programArgs.add("-console");
+
+				// -consoleLog
+				// https://help.eclipse.org/kepler/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/runtime-options.html
+				// "...any log output is also sent to Java's System.out (typically back to the command shell if any)..."
+				programArgs.add("-consoleLog");
+
 				// -clean
 				if (doClean) {
 					programArgs.add("-clean");

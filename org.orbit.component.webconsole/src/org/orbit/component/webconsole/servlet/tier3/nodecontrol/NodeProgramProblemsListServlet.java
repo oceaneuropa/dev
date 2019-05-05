@@ -18,18 +18,19 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformClientResolver;
+import org.orbit.platform.api.Problem;
 import org.orbit.platform.api.ProgramInfo;
-import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeProgramListServlet extends HttpServlet {
+public class NodeProgramProblemsListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 2284649451336905223L;
+	private static final long serialVersionUID = 176485682101167387L;
 
-	private static final ProgramInfo[] EMPTY_PROGRAMS = new ProgramInfo[0];
+	private static final Problem[] EMPTY_PROBLEMS = new Problem[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,6 +43,8 @@ public class NodeProgramListServlet extends HttpServlet {
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String parentPlatformId = ServletUtil.getParameter(request, "platformId", "");
 		String nodeId = ServletUtil.getParameter(request, "id", "");
+		String programId = ServletUtil.getParameter(request, "programId", "");
+		String programVersion = ServletUtil.getParameter(request, "programVersion", "");
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -60,6 +63,12 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
+		if (programId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'programId' parameter is not set.");
+		}
+		if (programVersion.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'programVersion' parameter is not set.");
+		}
 
 		// ---------------------------------------------------------------
 		// Handle data
@@ -67,9 +76,10 @@ public class NodeProgramListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
-		ProgramInfo[] programs = null;
+		ProgramInfo program = null;
+		Problem[] problems = null;
 
-		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
+		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && !programId.isEmpty() && !programVersion.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
@@ -80,18 +90,21 @@ public class NodeProgramListServlet extends HttpServlet {
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				programs = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
+				program = nodePlatformClient.getProgram(programId, programVersion);
+				problems = nodePlatformClient.getProgramProblems(programId, programVersion);
+
+				if (program == null) {
+					message = MessageHelper.INSTANCE.add(message, "Program is not found.");
+				}
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
 			}
 		}
-		if (nodeInfo == null) {
-			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
-		}
-		if (programs == null) {
-			programs = EMPTY_PROGRAMS;
+		if (problems == null) {
+			problems = EMPTY_PROBLEMS;
 		}
 
 		// ---------------------------------------------------------------
@@ -109,9 +122,14 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}
-		request.setAttribute("programs", programs);
+		if (program != null) {
+			request.setAttribute("program", program);
+		}
+		request.setAttribute("programId", programId);
+		request.setAttribute("programVersion", programVersion);
+		request.setAttribute("problems", problems);
 
-		request.getRequestDispatcher(contextRoot + "/views/node_programs.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/node_program_problems.jsp").forward(request, response);
 	}
 
 }

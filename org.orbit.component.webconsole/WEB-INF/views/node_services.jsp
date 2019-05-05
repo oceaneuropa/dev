@@ -77,16 +77,14 @@
 					</th>
 					<th class="th1" width="100">Program</th>
 					<th class="th1" width="200">Name</th>
-					<th class="th1" width="50">Auto Start</th>
-					<th class="th1" width="50">Status</th>
-					<th class="th1" width="50">Metadata</th>
-					<th class="th1" width="150">Actions</th>
+					<th class="th1" width="100">Status</th>
+					<th class="th1" width="200">Actions</th>
 				</tr>
 				<%
 					if (services.length == 0) {
 				%>
 				<tr>
-					<td colspan="7">(n/a)</td>
+					<td colspan="5">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -131,15 +129,9 @@
 						<% } %>
 					</td>
 					<td class="td1">
-						<%=currAutoStart%>
-					</td>
-					<td class="td1">
 						<font color="<%=statusColor%>">
-							<%=currRuntimeState%>
+							<%=currRuntimeStatelabel%>
 						</font>
-					</td>
-					<td class="td2">
-
 					</td>
 					<td class="td1">
 						<a class="action01" href="javascript:startService('<%=currSID%>')">Start</a> | 

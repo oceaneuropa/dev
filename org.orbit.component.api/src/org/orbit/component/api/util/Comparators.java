@@ -66,11 +66,57 @@ public class Comparators {
 			if (id2 == null) {
 				id2 = "";
 			}
+
+			Object[] result1 = getBaseNameAndSuffixNum(id1);
+			Object[] result2 = getBaseNameAndSuffixNum(id2);
+
+			id1 = (String) result1[0];
+			int suffixNum1 = (int) result1[1];
+
+			id2 = (String) result2[0];
+			int suffixNum2 = (int) result2[1];
+
 			if (desc()) {
-				return id2.compareTo(id1);
+				if (id1.equals(id2)) {
+					return suffixNum2 - suffixNum1;
+				} else {
+					return id2.compareTo(id1);
+				}
+
 			} else {
-				return id1.compareTo(id2);
+				if (id1.equals(id2)) {
+					return suffixNum1 - suffixNum2;
+				} else {
+					return id1.compareTo(id2);
+				}
 			}
+		}
+
+		protected Object[] getBaseNameAndSuffixNum(String name) {
+			String baseName = name;
+			int suffixNum = -1;
+
+			int endingDigitIndex = -1;
+			int charIndex = name.length() - 1;
+			while (charIndex >= 0) {
+				char currChar = name.charAt(charIndex);
+				if (!Character.isDigit(currChar)) {
+					break;
+				} else {
+					endingDigitIndex = charIndex;
+					charIndex--;
+				}
+			}
+			if (endingDigitIndex >= 0) {
+				if (endingDigitIndex == 0) {
+					baseName = "";
+				} else {
+					baseName = name.substring(0, endingDigitIndex);
+				}
+				String digitStr = name.substring(endingDigitIndex);
+				suffixNum = Integer.parseInt(digitStr);
+			}
+			return new Object[] { baseName, suffixNum };
 		}
 	}
 

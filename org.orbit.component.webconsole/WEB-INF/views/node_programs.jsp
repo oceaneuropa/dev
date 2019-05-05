@@ -15,7 +15,7 @@
 	MachineConfig machineConfig = (MachineConfig) request.getAttribute("machineConfig");
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
-	ProgramManifest[] programs = (ProgramManifest[]) request.getAttribute("programs");
+	ProgramInfo[] programs = (ProgramInfo[]) request.getAttribute("programs");
 
 	// ------------------------------------------------------------------------
 	// Smooth data
@@ -30,9 +30,8 @@
 	String name = (nodeInfo != null) ? nodeInfo.getName() : "";
 
 	if (programs == null) {
-		programs = new ProgramManifest[0];
+		programs = new ProgramInfo[0];
 	}
-
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -53,7 +52,7 @@
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
 		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>">Platforms</a> (of <%=machineName%>)>
 		<a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Nodes</a> (of Platform [<%=platformName%>]) >
-		<!-- <a href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"><%=name%></a> -->
+		<!-- <a href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"namename%></a> -->
 		Node [<%=name%>]
 	</div>
 
@@ -78,45 +77,50 @@
 					<th class="th1" width="10">
 						<input type="checkbox" onClick="toggleSelection(this, 'id_version')" />
 					</th>
-					<th class="th1" width="160">Type</th>
-					<th class="th1" width="220">Id/Version</th>
-					<th class="th1" width="220">Name</th>
+					<th class="th1" width="100">Type</th>
+					<th class="th1" width="150">Id/Version</th>
+					<th class="th1" width="150">Name</th>
 					<th class="th1" width="150">State</th>
+					<th class="th1" width="150">Actions</th>
 				</tr>
 				<%
 					if (programs.length == 0) {
 				%>
 				<tr>
-					<td colspan="5">(n/a)</td>
+					<td colspan="6">(n/a)</td>
 				</tr>
 				<%
 					} else {
-						for (ProgramManifest program : programs) {
-							String appType = program.getType();
-							String appId = program.getId();
-							String appVersion = program.getVersion();
-							String appName = program.getName();
-							String activationStateLabel = program.getActivationState().getLabel();
-							String runtimeStateLabel = program.getRuntimeState().getLabel();
+								for (ProgramInfo program : programs) {
+									String appType = program.getType();
+									String appId = program.getId();
+									String appVersion = program.getVersion();
+									String appName = program.getName();
+									String activationStateLabel = program.getActivationState().getLabel();
+									String runtimeStateLabel = program.getRuntimeState().getLabel();
+									int numOfProblems = program.getNumOfProblems();
 
-							boolean isActivated = (ProgramManifest.ACTIVATION_STATE.ACTIVATED.equals(program.getActivationState())) ? true : false;
-							boolean isStarted = (ProgramManifest.RUNTIME_STATE.STARTED.equals(program.getRuntimeState())) ? true : false;
+									boolean isActivated = (ProgramInfo.ACTIVATION_STATE.ACTIVATED.equals(program.getActivationState())) ? true : false;
+									boolean isStarted = (ProgramInfo.RUNTIME_STATE.STARTED.equals(program.getRuntimeState())) ? true : false;
 
-							String statusColor1 = isActivated ? "#2eb82e" : "#cccccc";
-							String statusColor2 = (isActivated && isStarted) ? "#2eb82e" : "#cccccc";
-							String statusColor3 = isStarted ? "#2eb82e" : "#cccccc";
+									String statusColor1 = isActivated ? "#2eb82e" : "#cccccc";
+									String statusColor2 = (isActivated && isStarted) ? "#2eb82e" : "#cccccc";
+									String statusColor3 = isStarted ? "#2eb82e" : "#cccccc";
 				%>
 				<tr>
 					<td class="td1">
 						<input type="checkbox" name="id_version" value="<%=appId + "_" + appVersion%>">
 					</td>
 					<td class="td1"><%=appType%></td>
-					<td class="td2"><%=appId + "_" + appVersion%></td>
+					<td class="td2"><%=appId + " (" + appVersion + ")"%></td>
 					<td class="td2"><%=appName%></td>
 					<td class="td1">
 						<font color="<%=statusColor1%>"><%=activationStateLabel%></font>
 						<font color="<%=statusColor2%>"> | </font>
 						<font color="<%=statusColor3%>"><%=runtimeStateLabel%></font>
+					</td>
+					<td class="td1">
+						<a class="action01" href="<%=contextRoot%>/domain/nodeprogramproblems?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>&programId=<%=appId%>&programVersion=<%=appVersion%>">Problems (<%=numOfProblems%>)</a>
 					</td>
 				</tr>
 				<%

@@ -18,7 +18,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClientResolver;
-import org.orbit.platform.api.ProgramManifest;
+import org.orbit.platform.api.ProgramInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -55,9 +55,9 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 					continue;
 				}
 
-				ProgramManifest[] currPrograms = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				ProgramInfo[] currPrograms = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (currPrograms != null) {
-					for (ProgramManifest currProgram : currPrograms) {
+					for (ProgramInfo currProgram : currPrograms) {
 						String programId = currProgram.getId();
 						String programVersion = currProgram.getVersion();
 

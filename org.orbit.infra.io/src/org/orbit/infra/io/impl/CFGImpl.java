@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigRegistry;
-import org.orbit.infra.api.configregistry.ConfigRegistryClient;
-import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigRegistry;

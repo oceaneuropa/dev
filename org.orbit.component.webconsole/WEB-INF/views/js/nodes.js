@@ -20,7 +20,58 @@ function changeNode(id, name, typeId) {
 	document.getElementById('changeNodeDialog').showModal();
 }
 
-function startNode(actionURL, machineId, platformId, id) {
+
+//-----------------------------------------------------------------------
+// Start/stop nodes (new)
+//-----------------------------------------------------------------------
+function startNode(id) {
+	var input = document.getElementById('start_node_form_id');
+	input.value = id;
+
+	var dialog = document.getElementById('startNodeDialog');
+	dialog.showModal();
+}
+
+$(document).on("click", "#okStartNode", function() {
+	var form = document.getElementById('start_node_form');
+	form.submit();
+});
+
+$(document).on("click", "#cancelStartNode", function() {
+	var input = document.getElementById('start_node_form_id');
+	input.value = "";
+
+	var dialog = document.getElementById('startNodeDialog');
+	dialog.close();
+});
+
+
+function stopNode(id) {
+	var input = document.getElementById('stop_node_form_id');
+	input.value = id;
+
+	var dialog = document.getElementById('stopNodeDialog');
+	dialog.showModal();
+}
+
+$(document).on("click", "#okStopNode", function() {
+	var form = document.getElementById('stop_node_form');
+	form.submit();
+});
+
+$(document).on("click", "#cancelStopNode", function() {
+	var input = document.getElementById('stop_node_form_id');
+	input.value = "";
+
+	var dialog = document.getElementById('stopNodeDialog');
+	dialog.close();
+});
+
+
+//-----------------------------------------------------------------------
+// Start/stop nodes (old)
+//-----------------------------------------------------------------------
+function oldStartNode(actionURL, machineId, platformId, id) {
 	document.getElementById('startNodeDialogMessageDiv').innerHTML = "Are you sure you want to start node '" + id + "'?";
 
 	document.getElementById('okStartNode').addEventListener('click', function() {
@@ -55,7 +106,7 @@ function startNode(actionURL, machineId, platformId, id) {
 	document.getElementById('startNodeDialog').showModal();
 }
 
-function stopNode(actionURL, machineId, platformId, id) {
+function oldStopNode(actionURL, machineId, platformId, id) {
 	document.getElementById('stopNodeDialogMessageDiv').innerHTML = "Are you sure you want to stop node '" + id + "'?";
 
 	document.getElementById('okStopNode').addEventListener('click', function() {
@@ -90,6 +141,9 @@ function stopNode(actionURL, machineId, platformId, id) {
 	document.getElementById('stopNodeDialog').showModal();
 }
 
+//-----------------------------------------------------------------------
+// Delete node/nodes
+//-----------------------------------------------------------------------
 function deleteNode(actionURL, machineId, platformId, id) {
 	document.getElementById('deleteNodeDialogMessageDiv').innerHTML = "Are you sure you want to delete node '" + id + "'?";
 
@@ -138,6 +192,9 @@ function deleteNodes(formId, actionURL) {
 	document.getElementById('submitNodesDialog').showModal();
 }
 
+//-----------------------------------------------------------------------
+// Start/stop nodes
+//-----------------------------------------------------------------------
 function startNodes(formId, actionURL) {
 	document.getElementById('submitNodesDialogTitleDiv').innerHTML = "Start Nodes";
 	document.getElementById('submitNodesDialogMessageDiv').innerHTML = "Are you sure you want to start selected nodes?";

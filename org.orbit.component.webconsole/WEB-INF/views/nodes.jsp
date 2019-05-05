@@ -167,10 +167,18 @@
 						</div>
 					</td>
 					<td class="td1">
-						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Edit</a> | 
-						<a class="action01" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> | 
-						<a class="action01" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a> | 
-						<a class="action01" href="<%=contextRoot%>/domain/nodeservices?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Services</a>
+						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Edit</a> |
+						<a class="action01" href="javascript:startNode('<%=id%>')">Start</a> | 
+						<a class="action01" href="javascript:stopNode('<%=id%>')">Stop</a> | 
+						<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> |
+						
+						<% if (isOnline) { %>
+							<a class="action01" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a> | 
+							<a class="action01" href="<%=contextRoot%>/domain/nodeservices?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Services</a>
+						<% } else { %>
+							<a class="action01b">Programs</a> | 
+							<a class="action01b">Services</a>						
+						<% } %>
 						<!-- 
 						 | <a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 
@@ -255,21 +263,34 @@
 	</dialog>
 
 	<dialog id="startNodeDialog">
-	<div class="dialog_title_div01">Start Node</div>
-	<div class="dialog_main_div01" id="startNodeDialogMessageDiv">Are you sure you want to start the node?</div>
-	<div class="dialog_button_div01">
-		<a id="okStartNode" class="button02">OK</a> 
-		<a id="cancelStartNode" class="button02b">Cancel</a>
-	</div>
+	<form id="start_node_form" method="post" action="<%=contextRoot + "/domain/nodestart"%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>"> 
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<input type="hidden" id="start_node_form_id" name="id">
+		<div class="dialog_title_div01">Start Node</div>
+		<div class="dialog_message_div01" id="startNodeDialogMessageDiv">Are you sure you want to start the node?</div>
+		<div class="dialog_main_div01">
+			<input type="checkbox" id="startNodesDialog_option_clean" name="-clean" value="true"/> <label>-clean</label>
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okStartNode" class="button02">OK</a> 
+			<a id="cancelStartNode" class="button02b">Cancel</a>
+		</div>
+	</form>
 	</dialog>
 
 	<dialog id="stopNodeDialog">
-	<div class="dialog_title_div01">Stop Node</div>
-	<div class="dialog_main_div01" id="stopNodeDialogMessageDiv">Are you sure you want to stop the node?</div>
-	<div class="dialog_button_div01">
-		<a id="okStopNode" class="button02">OK</a> 
-		<a id="cancelStopNode" class="button02b">Cancel</a>
-	</div>
+	<form id="stop_node_form" method="post" action="<%=contextRoot + "/domain/nodestop"%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>"> 
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<input type="hidden" id="stop_node_form_id" name="id">
+		<div class="dialog_title_div01">Stop Node</div>
+		<div class="dialog_main_div01" id="stopNodeDialogMessageDiv">Are you sure you want to stop the node?</div>
+		<div class="dialog_button_div01">
+			<a id="okStopNode" class="button02">OK</a> 
+			<a id="cancelStopNode" class="button02b">Cancel</a>
+		</div>
+	</form>
 	</dialog>
 
 	<dialog id="deleteNodeDialog">

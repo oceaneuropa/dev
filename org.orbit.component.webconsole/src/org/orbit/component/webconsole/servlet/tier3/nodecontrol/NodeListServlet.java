@@ -2,7 +2,7 @@ package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +35,8 @@ import org.origin.common.util.ServletUtil;
 public class NodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2782056562245686399L;
+
+	protected static NodeInfo[] EMPTY_NODEINFOS = new NodeInfo[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +72,7 @@ public class NodeListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo[] nodeInfos = null;
-		NodeInfo[] nodeInfos2 = null;
+		// NodeInfo[] nodeInfos2 = null;
 		Map<String, IndexItem> nodeIdToIndexItemMap = null;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty()) {
@@ -87,8 +89,9 @@ public class NodeListServlet extends HttpServlet {
 				if (nodeInfos != null) {
 					nodeIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
-					List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();
 					List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
+					// List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();
+					// List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
 
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
@@ -119,30 +122,38 @@ public class NodeListServlet extends HttpServlet {
 							}
 						}
 
-						if (isOnline) {
-							onlineNodes.add(nodeInfo);
-						} else {
-							offlineNodes.add(nodeInfo);
-						}
+						// if (isOnline) {
+						// onlineNodes.add(nodeInfo);
+						// } else {
+						// offlineNodes.add(nodeInfo);
+						// }
 
 						nodeInfo.getRuntimeStatus().setOnline(isOnline);
 						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
 					}
 
 					// sort onlineNodes and offlineNodes
-					Collections.sort(onlineNodes, Comparators.NodeInfoIdComparator_ASC);
-					Collections.sort(offlineNodes, Comparators.NodeInfoIdComparator_ASC);
+					// Collections.sort(onlineNodes, Comparators.NodeInfoIdComparator_ASC);
+					// Collections.sort(offlineNodes, Comparators.NodeInfoIdComparator_ASC);
 
-					List<NodeInfo> allNodes = new ArrayList<NodeInfo>();
-					allNodes.addAll(onlineNodes);
-					allNodes.addAll(offlineNodes);
-					nodeInfos2 = allNodes.toArray(new NodeInfo[allNodes.size()]);
+					// List<NodeInfo> allNodes = new ArrayList<NodeInfo>();
+					// allNodes.addAll(onlineNodes);
+					// allNodes.addAll(offlineNodes);
+					// nodeInfos2 = allNodes.toArray(new NodeInfo[allNodes.size()]);
 				}
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
 			}
+		}
+
+		if (nodeInfos != null && nodeInfos.length > 1) {
+			Arrays.sort(nodeInfos, Comparators.NodeInfoIdComparator_ASC);
+		}
+
+		if (nodeInfos == null) {
+			nodeInfos = EMPTY_NODEINFOS;
 		}
 
 		// ---------------------------------------------------------------
@@ -157,9 +168,9 @@ public class NodeListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
-		if (nodeInfos != null) {
-			request.setAttribute("nodeInfos", nodeInfos2);
-		}
+
+		request.setAttribute("nodeInfos", nodeInfos);
+
 		if (nodeIdToIndexItemMap != null) {
 			request.setAttribute("nodeIdToIndexItemMap", nodeIdToIndexItemMap);
 		}

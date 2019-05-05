@@ -75,7 +75,7 @@ public class LaunchServiceHelper {
 		// osgi.console.enable.builtin=false
 		// osgi.console=<port>
 		// ----------------------------------------
-		content.append(" -jar ${ROOT_DIR}/plugins/${OSGI_JAR} -configuration ${NODE_DIR}/configuration").append("\n");
+		content.append(" -jar ${ROOT_DIR}/plugins/${OSGI_JAR} -configuration ${NODE_DIR}/configuration -console").append("\n");
 
 		byte[] bytes = content.toString().getBytes();
 
@@ -193,7 +193,7 @@ public class LaunchServiceHelper {
 		// -----------------------------------------------------------------------------------------------------------------------------------------
 		IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 		String platformId = platform.getId();
-		String platformHome = platform.getHome();
+		// String platformHome = platform.getHome();
 
 		Map<String, String> allConfigs = new TreeMap<String, String>();
 
@@ -220,7 +220,14 @@ public class LaunchServiceHelper {
 		allConfigs.put("osgi.bundles", "reference\\:file\\:eclipse.equinox/org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1\\:start");
 		allConfigs.put("org.eclipse.equinox.simpleconfigurator.configUrl", "file\\:../../../configurations/node/org.eclipse.equinox.simpleconfigurator/bundles.info");
 		allConfigs.put("org.eclipse.equinox.simpleconfigurator.exclusiveInstallation", "false");
-		allConfigs.put("logback.configurationFile", "file\\:" + platformHome + "/log/logback/orbit0.xml");
+
+		String platformHome = null;
+		Object underlyingResource = node.getWorkspace().getUnderlyingResource(node.getFullPath());
+		if (underlyingResource instanceof File) {
+			platformHome = ((File) underlyingResource).getAbsolutePath(); 
+		}
+		// allConfigs.put("logback.configurationFile", "file\\:" + platformHome + "/log/logback/orbit0.xml");
+		allConfigs.put("logback.configurationFile", platformHome + "/logback_node.xml");
 
 		allConfigs.put("platform.parent.id", platformId);
 		allConfigs.put("platform.id", node.getDescription().getId());
@@ -229,11 +236,12 @@ public class LaunchServiceHelper {
 		allConfigs.put("platform.version", "1.0.0");
 		allConfigs.put("platform.context_root", "/orbit/v1/platform");
 
-		Object underlyingResource = node.getWorkspace().getUnderlyingResource(node.getFullPath());
-		if (underlyingResource instanceof File) {
-			File fsFile = (File) underlyingResource;
-			allConfigs.put("platform.home", fsFile.getAbsolutePath());
-		}
+		// Object underlyingResource = node.getWorkspace().getUnderlyingResource(node.getFullPath());
+		// if (underlyingResource instanceof File) {
+		// File fsFile = (File) underlyingResource;
+		// allConfigs.put("platform.home", fsFile.getAbsolutePath());
+		// }
+		allConfigs.put("platform.home", platformHome);
 
 		String attributes = node.getDescription().getStringAttribute("config.ini");
 		if (attributes != null) {
@@ -275,6 +283,159 @@ public class LaunchServiceHelper {
 			configIniFile.setContents(bytes);
 		}
 
+		setAllPermissions(configIniFile);
+
+		return true;
+	}
+
+	/**
+	 * https://examples.javacodegeeks.com/core-java/logback-file-appender-example/
+	 * 
+	 * @param node
+	 * @param level
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean generateLogbackXml(INode node, String level) throws IOException {
+		/*
+		<?xml version="1.0" encoding="UTF-8" ?>
+		<configuration>
+			<property name="platform.home" value="/Users/yayang/origin/ta1/nodespace/node1" />
+
+			<appender name="STDOUT1" class="ch.qos.logback.core.ConsoleAppender">
+				<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+				<encoder>
+					<pattern>%-5level %logger{36} - %msg%n</pattern>
+				</encoder>
+			</appender>
+
+			<appender name="STDOUT2" class="ch.qos.logback.core.ConsoleAppender">
+				<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+				<encoder>
+					<pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+				</encoder>
+			</appender>
+
+			<!--
+			<appender name="FILE1" class="ch.qos.logback.core.FileAppender">
+				<file>${platform.home}/log/node_simple.log</file>
+				<append>true</append>
+				<encoder>
+					<pattern>%-5level %logger{36} - %msg%n</pattern>
+				</encoder>
+			</appender>
+			-->
+
+			<appender name="FILE2" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${platform.home}/log/node.log</file>
+
+				<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+					<fileNamePattern>${platform.home}/log/node%i.log</fileNamePattern>
+					<minIndex>1</minIndex>
+					<maxIndex>10</maxIndex>
+				</rollingPolicy>
+
+				<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+					<maxFileSize>1MB</maxFileSize>
+				</triggeringPolicy>
+
+				<encoder>
+					<pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+				</encoder>
+		 	</appender>
+
+			<!-- Strictly speaking, the level attribute is not necessary since -->
+			<!-- the level of the root level is set to DEBUG by default.       -->
+			<root level="DEBUG">
+				<appender-ref ref="STDOUT1" />
+				<appender-ref ref="FILE2" />
+			</root>
+		</configuration>
+		*/
+
+		String platformHome = null;
+		Object underlyingResource = node.getWorkspace().getUnderlyingResource(node.getFullPath());
+		if (underlyingResource instanceof File) {
+			platformHome = ((File) underlyingResource).getAbsolutePath(); 
+		}
+
+		// https://logback.qos.ch/manual/appenders.html
+		String content = "";
+		content += "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n";
+		content += "<configuration>\r\n";
+		content += "	<property name=\"platform.home\" value=\""+ platformHome +"\" />\r\n";
+		content += "\r\n";
+		content += "	<appender name=\"STDOUT1\" class=\"ch.qos.logback.core.ConsoleAppender\">\r\n";
+		content += "		<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->\r\n";
+		content += "		<encoder>\r\n";
+		content += "			<pattern>%-5level %logger{36} - %msg%n</pattern>\r\n";
+		content += "		</encoder>\r\n";
+		content += "	</appender>\r\n";
+		content += "\r\n";
+		content += "	<!--\r\n";
+		content += "	<appender name=\"STDOUT2\" class=\"ch.qos.logback.core.ConsoleAppender\">\r\n";
+		content += "		<encoder>\r\n";
+		content += "			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>\r\n";
+		content += "		</encoder>\r\n";
+		content += "	</appender>\r\n";
+		content += "	-->";
+		content += "\r\n";
+		content += "	<!--\r\n";
+		content += "	<appender name=\"FILE1\" class=\"ch.qos.logback.core.FileAppender\">\r\n";
+		content += "		<file>${platform.home}/log/node.log</file>\r\n";
+		content += "		<append>true</append>\r\n";
+		content += "		<encoder>\r\n";
+		content += "			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>\r\n";
+		content += "		</encoder>\r\n";
+		content += "	</appender>\r\n";
+		content += "	-->";
+		content += "\r\n";
+		content += "	<appender name=\"FILE2\" class=\"ch.qos.logback.core.rolling.RollingFileAppender\">\r\n";
+		content += "		<file>${platform.home}/log/node.log</file>\r\n";
+		content += "\r\n";
+		content += "		<rollingPolicy class=\"ch.qos.logback.core.rolling.FixedWindowRollingPolicy\">\r\n";
+		content += "			<fileNamePattern>${platform.home}/log/node%i.log</fileNamePattern>\r\n";
+		content += "			<minIndex>1</minIndex>\r\n";
+		content += "			<maxIndex>10</maxIndex>\r\n";
+		content += "		</rollingPolicy>\r\n";
+		content += "\r\n";
+		content += "		<triggeringPolicy class=\"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy\">\r\n";
+		content += "			<maxFileSize>10MB</maxFileSize>\r\n";
+		content += "		</triggeringPolicy>\r\n";
+		content += "\r\n";
+		content += "		<encoder>\r\n";
+		content += "			<pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>\r\n";
+		content += "		</encoder>\r\n";
+		content += " 	</appender>\r\n";
+		content += "\r\n";
+		content += "	<root level=\"" + level + "\">\r\n";
+		content += "		<appender-ref ref=\"STDOUT1\" />\r\n";
+		content += "		<appender-ref ref=\"FILE2\" />\r\n";
+		content += "	</root>\r\n";
+		content += "\r\n";
+		content += "</configuration>\r\n";
+
+		byte[] bytes = content.getBytes();
+
+		IFolder logFolder = node.getFolder("log");
+		if (!logFolder.exists()) {
+			logFolder.create();
+		}
+
+		IFile logbackXmlFile = node.getFile("logback_node.xml");
+		if (!logbackXmlFile.exists()) {
+			logbackXmlFile.create(bytes);
+		}
+
+		setAllPermissions(logbackXmlFile);
+
+		return true;
+	}
+
+	public void setAllPermissions(IFile file) {
+		if (file == null) {
+			return;
+		}
 		try {
 			Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>();
 			perms.add(PosixFilePermission.OWNER_EXECUTE);
@@ -283,12 +444,13 @@ public class LaunchServiceHelper {
 			perms.add(PosixFilePermission.GROUP_EXECUTE);
 			perms.add(PosixFilePermission.GROUP_READ);
 			perms.add(PosixFilePermission.OTHERS_READ);
-			configIniFile.setFilePermissions(perms);
+			file.setFilePermissions(perms);
+
 		} catch (UnsupportedOperationException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		return true;
 	}
 
 	public LaunchService getLaunchService() {

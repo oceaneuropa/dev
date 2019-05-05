@@ -37,14 +37,16 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramActionServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramInstallServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramProblemsActionServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramProblemsListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramUninstallServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyUpdateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServiceActionServlet;
-import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServiceListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyListServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyRemoveServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeServicePropertyUpdateServlet;
@@ -172,6 +174,8 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/domain/nodeprograminstall", new NodeProgramInstallServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprogramuninstall", new NodeProgramUninstallServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprogramaction", new NodeProgramActionServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeprogramproblems", new NodeProgramProblemsListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeprogramproblemsaction", new NodeProgramProblemsActionServlet(), dicts));
 
 		// Node extensions
 		addServlet(new ServletMetadataImpl("/domain/nodeextensions", new NodeExtensionListServlet(), dicts));
