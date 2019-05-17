@@ -35,4 +35,10 @@ public interface Analysis {
 	 */
 	public void run(AnalysisContext context);
 
+	/**
+	 * 
+	 * @param context
+	 */
+	public void printResult(AnalysisContext context);
+
 }

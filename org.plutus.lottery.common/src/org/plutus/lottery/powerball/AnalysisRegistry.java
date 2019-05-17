@@ -28,7 +28,31 @@ public class AnalysisRegistry {
 			try {
 				analysis.run(context);
 
-				System.out.println("Analyzed by [" + analysis.getClass().getSimpleName() + "] (id=" + analysis.getId() + ", priority=" + analysis.getPriority() + ")");
+				System.out.println("Analyzed by [" + analysis.getId() + "]");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param context
+	 */
+	public void printResult(AnalysisContext context) {
+		System.out.println();
+
+		for (Analysis analysis : this.analyses) {
+			try {
+				System.out.println("///////////////////////////////////////////////////////////////////////////////");
+				System.out.println("//                                                                           //");
+				System.out.println("//\t\t\t[" + analysis.getId() + "] result");
+				System.out.println("//                                                                           //");
+				System.out.println("///////////////////////////////////////////////////////////////////////////////");
+				analysis.printResult(context);
+				System.out.println();
+				System.out.println();
 
 			} catch (Exception e) {
 				e.printStackTrace();

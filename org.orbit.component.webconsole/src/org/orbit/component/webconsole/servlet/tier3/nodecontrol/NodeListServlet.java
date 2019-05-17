@@ -17,7 +17,7 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.Comparators;
+import org.orbit.component.api.util.ClientComparators;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
@@ -149,7 +149,7 @@ public class NodeListServlet extends HttpServlet {
 		}
 
 		if (nodeInfos != null && nodeInfos.length > 1) {
-			Arrays.sort(nodeInfos, Comparators.NodeInfoIdComparator_ASC);
+			Arrays.sort(nodeInfos, ClientComparators.NodeInfoIdComparator_ASC);
 		}
 
 		if (nodeInfos == null) {

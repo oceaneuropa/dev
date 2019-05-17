@@ -11,6 +11,8 @@ import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataDeleteServlet;
 import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataListServlet;
 import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataUpdateServlet;
 import org.orbit.infra.webconsole.servlet.channel.RuntimeChannelListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryElementListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryListServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeDeleteServlet;
@@ -95,6 +97,10 @@ public class WebApplication extends PlatformWebApplication {
 
 		// DataTube
 		addServlet(new ServletMetadataImpl("/admin/runtimechannellist", new RuntimeChannelListServlet(), dicts));
+
+		// Config Registry
+		addServlet(new ServletMetadataImpl("/admin/configregs", new ConfigRegistryListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigRegistryElementListServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

@@ -14,6 +14,7 @@ import org.plutus.lottery.powerball.DrawHelper;
 import org.plutus.lottery.powerball.DrawStat;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
 import org.plutus.lottery.powerball.analysis.A12_NumberDiffAnalysis;
+import org.plutus.lottery.powerball.analysis.A13_RangeNormalizationAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
 import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
@@ -25,6 +26,7 @@ public class PredictedMainTest {
 	static {
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
 		A12_NumberDiffAnalysis.INSTANCE.register();
+		A13_RangeNormalizationAnalysis.INSTANCE.register();
 		A21_OddEvenAnalysis.INSTANCE.register();
 		A24_RepetitionAnalysis.INSTANCE.register();
 		A22_SumAnalysis.INSTANCE.register();
@@ -36,7 +38,9 @@ public class PredictedMainTest {
 			List<Draw> draws = getDraws();
 			AnalysisContext context = new AnalysisContext();
 			context.setDraws(draws);
+
 			AnalysisRegistry.getInstance().run(context);
+			AnalysisRegistry.getInstance().printResult(context);
 
 			Map<Integer, List<Draw>> yearToDraws = DrawHelper.INSTANCE.groupByYear(draws);
 			generateNumbersDiff(context, yearToDraws, SystemUtils.getUserDir(), "/doc/temp/powerball_draws__nums_diff__{0}.txt");

@@ -10,8 +10,9 @@ import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawHelper;
 import org.plutus.lottery.powerball.DrawStat;
+import org.plutus.lottery.powerball.impl.AnalysisImpl;
 
-public class A12_NumberDiffAnalysis implements Analysis {
+public class A12_NumberDiffAnalysis extends AnalysisImpl implements Analysis {
 
 	public static String ANALYSIS_ID = "NumberDiffAnalysis";
 

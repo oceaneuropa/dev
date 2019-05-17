@@ -73,6 +73,8 @@ public class DrawStat {
 	public static String PB_DIFF_MIN = "PB_DIFF_MIN";
 	public static String PB_DIFF_MAX = "PB_DIFF_MAX";
 
+	public static String PROP_RANGE_1_TO_100 = "PROP_RANGE_1_100";
+
 	// --------------------------------------------------------------------------------------------------
 	// BasicCount
 	// --------------------------------------------------------------------------------------------------

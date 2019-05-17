@@ -11,8 +11,9 @@ import org.plutus.lottery.powerball.AnalysisContext;
 import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawStat;
+import org.plutus.lottery.powerball.impl.AnalysisImpl;
 
-public class A21_OddEvenAnalysis implements Analysis {
+public class A21_OddEvenAnalysis extends AnalysisImpl implements Analysis {
 
 	public static String ANALYSIS_ID = "OddEvenAnalysis";
 
@@ -174,6 +175,28 @@ public class A21_OddEvenAnalysis implements Analysis {
 	 */
 	private String getOddEvenKey(int oddCount, int evenCount) {
 		return String.valueOf(oddCount) + "/" + String.valueOf(evenCount);
+	}
+
+	@Override
+	public void printResult(AnalysisContext context) {
+		DrawStat globalStat = context.getGlobalStat();
+
+		// 奇数偶数次数统计
+		Map<String, Integer> oddEvenToCountMap = globalStat.get(DrawStat.PROP_ODD_TO_EVEN_COUNT_MAP, Map.class);
+		Map<String, Integer> oddEvenToPercentMap = globalStat.get(DrawStat.PROP_ODD_TO_EVEN_PERCENT_MAP, Map.class);
+		System.out.println("奇数偶数次数统计");
+		int totalCount = 0;
+		for (Iterator<String> keyItor = oddEvenToCountMap.keySet().iterator(); keyItor.hasNext();) {
+			String oddEvenKey = keyItor.next();
+			int count = oddEvenToCountMap.get(oddEvenKey);
+			int percent = oddEvenToPercentMap.get(oddEvenKey);
+			totalCount += count;
+			String message = oddEvenKey + " [" + count + "] " + percent + "%";
+			System.out.println(message);
+		}
+
+		System.out.println();
+		System.out.println("TotalCount is: " + totalCount);
 	}
 
 }

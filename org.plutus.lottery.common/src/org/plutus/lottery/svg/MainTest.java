@@ -14,6 +14,7 @@ import org.plutus.lottery.powerball.DrawHelper;
 import org.plutus.lottery.powerball.DrawStat;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
 import org.plutus.lottery.powerball.analysis.A12_NumberDiffAnalysis;
+import org.plutus.lottery.powerball.analysis.A13_RangeNormalizationAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
 import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
@@ -25,10 +26,15 @@ public class MainTest {
 	static {
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
 		A12_NumberDiffAnalysis.INSTANCE.register();
+		A13_RangeNormalizationAnalysis.INSTANCE.register();
 		A21_OddEvenAnalysis.INSTANCE.register();
-		A24_RepetitionAnalysis.INSTANCE.register();
 		A22_SumAnalysis.INSTANCE.register();
 		A23_HotColdAnalysis.INSTANCE.register();
+		A24_RepetitionAnalysis.INSTANCE.register();
+	}
+
+	protected static List<Draw> getDraws() throws IOException {
+		return DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
 	public static void main(String[] args) {
@@ -36,18 +42,16 @@ public class MainTest {
 			List<Draw> draws = getDraws();
 			AnalysisContext context = new AnalysisContext();
 			context.setDraws(draws);
-			AnalysisRegistry.getInstance().run(context);
 
-			Map<Integer, List<Draw>> yearToDraws = DrawHelper.INSTANCE.groupByYear(draws);
-			generateNumbersDiff(context, yearToDraws, SystemUtils.getUserDir(), "/doc/temp/powerball_draws__nums_diff__{0}.txt");
+			AnalysisRegistry.getInstance().run(context);
+			AnalysisRegistry.getInstance().printResult(context);
+
+			// Map<Integer, List<Draw>> yearToDraws = DrawHelper.INSTANCE.groupByYear(draws);
+			// generateNumbersDiff(context, yearToDraws, SystemUtils.getUserDir(), "/doc/temp/powerball_draws__nums_diff__{0}.txt");
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	protected static List<Draw> getDraws() throws IOException {
-		return DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
 	/**

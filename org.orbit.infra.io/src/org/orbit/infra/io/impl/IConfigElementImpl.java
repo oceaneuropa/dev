@@ -31,6 +31,11 @@ public class IConfigElementImpl implements IConfigElement {
 	public IConfigElementImpl(IConfigRegistry registry, ConfigElement configElement) {
 		this.registry = registry;
 		this.configElement = configElement;
+
+		long dateCreated = this.configElement.getDateCreated();
+		long dateModified = this.configElement.getDateModified();
+		this.dateRecordSupport.setDateCreated(dateCreated);
+		this.dateRecordSupport.setDateModified(dateModified);
 	}
 
 	@Override

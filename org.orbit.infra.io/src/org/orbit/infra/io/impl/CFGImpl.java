@@ -2,6 +2,7 @@ package org.orbit.infra.io.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.util.ClientComparators;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.ServiceMetadata;
 
@@ -72,6 +74,9 @@ public class CFGImpl extends CFG {
 		} catch (ClientException e) {
 			handle(e);
 		}
+
+		Collections.sort(cfgRegs, ClientComparators.ConfigRegistryComparator_ASC);
+
 		return cfgRegs.toArray(new IConfigRegistry[cfgRegs.size()]);
 	}
 
@@ -89,6 +94,9 @@ public class CFGImpl extends CFG {
 		} catch (ClientException e) {
 			handle(e);
 		}
+
+		Collections.sort(cfgRegs, ClientComparators.ConfigRegistryComparator_ASC);
+
 		return cfgRegs.toArray(new IConfigRegistry[cfgRegs.size()]);
 	}
 

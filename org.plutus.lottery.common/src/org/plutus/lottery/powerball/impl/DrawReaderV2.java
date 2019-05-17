@@ -117,7 +117,7 @@ public class DrawReaderV2 implements DrawReader {
 
 		} catch (Exception e) {
 			System.err.println("convertToDraw() invalid line: " + line);
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		return null;
 	}

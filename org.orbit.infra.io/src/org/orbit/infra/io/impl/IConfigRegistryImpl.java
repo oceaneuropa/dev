@@ -2,6 +2,7 @@ package org.orbit.infra.io.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.util.ClientComparators;
 import org.origin.common.resource.Path;
 import org.origin.common.rest.client.ClientException;
 
@@ -204,6 +206,9 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 		} catch (ClientException e) {
 			handle(e);
 		}
+
+		Collections.sort(cfgEles, ClientComparators.ConfigElementComparator_ASC);
+
 		return cfgEles.toArray(new IConfigElement[cfgEles.size()]);
 	}
 
@@ -247,6 +252,9 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 		} catch (ClientException e) {
 			handle(e);
 		}
+
+		Collections.sort(cfgEles, ClientComparators.ConfigElementComparator_ASC);
+
 		return cfgEles.toArray(new IConfigElement[cfgEles.size()]);
 	}
 
@@ -270,6 +278,9 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 		} catch (ClientException e) {
 			handle(e);
 		}
+
+		Collections.sort(cfgEles, ClientComparators.ConfigElementComparator_ASC);
+
 		return cfgEles.toArray(new IConfigElement[cfgEles.size()]);
 	}
 
