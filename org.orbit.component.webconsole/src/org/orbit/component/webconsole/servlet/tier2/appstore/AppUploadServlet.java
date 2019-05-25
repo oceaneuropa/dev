@@ -125,7 +125,7 @@ public class AppUploadServlet extends HttpServlet {
 								fileItem.write(localFile);
 								localFiles.add(localFile);
 
-								message = MessageHelper.INSTANCE.add(message, "File '" + fileName + "' is uploaded to web server.");
+								// message = MessageHelper.INSTANCE.add(message, "File '" + fileName + "' is uploaded to web server.");
 
 							} catch (Exception e) {
 								message = MessageHelper.INSTANCE.add(message, "File '" + fileName + "' is not uploaded to web server. " + e.getMessage());
@@ -138,7 +138,7 @@ public class AppUploadServlet extends HttpServlet {
 
 					boolean succeed = ComponentClientsUtil.AppStore.uploadAppFile(accessToken, id, appId, appVersion, localFiles);
 					if (succeed) {
-						message = MessageHelper.INSTANCE.add(message, "App file is uploaded to app store successfully!");
+						message = MessageHelper.INSTANCE.add(message, "App file is successfully uploaded to app store.");
 					} else {
 						message = MessageHelper.INSTANCE.add(message, "App file is not uploaded to app store.");
 					}

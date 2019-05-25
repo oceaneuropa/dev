@@ -111,3 +111,36 @@ $(document).on("click", "#cancelProgramAction", function() {
 	document.getElementById('main_list').reset();
 	document.getElementById('programActionDialog').close();
 });
+
+
+//-----------------------------------------------------------------------
+//Start/stop program (new)
+//-----------------------------------------------------------------------
+function startProgram(id_version) {
+	document.getElementById('start_program__id_version').value = id_version;
+	document.getElementById('startProgramDialog').showModal();
+}
+
+$(document).on("click", "#okStartProgram", function() {
+	document.getElementById('start_program_form').submit();
+});
+
+$(document).on("click", "#cancelStartProgram", function() {
+	document.getElementById('start_program__id_version').value = "";
+	document.getElementById('startProgramDialog').close();
+});
+
+
+function stopProgram(id_version) {
+	document.getElementById('stop_program__id_version').value = id_version;
+	document.getElementById('stopProgramDialog').showModal();
+}
+
+$(document).on("click", "#okStopProgram", function() {
+	document.getElementById('stop_program_form').submit();
+});
+
+$(document).on("click", "#cancelStopProgram", function() {
+	document.getElementById('stop_program__id_version').value = "";
+	document.getElementById('stopProgramDialog').close();
+});

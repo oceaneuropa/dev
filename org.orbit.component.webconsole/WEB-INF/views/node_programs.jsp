@@ -77,11 +77,11 @@
 					<th class="th1" width="10">
 						<input type="checkbox" onClick="toggleSelection(this, 'id_version')" />
 					</th>
-					<th class="th1" width="100">Type</th>
-					<th class="th1" width="150">Id/Version</th>
-					<th class="th1" width="150">Name</th>
-					<th class="th1" width="150">State</th>
-					<th class="th1" width="150">Actions</th>
+					<th class="th1" width="180">Name</th>
+					<th class="th1" width="180">Type</th>
+					<th class="th1" width="180">Id/Version</th>
+					<th class="th1" width="180">State</th>
+					<th class="th1" width="180">Actions</th>
 				</tr>
 				<%
 					if (programs.length == 0) {
@@ -111,15 +111,17 @@
 					<td class="td1">
 						<input type="checkbox" name="id_version" value="<%=appId + "_" + appVersion%>">
 					</td>
+					<td class="td2"><%=appName%></td>
 					<td class="td1"><%=appType%></td>
 					<td class="td2"><%=appId + " (" + appVersion + ")"%></td>
-					<td class="td2"><%=appName%></td>
 					<td class="td1">
 						<font color="<%=statusColor1%>"><%=activationStateLabel%></font>
 						<font color="<%=statusColor2%>"> | </font>
 						<font color="<%=statusColor3%>"><%=runtimeStateLabel%></font>
 					</td>
 					<td class="td1">
+						<a class="action01" href="javascript:startProgram('<%=appId + "_" + appVersion%>')">Start</a> | 
+						<a class="action01" href="javascript:stopProgram('<%=appId + "_" + appVersion%>')">Stop</a> | 
 						<a class="action01" href="<%=contextRoot%>/domain/nodeprogramproblems?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>&programId=<%=appId%>&programVersion=<%=appVersion%>">Problems (<%=numOfProblems%>)</a>
 					</td>
 				</tr>
@@ -157,12 +159,44 @@
 	</dialog>
 
 	<dialog id="programActionDialog">
-	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Programs</div>
-	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the programs?</div>
-	<div class="dialog_button_div01">
-		<a id="okProgramAction" class="button02">OK</a> 
-		<a id="cancelProgramAction" class="button02b">Cancel</a>
-	</div>
+		<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Programs</div>
+		<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the programs?</div>
+		<div class="dialog_button_div01">
+			<a id="okProgramAction" class="button02">OK</a> 
+			<a id="cancelProgramAction" class="button02b">Cancel</a>
+		</div>
+	</dialog>
+
+	<dialog id="startProgramDialog">
+	<div class="dialog_title_div01" id="startProgramDialogTitleDiv">Start Programs</div>
+	<form id="start_program_form" method="post" action="<%=contextRoot + "/domain/nodeprogramaction"%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>">
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<input type="hidden" name="id" value="<%=id%>">
+		<input type="hidden" name="action" value="start">
+		<input type="hidden" id="start_program__id_version" name="id_version" value="">
+		<div class="dialog_main_div01" id="startProgramDialogMessageDiv">Are you sure you want to start the program?</div>
+		<div class="dialog_button_div01">
+			<a id="okStartProgram" class="button02">OK</a> 
+			<a id="cancelStartProgram" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="stopProgramDialog">
+	<div class="dialog_title_div01" id="stopProgramDialogTitleDiv">Stop Programs</div>
+	<form id="stop_program_form" method="post" action="<%=contextRoot + "/domain/nodeprogramaction"%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>">
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<input type="hidden" name="id" value="<%=id%>">
+		<input type="hidden" name="action" value="stop">
+		<input type="hidden" id="stop_program__id_version" name="id_version" value="">
+		<div class="dialog_main_div01" id="stopProgramDialogMessageDiv">Are you sure you want to stop the program?</div>
+		<div class="dialog_button_div01">
+			<a id="okStopProgram" class="button02">OK</a> 
+			<a id="cancelStopProgram" class="button02b">Cancel</a>
+		</div>
+	</form>
 	</dialog>
 
 </body>

@@ -69,7 +69,7 @@
 	<div class="main_div01">
 		<h2>Problems</h2>
 		<div class="top_tools_div01">
-			<a class="button02" href="<%=contextRoot + "/domain/nodeprograms?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id + "&programId=" + programId + "&programVersion=" + programVersion%>">Clear</a>
+			<a class="button02" href="<%=contextRoot + "/domain/nodeprogramproblemsaction?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id + "&programId=" + programId + "&programVersion=" + programVersion + "&action=clear"%>">Clear</a>
 			<a class="button02" href="<%=contextRoot + "/domain/nodeprogramproblems?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id + "&programId=" + programId + "&programVersion=" + programVersion%>">Refresh</a>
 		</div>
 		<table class="main_table01">
