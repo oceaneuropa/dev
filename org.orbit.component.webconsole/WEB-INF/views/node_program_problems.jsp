@@ -36,7 +36,8 @@
 	if (program != null) {
 		programId = program.getId();
 		programVersion = program.getVersion();
-		programSimpleName = program.getSimpleName();
+		// programSimpleName = program.getSimpleName();
+		programSimpleName = program.getName();
 	}
 
 	if (problems == null) {
