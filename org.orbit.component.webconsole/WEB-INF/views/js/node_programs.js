@@ -114,7 +114,40 @@ $(document).on("click", "#cancelProgramAction", function() {
 
 
 //-----------------------------------------------------------------------
-//Start/stop program (new)
+// Activate/deactivate program (new)
+//-----------------------------------------------------------------------
+function activateProgram(id_version) {
+	document.getElementById('activate_program__id_version').value = id_version;
+	document.getElementById('activateProgramDialog').showModal();
+}
+
+$(document).on("click", "#okActivateProgram", function() {
+	document.getElementById('activate_program_form').submit();
+});
+
+$(document).on("click", "#cancelActivateProgram", function() {
+	document.getElementById('activate_program__id_version').value = "";
+	document.getElementById('activateProgramDialog').close();
+});
+
+
+function deactivateProgram(id_version) {
+	document.getElementById('deactivate_program__id_version').value = id_version;
+	document.getElementById('deactivateProgramDialog').showModal();
+}
+
+$(document).on("click", "#okDeactivateProgram", function() {
+	document.getElementById('deactivate_program_form').submit();
+});
+
+$(document).on("click", "#cancelDeactivateProgram", function() {
+	document.getElementById('deactivate_program__id_version').value = "";
+	document.getElementById('deactivateProgramDialog').close();
+});
+
+
+//-----------------------------------------------------------------------
+// Start/stop program (new)
 //-----------------------------------------------------------------------
 function startProgram(id_version) {
 	document.getElementById('start_program__id_version').value = id_version;
