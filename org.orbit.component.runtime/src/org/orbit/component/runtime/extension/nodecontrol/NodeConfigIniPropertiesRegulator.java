@@ -23,9 +23,14 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 		if (node != null) {
 			// Update properties to be generated in node's config.ini file
 
+			// Add org.osgi.framework.bsnversion=true if not exist
+			if (!properties.containsKey("org.osgi.framework.bsnversion")) {
+				properties.put("org.osgi.framework.bsnversion", "multiple");
+			}
+
 			// Add "logback.configurationFile" property if not exist
 			if (!properties.containsKey("logback.configurationFile")) {
-				
+
 			}
 
 			// Add "orbit.index_service.url" property if not exist
