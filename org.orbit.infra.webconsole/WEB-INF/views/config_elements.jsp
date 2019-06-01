@@ -22,6 +22,19 @@
 	}
 
 	List<IConfigElement> parentConfigElements = (List<IConfigElement>) request.getAttribute("parentConfigElements");
+	if (parentConfigElements == null) {
+		parentConfigElements = new ArrayList<IConfigElement>();
+	}
+
+	String parentElementId = "";
+	String parentElementName = "Unknown";
+	String grandParentElementId = "";
+	if (parentConfigElements != null && !parentConfigElements.isEmpty()) {
+		IConfigElement parentConfigElement = parentConfigElements.get(parentConfigElements.size() - 1);
+		parentElementId = parentConfigElement.getElementId();
+		parentElementName = parentConfigElement.getName();
+		grandParentElementId = parentConfigElement.getParentElementId();
+	}
 
 	IConfigElement[] configElements = (IConfigElement[]) request.getAttribute("configElements");
 	if (configElements == null) {
@@ -60,17 +73,10 @@
 	<div class="main_div01">
 		<h2>Config Elements</h2>
 		<div class="top_tools_div01">
+			<a id="actionAddConfigElement" class="button02">Create</a>
+			<a id="actionDeleteConfigElements" class="button02">Delete</a>
 			<%
-				if (!parentConfigElements.isEmpty()) {
-					String parentElementId = "";
-					String parentElementName = "Unknown";
-					String grandParentElementId = "";
-					IConfigElement parentConfigElement = parentConfigElements.get(parentConfigElements.size() - 1);
-					if (parentConfigElement != null) {
-						parentElementId = parentConfigElement.getElementId();
-						parentElementName = parentConfigElement.getName();
-						grandParentElementId = parentConfigElement.getParentElementId();
-					}
+				if (!parentElementId.isEmpty()) {
 			%>
 				<a class="button02" href="<%=contextRoot + "/admin/configelements?configRegistryId=" + configRegistryId + "&parentElementId=" + grandParentElementId%>">Up</a>
 				<a class="button02" href="<%=contextRoot + "/admin/configelements?configRegistryId=" + configRegistryId + "&parentElementId=" + parentElementId%>">Refresh</a>
@@ -87,17 +93,20 @@
 			<form id="main_list" method="post">
 			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
+				<th class="th1" width="10">
+					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
+				</th>
 				<th class="th1" width="150">Name</th>
 				<th class="th1" width="150">Attributes</th>
-				<th class="th1" width="100">Date Created</th>
-				<th class="th1" width="100">Data Modified</th>
-				<th class="th1" width="100">Actions</th>
+				<th class="th1" width="80">Date Created</th>
+				<th class="th1" width="80">Data Modified</th>
+				<th class="th1" width="150">Actions</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
 			%>
 			<tr>
-				<td colspan="5">(n/a)</td>
+				<td colspan="6">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -121,11 +130,13 @@
 						}
 			%>
 			<tr>
+				<td class="td1"><input type="checkbox" name="elementId" value="<%=currId%>"></td>
 				<td class="td2"><%=currName%></td>
 				<td class="td2"><%=currAttrStr%></td>
 				<td class="td1"><%=currDateCreatedStr%></td>
 				<td class="td1"><%=currDateModifiedStr%></td>
 				<td class="td1">
+					<a class="action01" href="javascript:changeConfigElement('<%=currId%>', '<%=currName%>')">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=configRegistryId%>&parentElementId=<%=currId%>">Elements</a>
 				</td>
 			</tr>
@@ -137,6 +148,78 @@
 		</table>
 	</div>
 	<br/>
+
+	<dialog id="newConfigElementDialog">
+	<div class="dialog_title_div01">Create Config Element</div>
+	<form id="new_form" method="post" action="<%=contextRoot + "/admin/configelementadd"%>">
+		<input type="hidden" name="configRegistryId" value="<%=configRegistryId%>">
+		<%
+		if (!parentElementId.isEmpty()) {
+		%>
+		<input type="hidden" name="parentElementId" value="<%=parentElementId%>">
+		<%
+		}
+		%>
+		<div class="dialog_main_div01">
+			<table class="dialog_table01">
+				<tr>
+					<td>Name:</td>
+					<td><input type="text" name="name"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okAddConfigElement" class="button02">OK</a> 
+			<a id="cancelAddConfigElement" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="changeConfigElementDialog">
+	<div class="dialog_title_div01">Change Config Element</div>
+	<form id="update_form" name="update_form_name" method="post" action="<%=contextRoot + "/admin/configelementupdate"%>">
+		<input type="hidden" name="configRegistryId" value="<%=configRegistryId%>">
+		<%
+		if (!parentElementId.isEmpty()) {
+		%>
+		<input type="hidden" name="parentElementId" value="<%=parentElementId%>">
+		<%
+		}
+		%>
+		<input type="hidden" id="config_element__elementId" name="elementId" >
+		<div class="dialog_main_div01">
+			<table class="dialog_table01">
+				<tr>
+					<td>Name:</td>
+					<td><input id="config_element__name" type="text" name="name"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okChangeConfigElement" class="button02">OK</a> 
+			<a id="cancelChangeConfigElement" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="deleteConfigElementsDialog">
+	<form id="delete_form" method="post" action="<%=contextRoot + "/admin/configelementdelete"%>">
+		<input type="hidden" name="configRegistryId" value="<%=configRegistryId%>">
+		<%
+		if (!parentElementId.isEmpty()) {
+		%>
+		<input type="hidden" name="parentElementId" value="<%=parentElementId%>">
+		<%
+		}
+		%>
+		<div class="dialog_title_div01">Delete Config Elements</div>
+		<div class="dialog_main_div01" id="deleteConfigElementsDialogMessageDiv">Are you sure you want to delete selected config elements?</div>
+		<div class="dialog_button_div01">
+			<a id="okDeleteConfigElements" class="button02">OK</a>
+			<a id="cancelDeleteConfigElements" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
 
 </body>
 </html>

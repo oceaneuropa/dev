@@ -18,7 +18,7 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class ConfigRegistryElementListServlet extends HttpServlet {
+public class ConfigElementListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5441827406099072948L;
 
@@ -58,7 +58,7 @@ public class ConfigRegistryElementListServlet extends HttpServlet {
 
 			CFG cfg = CFG.getDefault(accessToken);
 			if (!cfg.isOnline()) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry is not online.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry service is not online.");
 
 			} else {
 				configReg = cfg.getConfigRegistryById(configRegistryId);

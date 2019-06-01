@@ -11,7 +11,10 @@ import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataDeleteServlet;
 import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataListServlet;
 import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataUpdateServlet;
 import org.orbit.infra.webconsole.servlet.channel.RuntimeChannelListServlet;
-import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryElementListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAddServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementDeleteServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementUpdateServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryListServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
@@ -100,7 +103,10 @@ public class WebApplication extends PlatformWebApplication {
 
 		// Config Registry
 		addServlet(new ServletMetadataImpl("/admin/configregs", new ConfigRegistryListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigRegistryElementListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigElementListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementadd", new ConfigElementAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementupdate", new ConfigElementUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementdelete", new ConfigElementDeleteServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));
