@@ -19,7 +19,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
-import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
@@ -406,7 +406,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			Map<Object, Object> configIniProperties = new HashMap<Object, Object>();
 			configIniProperties.putAll(this.properties);
 
-			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+			ISystemPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 			List<PropertiesRegulator> regulators = ExtensionUtil.PROPERTIES.getPropertiesRegulators(PropertiesRegulator.TYPE__NODE__CONFIG_INI);
 			for (PropertiesRegulator regulator : regulators) {
 				regulator.update(platform, node, configIniProperties);
@@ -521,7 +521,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			boolean isDirectShutdownSucceed = false;
 			PlatformClient nodePlatformClient = null;
 
-			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+			ISystemPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 			if (platform != null) {
 				String platformId = platform.getId();
 				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
@@ -585,7 +585,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	public boolean isNodeStarted(String id, String accessToken) throws IOException {
 		// String indexServiceUrl = getIndexServiceURL();
 
-		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
+		ISystemPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);
@@ -608,7 +608,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	public boolean isNodeStopped(String id, String accessToken) throws IOException {
 		// String indexServiceUrl = getIndexServiceURL();
 
-		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
+		ISystemPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(accessToken, platformId, id);

@@ -77,21 +77,39 @@ public class OrbitClientHelper {
 		return nodeIndexItem;
 	}
 
-	// /**
-	// *
-	// * @param indexServiceUrl
-	// * @param accessToken
-	// * @return
-	// */
-	// protected IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
-	// IndexServiceClient indexService = null;
-	// if (indexServiceUrl != null) {
-	// indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
-	// }
-	// return indexService;
-	// }
+	/**
+	 * 
+	 * @param accessToken
+	 * @param platformId
+	 * @return
+	 * @throws IOException
+	 */
+	public IndexItem getPlatformIndexItem(String accessToken, String platformId) throws IOException {
+		IndexItem platformIndexItem = null;
+		if (platformId != null) {
+			IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
+			if (indexService != null) {
+				platformIndexItem = indexService.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE, platformId);
+			}
+		}
+		return platformIndexItem;
+	}
 
 }
+
+// /**
+// *
+// * @param indexServiceUrl
+// * @param accessToken
+// * @return
+// */
+// protected IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
+// IndexServiceClient indexService = null;
+// if (indexServiceUrl != null) {
+// indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+// }
+// return indexService;
+// }
 
 // /**
 // *
@@ -120,4 +138,50 @@ public class OrbitClientHelper {
 // }
 // }
 // return nodeIndexItem;
+// }
+
+// /**
+// *
+// * @param accessToken
+// * @param indexItem
+// * @return
+// */
+// public PlatformClient getPlatformClient(String accessToken, IndexItem indexItem) {
+// PlatformClient platformClient = null;
+// if (indexItem != null) {
+// String platformUrl = null;
+// String platformHostUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+// String platformContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+//
+// if (platformHostUrl != null && platformContextRoot != null) {
+// platformUrl = platformHostUrl;
+// if (!platformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
+// platformUrl += "/";
+// }
+// platformUrl += platformContextRoot;
+// }
+//
+// if (platformUrl != null) {
+// platformClient = PlatformClientsUtil.INSTANCE.getPlatformClient(accessToken, platformUrl);
+// }
+// }
+// return platformClient;
+// }
+//
+// /**
+// *
+// * @param accessToken
+// * @param platformId
+// * @return
+// * @throws IOException
+// */
+// public IndexItem getPlatformIndexItem(String accessToken, String platformId) throws IOException {
+// IndexItem platformIndexItem = null;
+// if (platformId != null) {
+// IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
+// if (indexService != null) {
+// platformIndexItem = indexService.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE, platformId);
+// }
+// }
+// return platformIndexItem;
 // }

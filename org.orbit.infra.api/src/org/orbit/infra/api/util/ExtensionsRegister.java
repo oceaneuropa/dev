@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
-import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
@@ -88,7 +88,7 @@ public class ExtensionsRegister implements ExtensionListener {
 	protected String getPlatformId() {
 		String platformId = null;
 		if (PlatformSDKActivator.getInstance() != null) {
-			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+			ISystemPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 			if (platform != null) {
 				platformId = platform.getId();
 			}

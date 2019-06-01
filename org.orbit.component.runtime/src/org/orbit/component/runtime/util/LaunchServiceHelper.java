@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.launch.LaunchActivator;
 import org.origin.common.launch.LaunchConfig;
@@ -191,7 +191,7 @@ public class LaunchServiceHelper {
 		// org.osgi.service.http.port=9005
 		// orbit.host.url=http://127.0.0.1:9005
 		// -----------------------------------------------------------------------------------------------------------------------------------------
-		IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+		ISystemPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 		String platformId = platform.getId();
 		// String platformHome = platform.getHome();
 
