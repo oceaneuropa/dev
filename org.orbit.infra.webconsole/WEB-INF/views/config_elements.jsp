@@ -45,7 +45,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Config Registry</title>
+<title>Config Element</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -96,11 +96,11 @@
 				<th class="th1" width="10">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="150">Name</th>
+				<th class="th1" width="100">Name</th>
 				<th class="th1" width="150">Attributes</th>
-				<th class="th1" width="80">Date Created</th>
-				<th class="th1" width="80">Data Modified</th>
-				<th class="th1" width="150">Actions</th>
+				<th class="th1" width="100">Date Created</th>
+				<th class="th1" width="100">Data Modified</th>
+				<th class="th1" width="100">Actions</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -136,7 +136,9 @@
 				<td class="td1"><%=currDateCreatedStr%></td>
 				<td class="td1"><%=currDateModifiedStr%></td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeConfigElement('<%=currId%>', '<%=currName%>')">Edit</a>
+					<a class="action01" href="javascript:changeConfigElement('<%=currId%>', '<%=currName%>')">Edit</a> | 
+					<a class="action01" href="javascript:deleteConfigElement('<%=currId%>')">Delete</a> | 
+					<a class="action01" href="<%=contextRoot%>/admin/configelementattributes?configRegistryId=<%=configRegistryId%>&parentElementId=<%=parentElementId%>&elementId=<%=currId%>">Attributes</a> |
 					<a class="action01" href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=configRegistryId%>&parentElementId=<%=currId%>">Elements</a>
 				</td>
 			</tr>
@@ -217,6 +219,26 @@
 		<div class="dialog_button_div01">
 			<a id="okDeleteConfigElements" class="button02">OK</a>
 			<a id="cancelDeleteConfigElements" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="deleteConfigElementDialog">
+	<form id="delete_form2" method="post" action="<%=contextRoot + "/admin/configelementdelete"%>">
+		<input type="hidden" name="configRegistryId" value="<%=configRegistryId%>">
+		<%
+		if (!parentElementId.isEmpty()) {
+		%>
+		<input type="hidden" name="parentElementId" value="<%=parentElementId%>">
+		<%
+		}
+		%>
+		<input type="hidden" id="delete_form2_elementId" name="elementId">
+		<div class="dialog_title_div01">Delete Config Element</div>
+		<div class="dialog_main_div01">Are you sure you want to delete the config element?</div>
+		<div class="dialog_button_div01">
+			<a id="okDeleteConfigElement" class="button02">OK</a> 
+			<a id="cancelDeleteConfigElement" class="button02b">Cancel</a>
 		</div>
 	</form>
 	</dialog>

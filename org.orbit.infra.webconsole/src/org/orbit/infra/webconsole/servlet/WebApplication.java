@@ -12,6 +12,10 @@ import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataListServlet;
 import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataUpdateServlet;
 import org.orbit.infra.webconsole.servlet.channel.RuntimeChannelListServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAddServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeAddServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeDeleteServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeUpdateServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementDeleteServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementListServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementUpdateServlet;
@@ -103,10 +107,16 @@ public class WebApplication extends PlatformWebApplication {
 
 		// Config Registry
 		addServlet(new ServletMetadataImpl("/admin/configregs", new ConfigRegistryListServlet(), dicts));
+
 		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigElementListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configelementadd", new ConfigElementAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configelementupdate", new ConfigElementUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configelementdelete", new ConfigElementDeleteServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/admin/configelementattributes", new ConfigElementAttributeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementattributeadd", new ConfigElementAttributeAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementattributeupdate", new ConfigElementAttributeUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configelementattributedelete", new ConfigElementAttributeDeleteServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

@@ -37,10 +37,10 @@ public class ConfigElementUpdateServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'configRegistryId' parameter is not set.");
 		}
 		if (elementId.isEmpty()) {
-			MessageHelper.INSTANCE.add(message, "'elementId' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "'elementId' parameter is not set.");
 		}
 		if (name.isEmpty()) {
-			MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -48,8 +48,7 @@ public class ConfigElementUpdateServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		boolean hasNameChange = false;
 		boolean isNameUpdated = false;
-
-		if (!elementId.isEmpty()) {
+		if (!configRegistryId.isEmpty() && !elementId.isEmpty() && !name.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 

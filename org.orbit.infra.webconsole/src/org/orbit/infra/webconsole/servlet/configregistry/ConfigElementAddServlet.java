@@ -38,14 +38,14 @@ public class ConfigElementAddServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'configRegistryId' parameter is not set.");
 		}
 		if (name.isEmpty()) {
-			MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
 		IConfigElement configElement = null;
-		if (!configRegistryId.isEmpty()) {
+		if (!configRegistryId.isEmpty() && !name.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 

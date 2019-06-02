@@ -85,3 +85,20 @@ $(document).on("click", "#cancelDeleteConfigElements", function() {
 	document.getElementById('deleteConfigElementsDialog').close();
 });
 
+
+//-----------------------------------------------------------------------
+//Delete config element
+//-----------------------------------------------------------------------
+function deleteConfigElement(elementId) {
+	document.getElementById('delete_form2_elementId').value = elementId;
+	document.getElementById('deleteConfigElementDialog').showModal();
+}
+
+$(document).on("click", "#okDeleteConfigElement", function() {
+	document.getElementById('delete_form2').submit();
+});
+
+$(document).on("click", "#cancelDeleteConfigElement", function() {
+	document.getElementById('deleteConfigElementDialog').close();
+	document.getElementById('delete_form2_elementId').value = null;
+});
