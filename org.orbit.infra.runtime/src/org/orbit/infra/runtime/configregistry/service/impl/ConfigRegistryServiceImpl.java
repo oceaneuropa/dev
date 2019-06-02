@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -39,7 +38,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
 
-	protected Map<String, ConfigRegistry> configRegistryMap = new HashMap<String, ConfigRegistry>();
+	// protected Map<String, ConfigRegistry> configRegistryMap = new HashMap<String, ConfigRegistry>();
 	protected AccessTokenSupport accessTokenSupport;
 
 	/**
@@ -154,124 +153,124 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	 * @return
 	 */
 	protected synchronized ConfigRegistry getConfigRegistry(ConfigRegistryMetadata metadata) {
-		ConfigRegistry configRegistry = null;
+		ConfigRegistry configRegistry = new ConfigRegistryImpl(this, metadata);
 
-		String id = metadata.getId();
-		configRegistry = this.configRegistryMap.get(id);
-		if (configRegistry == null) {
-			configRegistry = new ConfigRegistryImpl(this, metadata);
-			this.configRegistryMap.put(id, configRegistry);
-		}
+		// String id = metadata.getId();
+		// configRegistry = this.configRegistryMap.get(id);
+		// if (configRegistry == null) {
+		// configRegistry = new ConfigRegistryImpl(this, metadata);
+		// this.configRegistryMap.put(id, configRegistry);
+		// }
 
 		return configRegistry;
 	}
 
-	/**
-	 * 
-	 * @param metadatas
-	 */
-	protected synchronized void cleanupAll(List<ConfigRegistryMetadata> metadatas) {
-		if (metadatas == null) {
-			return;
-		}
+	// /**
+	// *
+	// * @param metadatas
+	// */
+	// protected synchronized void cleanupAll(List<ConfigRegistryMetadata> metadatas) {
+	// if (metadatas == null) {
+	// return;
+	// }
+	//
+	// List<String> ids = new ArrayList<String>();
+	// for (ConfigRegistryMetadata metadata : metadatas) {
+	// ids.add(metadata.getId());
+	// }
+	//
+	// List<String> idsToRemove = new ArrayList<String>();
+	// for (Iterator<String> itor = this.configRegistryMap.keySet().iterator(); itor.hasNext();) {
+	// String currId = itor.next();
+	// if (!ids.contains(currId)) {
+	// idsToRemove.add(currId);
+	// }
+	// }
+	// for (String idToRemove : idsToRemove) {
+	// this.configRegistryMap.remove(idToRemove);
+	// }
+	// }
 
-		List<String> ids = new ArrayList<String>();
-		for (ConfigRegistryMetadata metadata : metadatas) {
-			ids.add(metadata.getId());
-		}
+	// /**
+	// *
+	// * @param id
+	// * @throws ServerException
+	// */
+	// protected synchronized void cleanupById(String id) throws ServerException {
+	// if (id == null) {
+	// return;
+	// }
+	//
+	// Connection conn = null;
+	// try {
+	// conn = getConnection();
+	// ConfigRegistryMetadatasTableHandler tableHandler = getConfigRegistryMetadatasTableHandler(conn);
+	//
+	// ConfigRegistryMetadata metadata = tableHandler.getById(conn, id);
+	//
+	// if (metadata == null) {
+	// // metadata doesn't exist or deleted
+	// // - remove the ConfigRegistry
+	// if (this.configRegistryMap.containsKey(id)) {
+	// this.configRegistryMap.remove(id);
+	// }
+	//
+	// } else {
+	// // metadata exists
+	// // - update existing ConfigRegistry's metadata (if ConfigRegistry exists)
+	// ConfigRegistry configRegistry = this.configRegistryMap.get(id);
+	// if (configRegistry != null) {
+	// configRegistry.setMetadata(metadata);
+	// }
+	// }
+	//
+	// } catch (SQLException e) {
+	// handleException(e);
+	// } finally {
+	// DatabaseUtil.closeQuietly(conn, true);
+	// }
+	// }
 
-		List<String> idsToRemove = new ArrayList<String>();
-		for (Iterator<String> itor = this.configRegistryMap.keySet().iterator(); itor.hasNext();) {
-			String currId = itor.next();
-			if (!ids.contains(currId)) {
-				idsToRemove.add(currId);
-			}
-		}
-		for (String idToRemove : idsToRemove) {
-			this.configRegistryMap.remove(idToRemove);
-		}
-	}
-
-	/**
-	 * 
-	 * @param id
-	 * @throws ServerException
-	 */
-	protected synchronized void cleanupById(String id) throws ServerException {
-		if (id == null) {
-			return;
-		}
-
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			ConfigRegistryMetadatasTableHandler tableHandler = getConfigRegistryMetadatasTableHandler(conn);
-
-			ConfigRegistryMetadata metadata = tableHandler.getById(conn, id);
-
-			if (metadata == null) {
-				// metadata doesn't exist or deleted
-				// - remove the ConfigRegistry
-				if (this.configRegistryMap.containsKey(id)) {
-					this.configRegistryMap.remove(id);
-				}
-
-			} else {
-				// metadata exists
-				// - update existing ConfigRegistry's metadata (if ConfigRegistry exists)
-				ConfigRegistry configRegistry = this.configRegistryMap.get(id);
-				if (configRegistry != null) {
-					configRegistry.setMetadata(metadata);
-				}
-			}
-
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @throws ServerException
-	 */
-	protected synchronized void cleanupByName(String name) throws ServerException {
-		if (name == null) {
-			return;
-		}
-
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			ConfigRegistryMetadatasTableHandler tableHandler = getConfigRegistryMetadatasTableHandler(conn);
-
-			ConfigRegistryMetadata metadata = tableHandler.getByName(conn, name);
-
-			if (metadata == null) {
-				// metadata doesn't exist or deleted
-				// - remove the ConfigRegistry (if ConfigRegistry exists)
-				if (this.configRegistryMap.containsKey(name)) {
-					this.configRegistryMap.remove(name);
-				}
-
-			} else {
-				// metadata exists
-				// - update existing ConfigRegistry's metadata (if ConfigRegistry exists)
-				String id = metadata.getId();
-				ConfigRegistry configRegistry = this.configRegistryMap.get(id);
-				if (configRegistry != null) {
-					configRegistry.setMetadata(metadata);
-				}
-			}
-
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-	}
+	// /**
+	// *
+	// * @param name
+	// * @throws ServerException
+	// */
+	// protected synchronized void cleanupByName(String name) throws ServerException {
+	// if (name == null) {
+	// return;
+	// }
+	//
+	// Connection conn = null;
+	// try {
+	// conn = getConnection();
+	// ConfigRegistryMetadatasTableHandler tableHandler = getConfigRegistryMetadatasTableHandler(conn);
+	//
+	// ConfigRegistryMetadata metadata = tableHandler.getByName(conn, name);
+	//
+	// if (metadata == null) {
+	// // metadata doesn't exist or deleted
+	// // - remove the ConfigRegistry (if ConfigRegistry exists)
+	// if (this.configRegistryMap.containsKey(name)) {
+	// this.configRegistryMap.remove(name);
+	// }
+	//
+	// } else {
+	// // metadata exists
+	// // - update existing ConfigRegistry's metadata (if ConfigRegistry exists)
+	// String id = metadata.getId();
+	// ConfigRegistry configRegistry = this.configRegistryMap.get(id);
+	// if (configRegistry != null) {
+	// configRegistry.setMetadata(metadata);
+	// }
+	// }
+	//
+	// } catch (SQLException e) {
+	// handleException(e);
+	// } finally {
+	// DatabaseUtil.closeQuietly(conn, true);
+	// }
+	// }
 
 	@Override
 	public ConfigRegistry[] getConfigRegistries() throws ServerException {
@@ -290,7 +289,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 						configRegistries.add(configRegistry);
 					}
 				}
-				cleanupAll(metadatas);
+				// cleanupAll(metadatas);
 			}
 
 		} catch (SQLException e) {
@@ -318,7 +317,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 						configRegistries.add(configRegistry);
 					}
 				}
-				cleanupAll(metadatas);
+				// cleanupAll(metadatas);
 			}
 
 		} catch (SQLException e) {
@@ -461,9 +460,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 			isUpdated = tableHandler.updateType(conn, id, type);
 
-			if (isUpdated) {
-				cleanupById(id);
-			}
+			// if (isUpdated) {
+			// cleanupById(id);
+			// }
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -483,9 +482,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 			isUpdated = tableHandler.updateName(conn, id, fullName);
 
-			if (isUpdated) {
-				cleanupById(id);
-			}
+			// if (isUpdated) {
+			// cleanupById(id);
+			// }
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -505,9 +504,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 			isUpdated = tableHandler.updateProperties(conn, id, properties);
 
-			if (isUpdated) {
-				cleanupById(id);
-			}
+			// if (isUpdated) {
+			// cleanupById(id);
+			// }
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -527,9 +526,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 			isDeleted = tableHandler.deleteById(conn, id);
 
-			if (isDeleted) {
-				cleanupById(id);
-			}
+			// if (isDeleted) {
+			// cleanupById(id);
+			// }
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -549,9 +548,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 			isDeleted = tableHandler.deleteByName(conn, fullName);
 
-			if (isDeleted) {
-				cleanupByName(fullName);
-			}
+			// if (isDeleted) {
+			// cleanupByName(fullName);
+			// }
 
 		} catch (SQLException e) {
 			handleException(e);

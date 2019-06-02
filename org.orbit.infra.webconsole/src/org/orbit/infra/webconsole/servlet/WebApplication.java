@@ -19,7 +19,10 @@ import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeU
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementDeleteServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementListServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementUpdateServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryAddServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryDeleteServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryUpdateServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeDeleteServlet;
@@ -107,6 +110,9 @@ public class WebApplication extends PlatformWebApplication {
 
 		// Config Registry
 		addServlet(new ServletMetadataImpl("/admin/configregs", new ConfigRegistryListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregadd", new ConfigRegistryAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregupdate", new ConfigRegistryUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregdelete", new ConfigRegistryDeleteServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigElementListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configelementadd", new ConfigElementAddServlet(), dicts));

@@ -138,7 +138,7 @@
 				<td class="td1">
 					<a class="action01" href="javascript:changeConfigElement('<%=currId%>', '<%=currName%>')">Edit</a> | 
 					<a class="action01" href="javascript:deleteConfigElement('<%=currId%>')">Delete</a> | 
-					<a class="action01" href="<%=contextRoot%>/admin/configelementattributes?configRegistryId=<%=configRegistryId%>&parentElementId=<%=parentElementId%>&elementId=<%=currId%>">Attributes</a> |
+					<a class="action01" target="_blank" href="<%=contextRoot%>/admin/configelementattributes?configRegistryId=<%=configRegistryId%>&parentElementId=<%=parentElementId%>&elementId=<%=currId%>">Attributes</a> |
 					<a class="action01" href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=configRegistryId%>&parentElementId=<%=currId%>">Elements</a>
 				</td>
 			</tr>
