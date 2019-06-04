@@ -232,6 +232,31 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
+	public boolean setConfigRegistryProperty(String id, String oldName, String name, Object value) throws ClientException {
+		checkNullParameter(id, "id is null.");
+		checkNullParameter(name, "property name is null.");
+		checkNullParameter(value, "property value is null.");
+
+		Request request = new Request(RequestConstants.CONFIG_REGISTRY__SET_CONFIG_REGISTRY_PROPERTY);
+		request.setParameter("id", id);
+		request.setParameter("property_old_name", oldName);
+		request.setParameter("property_name", name);
+		request.setParameter("property_value", value);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ClientModelConverter.COMMON.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
 	public boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws ClientException {
 		checkNullParameter(id, "id is null.");
 		checkNullParameter(properties, "properties is null.");

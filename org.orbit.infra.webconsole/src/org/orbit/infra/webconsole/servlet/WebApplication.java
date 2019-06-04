@@ -22,6 +22,10 @@ import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementUpdateServ
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryAddServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryDeleteServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyAddServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyDeleteServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyListServlet;
+import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyUpdateServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryUpdateServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
@@ -113,6 +117,11 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/admin/configregadd", new ConfigRegistryAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configregupdate", new ConfigRegistryUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configregdelete", new ConfigRegistryDeleteServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/admin/configregproperties", new ConfigRegistryPropertyListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregpropertyadd", new ConfigRegistryPropertyAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregpropertyupdate", new ConfigRegistryPropertyUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/configregpropertydelete", new ConfigRegistryPropertyDeleteServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/admin/configelements", new ConfigElementListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configelementadd", new ConfigElementAddServlet(), dicts));

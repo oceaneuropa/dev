@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -91,11 +92,16 @@ public class ClientModelConverter {
 			long dateCreated = configRegistryDTO.getDateCreated();
 			long dateModified = configRegistryDTO.getDateModified();
 
+			Map<String, Object> properties2 = new TreeMap<String, Object>();
+			if (properties != null && !properties.isEmpty()) {
+				properties2.putAll(properties);
+			}
+
 			ConfigRegistryImpl configRegistry = new ConfigRegistryImpl(configRegistryClient);
 			configRegistry.setId(id);
 			configRegistry.setType(type);
 			configRegistry.setName(name);
-			configRegistry.setProperties(properties);
+			configRegistry.setProperties(properties2);
 			configRegistry.setDateCreated(dateCreated);
 			configRegistry.setDateModified(dateModified);
 
@@ -170,12 +176,17 @@ public class ClientModelConverter {
 				path = new Path(pathString);
 			}
 
+			Map<String, Object> attributes2 = new TreeMap<String, Object>();
+			if (attributes != null && !attributes.isEmpty()) {
+				attributes2.putAll(attributes);
+			}
+
 			ConfigElementImpl configElement = new ConfigElementImpl(configRegistryClient);
 			configElement.setConfigRegistryId(configRegistryId);
 			configElement.setParentElementId(parentElementId);
 			configElement.setElementId(elementId);
 			configElement.setPath(path);
-			configElement.setAttributes(attributes);
+			configElement.setAttributes(attributes2);
 			configElement.setDateCreated(dateCreated);
 			configElement.setDateModified(dateModified);
 

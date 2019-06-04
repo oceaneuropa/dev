@@ -189,6 +189,17 @@ public class CFGImpl extends CFG {
 	}
 
 	@Override
+	public boolean setConfigRegistryProperty(String id, String oldName, String name, Object value) throws IOException {
+		boolean isUpdated = false;
+		try {
+			isUpdated = InfraClientsUtil.CONFIG_REGISTRY.setConfigRegistryProperty(this.clientResolver, this.accessToken, id, oldName, name, value);
+		} catch (ClientException e) {
+			handle(e);
+		}
+		return isUpdated;
+	}
+
+	@Override
 	public boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws IOException {
 		boolean isUpdated = false;
 		try {

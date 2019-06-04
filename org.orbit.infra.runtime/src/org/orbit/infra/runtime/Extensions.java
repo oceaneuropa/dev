@@ -9,8 +9,8 @@ import org.orbit.infra.runtime.configregistry.ws.command.CreateConfigElementWSCo
 import org.orbit.infra.runtime.configregistry.ws.command.CreateConfigRegistryWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.DeleteConfigElementWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.DeleteConfigRegistryWSCommand;
-import org.orbit.infra.runtime.configregistry.ws.command.GetConfigElementWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.GetConfigElementPathWSCommand;
+import org.orbit.infra.runtime.configregistry.ws.command.GetConfigElementWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.GetConfigRegistryWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.ListConfigElementsWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.ListConfigRegistriesWSCommand;
@@ -20,6 +20,7 @@ import org.orbit.infra.runtime.configregistry.ws.command.RemoveConfigRegistryPro
 import org.orbit.infra.runtime.configregistry.ws.command.SetConfigElementAttributeWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.SetConfigElementAttributesWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.SetConfigRegistryPropertiesWSCommand;
+import org.orbit.infra.runtime.configregistry.ws.command.SetConfigRegistryPropertyWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigElementWSCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigRegistryWSCommand;
 import org.orbit.infra.runtime.datacast.ws.DataCastServiceIndexTimerFactory;
@@ -376,26 +377,33 @@ public class Extensions extends ProgramExtensions {
 		extension15.addInterface(desc15);
 		addExtension(extension15);
 
-		Extension extension16 = new Extension(extensionTypeId, SetConfigRegistryPropertiesWSCommand.ID);
+		Extension extension16 = new Extension(extensionTypeId, SetConfigRegistryPropertyWSCommand.ID);
 		extension16.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, SetConfigRegistryPropertiesWSCommand.class);
+		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, SetConfigRegistryPropertyWSCommand.class);
 		desc16.setSingleton(false);
 		extension16.addInterface(desc16);
 		addExtension(extension16);
 
-		Extension extension17 = new Extension(extensionTypeId, RemoveConfigRegistryPropertiesWSCommand.ID);
+		Extension extension17 = new Extension(extensionTypeId, SetConfigRegistryPropertiesWSCommand.ID);
 		extension17.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc17 = new InterfaceDescription(WSCommand.class, RemoveConfigRegistryPropertiesWSCommand.class);
+		InterfaceDescription desc17 = new InterfaceDescription(WSCommand.class, SetConfigRegistryPropertiesWSCommand.class);
 		desc17.setSingleton(false);
 		extension17.addInterface(desc17);
 		addExtension(extension17);
 
-		Extension extension18 = new Extension(extensionTypeId, DeleteConfigRegistryWSCommand.ID);
+		Extension extension18 = new Extension(extensionTypeId, RemoveConfigRegistryPropertiesWSCommand.ID);
 		extension18.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc18 = new InterfaceDescription(WSCommand.class, DeleteConfigRegistryWSCommand.class);
+		InterfaceDescription desc18 = new InterfaceDescription(WSCommand.class, RemoveConfigRegistryPropertiesWSCommand.class);
 		desc18.setSingleton(false);
 		extension18.addInterface(desc18);
 		addExtension(extension18);
+
+		Extension extension19 = new Extension(extensionTypeId, DeleteConfigRegistryWSCommand.ID);
+		extension19.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc19 = new InterfaceDescription(WSCommand.class, DeleteConfigRegistryWSCommand.class);
+		desc19.setSingleton(false);
+		extension19.addInterface(desc19);
+		addExtension(extension19);
 
 		// -----------------------------------------------------------------------------------
 		// Config Elements

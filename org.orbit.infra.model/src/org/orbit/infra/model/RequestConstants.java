@@ -10,6 +10,7 @@ public class RequestConstants {
 	public static String CONFIG_REGISTRY__CONFIG_REGISTRY_EXISTS = "config_registry_exists";
 	public static String CONFIG_REGISTRY__CREATE_CONFIG_REGISTRY = "create_config_registry";
 	public static String CONFIG_REGISTRY__UPDATE_CONFIG_REGISTRY = "update_config_registry";
+	public static String CONFIG_REGISTRY__SET_CONFIG_REGISTRY_PROPERTY = "set_config_registry_property";
 	public static String CONFIG_REGISTRY__SET_CONFIG_REGISTRY_PROPERTIES = "set_config_registry_properties";
 	public static String CONFIG_REGISTRY__REMOVE_CONFIG_REGISTRY_PROPERTIES = "remove_config_registry_properties";
 	public static String CONFIG_REGISTRY__DELETE_CONFIG_REGISTRY = "delete_config_registry";

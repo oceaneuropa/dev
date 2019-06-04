@@ -89,12 +89,13 @@
 				<td class="td1"><input type="checkbox" name="configRegistryId" value="<%=currId%>"></td>
 				<td class="td2"><%=currName%></td>
 				<td class="td1"><%=currType%></td>
-				<td class="td1"><%=currPropStr%></td>
+				<td class="td2"><%=currPropStr%></td>
 				<td class="td1"><%=currDateCreatedStr%></td>
 				<td class="td1"><%=currDateModifiedStr%></td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeConfigReg('<%=currId%>', '<%=currType%>', '<%=currName%>')">Edit</a> | 
 					<a class="action01" href="javascript:deleteConfigReg('<%=currId%>')">Delete</a> | 
+					<a class="action01" target="_blank" href="<%=contextRoot%>/admin/configregproperties?configRegistryId=<%=currId%>">Properties</a> |
 					<a class="action01" href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=currId%>">Elements</a>
 				</td>
 			</tr>

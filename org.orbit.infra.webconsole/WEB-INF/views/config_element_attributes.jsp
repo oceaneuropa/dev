@@ -78,7 +78,7 @@
 			<a class="button02" href="<%=contextRoot + "/admin/configelementattributes?configRegistryId=" + configRegistryId + "&parentElementId=" + parentElementId + "&elementId=" + elementId%>">Refresh</a>
 		</div>
 		<table class="main_table01">
-			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodeattributedelete"%>">
+			<form id="main_list" method="post" action="">
 				<input type="hidden" name="configRegistryId" value="<%=configRegistryId%>"> 
 				<input type="hidden" name="parentElementId" value="<%=parentElementId%>">
 				<input type="hidden" name="elementId" value="<%=elementId%>">

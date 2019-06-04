@@ -619,6 +619,26 @@ public class InfraClientsUtil {
 		 * 
 		 * @param clientResolver
 		 * @param accessToken
+		 * @param configRegistryId
+		 * @param oldName
+		 * @param name
+		 * @param value
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean setConfigRegistryProperty(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String oldName, String name, Object value) throws ClientException {
+			boolean succeed = false;
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, accessToken);
+			if (client != null) {
+				succeed = client.setConfigRegistryProperty(configRegistryId, oldName, name, value);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param accessToken
 		 * @param id
 		 * @param properties
 		 * @return

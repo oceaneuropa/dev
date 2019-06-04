@@ -14,38 +14,40 @@ import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class SetConfigRegistryPropertiesWSCommand extends AbstractInfraCommand<ConfigRegistryService> implements WSCommand {
+public class SetConfigRegistryPropertyWSCommand extends AbstractInfraCommand<ConfigRegistryService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.configregistry.SetConfigRegistryPropertiesWSCommand";
+	public static String ID = "org.orbit.infra.runtime.configregistry.SetConfigRegistryPropertyWSCommand";
 
-	public SetConfigRegistryPropertiesWSCommand() {
+	public SetConfigRegistryPropertyWSCommand() {
 		super(ConfigRegistryService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.CONFIG_REGISTRY__SET_CONFIG_REGISTRY_PROPERTIES.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.CONFIG_REGISTRY__SET_CONFIG_REGISTRY_PROPERTY.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Response execute(Request request) throws Exception {
 		String id = request.getStringParameter("id");
+		String oldName = request.getStringParameter("property_old_name");
+		String name = request.getStringParameter("property_name");
+		Object value = request.getParameter("property_value");
+
 		if (id == null || id.isEmpty()) {
 			ErrorDTO error = new ErrorDTO("'id' parameter is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-
-		Map<String, Object> newProperties = null;
-		if (request.hasParameter("properties")) {
-			newProperties = (Map<String, Object>) request.getMapParameter("properties");
+		if (name == null || name.isEmpty()) {
+			ErrorDTO error = new ErrorDTO("'property_name' parameter is not set.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-		if (newProperties == null || newProperties.isEmpty()) {
-			ErrorDTO error = new ErrorDTO("'properties' parameter is not set.");
+		if (value == null) {
+			ErrorDTO error = new ErrorDTO("'property_value' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -58,7 +60,14 @@ public class SetConfigRegistryPropertiesWSCommand extends AbstractInfraCommand<C
 		}
 
 		Map<String, Object> existingProperties = configRegistry.getMetadata().getProperties();
-		existingProperties.putAll(newProperties);
+		if (oldName != null && !oldName.equals(name)) {
+			// property name is changed
+			existingProperties.remove(oldName);
+			existingProperties.put(name, value);
+		} else {
+			// property name is not changed
+			existingProperties.put(name, value);
+		}
 
 		boolean succeed = service.updateConfigRegistryProperties(id, existingProperties);
 

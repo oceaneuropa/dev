@@ -126,6 +126,34 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
+	public boolean setProperty(String oldName, String name, Object value) throws IOException {
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("property name is empty.");
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("property value is null.");
+		}
+
+		String configRegistryId = getId();
+		boolean isUpdated = this.cfg.setConfigRegistryProperty(configRegistryId, oldName, name, value);
+		if (isUpdated) {
+			if (!sync()) {
+				Map<String, Object> properties = getProperties();
+				if (oldName != null && !oldName.equals(name)) {
+					// property name is changed
+					properties.remove(oldName);
+					properties.put(name, value);
+				} else {
+					// property name is not changed
+					properties.put(name, value);
+				}
+				this.configRegistry.setDateModified(new Date().getTime());
+			}
+		}
+		return isUpdated;
+	}
+
+	@Override
 	public boolean setProperties(Map<String, Object> properties) throws IOException {
 		if (properties == null || properties.isEmpty()) {
 			throw new IllegalArgumentException("properties is empty.");

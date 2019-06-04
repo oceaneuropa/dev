@@ -37,6 +37,8 @@ public interface IConfigRegistry {
 
 	boolean rename(String newName) throws IOException;
 
+	boolean setProperty(String oldName, String name, Object value) throws IOException;
+
 	boolean setProperties(Map<String, Object> properties) throws IOException;
 
 	boolean removeProperties(List<String> propertyNames) throws IOException;

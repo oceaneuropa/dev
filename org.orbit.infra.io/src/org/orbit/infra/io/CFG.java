@@ -124,6 +124,8 @@ public abstract class CFG {
 
 	public abstract boolean updateConfigRegistryName(String id, String name) throws IOException;
 
+	public abstract boolean setConfigRegistryProperty(String id, String oldName, String name, Object value) throws IOException;
+
 	public abstract boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws IOException;
 
 	public abstract boolean removeConfigRegistryProperties(String id, List<String> propertyNames) throws IOException;
