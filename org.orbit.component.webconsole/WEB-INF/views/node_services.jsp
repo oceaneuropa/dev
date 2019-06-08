@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
-<%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.origin.common.util.*, org.origin.common.osgi.*"%>
 <%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.platform.api.ServiceInfo.*"%>
 <%@ page import="org.orbit.component.api.tier3.domain.*"%>
@@ -16,7 +16,9 @@
 	MachineConfig machineConfig = (MachineConfig) request.getAttribute("machineConfig");
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
-	ServiceInfo[] services = (ServiceInfo[]) request.getAttribute("services");
+	
+	// ServiceInfo[] services = (ServiceInfo[]) request.getAttribute("services");
+	Map<BundleInfo, List<ServiceInfo>> servicesMap = (Map<BundleInfo, List<ServiceInfo>>) request.getAttribute("servicesMap");
 
 	// ------------------------------------------------------------------------
 	// Smooth data
@@ -30,8 +32,18 @@
 	String id = (nodeInfo != null) ? nodeInfo.getId() : "";
 	String name = (nodeInfo != null) ? nodeInfo.getName() : "";
 
-	if (services == null) {
-		services = new ServiceInfo[0];
+	// if (services == null) {
+	//	services = new ServiceInfo[0];
+	// }
+	if (servicesMap == null) {
+		servicesMap = new HashMap<BundleInfo, List<ServiceInfo>>();
+	}
+
+	BundleInfo systemBundleInfo = new BundleInfoImpl("system", null);
+	
+	List<ServiceInfo> systemServices = servicesMap.get(systemBundleInfo);
+	if (systemServices == null) {
+		systemServices = new ArrayList<ServiceInfo>();
 	}
 
 %>
@@ -65,6 +77,10 @@
 			<a id="actionStopServices" class="button02" onClick="onPlatformServiceAction('stop', '<%=contextRoot + "/domain/nodeserviceaction"%>')">Stop</a> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeservices?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
+		<br/>
+		<br/>
+
+		<h3>System</h3>
 		<table class="main_table01">
 			<form id="main_list" method="post" action="">
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
@@ -72,32 +88,25 @@
 				<input type="hidden" name="id" value="<%=id%>">
 				<input id ="main_list__action" type="hidden" name="action" value="">
 				<tr>
-					<th class="th1" width="15">
+					<th class="th1" width="10">
 						<input type="checkbox" onClick="toggleSelection(this, 'sid')" />
 					</th>
-					<th class="th1" width="100">Program</th>
-					<th class="th1" width="200">Name</th>
-					<th class="th1" width="100">Status</th>
-					<th class="th1" width="200">Actions</th>
+					<th class="th1" width="400">Name</th>
+					<th class="th1" width="150">Status</th>
+					<th class="th1" width="150">Actions</th>
 				</tr>
 				<%
-					if (services.length == 0) {
+					// if (services.length == 0) {
+					if (systemServices.isEmpty()) {
 				%>
 				<tr>
-					<td colspan="5">(n/a)</td>
+					<td colspan="4">(n/a)</td>
 				</tr>
 				<%
 					} else {
-						for (ServiceInfo service : services) {
+						for (ServiceInfo service : systemServices) {
 							String currProgramId = service.getProgramId();
 							String currProgramVersion = service.getProgramVersion();
-							String currProgramLabel = "";
-							if (currProgramId != null && !currProgramId.isEmpty()) {
-								currProgramLabel += currProgramId;
-								if (currProgramVersion != null && !currProgramVersion.isEmpty()) {
-									currProgramLabel += " ("+currProgramVersion+")";
-								}
-							}
 
 							int currSID = service.getSID();
 							String currName = service.getName();
@@ -120,7 +129,6 @@
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="sid" value="<%=currSID%>"></td>
-					<td class="td2"><%=currProgramLabel%></td>
 					<td class="td2">
 						<%=currName%>
 						<% if (!currDesc.isEmpty()) { %>
@@ -145,6 +153,103 @@
 				%>
 			</form>
 		</table>
+
+		<%
+		for(Iterator<BundleInfo> bundleInfoItor = servicesMap.keySet().iterator(); bundleInfoItor.hasNext(); ) {
+			BundleInfo currProgram = bundleInfoItor.next();	
+			if ("system".equals(currProgram.getSymbolicName())) {
+				continue;
+			}
+
+			String currProgramId = currProgram.getSymbolicName();
+			String currProgramVersion = currProgram.getVersion();
+			String programLable = currProgramId;
+			if (currProgramVersion != null && !currProgramVersion.isEmpty()) {
+				programLable += " (" + currProgramVersion + ")";
+			}
+
+			List<ServiceInfo> currServices = servicesMap.get(currProgram);
+			if (currServices == null) {
+				currServices = new ArrayList<ServiceInfo>();
+			}
+		%>
+
+		<h3><%=programLable%></h3>
+		<table class="main_table01">
+			<form id="main_list" method="post" action="">
+				<input type="hidden" name="machineId" value="<%=machineId%>"> 
+				<input type="hidden" name="platformId" value="<%=platformId%>">
+				<input type="hidden" name="id" value="<%=id%>">
+				<input id ="main_list__action" type="hidden" name="action" value="">
+				<tr>
+					<th class="th1" width="10">
+						<input type="checkbox" onClick="toggleSelection(this, 'sid', 'data-program', '<%=programLable%>')" />
+					</th>
+					<th class="th1" width="400">Name</th>
+					<th class="th1" width="150">Status</th>
+					<th class="th1" width="150">Actions</th>
+				</tr>
+				<%
+					// if (services.length == 0) {
+					if (systemServices.isEmpty()) {
+				%>
+				<tr>
+					<td colspan="4">(n/a)</td>
+				</tr>
+				<%
+					} else {
+						for (ServiceInfo service : currServices) {
+							int currSID = service.getSID();
+							String currName = service.getName();
+							String currDesc = service.getDescription();
+							boolean currAutoStart = service.isAutoStart();
+							RUNTIME_STATE currRuntimeState = service.getRuntimeState();
+							String currRuntimeStatelabel = currRuntimeState.getLabel();
+
+							if (currName == null) {
+								currName = "";
+							}
+							if (currDesc == null) {
+								currDesc = "";
+							}
+							
+							boolean isStarted = (currRuntimeState != null && currRuntimeState.isStarted()) ? true : false;
+							String statusColor = isStarted ? "#2eb82e" : "#cccccc";
+
+							String descColor = "#aaaaaa";
+				%>
+				<tr>
+					<td class="td1">
+						<input type="checkbox" name="sid" data-program="<%=programLable%>" value="<%=currSID%>">
+					</td>
+					<td class="td2">
+						<%=currName%>
+						<% if (!currDesc.isEmpty()) { %>
+						<br/>
+						<font color="<%=descColor%>"><%=currDesc%></font>
+						<% } %>
+					</td>
+					<td class="td1">
+						<font color="<%=statusColor%>">
+							<%=currRuntimeStatelabel%>
+						</font>
+					</td>
+					<td class="td1">
+						<a class="action01" href="javascript:startService('<%=currSID%>')">Start</a> | 
+						<a class="action01" href="javascript:stopService('<%=currSID%>')">Stop</a> | 
+						<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeserviceproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>&sid=<%=currSID%>">Properties</a>
+					</td>
+				</tr>
+				<%
+						}
+					}
+				%>
+			</form>
+		</table>
+		<%
+		}
+		%>
+
 	</div>
 	<br/>
 

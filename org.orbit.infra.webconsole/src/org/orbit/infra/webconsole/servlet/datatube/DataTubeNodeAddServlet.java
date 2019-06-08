@@ -74,7 +74,7 @@ public class DataTubeNodeAddServlet extends HttpServlet {
 		if (configElement == null) {
 			message = MessageHelper.INSTANCE.add(message, "Config element is not created.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Config element is created successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Config element is created.");
 		}
 
 		// ---------------------------------------------------------------

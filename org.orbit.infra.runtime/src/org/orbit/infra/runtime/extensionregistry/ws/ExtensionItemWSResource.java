@@ -158,7 +158,7 @@ public class ExtensionItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is deleted.");
 			return Response.ok().entity(statusDTO).build();
 
 		} else {
@@ -264,7 +264,7 @@ public class ExtensionItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem properties are updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem properties are updated.");
 			return Response.ok().entity(statusDTO).build();
 
 		} else {
@@ -319,7 +319,7 @@ public class ExtensionItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem properties are deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem properties are deleted.");
 			return Response.ok().entity(statusDTO).build();
 
 		} else {

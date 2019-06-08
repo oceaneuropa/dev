@@ -6,6 +6,17 @@ function toggleSelection(source, checkboxesName) {
 	}
 }
 
+function toggleSelection(source, checkboxesName, dataAttrName, dataAttrValue) {
+	var checkboxes = document.getElementsByName(checkboxesName);
+	var n = checkboxes.length;
+	for (var i = 0; i < n; i++) {
+		var currDataAttrValue = checkboxes[i].getAttribute(dataAttrName);
+		if (dataAttrValue == currDataAttrValue) {
+			checkboxes[i].checked = source.checked;	
+		}
+	}
+}
+
 //-----------------------------------------------------------------------
 //Action on services
 //-----------------------------------------------------------------------

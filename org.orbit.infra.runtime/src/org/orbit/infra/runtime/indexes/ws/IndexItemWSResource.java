@@ -138,7 +138,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) is removed successfully.", new Object[] { indexItemId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) is removed.", new Object[] { indexItemId }));
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("IndexItem (indexItemId={0}) is not removed.", new Object[] { indexItemId }));
@@ -229,7 +229,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) properties are set successfully.", new Object[] { indexItemId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) properties are set.", new Object[] { indexItemId }));
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, MessageFormat.format("IndexItem (indexItemId={0}) properties are not set.", new Object[] { indexItemId }));
@@ -337,7 +337,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) property is set successfully.", new Object[] { indexItemId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) property is set.", new Object[] { indexItemId }));
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("IndexItem (indexItemId={0}) property is not set.", new Object[] { indexItemId }));
@@ -383,7 +383,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) properties are removed successfully.", new Object[] { indexItemId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) properties are removed.", new Object[] { indexItemId }));
 			return Response.ok().entity(statusDTO).build();
 
 		} else {

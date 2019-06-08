@@ -345,6 +345,27 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param accessToken
 		 * @param appId
+		 * @return
+		 * @throws ClientException
+		 */
+		public AppManifest[] getApps(String accessToken, String appId) throws ClientException {
+			AppManifest[] appManifests = null;
+			AppStoreClient appStore = getAppStoreClient(accessToken);
+			if (appStore != null) {
+				AppQuery query = new AppQuery();
+				query.setAppId(appId, AppQuery.OPERATOR__EQUAL);
+				appManifests = appStore.getApps(query);
+			}
+			if (appManifests == null) {
+				appManifests = EMPTY_APPS;
+			}
+			return appManifests;
+		}
+
+		/**
+		 * 
+		 * @param accessToken
+		 * @param appId
 		 * @param appVersion
 		 * @return
 		 * @throws ClientException

@@ -83,7 +83,7 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are deleted successfully." : "Attribute is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are deleted." : "Attribute is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are not deleted." : "Attribute is not deleted.");
 		}

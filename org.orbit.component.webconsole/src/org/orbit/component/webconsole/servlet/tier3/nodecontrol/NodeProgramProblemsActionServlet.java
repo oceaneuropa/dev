@@ -96,7 +96,7 @@ public class NodeProgramProblemsActionServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Action '" + action + "' is performed successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Action '" + action + "' is performed.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Action '" + action + "' failed.");
 		}

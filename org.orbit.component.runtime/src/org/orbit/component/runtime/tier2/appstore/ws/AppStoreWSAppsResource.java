@@ -224,7 +224,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is updated.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "App is not update.");
@@ -261,7 +261,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is deleted.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "App is not deleted.");

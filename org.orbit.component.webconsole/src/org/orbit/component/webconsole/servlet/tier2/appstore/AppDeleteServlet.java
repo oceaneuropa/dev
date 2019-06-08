@@ -60,7 +60,7 @@ public class AppDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (appIdVersions.length > 1) ? "Apps are deleted successfully." : "App is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (appIdVersions.length > 1) ? "Apps are deleted." : "App is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (appIdVersions.length > 1) ? "Apps are not deleted." : "App is not deleted.");
 		}

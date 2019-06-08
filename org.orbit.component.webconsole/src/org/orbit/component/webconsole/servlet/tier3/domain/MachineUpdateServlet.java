@@ -60,7 +60,7 @@ public class MachineUpdateServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Machine is changed successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Machine is changed.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Machine is not changed.");
 		}

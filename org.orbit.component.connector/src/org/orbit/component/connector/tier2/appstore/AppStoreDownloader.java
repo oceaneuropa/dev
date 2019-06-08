@@ -15,10 +15,9 @@ public class AppStoreDownloader implements Downloader {
 
 	@Override
 	public boolean download(Map<String, Object> args, OutputStream... output) throws IOException {
-		// String appStoreUrl = Activator.getInstance().getProperty(ComponentConstants.ORBIT_APP_STORE_URL);
-		String accessToken = (String) args.get("access_token");
-		String appId = (String) args.get("appId");
-		String appVersion = (String) args.get("appVersion");
+		String accessToken = (String) args.get(Downloader.APP_STORE__ACCESS_TOKEN);
+		String appId = (String) args.get(Downloader.APP_STORE__APP_ID);
+		String appVersion = (String) args.get(Downloader.APP_STORE__APP_VERSION);
 
 		boolean succeed = false;
 		boolean hasSucceed = false;
@@ -47,3 +46,5 @@ public class AppStoreDownloader implements Downloader {
 	}
 
 }
+
+// String appStoreUrl = Activator.getInstance().getProperty(ComponentConstants.ORBIT_APP_STORE_URL);

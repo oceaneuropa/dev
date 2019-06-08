@@ -65,7 +65,7 @@ public class PlatformUpdateServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Platform is changed successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Platform is changed.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Platform is not changed.");
 		}

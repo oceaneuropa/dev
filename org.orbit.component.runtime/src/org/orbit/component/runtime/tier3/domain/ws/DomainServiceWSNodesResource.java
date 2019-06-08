@@ -204,7 +204,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Node is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Node is updated.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Node is not updated.");
@@ -242,7 +242,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Node is removed successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Node is removed.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Node is not removed.");

@@ -343,14 +343,8 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 		return succeed;
 	}
 
-	/**
-	 * 
-	 * @param platformId
-	 * @return
-	 * @throws ServerException
-	 */
 	@Override
-	public boolean removeExtensionItems(String platformId) throws ServerException {
+	public boolean removeExtensionItems(String platformId, boolean dispose) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
@@ -359,7 +353,9 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 			ExtensionItemsTableHandler tableHandler = ExtensionItemsTableHandler.getInstance(conn, platformId);
 			succeed = tableHandler.deleteAll(conn);
 
-			ExtensionItemsTableHandler.dispose(conn, platformId);
+			if (dispose) {
+				ExtensionItemsTableHandler.dispose(conn, platformId);
+			}
 
 		} catch (SQLException e) {
 			handleSQLException(e);

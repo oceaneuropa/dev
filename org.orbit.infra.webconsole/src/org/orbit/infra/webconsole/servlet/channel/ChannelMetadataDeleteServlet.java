@@ -140,7 +140,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 			}
 
 			if (succeed) {
-				message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channel metadatas are deleted successfully." : "Channel metadata is deleted successfully.");
+				message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channel metadatas are deleted." : "Channel metadata is deleted.");
 			} else {
 				message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channel metadatas are not deleted." : "Channel metadata is not deleted.");
 			}

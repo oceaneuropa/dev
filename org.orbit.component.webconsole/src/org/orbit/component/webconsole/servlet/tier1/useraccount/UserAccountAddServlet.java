@@ -61,7 +61,7 @@ public class UserAccountAddServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "User is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, "User is added.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "User is not added.");
 		}

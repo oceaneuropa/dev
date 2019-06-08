@@ -35,9 +35,9 @@
 				<th class="th1" width="12">
 					<input type="checkbox" onClick="toggleSelection(this, 'appId_appVersion')" />
 				</th>
-				<th class="th1" width="100">Type</th>
-				<th class="th1" width="150">Id/Version</th>
 				<th class="th1" width="150">Name</th>
+				<th class="th1" width="100">Type</th>
+				<th class="th1" width="150">Id and Version</th>
 				<th class="th1" width="200">File Name</th>
 				<th class="th1" width="200">Actions</th>
 			</tr>
@@ -75,9 +75,9 @@
 				<td class="td1">
 					<input type="checkbox" name="appId_appVersion" value="<%=appId + "|" + appVersion%>">
 				</td>
+				<td class="td2"><%=name%></td>
 				<td class="td1"><%=type%></td>
 				<td class="td2"><%=appId%>_<%=appVersion%></td>
-				<td class="td2"><%=name%></td>
 				<td class="td2">
 					<% if (fileLength > 0) { %>
 						<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank"><%=fileName%></a>

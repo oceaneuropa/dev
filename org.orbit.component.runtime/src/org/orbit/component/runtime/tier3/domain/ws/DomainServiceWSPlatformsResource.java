@@ -192,7 +192,7 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "PlatformConfig is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "PlatformConfig is updated.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "PlatformConfig is not updated.");
@@ -229,7 +229,7 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "PlatformConfig is removed successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "PlatformConfig is removed.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "PlatformConfig is not removed.");

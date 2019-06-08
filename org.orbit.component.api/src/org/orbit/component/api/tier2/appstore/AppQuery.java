@@ -4,6 +4,11 @@ import org.origin.common.jdbc.SQLWhereOperator;
 
 public class AppQuery {
 
+	public static String OPERATOR__EQUAL = SQLWhereOperator.EQUAL;
+	public static String OPERATOR__NOT_EQUAL = SQLWhereOperator.NOT_EQUAL;
+	public static String OPERATOR__LIKE = SQLWhereOperator.LIKE;
+	public static String OPERATOR__IN = SQLWhereOperator.IN;
+
 	protected String appId;
 	protected String appVersion;
 	protected String type;
@@ -16,6 +21,16 @@ public class AppQuery {
 	protected String name_oper = SQLWhereOperator.LIKE;
 	protected String description_oper = SQLWhereOperator.LIKE;
 
+	protected String checkOperator(String operator) {
+		if (OPERATOR__EQUAL.equalsIgnoreCase(operator) //
+				|| OPERATOR__NOT_EQUAL.equalsIgnoreCase(operator) //
+				|| OPERATOR__LIKE.equalsIgnoreCase(operator) //
+				|| OPERATOR__IN.equalsIgnoreCase(operator)) {
+			return operator;
+		}
+		return OPERATOR__EQUAL;
+	}
+
 	// ----------------------------------------------------------------------
 	// Set/Get
 	// ----------------------------------------------------------------------
@@ -23,120 +38,45 @@ public class AppQuery {
 		return this.appId;
 	}
 
-	public void setAppIdEqual(String appId) {
+	public void setAppId(String appId, String operator) {
 		this.appId = appId;
-		this.appId_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setAppIdNotEqual(String appId) {
-		this.appId = appId;
-		this.appId_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setAppIdLike(String appId) {
-		this.appId = appId;
-		this.appId_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setAppIdIn(String appId) {
-		this.appId = appId;
-		this.appId_oper = SQLWhereOperator.IN;
+		this.appId_oper = checkOperator(operator);
 	}
 
 	public String getAppVersion() {
 		return this.appVersion;
 	}
 
-	public void setAppVersionEqual(String version) {
+	public void setAppVersion(String version, String operator) {
 		this.appVersion = version;
-		this.appVersion_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setAppVersionNotEqual(String version) {
-		this.appVersion = version;
-		this.appVersion_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setAppVersionLike(String version) {
-		this.appVersion = version;
-		this.appVersion_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setAppVersionIn(String version) {
-		this.appVersion = version;
-		this.appVersion_oper = SQLWhereOperator.IN;
+		this.appVersion_oper = checkOperator(operator);
 	}
 
 	public String getType() {
 		return this.type;
 	}
 
-	public void setTypeEqual(String type) {
+	public void setType(String type, String operator) {
 		this.type = type;
-		this.type_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setTypeNotEqual(String type) {
-		this.type = type;
-		this.type_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setTypeLike(String type) {
-		this.type = type;
-		this.type_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setTypeIn(String type) {
-		this.type = type;
-		this.type_oper = SQLWhereOperator.IN;
+		this.type_oper = checkOperator(operator);
 	}
 
 	public String getName() {
 		return this.name;
 	}
 
-	public void setNameEqual(String name) {
+	public void setName(String name, String operator) {
 		this.name = name;
-		this.name_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setNameNotEqual(String name) {
-		this.name = name;
-		this.name_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setNameLike(String name) {
-		this.name = name;
-		this.name_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setNameIn(String name) {
-		this.name = name;
-		this.name_oper = SQLWhereOperator.IN;
+		this.name_oper = checkOperator(operator);
 	}
 
 	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescriptionEqual(String description) {
+	public void setDescription(String description, String operator) {
 		this.description = description;
-		this.description_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setDescriptionNotEqual(String description) {
-		this.description = description;
-		this.description_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setDescriptionLike(String description) {
-		this.description = description;
-		this.description_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setDescriptionIn(String description) {
-		this.description = description;
-		this.description_oper = SQLWhereOperator.IN;
+		this.description_oper = checkOperator(operator);
 	}
 
 	// ----------------------------------------------------------------------

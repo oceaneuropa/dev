@@ -69,7 +69,7 @@ public class PlatformDeleteServlet extends HttpServlet {
 			succeed = true;
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Platforms are deleted successfully." : "Platform is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Platforms are deleted." : "Platform is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Platforms are not deleted." : "Platform is not deleted.");
 		}

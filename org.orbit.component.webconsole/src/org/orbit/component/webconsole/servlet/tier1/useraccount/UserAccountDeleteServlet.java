@@ -63,7 +63,7 @@ public class UserAccountDeleteServlet extends HttpServlet {
 			succeed = true;
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (accountIds != null && accountIds.length > 1) ? "Users are deleted successfully." : "User is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (accountIds != null && accountIds.length > 1) ? "Users are deleted." : "User is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (accountIds != null && accountIds.length > 1) ? "Users are not deleted." : "User is not deleted.");
 		}

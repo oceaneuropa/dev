@@ -95,7 +95,7 @@ public class NodeServicePropertyAddServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Service property is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Service property is added.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Service property is not added.");
 		}

@@ -64,7 +64,7 @@ public class MachineDeleteServlet extends HttpServlet {
 			succeed = true;
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Machines are deleted successfully." : "Machine is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Machines are deleted." : "Machine is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Machines are not deleted." : "Machine is not deleted.");
 		}

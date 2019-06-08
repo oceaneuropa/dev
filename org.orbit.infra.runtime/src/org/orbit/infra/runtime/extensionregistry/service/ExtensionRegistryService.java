@@ -67,10 +67,11 @@ public interface ExtensionRegistryService extends WebServiceAware, AccessTokenAw
 	/**
 	 * 
 	 * @param platformId
+	 * @param disposeWhenEmpty
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean removeExtensionItems(String platformId) throws ServerException;
+	public boolean removeExtensionItems(String platformId, boolean disposeWhenEmpty) throws ServerException;
 
 	/**
 	 * 

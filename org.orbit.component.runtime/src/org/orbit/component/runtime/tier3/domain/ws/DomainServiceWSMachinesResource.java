@@ -191,7 +191,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is updated.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			// StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Machine is not updated.");
@@ -233,7 +233,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is removed successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is removed.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Machine is not removed.");

@@ -79,7 +79,7 @@ public class NodeDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are deleted successfully." : "Node is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are deleted." : "Node is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are not deleted." : "Node is not deleted.");
 		}

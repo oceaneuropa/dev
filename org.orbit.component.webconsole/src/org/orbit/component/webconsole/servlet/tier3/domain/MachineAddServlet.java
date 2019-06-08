@@ -53,7 +53,7 @@ public class MachineAddServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Machine is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Machine is added.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Machine is not added.");
 		}

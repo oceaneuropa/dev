@@ -62,7 +62,7 @@ public class AppUpdateServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "App is updated successfully.");
+			message = MessageHelper.INSTANCE.add(message, "App is updated.");
 		}
 
 		// ---------------------------------------------------------------

@@ -66,7 +66,7 @@ public class NodePropertyAddServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Attribute is added.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Attribute is not added.");
 		}

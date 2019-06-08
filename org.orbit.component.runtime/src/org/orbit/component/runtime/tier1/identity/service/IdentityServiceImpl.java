@@ -271,7 +271,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 			UserAccount userAccount = getUserAccountPersistence().createUserAccount(accountId, username, password, email, null, null, null);
 			if (userAccount != null) {
 				succeed = true;
-				message = "user is registered successfully.";
+				message = "user is registered.";
 			} else {
 				succeed = false;
 				message = "user is not registered.";

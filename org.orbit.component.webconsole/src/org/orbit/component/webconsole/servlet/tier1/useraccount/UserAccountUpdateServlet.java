@@ -65,7 +65,7 @@ public class UserAccountUpdateServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "User account is changed successfully.");
+			message = MessageHelper.INSTANCE.add(message, "User account is changed.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "User account is not changed.");
 		}

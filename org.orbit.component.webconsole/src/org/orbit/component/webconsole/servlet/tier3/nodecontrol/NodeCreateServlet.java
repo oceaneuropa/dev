@@ -65,7 +65,7 @@ public class NodeCreateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Node is created successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Node is created.");
 		}
 
 		// ---------------------------------------------------------------

@@ -58,7 +58,7 @@ public class PlatformAddServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Platform is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Platform is added.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Platform is not added.");
 		}

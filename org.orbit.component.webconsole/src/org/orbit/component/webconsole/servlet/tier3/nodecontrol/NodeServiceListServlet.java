@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +23,7 @@ import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ServiceInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
+import org.origin.common.osgi.BundleInfo;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
@@ -67,7 +70,8 @@ public class NodeServiceListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
-		ServiceInfo[] services = null;
+		// ServiceInfo[] services = null;
+		Map<BundleInfo, List<ServiceInfo>> servicesMap = null;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
@@ -80,7 +84,8 @@ public class NodeServiceListServlet extends HttpServlet {
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				services = PlatformClientsUtil.INSTANCE.getServices(platformClientResolver, parentPlatformId, nodeId);
+				// services = PlatformClientsUtil.INSTANCE.getServices(platformClientResolver, parentPlatformId, nodeId);
+				servicesMap = PlatformClientsUtil.INSTANCE.getServicesMap(platformClientResolver, parentPlatformId, nodeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -90,9 +95,9 @@ public class NodeServiceListServlet extends HttpServlet {
 		if (nodeInfo == null) {
 			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
 		}
-		if (services == null) {
-			services = EMPTY_SERVICES;
-		}
+		// if (services == null) {
+		// services = EMPTY_SERVICES;
+		// }
 
 		// ---------------------------------------------------------------
 		// Render data
@@ -109,7 +114,10 @@ public class NodeServiceListServlet extends HttpServlet {
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}
-		request.setAttribute("services", services);
+		// request.setAttribute("services", services);
+		if (servicesMap != null) {
+			request.setAttribute("servicesMap", servicesMap);
+		}
 
 		request.getRequestDispatcher(contextRoot + "/views/node_services.jsp").forward(request, response);
 	}

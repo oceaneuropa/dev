@@ -191,7 +191,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is updated.");
 			return Response.ok().entity(statusDTO).build();
 
 		} else {
@@ -219,7 +219,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 		boolean succeed = false;
 		try {
 			ExtensionRegistryService service = getService();
-			succeed = service.removeExtensionItems(platformId);
+			succeed = service.removeExtensionItems(platformId, false);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -227,7 +227,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ExtensionItem is deleted.");
 			return Response.ok().entity(statusDTO).build();
 
 		} else {

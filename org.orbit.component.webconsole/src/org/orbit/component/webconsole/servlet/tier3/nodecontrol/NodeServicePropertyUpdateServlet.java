@@ -93,7 +93,7 @@ public class NodeServicePropertyUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Service property is updated successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Service property is updated.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Service property is not updated.");
 		}

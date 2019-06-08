@@ -110,7 +110,7 @@ public class NodeServicePropertyRemoveServlet extends HttpServlet {
 		// }
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (names != null && names.size() > 1) ? "Service properties are removed successfully." : "Service removed is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.size() > 1) ? "Service properties are removed." : "Service removed is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (names != null && names.size() > 1) ? "Service properties are not removed." : "Service removed is not deleted.");
 		}

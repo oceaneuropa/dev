@@ -69,7 +69,7 @@ public class NodePropertyUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is updated successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Attribute is updated.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Attribute is not updated.");
 		}

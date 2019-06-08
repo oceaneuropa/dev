@@ -70,7 +70,7 @@ public class DataCastNodeDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are deleted successfully." : "Data cast node is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are deleted." : "Data cast node is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are not deleted." : "Data cast node is not deleted.");
 		}

@@ -72,7 +72,7 @@ public class DataTubeNodeDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are deleted successfully." : "Data tube node is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are deleted." : "Data tube node is deleted.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are not deleted." : "Data tube node is not deleted.");
 		}
