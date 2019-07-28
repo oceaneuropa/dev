@@ -230,7 +230,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 			request.setParameter("nodeId", nodeId);
 
 			response = nodeControl.sendRequest(request);
-			boolean exists = ClientModelConverter.NodeControl.exists(response);
+			boolean exists = ResponseUtil.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {

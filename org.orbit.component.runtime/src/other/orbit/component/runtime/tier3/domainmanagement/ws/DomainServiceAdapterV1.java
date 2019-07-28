@@ -12,7 +12,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes
@@ -23,14 +23,14 @@ public class DomainServiceAdapterV1 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceAdapterV1.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
 	protected DomainServiceWSApplication webServiceApp;
 	protected DomainServiceTimer serviceIndexTimer;
 
-	public DomainServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public DomainServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public DomainManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

@@ -12,7 +12,7 @@ public class Activator implements BundleActivator {
 	protected static BundleContext bundleContext;
 	protected static Activator instance;
 
-	static BundleContext getContext() {
+	public static BundleContext getContext() {
 		return bundleContext;
 	}
 
@@ -25,12 +25,13 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
+		// Register extensions
 		Extensions.INSTANCE.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-
+		// Unregister extensions
 		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.instance = null;
@@ -38,6 +39,3 @@ public class Activator implements BundleActivator {
 	}
 
 }
-
-// LOG.info("start()");
-// LOG.info("stop()");

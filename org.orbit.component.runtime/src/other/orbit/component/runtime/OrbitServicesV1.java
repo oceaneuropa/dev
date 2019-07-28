@@ -24,10 +24,10 @@ import other.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapterV1;
 import other.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceAdapterV1;
 import other.orbit.component.runtime.tier3.nodecontrol.ws.TransferAgentServiceAdapterV1;
 import other.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapterV1;
-import other.orbit.infra.api.indexes.IndexProviderConnectorAdapterV1;
-import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
-import other.orbit.infra.api.indexes.IndexServiceUtil;
+//import other.orbit.infra.api.indexes.IndexProviderConnectorAdapterV1;
+//import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
+//import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+//import other.orbit.infra.api.indexes.IndexServiceUtil;
 
 public class OrbitServicesV1 {
 
@@ -47,7 +47,7 @@ public class OrbitServicesV1 {
 		return instance;
 	}
 
-	protected IndexProviderConnectorAdapterV1 indexProviderConnectorAdapter;
+	// protected IndexProviderConnectorAdapterV1 indexProviderConnectorAdapter;
 
 	// tier1
 	protected UserRegistryServiceAdapterV1 userRegistryServiceAdapter;
@@ -65,25 +65,25 @@ public class OrbitServicesV1 {
 	protected MissionControlAdapterV1 missionControlServiceAdapter;
 
 	public void start(final BundleContext bundleContext) {
-		this.indexProviderConnectorAdapter = new IndexProviderConnectorAdapterV1() {
-			@Override
-			public void connectorAdded(IndexProviderConnectorV1 connector) {
-				doStart(Activator.getBundleContext(), connector);
-			}
-
-			@Override
-			public void connectorRemoved(IndexProviderConnectorV1 connector) {
-				doStop(Activator.getBundleContext());
-			}
-		};
-		this.indexProviderConnectorAdapter.start(bundleContext);
+//		this.indexProviderConnectorAdapter = new IndexProviderConnectorAdapterV1() {
+//			@Override
+//			public void connectorAdded(IndexProviderConnectorV1 connector) {
+//				doStart(Activator.getBundleContext(), connector);
+//			}
+//
+//			@Override
+//			public void connectorRemoved(IndexProviderConnectorV1 connector) {
+//				doStop(Activator.getBundleContext());
+//			}
+//		};
+//		this.indexProviderConnectorAdapter.start(bundleContext);
 	}
 
 	public void stop(final BundleContext bundleContext) {
-		if (this.indexProviderConnectorAdapter != null) {
-			this.indexProviderConnectorAdapter.stop(bundleContext);
-			this.indexProviderConnectorAdapter = null;
-		}
+//		if (this.indexProviderConnectorAdapter != null) {
+//			this.indexProviderConnectorAdapter.stop(bundleContext);
+//			this.indexProviderConnectorAdapter = null;
+//		}
 	}
 
 	/**
@@ -91,39 +91,39 @@ public class OrbitServicesV1 {
 	 * @param bundleContext
 	 * @param connector
 	 */
-	protected void doStart(BundleContext bundleContext, IndexProviderConnectorV1 connector) {
+	protected void doStart(BundleContext bundleContext /* , IndexProviderConnectorV1 connector */) {
 		// Get IndexProvider load balancer
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
 		// TASetupUtil.loadConfigIniProperties(bundleContext, indexProviderProps);
 		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
+		// IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
 
 		// Start service adapters
 		// tier1
-		userRegistryServiceAdapter = new UserRegistryServiceAdapterV1(indexProviderLoadBalancer);
-		userRegistryServiceAdapter.start(bundleContext);
-
-		authServiceAdapter = new AuthServiceAdapterV1(indexProviderLoadBalancer);
-		authServiceAdapter.start(bundleContext);
-
-		configRegistryServiceAdapter = new ConfigRegistryServiceAdapterV1(indexProviderLoadBalancer);
-		configRegistryServiceAdapter.start(bundleContext);
-
-		// tier2
-		appStoreServiceAdapter = new AppStoreServiceAdapterV1(indexProviderLoadBalancer);
-		appStoreServiceAdapter.start(bundleContext);
-
-		// tier3
-		domainServiceAdapter = new DomainServiceAdapterV1(indexProviderLoadBalancer);
-		domainServiceAdapter.start(bundleContext);
-
-		transferAgentServiceAdapter = new TransferAgentServiceAdapterV1(indexProviderLoadBalancer);
-		transferAgentServiceAdapter.start(bundleContext);
-
-		// tier4
-		missionControlServiceAdapter = new MissionControlAdapterV1(indexProviderLoadBalancer);
-		missionControlServiceAdapter.start(bundleContext);
+//		userRegistryServiceAdapter = new UserRegistryServiceAdapterV1(indexProviderLoadBalancer);
+//		userRegistryServiceAdapter.start(bundleContext);
+//
+//		authServiceAdapter = new AuthServiceAdapterV1(indexProviderLoadBalancer);
+//		authServiceAdapter.start(bundleContext);
+//
+//		configRegistryServiceAdapter = new ConfigRegistryServiceAdapterV1(indexProviderLoadBalancer);
+//		configRegistryServiceAdapter.start(bundleContext);
+//
+//		// tier2
+//		appStoreServiceAdapter = new AppStoreServiceAdapterV1(indexProviderLoadBalancer);
+//		appStoreServiceAdapter.start(bundleContext);
+//
+//		// tier3
+//		domainServiceAdapter = new DomainServiceAdapterV1(indexProviderLoadBalancer);
+//		domainServiceAdapter.start(bundleContext);
+//
+//		transferAgentServiceAdapter = new TransferAgentServiceAdapterV1(indexProviderLoadBalancer);
+//		transferAgentServiceAdapter.start(bundleContext);
+//
+//		// tier4
+//		missionControlServiceAdapter = new MissionControlAdapterV1(indexProviderLoadBalancer);
+//		missionControlServiceAdapter.start(bundleContext);
 	}
 
 	/**

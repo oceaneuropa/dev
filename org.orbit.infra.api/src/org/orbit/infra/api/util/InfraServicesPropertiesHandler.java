@@ -17,7 +17,6 @@ public class InfraServicesPropertiesHandler extends AbstractConfigPropertiesHand
 				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
 				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				InfraConstants.ORBIT_CONFIG_REGISTRY_URL, //
-				InfraConstants.ORBIT_DATACAST_URL, //
 		};
 		return propNames;
 	}
@@ -34,11 +33,6 @@ public class InfraServicesPropertiesHandler extends AbstractConfigPropertiesHand
 
 	public String getConfigRegistryURL() {
 		String serviceUrl = getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
-		return serviceUrl;
-	}
-
-	public String getDataCastURL() {
-		String serviceUrl = getProperty(InfraConstants.ORBIT_DATACAST_URL);
 		return serviceUrl;
 	}
 

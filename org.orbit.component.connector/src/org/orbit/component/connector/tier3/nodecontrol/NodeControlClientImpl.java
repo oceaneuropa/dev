@@ -220,7 +220,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ClientModelConverter.NodeControl.isSucceed(response);
+				succeed = ResponseUtil.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -241,7 +241,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ClientModelConverter.NodeControl.isSucceed(response);
+				succeed = ResponseUtil.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -260,7 +260,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				succeed = ClientModelConverter.NodeControl.isSucceed(response);
+				succeed = ResponseUtil.isSucceed(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

@@ -20,7 +20,7 @@ import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceF
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.JWTTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.orbit.platform.sdk.util.ExtensionUtil;
+import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.StatusDTO;
@@ -333,7 +333,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					// Generate token
 					tokenType = "Bearer";
 
-					JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT);
+					JWTTokenHandler tokenHandler = ExtensionHelper.JWT.getTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT);
 					if (tokenHandler == null) {
 						throw new ServerException("500", "JWTTokenHandler is null.");
 					}

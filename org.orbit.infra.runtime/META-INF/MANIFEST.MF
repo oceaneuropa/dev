@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Infra :: Runtime
-Bundle-SymbolicName: org.orbit.infra.runtime;singleton:=true
+Bundle-SymbolicName: org.orbit.infra.runtime
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.runtime.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -10,9 +10,8 @@ Import-Package: javax.inject;version="1.0.0",
  javax.websocket;version="1.1.0",
  javax.websocket.server;version="1.1.0",
  javax.ws.rs;version="2.0.0",
- javax.ws.rs.container;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
- javax.ws.rs.ext;version="2.0.0",
+ javax.ws.rs.ext;version="[2.0.0,3.0.0)",
  org.glassfish.hk2.utilities.binding,
  org.glassfish.jersey.server,
  org.glassfish.jersey.server.model,
@@ -25,18 +24,13 @@ Import-Package: javax.inject;version="1.0.0",
  org.osgi.framework;version="1.3.0",
  org.osgi.service.http;version="1.2.1",
  org.osgi.util.tracker;version="1.5.1",
- org.slf4j;version="1.7.25",
- other.orbit.infra.api.indexes;version="[1.0.0,2.0.0)"
+ org.slf4j;version="1.7.25"
 Export-Package: org.orbit.infra.runtime;version="1.0.0",
  org.orbit.infra.runtime.cli;version="1.0.0",
- org.orbit.infra.runtime.datacast.service;version="1.0.0",
- org.orbit.infra.runtime.datacast.ws;version="1.0.0",
- org.orbit.infra.runtime.datatube.service;version="1.0.0",
- org.orbit.infra.runtime.datatube.ws;version="1.0.0",
+ org.orbit.infra.runtime.configregistry.service;version="1.0.0",
+ org.orbit.infra.runtime.configregistry.ws;version="1.0.0",
  org.orbit.infra.runtime.extensionregistry.service;version="1.0.0",
  org.orbit.infra.runtime.extensionregistry.ws;version="1.0.0",
- org.orbit.infra.runtime.extensions.datacast;version="1.0.0",
- org.orbit.infra.runtime.extensions.datatube;version="1.0.0",
  org.orbit.infra.runtime.extensions.extensionregistry;version="1.0.0",
  org.orbit.infra.runtime.extensions.indexservice;version="1.0.0",
  org.orbit.infra.runtime.indexes.service;version="1.0.0",
@@ -50,4 +44,3 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)",
  org.orbit.infra.model;bundle-version="[1.0.0,2.0.0)",
  org.orbit.infra.io;bundle-version="[1.0.0,2.0.0)"
-Bundle-ActivationPolicy: lazy

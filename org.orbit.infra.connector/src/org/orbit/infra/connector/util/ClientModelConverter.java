@@ -12,39 +12,24 @@ import javax.ws.rs.core.Response;
 import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
-import org.orbit.infra.api.datacast.ChannelMetadata;
-import org.orbit.infra.api.datacast.DataCastClient;
-import org.orbit.infra.api.datacast.DataTubeConfig;
-import org.orbit.infra.api.datatube.DataTubeClient;
-import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
-import org.orbit.infra.connector.datacast.ChannelMetadataImpl;
-import org.orbit.infra.connector.datacast.DataTubeConfigImpl;
-import org.orbit.infra.connector.datatube.RuntimeChannelImpl;
 import org.orbit.infra.connector.indexes.IndexItemImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
-import org.orbit.infra.model.datacast.ChannelMetadataDTO;
-import org.orbit.infra.model.datacast.DataTubeConfigDTO;
-import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
-import org.origin.common.util.AccountConfigUtil;
 
 public class ClientModelConverter {
 
 	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
 	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
-	public static DATA_CAST DATA_CAST = new DATA_CAST();
-	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
 	public static COMMON COMMON = new COMMON();
 
 	public static class INDEX_SERVICE {
@@ -123,10 +108,10 @@ public class ClientModelConverter {
 			List<ConfigRegistry> configRegistries = new ArrayList<ConfigRegistry>();
 			List<ConfigRegistryDTO> configRegistryDTOs = response.readEntity(new GenericType<List<ConfigRegistryDTO>>() {
 			});
-			for (ConfigRegistryDTO dataTubeConfigDTO : configRegistryDTOs) {
-				ConfigRegistry dataTubeConfig = toConfigRegistry(configRegistryClient, dataTubeConfigDTO);
-				if (dataTubeConfig != null) {
-					configRegistries.add(dataTubeConfig);
+			for (ConfigRegistryDTO configRegistryDTO : configRegistryDTOs) {
+				ConfigRegistry configRegistry = toConfigRegistry(configRegistryClient, configRegistryDTO);
+				if (configRegistry != null) {
+					configRegistries.add(configRegistry);
 				}
 			}
 			return configRegistries.toArray(new ConfigRegistry[configRegistries.size()]);
@@ -236,264 +221,6 @@ public class ClientModelConverter {
 			}
 			return configElement;
 		}
-
-	}
-
-	public static class DATA_CAST {
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param dataTubeConfigDTO
-		 * @return
-		 */
-		public DataTubeConfig toDataTubeConfig(DataCastClient dataCastClient, DataTubeConfigDTO dataTubeConfigDTO) {
-			if (dataTubeConfigDTO == null) {
-				return null;
-			}
-
-			String configId = dataTubeConfigDTO.getId();
-			String dataCastId = dataTubeConfigDTO.getDataCastId();
-			String dataTubeId = dataTubeConfigDTO.getDataTubeId();
-			String name = dataTubeConfigDTO.getName();
-			Map<String, Object> properties = dataTubeConfigDTO.getProperties();
-			long dateCreated = dataTubeConfigDTO.getDateCreated();
-			long dateModified = dataTubeConfigDTO.getDateModified();
-
-			DataTubeConfigImpl dataTubeConfig = new DataTubeConfigImpl(dataCastClient);
-			dataTubeConfig.setId(configId);
-			dataTubeConfig.setDataCastId(dataCastId);
-			dataTubeConfig.setDataTubeId(dataTubeId);
-			dataTubeConfig.setName(name);
-			dataTubeConfig.setProperties(properties);
-			dataTubeConfig.setDateCreated(dateCreated);
-			dataTubeConfig.setDateModified(dateModified);
-
-			return dataTubeConfig;
-		}
-
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public DataTubeConfig[] getDataTubeConfigs(DataCastClient dataCastClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			List<DataTubeConfig> dataTubeConfigs = new ArrayList<DataTubeConfig>();
-			List<DataTubeConfigDTO> dataTubeConfigDTOs = response.readEntity(new GenericType<List<DataTubeConfigDTO>>() {
-			});
-			for (DataTubeConfigDTO dataTubeConfigDTO : dataTubeConfigDTOs) {
-				DataTubeConfig dataTubeConfig = toDataTubeConfig(dataCastClient, dataTubeConfigDTO);
-				if (dataTubeConfig != null) {
-					dataTubeConfigs.add(dataTubeConfig);
-				}
-			}
-			return dataTubeConfigs.toArray(new DataTubeConfig[dataTubeConfigs.size()]);
-		}
-
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public DataTubeConfig getDataTubeConfig(DataCastClient dataCastClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			DataTubeConfig dataTubeConfig = null;
-			DataTubeConfigDTO dataTubeConfigDTO = response.readEntity(DataTubeConfigDTO.class);
-			if (dataTubeConfigDTO != null) {
-				dataTubeConfig = toDataTubeConfig(dataCastClient, dataTubeConfigDTO);
-			}
-			return dataTubeConfig;
-		}
-
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param channelMetadataDTO
-		 * @return
-		 */
-		public ChannelMetadata toChannelMetadata(DataCastClient dataCastClient, ChannelMetadataDTO channelMetadataDTO) {
-			if (channelMetadataDTO == null) {
-				return null;
-			}
-
-			String dataCastId = channelMetadataDTO.getDataCastId();
-			String dataTubeId = channelMetadataDTO.getDataTubeId();
-			String channelId = channelMetadataDTO.getChannelId();
-			String name = channelMetadataDTO.getName();
-			String accessType = channelMetadataDTO.getAccessType();
-			String accessCode = channelMetadataDTO.getAccessCode();
-			String ownerAccountId = channelMetadataDTO.getOwnerAccountId();
-			String accountConfigsString = channelMetadataDTO.getAccountConfigsString();
-			Map<String, Object> properties = channelMetadataDTO.getProperties();
-			long dateCreated = channelMetadataDTO.getDateCreated();
-			long dateModified = channelMetadataDTO.getDateModified();
-
-			List<AccountConfig> accountConfigs = AccountConfigUtil.toAccountConfigs(accountConfigsString);
-
-			ChannelMetadataImpl channelMetadata = new ChannelMetadataImpl(dataCastClient);
-			channelMetadata.setDataCastId(dataCastId);
-			channelMetadata.setDataTubeId(dataTubeId);
-			channelMetadata.setChannelId(channelId);
-			channelMetadata.setName(name);
-			channelMetadata.setAccessType(accessType);
-			channelMetadata.setAccessCode(accessCode);
-			channelMetadata.setOwnerAccountId(ownerAccountId);
-			channelMetadata.setAccountConfigs(accountConfigs);
-			channelMetadata.setProperties(properties);
-			channelMetadata.setDateCreated(dateCreated);
-			channelMetadata.setDateModified(dateModified);
-
-			return channelMetadata;
-		}
-
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public ChannelMetadata[] getChannelMetadatas(DataCastClient dataCastClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			List<ChannelMetadata> channelMetadatas = new ArrayList<ChannelMetadata>();
-			List<ChannelMetadataDTO> channelMetadataDTOs = response.readEntity(new GenericType<List<ChannelMetadataDTO>>() {
-			});
-			for (ChannelMetadataDTO channelMetadataDTO : channelMetadataDTOs) {
-				ChannelMetadata channelMetadata = toChannelMetadata(dataCastClient, channelMetadataDTO);
-				if (channelMetadata != null) {
-					channelMetadatas.add(channelMetadata);
-				}
-			}
-			return channelMetadatas.toArray(new ChannelMetadata[channelMetadatas.size()]);
-		}
-
-		/**
-		 * 
-		 * @param dataCastClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public ChannelMetadata getChannelMetadata(DataCastClient dataCastClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			ChannelMetadata channelMetadata = null;
-			ChannelMetadataDTO channelMetadataDTO = response.readEntity(ChannelMetadataDTO.class);
-			if (channelMetadataDTO != null) {
-				channelMetadata = toChannelMetadata(dataCastClient, channelMetadataDTO);
-			}
-			return channelMetadata;
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public String getDataTubeId(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			String dataTubeId = null;
-			try {
-				dataTubeId = ResponseUtil.getSimpleValue(response, "data_tube_id", String.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return dataTubeId;
-		}
-	}
-
-	public static class DATA_TUBE {
-		/**
-		 * 
-		 * @param dataTubeClient
-		 * @param runtimeChannelDTO
-		 * @return
-		 */
-		public RuntimeChannel toRuntimeChannel(DataTubeClient dataTubeClient, RuntimeChannelDTO runtimeChannelDTO) {
-			if (runtimeChannelDTO == null) {
-				return null;
-			}
-
-			String dataCastId = runtimeChannelDTO.getDataCastId();
-			String dataTubeId = runtimeChannelDTO.getDataTubeId();
-			String channelId = runtimeChannelDTO.getChannelId();
-			String name = runtimeChannelDTO.getName();
-			long dateCreated = runtimeChannelDTO.getDateCreated();
-			long dateModified = runtimeChannelDTO.getDateModified();
-
-			RuntimeChannelImpl runtimeChannel = new RuntimeChannelImpl(dataTubeClient);
-			runtimeChannel.setDataCastId(dataCastId);
-			runtimeChannel.setDataTubeId(dataTubeId);
-			runtimeChannel.setChannelId(channelId);
-			runtimeChannel.setName(name);
-			runtimeChannel.setDateCreated(dateCreated);
-			runtimeChannel.setDateModified(dateModified);
-
-			return runtimeChannel;
-		}
-
-		/**
-		 * 
-		 * @param dataTubeClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public RuntimeChannel[] getRuntimeChannels(DataTubeClient dataTubeClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			List<RuntimeChannel> runtimeChannels = new ArrayList<RuntimeChannel>();
-			List<RuntimeChannelDTO> runtimeChannelDTOs = response.readEntity(new GenericType<List<RuntimeChannelDTO>>() {
-			});
-			for (RuntimeChannelDTO runtimeChannelDTO : runtimeChannelDTOs) {
-				RuntimeChannel runtimeChannel = toRuntimeChannel(dataTubeClient, runtimeChannelDTO);
-				if (runtimeChannel != null) {
-					runtimeChannels.add(runtimeChannel);
-				}
-			}
-			return runtimeChannels.toArray(new RuntimeChannel[runtimeChannels.size()]);
-		}
-
-		/**
-		 * 
-		 * @param dataTubeClient
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public RuntimeChannel getRuntimeChannel(DataTubeClient dataTubeClient, Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-
-			RuntimeChannel runtimeChannel = null;
-			RuntimeChannelDTO runtimeChannelDTO = response.readEntity(RuntimeChannelDTO.class);
-			if (runtimeChannelDTO != null) {
-				runtimeChannel = toRuntimeChannel(dataTubeClient, runtimeChannelDTO);
-			}
-			return runtimeChannel;
-		}
 	}
 
 	public static class COMMON {
@@ -540,28 +267,8 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean exists(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean exists = false;
-			try {
-				exists = ResponseUtil.getSimpleValue(response, "exists", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return exists;
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
 		public boolean isUpdated(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		/**
@@ -571,7 +278,7 @@ public class ClientModelConverter {
 		 * @throws ClientException
 		 */
 		public boolean isDeleted(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		/**
@@ -581,27 +288,7 @@ public class ClientModelConverter {
 		 * @throws ClientException
 		 */
 		public boolean isUploaded(Response response) throws ClientException {
-			return isSucceed(response);
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean isSucceed(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean succeed = false;
-			try {
-				succeed = ResponseUtil.getSimpleValue(response, "succeed", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return succeed;
+			return ResponseUtil.isSucceed(response);
 		}
 
 		/**

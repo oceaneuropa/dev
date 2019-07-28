@@ -3,14 +3,7 @@ package org.orbit.infra.webconsole.servlet;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.webconsole.WebConstants;
-import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataActionServlet;
-import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataAddServlet;
-import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataDeleteServlet;
-import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataListServlet;
-import org.orbit.infra.webconsole.servlet.channel.ChannelMetadataUpdateServlet;
-import org.orbit.infra.webconsole.servlet.channel.RuntimeChannelListServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAddServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeAddServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigElementAttributeDeleteServlet;
@@ -27,16 +20,6 @@ import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyD
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyListServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryPropertyUpdateServlet;
 import org.orbit.infra.webconsole.servlet.configregistry.ConfigRegistryUpdateServlet;
-import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
-import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
-import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeDeleteServlet;
-import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeListServlet;
-import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeUpdateServlet;
-import org.orbit.infra.webconsole.servlet.datatube.DataTubeNodeActionServlet;
-import org.orbit.infra.webconsole.servlet.datatube.DataTubeNodeAddServlet;
-import org.orbit.infra.webconsole.servlet.datatube.DataTubeNodeDeleteServlet;
-import org.orbit.infra.webconsole.servlet.datatube.DataTubeNodeListServlet;
-import org.orbit.infra.webconsole.servlet.datatube.DataTubeNodeUpdateServlet;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -60,14 +43,13 @@ public class WebApplication extends PlatformWebApplication {
 				// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT, //
-				InfraConstants.ORBIT_DATACAST_URL, //
 		};
 		return propNames;
 	}
 
 	@Override
 	public String getContextRoot() {
-		// e.g. "/orbit/webconsole/substance"
+		// e.g. "/orbit/webconsole/infra"
 		String contextRoot = (String) this.getProperties().get(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 		return contextRoot;
 	}
@@ -90,28 +72,6 @@ public class WebApplication extends PlatformWebApplication {
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
 		// Admin
-		// DataCast
-		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastNodeListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datacastadd", new DataCastNodeAddServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datacastupdate", new DataCastNodeUpdateServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datacastdelete", new DataCastNodeDeleteServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datacastaction", new DataCastNodeActionServlet(), dicts));
-
-		addServlet(new ServletMetadataImpl("/admin/datatubelist", new DataTubeNodeListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datatubeadd", new DataTubeNodeAddServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datatubeupdate", new DataTubeNodeUpdateServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datatubedelete", new DataTubeNodeDeleteServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datatubeaction", new DataTubeNodeActionServlet(), dicts));
-
-		addServlet(new ServletMetadataImpl("/admin/channelmetadatalist", new ChannelMetadataListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/channelmetadataadd", new ChannelMetadataAddServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/channelmetadataupdate", new ChannelMetadataUpdateServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/channelmetadatadelete", new ChannelMetadataDeleteServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/channelmetadataaction", new ChannelMetadataActionServlet(), dicts));
-
-		// DataTube
-		addServlet(new ServletMetadataImpl("/admin/runtimechannellist", new RuntimeChannelListServlet(), dicts));
-
 		// Config Registry
 		addServlet(new ServletMetadataImpl("/admin/configregs", new ConfigRegistryListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/configregadd", new ConfigRegistryAddServlet(), dicts));

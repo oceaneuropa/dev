@@ -11,9 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.util.LaunchServiceHelper;
-import org.orbit.component.runtime.util.OrbitClientHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
@@ -24,7 +24,7 @@ import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.orbit.platform.sdk.util.ExtensionUtil;
+import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 import org.origin.common.launch.LaunchInstance;
@@ -407,7 +407,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			configIniProperties.putAll(this.properties);
 
 			ISystemPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
-			List<PropertiesRegulator> regulators = ExtensionUtil.PROPERTIES.getPropertiesRegulators(PropertiesRegulator.TYPE__NODE__CONFIG_INI);
+			List<PropertiesRegulator> regulators = ExtensionHelper.PROPERTIES.getPropertiesRegulators(PropertiesRegulator.TYPE__NODE__CONFIG_INI);
 			for (PropertiesRegulator regulator : regulators) {
 				regulator.update(platform, node, configIniProperties);
 			}

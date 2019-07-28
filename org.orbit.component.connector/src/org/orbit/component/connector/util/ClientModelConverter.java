@@ -873,51 +873,24 @@ public class ClientModelConverter {
 			return node;
 		}
 
-		public boolean exists(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean exists = false;
-			try {
-				exists = ResponseUtil.getSimpleValue(response, "exists", Boolean.class);
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return exists;
-		}
-
 		public boolean isCreated(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public boolean isUpdated(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public boolean isDeleted(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public boolean isStarted(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public boolean isStopped(Response response) throws ClientException {
-			return isSucceed(response);
-		}
-
-		public boolean isSucceed(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean succeed = false;
-			try {
-				succeed = ResponseUtil.getSimpleValue(response, "succeed", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return succeed;
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public String getStatus(Response response) throws ClientException {
@@ -972,39 +945,12 @@ public class ClientModelConverter {
 			return mission;
 		}
 
-		public boolean exists(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean exists = false;
-			try {
-				exists = ResponseUtil.getSimpleValue(response, "exists", Boolean.class);
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return exists;
-		}
-
 		public boolean isCreated(Response response) throws ClientException {
-			return isSucceed(response);
+			return ResponseUtil.isSucceed(response);
 		}
 
 		public boolean isDeleted(Response response) throws ClientException {
-			return isSucceed(response);
-		}
-
-		public boolean isSucceed(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean succeed = false;
-			try {
-				succeed = ResponseUtil.getSimpleValue(response, "succeed", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return succeed;
+			return ResponseUtil.isSucceed(response);
 		}
 	}
 

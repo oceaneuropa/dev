@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
@@ -45,40 +47,57 @@ public class NodeProgramInstallServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (idVersions.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'appId_appVersion' parameter is not set.");
+			// message = MessageHelper.INSTANCE.add(message, "'appId_appVersion' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "Programs are not selected.");
 		}
 
+		boolean isNodeOnline = false;
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 
-		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
+		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && idVersions.length > 0) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				// Get platform client of the node
-				PlatformClient nodePlatformClient = null;
+				// IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(accessToken, nodeId);
 				IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
-					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
+					isNodeOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				}
 
-				// Instruct the node to self install the program
-				if (nodePlatformClient != null) {
-					for (int i = 0; i < idVersions.length; i++) {
-						String currIdVersion = idVersions[i];
-						int index = currIdVersion.lastIndexOf("|");
-						String currAppId = currIdVersion.substring(0, index);
-						String currAppVersion = currIdVersion.substring(index + 1);
+				if (isNodeOnline) {
+					// Get platform client of the node
+					// PlatformClient nodePlatformClient = null;
+					// IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId,
+					// InfraConstants.PLATFORM_TYPE__NODE);
+					// if (nodeIndexItem != null) {
+					// nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
+					// }
+					PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
+					PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
-						boolean currSucceed = nodePlatformClient.installProgram(currAppId, currAppVersion, true);
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
+					// Instruct the node to self install the program
+					if (nodePlatformClient != null) {
+						for (int i = 0; i < idVersions.length; i++) {
+							String currIdVersion = idVersions[i];
+							int index = currIdVersion.lastIndexOf("|");
+							String currAppId = currIdVersion.substring(0, index);
+							String currAppVersion = currIdVersion.substring(index + 1);
+
+							boolean currSucceed = nodePlatformClient.installProgram(currAppId, currAppVersion, true);
+							if (currSucceed) {
+								hasSucceed = true;
+							} else {
+								hasFailed = true;
+							}
 						}
 					}
+
+				} else {
+					message = MessageHelper.INSTANCE.add(message, "Node '" + nodeId + "' is offline.");
 				}
+
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
@@ -88,10 +107,12 @@ public class NodeProgramInstallServlet extends HttpServlet {
 			succeed = true;
 		}
 
-		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are installed." : "Program is installed.");
-		} else {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not installed." : "Program is not installed.");
+		if (idVersions.length > 0 && isNodeOnline) {
+			if (succeed) {
+				message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are installed." : "Program is installed.");
+			} else {
+				message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not installed." : "Program is not installed.");
+			}
 		}
 
 		HttpSession session = request.getSession(true);

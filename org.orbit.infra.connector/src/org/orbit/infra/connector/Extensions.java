@@ -1,10 +1,7 @@
 package org.orbit.infra.connector;
 
-import org.orbit.infra.connector.cli.DataTubeClientCommand;
 import org.orbit.infra.connector.cli.IndexServiceClientCommand;
 import org.orbit.infra.connector.configregistry.ConfigRegistryConnector;
-import org.orbit.infra.connector.datacast.DataCastConnector;
-import org.orbit.infra.connector.datatube.DataTubeConnector;
 import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
@@ -60,18 +57,6 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ConfigRegistryConnector.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
-
-		// DataCast connector
-		Extension extension5 = new Extension(typeId, DataCastConnector.ID, "DataCast Connector", "DataCast connector description");
-		InterfaceDescription desc5 = new InterfaceDescription(ConnectorActivator.class, DataCastConnector.class);
-		extension5.addInterface(desc5);
-		addExtension(extension5);
-
-		// DataTube connector
-		Extension extension6 = new Extension(typeId, DataTubeConnector.ID, "DataTube Connector", "DataTube connector description");
-		InterfaceDescription desc6 = new InterfaceDescription(ConnectorActivator.class, DataTubeConnector.class);
-		extension6.addInterface(desc6);
-		addExtension(extension6);
 	}
 
 	protected void createCommandExtensions() {
@@ -82,12 +67,6 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, IndexServiceClientCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
-
-		// DataTube command
-		Extension extension2 = new Extension(typeId, DataTubeClientCommand.ID, "DataTube Command", "DataTube command description");
-		InterfaceDescription desc2 = new InterfaceDescription(CommandActivator.class, DataTubeClientCommand.class);
-		extension2.addInterface(desc2);
-		addExtension(extension2);
 	}
 
 }

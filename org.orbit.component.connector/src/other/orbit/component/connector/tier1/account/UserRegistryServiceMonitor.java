@@ -7,7 +7,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.connector.ComponentConstantsV1;
-import other.orbit.infra.api.indexes.ServiceMonitor;
+import other.orbit.component.connector.ServiceMonitor;
 
 public class UserRegistryServiceMonitor extends ServiceMonitor {
 

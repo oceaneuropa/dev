@@ -170,7 +170,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 
 			boolean succeed = (node != null) ? true : false;
 			if (succeed) {
-				System.out.println("Node is successfully created.");
+				System.out.println("Node is created.");
 			} else {
 				System.out.println("Node is not created.");
 			}
@@ -192,7 +192,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 			boolean succeed = service.deleteNode(id);
 
 			if (succeed) {
-				System.out.println("Node is successfully deleted.");
+				System.out.println("Node is deleted.");
 			} else {
 				System.out.println("Node is not deleted.");
 			}
@@ -218,7 +218,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 			boolean succeed = service.addAttribute(id, attrName, attrValue);
 
 			if (succeed) {
-				System.out.println("Node attribute is successfully updated.");
+				System.out.println("Node attribute is updated.");
 			} else {
 				System.out.println("Node attribute is not updated.");
 			}
@@ -242,7 +242,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 			boolean succeed = service.deleteAttribute(id, attrName);
 
 			if (succeed) {
-				System.out.println("Node attribute is successfully removed.");
+				System.out.println("Node attribute is removed.");
 			} else {
 				System.out.println("Node attribute is not removed.");
 			}
@@ -267,7 +267,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 			boolean succeed = service.startNode(id, accessToken, options);
 
 			if (succeed) {
-				System.out.println("Node is successfully started.");
+				System.out.println("Node is started.");
 			} else {
 				System.out.println("Node is not started.");
 			}
@@ -292,7 +292,7 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 			boolean succeed = service.stopNode(id, accessToken, options);
 
 			if (succeed) {
-				System.out.println("Node is successfully stopped.");
+				System.out.println("Node is stopped.");
 			} else {
 				System.out.println("Node is not stopped.");
 			}

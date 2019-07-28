@@ -11,7 +11,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes
@@ -20,14 +20,14 @@ import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
  */
 public class UserRegistryServiceAdapterV1 {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<UserRegistryService, UserRegistryService> serviceTracker;
 	protected UserRegistryWSApplication webApp;
 	protected UserRegistryServiceIndexTimer serviceIndexTimer;
 
-	public UserRegistryServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public UserRegistryServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public UserRegistryService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
@@ -87,9 +87,9 @@ public class UserRegistryServiceAdapterV1 {
 		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service
-		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(service);
-		this.serviceIndexTimer.start();
+//		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+//		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(service);
+//		this.serviceIndexTimer.start();
 	}
 
 	/**

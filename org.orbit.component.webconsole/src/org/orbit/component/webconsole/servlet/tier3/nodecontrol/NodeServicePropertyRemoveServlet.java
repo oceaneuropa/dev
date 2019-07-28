@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ServiceInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;

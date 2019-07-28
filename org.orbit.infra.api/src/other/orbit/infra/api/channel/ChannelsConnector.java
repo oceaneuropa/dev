@@ -1,11 +1,9 @@
 package other.orbit.infra.api.channel;
 
-import java.util.Map;
-
-import org.orbit.infra.api.datatube.DataTubeClient;
+// import org.orbit.datatube.api.datatube.DataTubeClient;
 
 public interface ChannelsConnector {
 
-	DataTubeClient getService(Map<Object, Object> properties);
+	// DataTubeClient getService(Map<Object, Object> properties);
 
 }

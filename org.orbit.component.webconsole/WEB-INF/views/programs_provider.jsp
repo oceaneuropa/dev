@@ -14,9 +14,9 @@
 		<tr>
 			<th width="12">
 			</th>
-			<th width="100">Type</th>
-			<th width="150">Id/Version</th>
 			<th width="150">Name</th>
+			<th width="150">Type</th>
+			<th width="150">Id/Version</th>
 		</tr>
     	<%
 			if (appManifests.length == 0) {
@@ -36,9 +36,9 @@
 				<td>
 					<input type="checkbox" name="appId_appVersion" value="<%=appId + "|" + appVersion%>" />
 				</td>
+				<td><%=name%></td>
 				<td><%=type%></td>
 				<td><%=appId + "_" + appVersion%></td>
-				<td><%=name%></td>
 			</tr>
 		<%
 				}

@@ -12,7 +12,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start AppStoreWSApplication when AppStoreService becomes available and to stop AppStoreWSApplication when AppStoreService becomes unavailable.
@@ -22,14 +22,14 @@ public class AppStoreServiceAdapterV1 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(AppStoreServiceAdapterV1.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
 	protected AppStoreWSApplication webServiceApp;
 	protected AppStoreServiceIndexTimer serviceIndexTimer;
 
-	public AppStoreServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public AppStoreServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public AppStoreService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

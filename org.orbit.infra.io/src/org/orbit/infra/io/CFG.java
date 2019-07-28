@@ -44,9 +44,9 @@ public abstract class CFG {
 		return cfg;
 	}
 
-	public synchronized static void clear() {
+	// public synchronized static void clear() {
 		// CFG_MAP.clear();
-	}
+	// }
 
 	// protected String configRegistryServiceUrl;
 	// protected String indexServiceUrl;

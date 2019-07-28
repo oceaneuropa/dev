@@ -133,7 +133,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ClientModelConverter.COMMON.exists(response);
+				exists = ResponseUtil.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -153,7 +153,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ClientModelConverter.COMMON.exists(response);
+				exists = ResponseUtil.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -518,7 +518,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ClientModelConverter.COMMON.exists(response);
+				exists = ResponseUtil.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -540,7 +540,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ClientModelConverter.COMMON.exists(response);
+				exists = ResponseUtil.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -565,7 +565,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ClientModelConverter.COMMON.exists(response);
+				exists = ResponseUtil.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

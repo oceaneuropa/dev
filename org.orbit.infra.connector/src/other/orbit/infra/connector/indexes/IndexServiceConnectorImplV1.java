@@ -9,9 +9,9 @@ import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
+// import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
-public class IndexServiceConnectorImplV1 implements IndexServiceConnectorV1 {
+public class IndexServiceConnectorImplV1 /* implements IndexServiceConnectorV1 */ {
 
 	protected static final String KEY_PARTS_SEPARATOR = "::";
 
@@ -24,7 +24,7 @@ public class IndexServiceConnectorImplV1 implements IndexServiceConnectorV1 {
 
 	public void start(BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistration = bundleContext.registerService(IndexServiceConnectorV1.class, this, props);
+		// this.serviceRegistration = bundleContext.registerService(IndexServiceConnectorV1.class, this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {
@@ -35,7 +35,7 @@ public class IndexServiceConnectorImplV1 implements IndexServiceConnectorV1 {
 		this.serviceMap.clear();
 	}
 
-	@Override
+	// @Override
 	public synchronized IndexServiceClient getService(Map<Object, Object> properties) {
 		IndexServiceClient indexService = null;
 		String url = (String) properties.get(InfraConstants.SERVICE__HOST_URL);

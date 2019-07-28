@@ -26,10 +26,11 @@ public class Activator implements BundleActivator {
 		Activator.plugin = this;
 		Activator.context = bundleContext;
 
+		// Load config properties
 		InfraServicesPropertiesHandler.getInstance().start(bundleContext);
 
-		InfraClients infraClients = InfraClients.getInstance();
-		infraClients.start(bundleContext);
+		// Start tracking client connectors
+		InfraClients.getInstance().start(bundleContext);
 
 		this.extensionsRegister = new ExtensionsRegister();
 		this.extensionsRegister.start(bundleContext);
@@ -41,8 +42,10 @@ public class Activator implements BundleActivator {
 			this.extensionsRegister.stop(bundleContext);
 		}
 
+		// Stop tracking client connectors
 		InfraClients.getInstance().stop(bundleContext);
 
+		// Dispose config properties
 		InfraServicesPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.context = null;

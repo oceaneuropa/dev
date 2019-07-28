@@ -9,18 +9,18 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 public class AuthServiceAdapterV1 {
 
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected AuthWSApplication webService;
 	protected AuthServiceIndexTimer indexTimer;
 
-	public AuthServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public AuthServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public AuthService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

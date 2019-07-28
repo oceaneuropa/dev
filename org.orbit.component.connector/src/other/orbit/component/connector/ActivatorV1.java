@@ -10,8 +10,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import other.orbit.component.connector.tier1.account.UserRegistryManager;
-import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
-import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
 public class ActivatorV1 implements BundleActivator {
 
@@ -28,7 +26,7 @@ public class ActivatorV1 implements BundleActivator {
 		return instance;
 	}
 
-	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
+	// protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
 	// ManagedServiceFactory
 	protected UserRegistryManager userRegistryManager;
@@ -46,32 +44,32 @@ public class ActivatorV1 implements BundleActivator {
 		ActivatorV1.context = bundleContext;
 		ActivatorV1.instance = this;
 
-		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
-			@Override
-			public void connectorAdded(IndexServiceConnectorV1 connector) {
-				doStart(ActivatorV1.context, connector);
-			}
-
-			@Override
-			public void connectorRemoved(IndexServiceConnectorV1 connector) {
-				doStop(ActivatorV1.context);
-			}
-		};
-		this.indexServiceConnectorAdapter.start(bundleContext);
+//		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
+//			@Override
+//			public void connectorAdded(IndexServiceConnectorV1 connector) {
+//				doStart(ActivatorV1.context, connector);
+//			}
+//
+//			@Override
+//			public void connectorRemoved(IndexServiceConnectorV1 connector) {
+//				doStop(ActivatorV1.context);
+//			}
+//		};
+//		this.indexServiceConnectorAdapter.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if (this.indexServiceConnectorAdapter != null) {
-			this.indexServiceConnectorAdapter.stop(bundleContext);
-			this.indexServiceConnectorAdapter = null;
-		}
+//		if (this.indexServiceConnectorAdapter != null) {
+//			this.indexServiceConnectorAdapter.stop(bundleContext);
+//			this.indexServiceConnectorAdapter = null;
+//		}
 
 		ActivatorV1.instance = null;
 		ActivatorV1.context = null;
 	}
 
-	protected void doStart(BundleContext bundleContext, IndexServiceConnectorV1 connector) {
+	protected void doStart(BundleContext bundleContext /* , IndexServiceConnectorV1 connector */) {
 		// Get load balancer for IndexProvider
 		// Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
 		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);

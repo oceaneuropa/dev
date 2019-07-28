@@ -3,6 +3,14 @@ package org.orbit.component.api;
 public interface ComponentConstants {
 
 	// ----------------------------------------------------------------------------------------
+	// Global
+	// ----------------------------------------------------------------------------------------
+	// public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+	// public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
+	// public static String ORBIT_CONFIG_REGISTRY_URL = "orbit.config_registry.url";
+	public static String ORBIT_DATACAST_URL = "orbit.data_cast.url";
+
+	// ----------------------------------------------------------------------------------------
 	// orbit service config properties
 	// ----------------------------------------------------------------------------------------
 	// tier1

@@ -14,6 +14,7 @@
 
 	MachineConfig machineConfig = (MachineConfig) request.getAttribute("machineConfig");
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
+	String id = (String) request.getAttribute("id");
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
 	ProgramInfo program = (ProgramInfo) request.getAttribute("program");
 	Problem[] problems = (Problem[]) request.getAttribute("problems");
@@ -27,7 +28,7 @@
 	String platformName = (platformConfig != null) ? platformConfig.getName() : "n/a";
 	String platformId = (platformConfig != null) ? platformConfig.getId() : "";
 
-	String id = (nodeInfo != null) ? nodeInfo.getId() : "";
+	// String id = (nodeInfo != null) ? nodeInfo.getId() : "";
 	String name = (nodeInfo != null) ? nodeInfo.getName() : "";
 
 	String programId = "";

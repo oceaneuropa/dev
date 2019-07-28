@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Infra :: API
-Bundle-SymbolicName: org.orbit.infra.api;singleton:=true
+Bundle-SymbolicName: org.orbit.infra.api
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -12,14 +12,10 @@ Import-Package: javax.ws.rs.core;version="2.0.0",
  org.slf4j;version="1.7.25"
 Export-Package: org.orbit.infra.api;version="1.0.0",
  org.orbit.infra.api.configregistry;version="1.0.0",
- org.orbit.infra.api.datacast;version="1.0.0",
- org.orbit.infra.api.datatube;version="1.0.0",
  org.orbit.infra.api.extensionregistry;version="1.0.0",
  org.orbit.infra.api.indexes;version="1.0.0",
- org.orbit.infra.api.util;version="1.0.0",
- other.orbit.infra.api.channel;version="1.0.0",
- other.orbit.infra.api.indexes;version="1.0.0"
-Bundle-ActivationPolicy: lazy
+ org.orbit.infra.api.util;version="1.0.0"
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"
+Bundle-ActivationPolicy: lazy

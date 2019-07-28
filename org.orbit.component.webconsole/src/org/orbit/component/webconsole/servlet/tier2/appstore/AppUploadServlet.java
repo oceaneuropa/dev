@@ -138,7 +138,7 @@ public class AppUploadServlet extends HttpServlet {
 
 					boolean succeed = ComponentClientsUtil.AppStore.uploadAppFile(accessToken, id, appId, appVersion, localFiles);
 					if (succeed) {
-						message = MessageHelper.INSTANCE.add(message, "App file is successfully uploaded to app store.");
+						message = MessageHelper.INSTANCE.add(message, "App file is uploaded to app store.");
 					} else {
 						message = MessageHelper.INSTANCE.add(message, "App file is not uploaded to app store.");
 					}

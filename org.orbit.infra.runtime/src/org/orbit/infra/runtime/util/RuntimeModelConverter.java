@@ -1,37 +1,24 @@
 package org.orbit.infra.runtime.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
-import org.orbit.infra.model.datacast.ChannelMetadataDTO;
-import org.orbit.infra.model.datacast.DataTubeConfigDTO;
-import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
-import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
-import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
-import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
-import org.origin.common.util.AccountConfigReader;
-import org.origin.common.util.AccountConfigWriter;
 
 public class RuntimeModelConverter {
 
 	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
 	public static EXTENSION_REGISTRY EXTENSION_REGISTRY = new EXTENSION_REGISTRY();
 	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
-	public static DATA_CAST DATA_CAST = new DATA_CAST();
-	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
 	public static COMMON COMMON = new COMMON();
 
 	public static class INDEX_SERVICE {
@@ -141,184 +128,6 @@ public class RuntimeModelConverter {
 			configElementDTO.setDateModified(dateModified);
 
 			return configElementDTO;
-		}
-	}
-
-	public static class DATA_CAST {
-		/**
-		 * 
-		 * @param dataTubeConfig
-		 * @return
-		 */
-		public DataTubeConfigDTO toDTO(DataTubeConfig dataTubeConfig) {
-			if (dataTubeConfig == null) {
-				return null;
-			}
-
-			String id = dataTubeConfig.getId();
-			String dataCastId = dataTubeConfig.getDataCastId();
-			String dataTubeId = dataTubeConfig.getDataTubeId();
-			String name = dataTubeConfig.getName();
-			boolean isEnabled = dataTubeConfig.isEnabled();
-			Map<String, Object> properties = dataTubeConfig.getProperties();
-			long dateCreated = dataTubeConfig.getDateCreated();
-			long dateModified = dataTubeConfig.getDateModified();
-
-			DataTubeConfigDTO dataTubeConfigDTO = new DataTubeConfigDTO();
-			dataTubeConfigDTO.setId(id);
-			dataTubeConfigDTO.setDataCastId(dataCastId);
-			dataTubeConfigDTO.setDataTubeId(dataTubeId);
-			dataTubeConfigDTO.setName(name);
-			dataTubeConfigDTO.setEnabled(isEnabled);
-			dataTubeConfigDTO.setProperties(properties);
-			dataTubeConfigDTO.setDateCreated(dateCreated);
-			dataTubeConfigDTO.setDateModified(dateModified);
-
-			return dataTubeConfigDTO;
-		}
-
-		/**
-		 * 
-		 * @param channelMetadata
-		 * @return
-		 */
-		public ChannelMetadataDTO toDTO(ChannelMetadata channelMetadata) {
-			if (channelMetadata == null) {
-				return null;
-			}
-
-			String dataCastId = channelMetadata.getDataCastId();
-			String dataTubeId = channelMetadata.getDataTubeId();
-			String channelId = channelMetadata.getChannelId();
-			String name = channelMetadata.getName();
-			String accessType = channelMetadata.getAccessType();
-			String accessCode = channelMetadata.getAccessCode();
-			String ownerAccountId = channelMetadata.getOwnerAccountId();
-			List<AccountConfig> accountConfigs = channelMetadata.getAccountConfigs();
-			// List<String> accountIds = channelMetadata.getAccountIds();
-			Map<String, Object> properties = channelMetadata.getProperties();
-			long dateCreated = channelMetadata.getDateCreated();
-			long dateModified = channelMetadata.getDateModified();
-
-			String accountConfigsString = toAccountConfigsString(accountConfigs);
-
-			ChannelMetadataDTO channelMetadataDTO = new ChannelMetadataDTO();
-			channelMetadataDTO.setDataCastId(dataCastId);
-			channelMetadataDTO.setDataTubeId(dataTubeId);
-			channelMetadataDTO.setChannelId(channelId);
-			channelMetadataDTO.setName(name);
-			channelMetadataDTO.setAccessType(accessType);
-			channelMetadataDTO.setAccessCode(accessCode);
-			channelMetadataDTO.setOwnerAccountId(ownerAccountId);
-			channelMetadataDTO.setAccountConfigsString(accountConfigsString);
-			// channelMetadataDTO.setAccountIds(accountIds);
-			channelMetadataDTO.setProperties(properties);
-			channelMetadataDTO.setDateCreated(dateCreated);
-			channelMetadataDTO.setDateModified(dateModified);
-
-			return channelMetadataDTO;
-		}
-
-		/**
-		 * 
-		 * @param accountConfigsString
-		 * @return
-		 */
-		public List<AccountConfig> toAccountConfigs(String accountConfigsString) {
-			AccountConfigReader reader = new AccountConfigReader();
-			List<AccountConfig> accountConfigs = reader.read(accountConfigsString);
-			if (accountConfigs == null) {
-				accountConfigs = new ArrayList<AccountConfig>();
-			}
-			return accountConfigs;
-		}
-
-		/**
-		 * 
-		 * @param accountConfigs
-		 * @return
-		 */
-		public String toAccountConfigsString(List<AccountConfig> accountConfigs) {
-			AccountConfigWriter writer = new AccountConfigWriter();
-			String accountConfigsString = writer.write(accountConfigs);
-			if (accountConfigsString == null) {
-				accountConfigsString = "";
-			}
-			return accountConfigsString;
-		}
-
-		// /**
-		// *
-		// * @param accountIdsString
-		// * @return
-		// */
-		// public List<String> toAccountIds(String accountIdsString) {
-		// List<String> accountIds = new ArrayList<String>();
-		// if (accountIdsString != null && !accountIdsString.isEmpty()) {
-		// List<Object> list = JSONUtil.toList(accountIdsString, false);
-		// if (list != null) {
-		// for (Object object : list) {
-		// accountIds.add(object.toString());
-		// }
-		// }
-		// }
-		// return accountIds;
-		// }
-		//
-		// /**
-		// * Convert a list of String to string
-		// *
-		// * @param accountIds
-		// * @return
-		// */
-		// public String toAccountIdsString(List<String> accountIds) {
-		// String accountIdsString = JSONUtil.toJsonString(accountIds, false);
-		// if (accountIdsString == null) {
-		// accountIdsString = "";
-		// }
-		// return accountIdsString;
-		// }
-	}
-
-	public static class DATA_TUBE {
-		/**
-		 * 
-		 * @param runtimeChannel
-		 * @return
-		 */
-		public RuntimeChannelDTO toDTO(RuntimeChannel runtimeChannel) {
-			if (runtimeChannel == null) {
-				return null;
-			}
-
-			org.orbit.infra.api.datacast.ChannelMetadata channelMetadata = runtimeChannel.getChannelMetadata();
-
-			String dataCastId = channelMetadata.getDataCastId();
-			String dataTubeId = channelMetadata.getDataTubeId();
-			String channelId = channelMetadata.getChannelId();
-			String name = channelMetadata.getName();
-			// String accessType = channelMetadata.getAccessType();
-			// String accessCode = channelMetadata.getAccessCode();
-			// String ownerAccountId = channelMetadata.getOwnerAccountId();
-			// List<String> accountIds = channelMetadata.getAccountIds();
-			// Map<String, Object> properties = channelMetadata.getProperties();
-			long dateCreated = channelMetadata.getDateCreated();
-			long dateModified = channelMetadata.getDateModified();
-
-			RuntimeChannelDTO runtimeChannelDTO = new RuntimeChannelDTO();
-			runtimeChannelDTO.setDataCastId(dataCastId);
-			runtimeChannelDTO.setDataTubeId(dataTubeId);
-			runtimeChannelDTO.setChannelId(channelId);
-			runtimeChannelDTO.setName(name);
-			// runtimeChannelDTO.setAccessType(accessType);
-			// runtimeChannelDTO.setAccessCode(accessCode);
-			// runtimeChannelDTO.setOwnerAccountId(ownerAccountId);
-			// runtimeChannelDTO.setAccountIds(accountIds);
-			// runtimeChannelDTO.setProperties(properties);
-			runtimeChannelDTO.setDateCreated(dateCreated);
-			runtimeChannelDTO.setDateModified(dateModified);
-
-			return runtimeChannelDTO;
 		}
 	}
 

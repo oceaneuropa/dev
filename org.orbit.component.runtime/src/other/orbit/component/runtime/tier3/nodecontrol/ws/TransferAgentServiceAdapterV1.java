@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import other.orbit.component.runtime.tier3.nodecontrol.command.NodeControlEditPolicyV1;
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start TransferAgentWSApplication when TransferAgentService becomes available and to stop TransferAgentWSApplication when TransferAgentService
@@ -25,14 +25,14 @@ public class TransferAgentServiceAdapterV1 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceAdapterV1.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<NodeControlService, NodeControlService> serviceTracker;
 	protected NodeControlWSApplication webService;
 	protected NodeControlServiceTimer serviceIndexTimer;
 
-	public TransferAgentServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public TransferAgentServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public NodeControlService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

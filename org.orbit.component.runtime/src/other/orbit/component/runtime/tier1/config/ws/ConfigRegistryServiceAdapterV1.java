@@ -10,7 +10,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start ConfigRegistryWSApplication when ConfigRegistryService becomes available and to stop ConfigRegistryWSApplication when ConfigRegistryService
@@ -19,14 +19,14 @@ import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
  */
 public class ConfigRegistryServiceAdapterV1 {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0> serviceTracker;
 	protected ConfigRegistryWSApplication webServiceApp;
 	protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
 
-	public ConfigRegistryServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public ConfigRegistryServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public ConfigRegistryServiceV0 getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

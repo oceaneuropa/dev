@@ -1,8 +1,6 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
-import org.orbit.infra.runtime.util.DataCastConfigPropertiesHandler;
-import org.orbit.infra.runtime.util.DataTubeConfigPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -32,8 +30,6 @@ public class Activator implements BundleActivator {
 
 		// Load config properties
 		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
-		DataCastConfigPropertiesHandler.getInstance().start(bundleContext);
-		DataTubeConfigPropertiesHandler.getInstance().start(bundleContext);
 
 		// Start tracking infra services
 		InfraServices.getInstance().start(bundleContext);
@@ -52,9 +48,7 @@ public class Activator implements BundleActivator {
 		// Stop tracking infra services
 		InfraServices.getInstance().stop(bundleContext);
 
-		// Unload config properties
-		DataCastConfigPropertiesHandler.getInstance().stop(bundleContext);
-		DataTubeConfigPropertiesHandler.getInstance().stop(bundleContext);
+		// Dispose config properties
 		ConfigRegistryConfigPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.instance = null;

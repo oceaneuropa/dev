@@ -249,6 +249,9 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	@Override
 	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 		try {
+			if (propertyNames == null || propertyNames.isEmpty()) {
+				return false;
+			}
 			StatusDTO status = getWSClient().removeProperties(indexProviderId, indexItemId, propertyNames);
 			if (status != null && status.success()) {
 				return true;

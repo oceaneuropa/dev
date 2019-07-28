@@ -1,20 +1,16 @@
 package other.orbit.component.cli;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.orbit.component.cli.AppStoreClientCommand;
 import org.orbit.component.cli.AuthClientCommand;
 import org.orbit.component.cli.DomainManagementClientCommand;
 import org.orbit.component.cli.NodeControlClientCommand;
 import org.orbit.component.cli.ServicesClientCommand;
 import org.orbit.component.cli.UserRegistryClientCommand;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
-import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
+//import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
+//import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
 public class ActivatorV1 implements BundleActivator {
 
@@ -24,7 +20,7 @@ public class ActivatorV1 implements BundleActivator {
 		return context;
 	}
 
-	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
+	// protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
 	protected ServicesClientCommand servicesCommand;
 	protected AuthClientCommand authCommand;
@@ -37,18 +33,18 @@ public class ActivatorV1 implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		ActivatorV1.context = bundleContext;
 
-		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
-			@Override
-			public void connectorAdded(IndexServiceConnectorV1 connector) {
-				doStart(ActivatorV1.context, connector);
-			}
-
-			@Override
-			public void connectorRemoved(IndexServiceConnectorV1 connector) {
-				doStop(ActivatorV1.context);
-			}
-		};
-		this.indexServiceConnectorAdapter.start(bundleContext);
+//		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
+//			@Override
+//			public void connectorAdded(IndexServiceConnectorV1 connector) {
+//				doStart(ActivatorV1.context, connector);
+//			}
+//
+//			@Override
+//			public void connectorRemoved(IndexServiceConnectorV1 connector) {
+//				doStop(ActivatorV1.context);
+//			}
+//		};
+//		this.indexServiceConnectorAdapter.start(bundleContext);
 	}
 
 	@Override
@@ -58,7 +54,7 @@ public class ActivatorV1 implements BundleActivator {
 		ActivatorV1.context = null;
 	}
 
-	protected void doStart(BundleContext bundleContext, IndexServiceConnectorV1 connector) {
+	protected void doStart(BundleContext bundleContext /* , IndexServiceConnectorV1 connector */) {
 		// Get load balancer for IndexProvider
 		// Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
 		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);

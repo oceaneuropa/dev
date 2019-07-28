@@ -11,9 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
+import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -79,49 +82,61 @@ public class NodeProgramActionServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
+		boolean isNodeOnline = false;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && ACTIONS.contains(action) && idVersions.length > 0) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(accessToken, nodeId);
+				if (nodeIndexItem != null) {
+					isNodeOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
+				}
 
-				if (nodePlatformClient != null) {
-					for (int i = 0; i < idVersions.length; i++) {
-						String currIdVersion = idVersions[i];
-						int index = currIdVersion.lastIndexOf("_");
-						String currAppId = currIdVersion.substring(0, index);
-						String currAppVersion = currIdVersion.substring(index + 1);
+				if (isNodeOnline) {
+					PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
+					PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
-						boolean currSucceed = false;
+					if (nodePlatformClient != null) {
+						for (int i = 0; i < idVersions.length; i++) {
+							String currIdVersion = idVersions[i];
+							int index = currIdVersion.lastIndexOf("_");
+							String currAppId = currIdVersion.substring(0, index);
+							String currAppVersion = currIdVersion.substring(index + 1);
 
-						if (ACTION__INSTALL.equals(action)) {
-							currSucceed = nodePlatformClient.installProgram(currAppId, currAppVersion, true);
+							boolean currSucceed = false;
 
-						} else if (ACTION__UNINSTALL.equals(action)) {
-							currSucceed = nodePlatformClient.uninstallProgram(currAppId, currAppVersion, true);
+							if (ACTION__INSTALL.equals(action)) {
+								currSucceed = nodePlatformClient.installProgram(currAppId, currAppVersion, true);
 
-						} else if (ACTION__ACTIVATE.equals(action)) {
-							currSucceed = nodePlatformClient.activateProgram(currAppId, currAppVersion, true);
+							} else if (ACTION__UNINSTALL.equals(action)) {
+								currSucceed = nodePlatformClient.uninstallProgram(currAppId, currAppVersion, true);
 
-						} else if (ACTION__DEACTIVATE.equals(action)) {
-							currSucceed = nodePlatformClient.deactivateProgram(currAppId, currAppVersion, true);
+							} else if (ACTION__ACTIVATE.equals(action)) {
+								currSucceed = nodePlatformClient.activateProgram(currAppId, currAppVersion, true);
 
-						} else if (ACTION__START.equals(action)) {
-							currSucceed = nodePlatformClient.startProgram(currAppId, currAppVersion, true);
+							} else if (ACTION__DEACTIVATE.equals(action)) {
+								currSucceed = nodePlatformClient.deactivateProgram(currAppId, currAppVersion, true);
 
-						} else if (ACTION__STOP.equals(action)) {
-							currSucceed = nodePlatformClient.stopProgram(currAppId, currAppVersion, true);
-						}
+							} else if (ACTION__START.equals(action)) {
+								currSucceed = nodePlatformClient.startProgram(currAppId, currAppVersion, true);
 
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
+							} else if (ACTION__STOP.equals(action)) {
+								currSucceed = nodePlatformClient.stopProgram(currAppId, currAppVersion, true);
+							}
+
+							if (currSucceed) {
+								hasSucceed = true;
+							} else {
+								hasFailed = true;
+							}
 						}
 					}
+
+				} else {
+					message = MessageHelper.INSTANCE.add(message, "Node '" + nodeId + "' is offline.");
 				}
+
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
@@ -151,7 +166,7 @@ public class NodeProgramActionServlet extends HttpServlet {
 			actionMessage = "stopped";
 		}
 
-		if (idVersions.length > 0) {
+		if (idVersions.length > 0 && isNodeOnline) {
 			if (succeed) {
 				message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are " + actionMessage + "." : "Program is " + actionMessage + ".");
 			} else {

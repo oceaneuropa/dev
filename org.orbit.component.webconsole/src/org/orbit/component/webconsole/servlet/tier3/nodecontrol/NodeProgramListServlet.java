@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,18 +11,26 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.io.util.DefaultNodeControlClientResolver;
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
+import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
-import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.io.IConfigElement;
+import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.util.ConfigRegistryHelper;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ProgramInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;
+import org.orbit.platform.connector.impl.ProgramInfoImpl;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
@@ -79,8 +89,67 @@ public class NodeProgramListServlet extends HttpServlet {
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				programs = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				// Get node's programs (metadata) from config registry.
+				List<AppManifest> nodeAppManifests = new ArrayList<AppManifest>();
+				IConfigRegistry registry = ConfigRegistryHelper.INSTANCE.getPlatformsRegistry(accessToken, true);
+				if (registry != null) {
+					// IConfigRegistry not being null means CFG service is online and available.
+					// Get the children elements of the "/{platformId}/programs" config element.
+					IConfigElement[] programElements = ConfigRegistryHelper.INSTANCE.getProgramsChildrenElements(registry, nodeId, true);
+
+					for (IConfigElement programElement : programElements) {
+						// String currName = programElement.getName();
+						String currAppId = programElement.getAttribute("id", String.class);
+						String currAppVersion = programElement.getAttribute("version", String.class);
+						// String currType = programElement.getAttribute("type", String.class);
+						// String currDesc = programElement.getAttribute("description", String.class);
+
+						if (currAppId != null && !currAppId.isEmpty()) {
+							// When app version is null or empty, AppStore should return app with latest version.
+							AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, currAppId, currAppVersion);
+							if (appManifest != null) {
+								nodeAppManifests.add(appManifest);
+							}
+						}
+					}
+				}
+
+				boolean isNodeOnline = false;
+				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(accessToken, nodeId);
+				if (nodeIndexItem != null) {
+					isNodeOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
+				}
+				if (isNodeOnline) {
+					// Node is online
+					// All programs shown are based on actual programs installed on the node (returned from the platform of the node).
+					PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
+					programs = PlatformClientsUtil.INSTANCE.getPrograms(platformClientResolver, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+
+				} else {
+					// Node is offline
+					// All programs shown are based on config registry
+					List<ProgramInfo> thePrograms = new ArrayList<ProgramInfo>();
+					for (AppManifest nodeAppManifest : nodeAppManifests) {
+						String currAppId = nodeAppManifest.getAppId();
+						String currAppVersion = nodeAppManifest.getAppVersion();
+						String currAppType = nodeAppManifest.getType();
+						String currAppName = nodeAppManifest.getName();
+						String currAppDesc = nodeAppManifest.getDescription();
+
+						ProgramInfoImpl program = new ProgramInfoImpl();
+						program.setId(currAppId);
+						program.setVersion(currAppVersion);
+						program.setType(currAppType);
+						program.setName(currAppName);
+						program.setDescription(currAppDesc);
+						program.setActivationState(ProgramInfo.ACTIVATION_STATE.UNKNOWN);
+						program.setRuntimeState(ProgramInfo.RUNTIME_STATE.UNKNOWN);
+
+						thePrograms.add(program);
+					}
+
+					programs = thePrograms.toArray(new ProgramInfo[thePrograms.size()]);
+				}
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -106,6 +175,7 @@ public class NodeProgramListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
+		request.setAttribute("id", nodeId);
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}

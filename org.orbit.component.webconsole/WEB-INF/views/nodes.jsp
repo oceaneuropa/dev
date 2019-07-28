@@ -172,11 +172,10 @@
 						<a class="action01" href="javascript:stopNode('<%=id%>')">Stop</a> | 
 						<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> |
 						
+						<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a> |
 						<% if (isOnline) { %>
-							<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a> | 
 							<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeservices?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Services</a>
 						<% } else { %>
-							<a class="action01b">Programs</a> | 
 							<a class="action01b">Services</a>						
 						<% } %>
 						<!-- 

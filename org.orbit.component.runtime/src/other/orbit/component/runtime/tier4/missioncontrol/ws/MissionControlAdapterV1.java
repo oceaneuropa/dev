@@ -12,7 +12,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start MissionControlWSApplication when MissionControl service becomes available and to stop MissionControlWSApplication when MissionControl
@@ -23,14 +23,14 @@ public class MissionControlAdapterV1 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlAdapterV1.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<MissionControlService, MissionControlService> serviceTracker;
 	protected MissionControlWSApplication webServiceApp;
 	protected MissionControlIndexTimer serviceIndexer;
 
-	public MissionControlAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public MissionControlAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public MissionControlService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;

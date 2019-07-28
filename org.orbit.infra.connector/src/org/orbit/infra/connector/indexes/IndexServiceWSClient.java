@@ -366,10 +366,12 @@ public class IndexServiceWSClient extends WSClient {
 	 */
 	public StatusDTO removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws ClientException {
 		if (propertyNames == null) {
-			throw new IllegalArgumentException("propName is null.");
+			// throw new IllegalArgumentException("propName is null.");
+			return null;
 		}
 		if (propertyNames.isEmpty()) {
-			throw new IllegalArgumentException("propValue is empty.");
+			// throw new IllegalArgumentException("propValue is empty.");
+			return null;
 		}
 
 		StatusDTO status = null;

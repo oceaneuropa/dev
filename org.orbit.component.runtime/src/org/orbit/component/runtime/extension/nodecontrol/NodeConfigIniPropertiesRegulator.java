@@ -58,10 +58,16 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 			}
 
 			// Add "orbit.data_cast.url" property if not exist
-			if (!properties.containsKey(InfraConstants.ORBIT_DATACAST_URL)) {
-				String dataCastUrl = InfraServicesPropertiesHandler.getInstance().getDataCastURL();
+			// if (!properties.containsKey(DataTubeConstants.ORBIT_DATACAST_URL)) {
+			// String dataCastUrl = DataTubeServicesPropertiesHandler.getInstance().getDataCastURL();
+			// if (dataCastUrl != null && !dataCastUrl.isEmpty()) {
+			// properties.put(DataTubeConstants.ORBIT_DATACAST_URL, dataCastUrl);
+			// }
+			// }
+			if (!properties.containsKey(ComponentConstants.ORBIT_DATACAST_URL)) {
+				String dataCastUrl = ComponentServicesPropertiesHandler.getInstance().getDataCastURL();
 				if (dataCastUrl != null && !dataCastUrl.isEmpty()) {
-					properties.put(InfraConstants.ORBIT_DATACAST_URL, dataCastUrl);
+					properties.put(ComponentConstants.ORBIT_DATACAST_URL, dataCastUrl);
 				}
 			}
 

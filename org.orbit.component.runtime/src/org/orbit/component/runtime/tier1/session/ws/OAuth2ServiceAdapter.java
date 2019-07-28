@@ -14,7 +14,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
+// import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start OAuth2WSApplication when OAuth2Service becomes available and to stop OAuth2WSApplication when OAuth2Service becomes unavailable.
@@ -22,7 +22,7 @@ import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
  */
 public class OAuth2ServiceAdapter implements LifecycleAware {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<OAuth2Service, OAuth2Service> serviceTracker;
 	protected OAuth2WSApplication webServiceApp;
 	// protected OAuth2ServiceIndexTimer indexTimer;
@@ -31,21 +31,21 @@ public class OAuth2ServiceAdapter implements LifecycleAware {
 	public OAuth2ServiceAdapter() {
 	}
 
-	public OAuth2ServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public OAuth2ServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	public OAuth2Service getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-	}
+//	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
+//		return indexProviderLoadBalancer;
+//	}
+//
+//	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+//	}
 
 	/**
 	 * 

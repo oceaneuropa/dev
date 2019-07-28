@@ -144,7 +144,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, String.format("App '%s' is successfully uploaded.", fileName));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, String.format("App '%s' is uploaded.", fileName));
 			return Response.ok().entity(statusDTO).build();
 		} else {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, String.format("App '%s' is not uploaded.", fileName));
@@ -265,7 +265,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 // }
 //
 // if (succeed) {
-// StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, String.format("App '%s' is successfully uploaded.", fileName));
+// StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, String.format("App '%s' is uploaded.", fileName));
 // return Response.ok().entity(statusDTO).build();
 // } else {
 // StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, String.format("App '%s' is not uploaded.", fileName));

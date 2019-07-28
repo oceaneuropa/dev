@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;

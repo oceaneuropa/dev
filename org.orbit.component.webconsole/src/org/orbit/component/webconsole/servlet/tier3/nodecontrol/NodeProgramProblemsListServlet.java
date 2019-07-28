@@ -14,10 +14,13 @@ import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.io.util.DefaultNodeControlClientResolver;
+import org.orbit.component.io.util.DefaultPlatformClientResolver;
+import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
-import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.Problem;
@@ -78,6 +81,7 @@ public class NodeProgramProblemsListServlet extends HttpServlet {
 		NodeInfo nodeInfo = null;
 		ProgramInfo program = null;
 		Problem[] problems = null;
+		boolean isNodeOnline = false;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && !programId.isEmpty() && !programVersion.isEmpty()) {
 			try {
@@ -86,18 +90,29 @@ public class NodeProgramProblemsListServlet extends HttpServlet {
 				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
-				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
-
-				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
-				PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
-
-				program = nodePlatformClient.getProgram(programId, programVersion);
-				problems = nodePlatformClient.getProgramProblems(programId, programVersion);
-
-				if (program == null) {
-					message = MessageHelper.INSTANCE.add(message, "Program is not found.");
+				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(accessToken, nodeId);
+				if (nodeIndexItem != null) {
+					isNodeOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				}
+
+				if (isNodeOnline) {
+					NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
+					nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
+
+					PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
+					PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+
+					program = nodePlatformClient.getProgram(programId, programVersion);
+					problems = nodePlatformClient.getProgramProblems(programId, programVersion);
+
+					if (program == null) {
+						message = MessageHelper.INSTANCE.add(message, "Program is not found.");
+					}
+
+				} else {
+					message = MessageHelper.INSTANCE.add(message, "Node '" + nodeId + "' is offline.");
+				}
+
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
@@ -119,6 +134,7 @@ public class NodeProgramProblemsListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
+		request.setAttribute("id", nodeId);
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}

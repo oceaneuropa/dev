@@ -124,7 +124,7 @@
 						<a class="action01" href="javascript:deactivateProgram('<%=appId + "_" + appVersion%>')">Deactivate</a> | 
 						<a class="action01" href="javascript:startProgram('<%=appId + "_" + appVersion%>')">Start</a> | 
 						<a class="action01" href="javascript:stopProgram('<%=appId + "_" + appVersion%>')">Stop</a> | 
-						<a class="action01" href="<%=contextRoot%>/domain/nodeprogramproblems?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>&programId=<%=appId%>&programVersion=<%=appVersion%>">Problems (<%=numOfProblems%>)</a>
+						<a class="action01" target="_blank" href="<%=contextRoot%>/domain/nodeprogramproblems?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>&programId=<%=appId%>&programVersion=<%=appVersion%>">Problems (<%=numOfProblems%>)</a>
 					</td>
 				</tr>
 				<%

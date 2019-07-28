@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.datatube.DataTubeClient;
+// import org.orbit.datatube.api.datatube.DataTubeClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -36,10 +36,9 @@ public class ChannelCommandV1 implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
-				new String[] { //
-						"channel_ping", //
-						"channel_send" //
+		props.put("osgi.command.function", new String[] { //
+				"channel_ping", //
+				"channel_send" //
 		});
 		OSGiServiceUtil.register(bundleContext, ChannelCommandV1.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
@@ -57,28 +56,28 @@ public class ChannelCommandV1 implements Annotated {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected DataTubeClient getChannel() throws ClientException {
-//		if (this.connector == null) {
-//			LOG.error("ChannelConnector is not available.");
-//		}
-//		Channels channel = this.connector.getService(this.properties);
-//		if (channel == null) {
-//			LOG.error("Channel is not available.");
-//		}
-//		return channel;
-		return null;
-	}
+	// protected DataTubeClient getChannel() throws ClientException {
+	// if (this.connector == null) {
+	// LOG.error("ChannelConnector is not available.");
+	// }
+	// Channels channel = this.connector.getService(this.properties);
+	// if (channel == null) {
+	// LOG.error("Channel is not available.");
+	// }
+	// return channel;
+	// return null;
+	// }
 
 	@Descriptor("channel_ping")
 	public void channel_ping() throws ClientException {
 		LOG.info("channel_ping()");
-		DataTubeClient channel = getChannel();
-		if (channel == null) {
-			return;
-		}
-
-		boolean result = channel.ping();
-		LOG.info("result = " + result);
+		// DataTubeClient channel = getChannel();
+		// if (channel == null) {
+		// return;
+		// }
+		//
+		// boolean result = channel.ping();
+		// LOG.info("result = " + result);
 	}
 
 	@Descriptor("channel_send")
@@ -88,13 +87,13 @@ public class ChannelCommandV1 implements Annotated {
 			@Descriptor("Message") @Parameter(names = { "-message", "--message" }, absentValue = Parameter.UNSPECIFIED) String message //
 	) throws ClientException {
 		LOG.info("channel_send()");
-		DataTubeClient channel = getChannel();
-		if (channel == null) {
-			return;
-		}
-
-		boolean result = channel.send(channelId, senderId, message);
-		LOG.info("result = " + result);
+		// DataTubeClient channel = getChannel();
+		// if (channel == null) {
+		// return;
+		// }
+		//
+		// boolean result = channel.send(channelId, senderId, message);
+		// LOG.info("result = " + result);
 	}
 
 }

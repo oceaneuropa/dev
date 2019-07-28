@@ -10,7 +10,6 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.runtime.InfraServices;
-import org.orbit.infra.runtime.datatube.service.impl.DataTubeServiceImpl;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
@@ -38,7 +37,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 	protected BundleContext bundleContext;
 	protected IndexServiceImpl indexService;
 	protected ExtensionRegistryServiceImpl extensionRegistryService;
-	protected DataTubeServiceImpl channelService;
+	// protected DataTubeServiceImpl channelService;
 
 	/**
 	 * 
@@ -73,11 +72,10 @@ public class InfraRuntimeCommand implements CommandActivator {
 
 		Hashtable<String, Object> commandProps = new Hashtable<String, Object>();
 		commandProps.put("osgi.command.scope", "infra");
-		commandProps.put("osgi.command.function",
-				new String[] { //
-						"lserver_indexitems", //
-						"startservice", "stopservice" //
-				});
+		commandProps.put("osgi.command.function", new String[] { //
+				"lserver_indexitems", //
+				"startservice", "stopservice" //
+		});
 		OSGiServiceUtil.register(bundleContext, InfraRuntimeCommand.class.getName(), this, commandProps);
 	}
 
@@ -122,7 +120,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 				startIndexService(bundleContext);
 
 			} else if (CHANNEL.equalsIgnoreCase(service)) {
-				startChannelService(this.bundleContext);
+				// startChannelService(this.bundleContext);
 
 			} else {
 				System.err.println("###### Unsupported service name: " + service);
@@ -147,7 +145,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 				stopIndexService(bundleContext);
 
 			} else if (CHANNEL.equalsIgnoreCase(service)) {
-				stopChannelService(this.bundleContext);
+				// stopChannelService(this.bundleContext);
 
 			} else {
 				System.err.println("###### Unsupported service name: " + service);
@@ -170,18 +168,18 @@ public class InfraRuntimeCommand implements CommandActivator {
 		}
 	}
 
-	public void startChannelService(BundleContext bundleContext) {
-		DataTubeServiceImpl channelService = new DataTubeServiceImpl(null);
-		channelService.start(bundleContext);
-		this.channelService = channelService;
-	}
-
-	public void stopChannelService(BundleContext bundleContext) {
-		if (this.channelService != null) {
-			this.channelService.stop(bundleContext);
-			this.channelService = null;
-		}
-	}
+	// public void startChannelService(BundleContext bundleContext) {
+	// DataTubeServiceImpl channelService = new DataTubeServiceImpl(null);
+	// channelService.start(bundleContext);
+	// this.channelService = channelService;
+	// }
+	//
+	// public void stopChannelService(BundleContext bundleContext) {
+	// if (this.channelService != null) {
+	// this.channelService.stop(bundleContext);
+	// this.channelService = null;
+	// }
+	// }
 
 	/**
 	 * <pre>
