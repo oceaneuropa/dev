@@ -260,6 +260,9 @@ public class ExtensionsRegister implements ExtensionListener {
 		String typeId = extension.getTypeId();
 		String extensionId = extension.getId();
 
+		if (platformId == null) {
+			return;
+		}
 		extensionRegistry.removeExtensionItem(platformId, typeId, extensionId);
 	}
 
