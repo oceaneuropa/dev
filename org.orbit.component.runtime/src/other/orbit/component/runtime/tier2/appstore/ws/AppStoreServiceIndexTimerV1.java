@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -30,7 +30,7 @@ public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 
 	@Override
 	public AppStoreService getService() {
-		return OrbitServices.getInstance().getAppStoreService();
+		return ComponentServices.getInstance().getAppStoreService();
 	}
 
 	@Override

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Components :: Runtime
 Bundle-SymbolicName: org.orbit.component.runtime;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.component.runtime.Activator
+Bundle-Activator: org.orbit.component.runtime.ComponentRuntimeActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.auth0.jwt.interfaces,
  com.fasterxml.jackson.core,

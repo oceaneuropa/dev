@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Components :: Connector
 Bundle-SymbolicName: org.orbit.component.connector;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.component.connector.Activator
+Bundle-Activator: org.orbit.component.connector.ComponentConnectorActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.databind,
  javax.ws.rs.client;version="2.0.0",

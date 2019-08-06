@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -25,7 +25,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 
 	@Override
 	public synchronized DomainManagementService getService() {
-		return OrbitServices.getInstance().getDomainService();
+		return ComponentServices.getInstance().getDomainService();
 	}
 
 	@Override

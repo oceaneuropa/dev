@@ -20,7 +20,6 @@ import org.orbit.component.runtime.extension.auth.AuthServiceActivator;
 import org.orbit.component.runtime.extension.auth.AuthServicePropertyTester;
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryRelayActivator;
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryRelayPropertyTester;
-import org.orbit.component.runtime.extension.configregistry.ConfigRegistryServiceActivator;
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryServicePropertyTester;
 import org.orbit.component.runtime.extension.domain.DomainManagementRelayActivator;
 import org.orbit.component.runtime.extension.domain.DomainManagementRelayPropertyTester;
@@ -84,8 +83,6 @@ import org.slf4j.LoggerFactory;
 public class Extensions extends ProgramExtensions {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
-
-	public static Extensions INSTANCE = new Extensions();
 
 	public Extensions() {
 		setBundleId("org.orbit.component.runtime");

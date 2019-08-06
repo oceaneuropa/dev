@@ -7,25 +7,20 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator extends AbstractBundleActivator implements BundleActivator {
+public class ComponentConnectorActivator extends AbstractBundleActivator implements BundleActivator {
 
-	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
+	protected static Logger LOG = LoggerFactory.getLogger(ComponentConnectorActivator.class);
 
-	protected static Activator instance;
-
-	public static Activator getInstance() {
-		return instance;
-	}
+	protected Extensions extensions;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
 		LOG.debug("start()");
 		super.start(bundleContext);
 
-		Activator.instance = this;
-
 		// Register extensions
-		Extensions.INSTANCE.start(bundleContext);
+		this.extensions = new Extensions();
+		this.extensions.start(bundleContext);
 	}
 
 	@Override
@@ -33,9 +28,10 @@ public class Activator extends AbstractBundleActivator implements BundleActivato
 		LOG.debug("stop()");
 
 		// Unregister extensions
-		Extensions.INSTANCE.stop(bundleContext);
-
-		Activator.instance = null;
+		if (this.extensions != null) {
+			this.extensions.stop(bundleContext);
+			this.extensions = null;
+		}
 
 		super.stop(bundleContext);
 	}

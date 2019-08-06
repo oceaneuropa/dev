@@ -10,7 +10,7 @@ import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.common.token.TokenManager;
 import org.orbit.component.runtime.common.token.TokenManagerClusterImpl;
 import org.orbit.component.runtime.common.token.TokenUtil;
@@ -200,7 +200,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		boolean matchUsernamePassword = false;
 		UserAccount userAccount = null;
 		try {
-			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
+			UserRegistryService userRegistryService = ComponentServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
 				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}
@@ -283,7 +283,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		// Step3. Find user account by username
 		UserAccount userAccount = null;
 		try {
-			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
+			UserRegistryService userRegistryService = ComponentServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
 				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}

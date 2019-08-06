@@ -3,13 +3,11 @@ package other.orbit.component.runtime.extensions;
 import java.net.URI;
 import java.util.List;
 
-import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.lb.desc.ConfigRegistryWSApplicationDesc;
 import org.orbit.component.runtime.lb.util.SwitcherUtil;
 import org.orbit.platform.sdk.relaycontrol.WSRelayControlImpl;
 import org.origin.common.extensions.Extension;
 import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
@@ -54,7 +52,7 @@ public class ConfigRegistryRelayControl extends WSRelayControlImpl {
 		// Unregister URL provider extension
 		Extension urlProviderExtension = this.extensionMap.remove(url);
 		if (urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(urlProviderExtension);
+			// Extensions.INSTANCE.removeExtension(urlProviderExtension);
 		}
 
 		// Stop relay ws app

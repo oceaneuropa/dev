@@ -52,10 +52,10 @@
 				</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Type</th>
-				<th class="th1" width="100">Properties</th>
+				<th class="th1" width="250">Properties</th>
 				<th class="th1" width="100">Date Created</th>
 				<th class="th1" width="100">Data Modified</th>
-				<th class="th1" width="150">Actions</th>
+				<th class="th1" width="200">Actions</th>
 			</tr>
 			<%
 				if (configRegs.length == 0) {
@@ -87,7 +87,9 @@
 			%>
 			<tr>
 				<td class="td1"><input type="checkbox" name="configRegistryId" value="<%=currId%>"></td>
-				<td class="td2"><%=currName%></td>
+				<td class="td2">
+					<a href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=currId%>">[<%=currName%>]</a>
+				</td>
 				<td class="td1"><%=currType%></td>
 				<td class="td2"><%=currPropStr%></td>
 				<td class="td1"><%=currDateCreatedStr%></td>

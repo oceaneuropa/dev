@@ -5,7 +5,6 @@
 <%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.infra.api.*"%>
-<%@ page import="org.orbit.infra.api.datacast.*"%>
 <%@ page import="org.orbit.infra.io.*"%>
 <%@ page import="org.orbit.infra.webconsole.*"%>
 <%
@@ -97,10 +96,10 @@
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
 				<th class="th1" width="100">Name</th>
-				<th class="th1" width="150">Attributes</th>
+				<th class="th1" width="250">Attributes</th>
 				<th class="th1" width="100">Date Created</th>
 				<th class="th1" width="100">Data Modified</th>
-				<th class="th1" width="100">Actions</th>
+				<th class="th1" width="250">Actions</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -116,23 +115,69 @@
 						long currDateCreated = configElement.getDateCreated();
 						long currDateModified = configElement.getDateModified();
 						Map<String, Object> currAttrs = configElement.getAttributes();
+						if (currAttrs == null) {
+							currAttrs = new HashMap<String, Object>();
+						}
 
 						String currDateCreatedStr = DateUtil.toString(currDateCreated, DateUtil.SIMPLE_DATE_FORMAT2);
 						String currDateModifiedStr = DateUtil.toString(currDateModified, DateUtil.SIMPLE_DATE_FORMAT2);
 
 						String currAttrStr = "";
-						if (currAttrs != null) {
-							for(Iterator<String> itor = currAttrs.keySet().iterator(); itor.hasNext(); ) {
-								String currAttrName = itor.next();
-								Object currAttrValue = currAttrs.get(currAttrName);
-								currAttrStr += currAttrName + "=" + currAttrValue + "<BR/>";
-							}
+						for(Iterator<String> itor = currAttrs.keySet().iterator(); itor.hasNext(); ) {
+							String currAttrName = itor.next();
+							Object currAttrValue = currAttrs.get(currAttrName);
+							currAttrStr += currAttrName + "=" + currAttrValue + "<BR/>";
 						}
 			%>
 			<tr>
 				<td class="td1"><input type="checkbox" name="elementId" value="<%=currId%>"></td>
-				<td class="td2"><%=currName%></td>
-				<td class="td2"><%=currAttrStr%></td>
+				<td class="td2">
+					<a href="<%=contextRoot%>/admin/configelements?configRegistryId=<%=configRegistryId%>&parentElementId=<%=currId%>"><%=currName%></a>
+				</td>
+				<td class="td2">
+
+				<%if (!currAttrs.isEmpty()) {%>
+				<table class="main_table01">
+				<%
+						for(Iterator<String> itor = currAttrs.keySet().iterator(); itor.hasNext(); ) {
+							String currAttrName = itor.next();
+							Object currAttrValue = currAttrs.get(currAttrName);
+
+							Object attrValueForEdit = currAttrValue;
+
+							int rowNum = 1;
+							if (currAttrValue instanceof String) {
+								String valueString = (String) currAttrValue;
+								if (valueString.contains("\r\n")) {
+									String[] array = valueString.split("\r\n");
+									rowNum = array.length;
+
+									if (valueString.endsWith("\r\n")) {
+										rowNum += 1;
+									}
+									rowNum += 1;
+
+									attrValueForEdit = valueString.replace("\r\n", "\\r\\n");
+								}
+							}
+				%>
+				<tr>
+					<td class="td2"  width="40%">
+						<%=currAttrName%>
+					</td>
+					<td class="td2"  width="60%">
+						<% if (rowNum > 1) { %>
+							<textarea rows="<%=rowNum%>" cols="40" readonly><%=currAttrValue%></textarea>
+						<% } else { %>
+							<%=currAttrValue%>
+						<% } %>
+					</td>
+				</tr>
+				<% } %>
+				</table>
+				<% } %>
+
+				</td>
 				<td class="td1"><%=currDateCreatedStr%></td>
 				<td class="td1"><%=currDateModifiedStr%></td>
 				<td class="td1">

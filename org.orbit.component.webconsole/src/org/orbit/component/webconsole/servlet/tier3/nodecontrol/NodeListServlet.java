@@ -1,9 +1,7 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -89,7 +87,7 @@ public class NodeListServlet extends HttpServlet {
 				if (nodeInfos != null) {
 					nodeIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
-					List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
+					// List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
 					// List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();
 					// List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
 

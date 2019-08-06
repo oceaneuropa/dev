@@ -53,7 +53,7 @@ public class UserRegistryRelayControl extends WSRelayControlImpl {
 		// Unregister URL provider extension
 		Extension urlProviderExtension = this.extensionMap.remove(url);
 		if (urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(urlProviderExtension);
+			// Extensions.INSTANCE.removeExtension(urlProviderExtension);
 		}
 
 		// Stop relay ws app

@@ -95,7 +95,7 @@ public class NodeProgramListServlet extends HttpServlet {
 				if (registry != null) {
 					// IConfigRegistry not being null means CFG service is online and available.
 					// Get the children elements of the "/{platformId}/programs" config element.
-					IConfigElement[] programElements = ConfigRegistryHelper.INSTANCE.getProgramsChildrenElements(registry, nodeId, true);
+					IConfigElement[] programElements = ConfigRegistryHelper.INSTANCE.getProgramsElementChildren(registry, nodeId, true);
 
 					for (IConfigElement programElement : programElements) {
 						// String currName = programElement.getName();

@@ -3,7 +3,7 @@ package other.orbit.component.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.Activator;
+import org.orbit.component.runtime.ComponentRuntimeActivator;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;

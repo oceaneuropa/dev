@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -30,7 +30,7 @@ public class UserRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<Ind
 
 	@Override
 	public UserRegistryService getService() {
-		return OrbitServices.getInstance().getUserRegistryService();
+		return ComponentServices.getInstance().getUserRegistryService();
 	}
 
 	@Override

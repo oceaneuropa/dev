@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -24,7 +24,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 
 	@Override
 	public synchronized NodeControlService getService() {
-		return OrbitServices.getInstance().getTransferAgentService();
+		return ComponentServices.getInstance().getTransferAgentService();
 	}
 
 	@Override

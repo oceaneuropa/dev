@@ -62,22 +62,17 @@ $(document).on("click", "#okDeleteConfigElements", function() {
 	for (var i = 0; i < checkboxes.length; i++) {
 		if (checkboxes[i].checked) {
 			var elementId = checkboxes[i].value;
-
-			var elementIdField = document.createElement("input");
-			elementIdField.setAttribute("type", "hidden");
-			elementIdField.setAttribute("name", "elementId");
-			elementIdField.setAttribute("value", elementId);
-			form.appendChild(elementIdField);
+			if (elementId != null && elementId != "") {
+				var elementIdField = document.createElement("input");
+				elementIdField.setAttribute("type", "hidden");
+				elementIdField.setAttribute("name", "elementId");
+				elementIdField.setAttribute("value", elementId);		
+				form.appendChild(elementIdField);
+			}
 		}
 	}
-
-	// javascript:document.getElementById('install_form').submit();
-	// document.getElementById('install_form').submit();
 	form.submit();
 	document.getElementById('deleteConfigElementsDialog').close();
-
-	// var form = document.getElementById("main_list");
-	// form.submit();
 });
 
 $(document).on("click", "#cancelDeleteConfigElements", function() {

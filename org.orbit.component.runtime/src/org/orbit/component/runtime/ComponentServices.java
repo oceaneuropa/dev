@@ -26,18 +26,18 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OrbitServices {
+public class ComponentServices {
 
-	protected static Logger LOG = LoggerFactory.getLogger(OrbitServices.class);
+	protected static Logger LOG = LoggerFactory.getLogger(ComponentServices.class);
 
 	private static Object lock = new Object[0];
-	private static OrbitServices instance = null;
+	private static ComponentServices instance = null;
 
-	public static OrbitServices getInstance() {
+	public static ComponentServices getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
 				if (instance == null) {
-					instance = new OrbitServices();
+					instance = new ComponentServices();
 				}
 			}
 		}

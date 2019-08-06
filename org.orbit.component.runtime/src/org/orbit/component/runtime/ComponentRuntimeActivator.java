@@ -5,33 +5,22 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator implements BundleActivator {
+public class ComponentRuntimeActivator implements BundleActivator {
 
-	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
+	protected static Logger LOG = LoggerFactory.getLogger(ComponentRuntimeActivator.class);
 
-	protected static BundleContext context;
-	protected static Activator instance;
-
-	public static BundleContext getBundleContext() {
-		return context;
-	}
-
-	public static Activator getInstance() {
-		return instance;
-	}
+	protected Extensions extensions;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.debug("start()");
 
-		Activator.context = bundleContext;
-		Activator.instance = this;
-
 		// Register extensions
-		Extensions.INSTANCE.start(bundleContext);
+		this.extensions = new Extensions();
+		this.extensions.start(bundleContext);
 
 		// Start service adapters
-		OrbitServices.getInstance().start(bundleContext);
+		ComponentServices.getInstance().start(bundleContext);
 	}
 
 	@Override
@@ -39,16 +28,27 @@ public class Activator implements BundleActivator {
 		LOG.debug("stop()");
 
 		// Stop service adapters
-		OrbitServices.getInstance().stop(bundleContext);
+		ComponentServices.getInstance().stop(bundleContext);
 
 		// Unregister extensions
-		Extensions.INSTANCE.stop(bundleContext);
-
-		Activator.instance = null;
-		Activator.context = null;
+		if (this.extensions != null) {
+			this.extensions.stop(bundleContext);
+			this.extensions = null;
+		}
 	}
 
 }
+
+// protected static BundleContext context;
+// public static BundleContext getBundleContext() {
+// return context;
+// }
+
+// Activator.context = bundleContext;
+// Activator.instance = this;
+
+// Activator.instance = null;
+// Activator.context = null;
 
 // protected ServicesCommand servicesCommand;
 // protected DomainManagementCommand domainManagementCommand;

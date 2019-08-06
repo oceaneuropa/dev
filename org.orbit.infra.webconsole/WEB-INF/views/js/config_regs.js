@@ -64,11 +64,13 @@ $(document).on("click", "#okDeleteConfigRegs", function() {
 		if (checkboxes[i].checked) {
 			var configRegistryId = checkboxes[i].value;
 
-			var configRegistryIdField = document.createElement("input");
-			configRegistryIdField.setAttribute("type", "hidden");
-			configRegistryIdField.setAttribute("name", "configRegistryId");
-			configRegistryIdField.setAttribute("value", configRegistryId);
-			form.appendChild(configRegistryIdField);
+			if (configRegistryId != null && configRegistryId != "") {
+				var configRegistryIdField = document.createElement("input");
+				configRegistryIdField.setAttribute("type", "hidden");
+				configRegistryIdField.setAttribute("name", "configRegistryId");
+				configRegistryIdField.setAttribute("value", configRegistryId);
+				form.appendChild(configRegistryIdField);
+			}
 		}
 	}
 

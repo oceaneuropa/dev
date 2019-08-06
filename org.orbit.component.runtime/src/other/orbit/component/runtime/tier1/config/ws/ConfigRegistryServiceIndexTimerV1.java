@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.ComponentServices;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceV0;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -30,7 +30,7 @@ public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<I
 
 	@Override
 	public ConfigRegistryServiceV0 getService() {
-		return OrbitServices.getInstance().getConfigRegistryService();
+		return ComponentServices.getInstance().getConfigRegistryService();
 	}
 
 	@Override
