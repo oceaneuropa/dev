@@ -1,6 +1,7 @@
 Download from:
 http://www.powerball.com/powerball/winnums-text.txt (forbidden in 12/2018)
 https://www.calottery.com/play/draw-games/powerball/winning-numbers (available in 12/2018)
+https://www.calottery.com/play/draw-games/powerball/winning-numbers (available in 09/2019)
 
 02/10/2018
 ----------------------------------------------------------------------------------------------------------------
