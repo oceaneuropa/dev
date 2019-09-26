@@ -15,14 +15,14 @@ import org.origin.common.util.RangeConstants;
 import org.origin.common.util.Ranges;
 import org.origin.common.util.RangesUtil;
 import org.origin.common.util.StatUtil;
-import org.plutus.lottery.common.Comparators;
-import org.plutus.lottery.powerball.Analysis;
-import org.plutus.lottery.powerball.AnalysisContext;
-import org.plutus.lottery.powerball.AnalysisRegistry;
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Analysis;
+import org.plutus.lottery.common.AnalysisContext;
+import org.plutus.lottery.common.AnalysisImpl;
+import org.plutus.lottery.common.AnalysisRegistry;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.AnalysisImpl;
-import org.plutus.lottery.powerball.report.CombinationReport;
+import org.plutus.lottery.report.CombinationReport;
+import org.plutus.lottery.util.Comparators;
 
 public class A24_RepetitionAnalysis extends AnalysisImpl implements Analysis {
 

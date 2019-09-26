@@ -12,7 +12,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.DrawReaderV2;
+import org.plutus.lottery.util.DrawReaderV2;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A21_OddEvenAnalysisTester extends AbstractAnalysisTester {

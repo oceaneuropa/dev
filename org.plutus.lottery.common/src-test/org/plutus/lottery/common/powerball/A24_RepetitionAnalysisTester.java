@@ -16,8 +16,8 @@ import org.origin.common.util.Range;
 import org.origin.common.util.StatUtil;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.DrawReaderV2;
-import org.plutus.lottery.powerball.report.CombinationReport;
+import org.plutus.lottery.report.CombinationReport;
+import org.plutus.lottery.util.DrawReaderV2;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A24_RepetitionAnalysisTester extends AbstractAnalysisTester {

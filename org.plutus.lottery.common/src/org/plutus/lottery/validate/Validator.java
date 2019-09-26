@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Draw;
 
 public class Validator {
 

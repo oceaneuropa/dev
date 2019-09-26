@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.origin.common.util.StatUtil;
-import org.plutus.lottery.powerball.Analysis;
-import org.plutus.lottery.powerball.AnalysisContext;
-import org.plutus.lottery.powerball.AnalysisRegistry;
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Analysis;
+import org.plutus.lottery.common.AnalysisContext;
+import org.plutus.lottery.common.AnalysisImpl;
+import org.plutus.lottery.common.AnalysisRegistry;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.AnalysisImpl;
 
 public class A11_MinMaxAvgAnalysis extends AnalysisImpl implements Analysis {
 

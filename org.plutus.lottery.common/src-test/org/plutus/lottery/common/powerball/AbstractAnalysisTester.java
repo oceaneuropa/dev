@@ -6,16 +6,16 @@ import java.util.List;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.plutus.lottery.powerball.AnalysisContext;
-import org.plutus.lottery.powerball.AnalysisRegistry;
-import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.powerball.DrawHelper;
-import org.plutus.lottery.powerball.DrawReader;
+import org.plutus.lottery.common.AnalysisContext;
+import org.plutus.lottery.common.AnalysisRegistry;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
 import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
 import org.plutus.lottery.powerball.analysis.A24_RepetitionAnalysis;
+import org.plutus.lottery.util.DrawHelper;
+import org.plutus.lottery.util.DrawReader;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractAnalysisTester {
@@ -43,6 +43,7 @@ public abstract class AbstractAnalysisTester {
 		A21_OddEvenAnalysis.INSTANCE.register();
 		A24_RepetitionAnalysis.INSTANCE.register();
 		A22_SumAnalysis.INSTANCE.register();
+		A23_HotColdAnalysis.INSTANCE.register();
 		A23_HotColdAnalysis.INSTANCE.register();
 	}
 

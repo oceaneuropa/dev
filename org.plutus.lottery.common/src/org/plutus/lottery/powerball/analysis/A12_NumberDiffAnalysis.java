@@ -4,13 +4,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.plutus.lottery.powerball.Analysis;
-import org.plutus.lottery.powerball.AnalysisContext;
-import org.plutus.lottery.powerball.AnalysisRegistry;
-import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.powerball.DrawHelper;
+import org.plutus.lottery.common.Analysis;
+import org.plutus.lottery.common.AnalysisContext;
+import org.plutus.lottery.common.AnalysisImpl;
+import org.plutus.lottery.common.AnalysisRegistry;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.AnalysisImpl;
+import org.plutus.lottery.util.DrawHelper;
 
 public class A12_NumberDiffAnalysis extends AnalysisImpl implements Analysis {
 

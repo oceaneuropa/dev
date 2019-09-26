@@ -1,7 +1,7 @@
 package org.plutus.lottery.validate;
 
 import org.origin.common.util.StatUtil;
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Draw;
 
 public class AvgToMidPercentCondition extends Condition<Integer> {
 

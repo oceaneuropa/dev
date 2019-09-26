@@ -12,11 +12,11 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.origin.common.util.SystemUtils;
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.DrawReaderV2;
-import org.plutus.lottery.powerball.report.NumberReport;
-import org.plutus.lottery.powerball.report.NumberReports;
+import org.plutus.lottery.report.NumberReport;
+import org.plutus.lottery.report.NumberReports;
+import org.plutus.lottery.util.DrawReaderV2;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A23_HotColdAnalysisTester extends AbstractAnalysisTester {

@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.origin.common.util.BigDecimalUtil;
-import org.plutus.lottery.powerball.Analysis;
-import org.plutus.lottery.powerball.AnalysisContext;
-import org.plutus.lottery.powerball.AnalysisRegistry;
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Analysis;
+import org.plutus.lottery.common.AnalysisContext;
+import org.plutus.lottery.common.AnalysisImpl;
+import org.plutus.lottery.common.AnalysisRegistry;
+import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.AnalysisImpl;
 
 public class A13_RangeNormalizationAnalysis extends AnalysisImpl implements Analysis {
 

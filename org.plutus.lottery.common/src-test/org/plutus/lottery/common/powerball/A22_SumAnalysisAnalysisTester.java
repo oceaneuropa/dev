@@ -15,7 +15,7 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.util.BigDecimalUtil;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.impl.DrawReaderV2;
+import org.plutus.lottery.util.DrawReaderV2;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {

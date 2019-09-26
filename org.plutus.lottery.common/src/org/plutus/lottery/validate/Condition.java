@@ -1,6 +1,6 @@
 package org.plutus.lottery.validate;
 
-import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.common.Draw;
 
 public abstract class Condition<T extends Comparable<T>> {
 
