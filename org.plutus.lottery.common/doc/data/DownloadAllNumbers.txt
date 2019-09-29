@@ -3,6 +3,7 @@ Download Winning Numbers from www.calottery.com on 9/24/2019 4:31:40 PM for POWE
 Draw #      Draw Date           Number_1    Number_2    Number_3    Number_4    Number_5    Powerball
 ------  ------------------      --------    --------    --------    --------    --------    ---------
 
+675     Wed. Sep 25, 2019          37         43         44            45          53          25
 674     Sat. Sep 21, 2019          1          9          22          36          68          22     
 673     Wed. Sep 18, 2019          14          19          39          47          51          15     
 672     Sat. Sep 14, 2019          11          27          31          36          67          11     

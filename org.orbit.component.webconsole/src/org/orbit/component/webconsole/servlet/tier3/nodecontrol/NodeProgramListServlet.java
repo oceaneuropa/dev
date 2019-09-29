@@ -105,10 +105,14 @@ public class NodeProgramListServlet extends HttpServlet {
 						// String currDesc = programElement.getAttribute("description", String.class);
 
 						if (currAppId != null && !currAppId.isEmpty()) {
-							// When app version is null or empty, AppStore should return app with latest version.
-							AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, currAppId, currAppVersion);
-							if (appManifest != null) {
-								nodeAppManifests.add(appManifest);
+							try {
+								// When app version is null or empty, AppStore should return app with latest version.
+								AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, currAppId, currAppVersion);
+								if (appManifest != null) {
+									nodeAppManifests.add(appManifest);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
 						}
 					}

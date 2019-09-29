@@ -1,5 +1,9 @@
 Draw #      Draw Date           Number_1    Number_2    Number_3    Number_4    Number_5    Powerball
 
+676     	Sat. Sep 28, 2019        17          24          46          48          63            4
+676     	Sat. Sep 28, 2019         7          16          31          36          65            7
+676     	Sat. Sep 28, 2019        11          20          42          52          56            8
+
 # 675     	Wed. Sep 25, 2019         7          20          32          45          59            6
 # 675     	Wed. Sep 25, 2019         8          21          33          46          62            7
 # 675     	Wed. Sep 25, 2019         9          22          34          47          63            8
