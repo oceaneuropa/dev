@@ -3,7 +3,10 @@ package org.orbit.infra.api.indexes;
 import java.util.Date;
 import java.util.Map;
 
-public interface IndexItem {
+import org.origin.common.adapter.IAdaptable;
+import org.origin.common.model.TransientPropertyAware;
+
+public interface IndexItem extends TransientPropertyAware, IAdaptable {
 
 	Integer getIndexItemId();
 

@@ -69,12 +69,12 @@ public class IndexItemHelper {
 		Map<String, Object> metadataProperties = null;
 		if (indexItem != null) {
 			String serviceURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
-			if (serviceURL != null) {
-				if (!serviceURL.endsWith("/")) {
-					serviceURL += "/";
-				}
-				serviceURL += "metadata";
-			}
+			// if (serviceURL != null) {
+			// if (!serviceURL.endsWith("/")) {
+			// serviceURL += "/";
+			// }
+			// serviceURL += "metadata";
+			// }
 
 			Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put(WSClientConstants.URL, serviceURL);
@@ -94,6 +94,38 @@ public class IndexItemHelper {
 			metadataProperties = new HashMap<String, Object>();
 		}
 		return metadataProperties;
+	}
+
+	/**
+	 * @param indexItem
+	 * @return
+	 */
+	public String getMetadataRaw(IndexItem indexItem) {
+		String metadataRaw = null;
+		if (indexItem != null) {
+			String serviceURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
+			// if (serviceURL != null) {
+			// if (!serviceURL.endsWith("/")) {
+			// serviceURL += "/";
+			// }
+			// serviceURL += "metadata";
+			// }
+
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put(WSClientConstants.URL, serviceURL);
+			try {
+				WSClientConfiguration config = WSClientConfiguration.create(properties);
+				WSClient wsClient = new WSClient(config);
+				metadataRaw = wsClient.getMetadataRaw();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (metadataRaw == null) {
+			metadataRaw = "";
+		}
+		return metadataRaw;
 	}
 
 	/**

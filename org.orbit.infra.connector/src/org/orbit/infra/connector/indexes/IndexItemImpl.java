@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
+import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.model.TransientPropertySupport;
 
 public class IndexItemImpl implements IndexItem {
 
@@ -15,6 +17,9 @@ public class IndexItemImpl implements IndexItem {
 	protected Map<String, Object> properties;
 	protected Date createTime;
 	protected Date updateTime;
+
+	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -107,6 +112,38 @@ public class IndexItemImpl implements IndexItem {
 	@Override
 	public String toString() {
 		return "IndexItemImpl [indexItemId=" + this.indexItemId + ", indexProviderId=" + this.indexProviderId + ", type=" + this.type + ", name=" + this.name + ", createTime=" + this.createTime + ", updateTime=" + this.updateTime + "]";
+	}
+
+	/** TransientPropertyAware */
+	@Override
+	public <T> T getTransientProperty(String key) {
+		return this.transientPropertySupport.getTransientProperty(key);
+	}
+
+	@Override
+	public <T> T setTransientProperty(String key, T value) {
+		return this.transientPropertySupport.setTransientProperty(key, value);
+	}
+
+	@Override
+	public <T> T removeTransientProperty(String key) {
+		return this.transientPropertySupport.removeTransientProperty(key);
+	}
+
+	/** IAdaptable */
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }
