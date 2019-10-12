@@ -71,8 +71,8 @@ public class InfraRuntimeCommand implements CommandActivator {
 		// }
 
 		Hashtable<String, Object> commandProps = new Hashtable<String, Object>();
-		commandProps.put("osgi.command.scope", "infra");
-		commandProps.put("osgi.command.function", new String[] { //
+		commandProps.put(COMMAND_SCOPE, "infra");
+		commandProps.put(COMMAND_FUNCTION, new String[] { //
 				"lserver_indexitems", //
 				"startservice", "stopservice" //
 		});

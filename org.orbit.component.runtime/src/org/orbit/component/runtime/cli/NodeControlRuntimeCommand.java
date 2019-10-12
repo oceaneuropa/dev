@@ -51,8 +51,8 @@ public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
+		props.put(COMMAND_SCOPE, getScheme());
+		props.put(COMMAND_FUNCTION, new String[] { //
 				// node
 				"lnodes", "lnode", "create_node", "delete_node", "set_node_attr", "remove_node_attr", "start_node", "stop_node" //
 		});

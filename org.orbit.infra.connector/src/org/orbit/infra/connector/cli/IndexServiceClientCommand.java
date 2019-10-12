@@ -47,8 +47,8 @@ public class IndexServiceClientCommand implements Annotated, CommandActivator {
 		update(configProps);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { //
+		props.put(COMMAND_SCOPE, "orbit");
+		props.put(COMMAND_FUNCTION, new String[] { //
 				"index_service_ping", //
 				"index_service_echo" //
 		});

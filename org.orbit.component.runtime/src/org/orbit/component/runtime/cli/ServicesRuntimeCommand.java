@@ -68,8 +68,8 @@ public class ServicesRuntimeCommand implements CommandActivator {
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { "startservice", "stopservice" });
+		props.put(COMMAND_SCOPE, "orbit");
+		props.put(COMMAND_FUNCTION, new String[] { "startservice", "stopservice" });
 		OSGiServiceUtil.register(bundleContext, ServicesRuntimeCommand.class.getName(), this, props);
 
 		// Get the available components

@@ -32,8 +32,8 @@ public class AuthClientCommand implements CommandActivator {
 		System.out.println("AuthCommand.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
+		props.put(COMMAND_SCOPE, "orbit");
+		props.put(COMMAND_FUNCTION,
 				new String[] { //
 						"auth_ping", //
 						"auth_echo", //

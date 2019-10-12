@@ -16,7 +16,7 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.orbit.spirit.model.userprograms.UserProgram;
 import org.orbit.spirit.model.userprograms.UserPrograms;
-import org.orbit.spirit.resource.util.UseProgramsHelper;
+import org.orbit.spirit.resource.util.UserProgramsHelper;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
@@ -66,13 +66,13 @@ public class UserProgramAddServlet extends HttpServlet {
 
 							UserPrograms userPrograms = null;
 							try {
-								userPrograms = UseProgramsHelper.INSTANCE.getUserPrograms(accessToken);
+								userPrograms = UserProgramsHelper.INSTANCE.getUserPrograms(accessToken);
 
 							} catch (Exception e) {
 								message = MessageHelper.INSTANCE.add(message, "Cannot getUserPrograms: '" + e.getMessage() + "'.");
 							}
 							if (userPrograms == null) {
-								userPrograms = UseProgramsHelper.INSTANCE.createUserPrograms(accessToken);
+								userPrograms = UserProgramsHelper.INSTANCE.createUserPrograms(accessToken);
 							}
 							if (userPrograms == null) {
 								message = MessageHelper.INSTANCE.add(message, "UserPrograms is not found.");
@@ -91,7 +91,7 @@ public class UserProgramAddServlet extends HttpServlet {
 								doSave = true;
 							}
 							if (doSave) {
-								UseProgramsHelper.INSTANCE.saveUserPrograms(accessToken, userPrograms);
+								UserProgramsHelper.INSTANCE.saveUserPrograms(accessToken, userPrograms);
 								succeed = true;
 							}
 						}

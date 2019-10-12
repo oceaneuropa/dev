@@ -52,8 +52,8 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 	 */
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
+		props.put(CommandActivator.COMMAND_SCOPE, getScheme());
+		props.put(CommandActivator.COMMAND_FUNCTION, new String[] { //
 				"ping", "echo", //
 				"platform_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
 		});

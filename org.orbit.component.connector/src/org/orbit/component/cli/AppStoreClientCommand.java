@@ -30,8 +30,8 @@ public class AppStoreClientCommand implements Annotated, CommandActivator {
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { "list_apps" });
+		props.put(COMMAND_SCOPE, "orbit");
+		props.put(COMMAND_FUNCTION, new String[] { "list_apps" });
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		// PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);

@@ -40,8 +40,8 @@ public class UserRegistryClientCommand implements CommandActivator {
 		LOG.info("start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { //
+		props.put(COMMAND_SCOPE, "orbit");
+		props.put(COMMAND_FUNCTION, new String[] { //
 				"userregistry_ping", //
 				"userregistry_echo", //
 				"list_users", //

@@ -55,8 +55,8 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
+		props.put(COMMAND_SCOPE, getScheme());
+		props.put(COMMAND_FUNCTION, new String[] { //
 				// machine configurations
 				"list_machines", "list_machine", "add_machine", "update_machine", "remove_machine", //
 

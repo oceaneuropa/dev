@@ -88,8 +88,8 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 
 	public void start(BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
+		props.put(COMMAND_SCOPE, getScheme());
+		props.put(COMMAND_FUNCTION, new String[] { //
 				// show available services
 				"old_lservices", //
 		});

@@ -44,8 +44,8 @@ public class MissionControlClientCommand extends ServiceClientCommand implements
 
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
+		props.put(CommandActivator.COMMAND_SCOPE, getScheme());
+		props.put(CommandActivator.COMMAND_FUNCTION, new String[] { //
 				"ping", //
 				"echo", "level", //
 				"list_missions", "get_mission", "mission_exist", "create_mission", "delete_mission", "start_mission", "stop_mission", "mission_status"//

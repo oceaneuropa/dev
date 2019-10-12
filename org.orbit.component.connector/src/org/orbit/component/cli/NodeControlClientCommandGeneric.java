@@ -36,8 +36,8 @@ public class NodeControlClientCommandGeneric implements CommandActivator {
 
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { "ping", "echo", "level", "list_nodes" });
+		props.put(COMMAND_SCOPE, getScheme());
+		props.put(COMMAND_FUNCTION, new String[] { "ping", "echo", "level", "list_nodes" });
 
 		OSGiServiceUtil.register(bundleContext, NodeControlClientCommandGeneric.class.getName(), this, props);
 	}
