@@ -2,21 +2,21 @@ package org.plutus.lottery.render.render;
 
 import org.origin.svg.Shape;
 import org.origin.svg.adapter.Notification;
-import org.origin.svg.widgets.render.FigureFactoryRegistry;
-import org.origin.svg.widgets.render.TypedFigureFactory;
+import org.origin.svg.widgets.render.FigureHandlerRegistry;
+import org.origin.svg.widgets.render.TypedFigureHandler;
 import org.plutus.lottery.powerball.PBConstants;
 import org.plutus.lottery.render.control.PBPart;
 
-public class PBFigureFactory extends TypedFigureFactory<PBPart> {
+public class PBFigureFactory extends TypedFigureHandler<PBPart> {
 
 	public static PBFigureFactory INSTANCE = new PBFigureFactory();
 
 	public static void register() {
-		FigureFactoryRegistry.register(INSTANCE);
+		FigureHandlerRegistry.register(INSTANCE);
 	}
 
 	public static void unregister() {
-		FigureFactoryRegistry.unregister(INSTANCE);
+		FigureHandlerRegistry.unregister(INSTANCE);
 	}
 
 	public PBFigureFactory() {

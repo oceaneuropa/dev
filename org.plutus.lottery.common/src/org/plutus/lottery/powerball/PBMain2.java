@@ -15,10 +15,10 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
-import org.origin.svg.render.widget.WidgetFigureFactory;
+import org.origin.svg.render.widget.WidgetFigureHandler;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.render.FigureFactoryRegistry;
+import org.origin.svg.widgets.render.FigureHandlerRegistry;
 import org.plutus.lottery.common.AnalysisContext;
 import org.plutus.lottery.common.AnalysisRegistry;
 import org.plutus.lottery.common.Draw;
@@ -42,7 +42,7 @@ import org.plutus.lottery.util.DrawReaderV2;
 public class PBMain2 {
 
 	static {
-		WidgetFigureFactory.register();
+		WidgetFigureHandler.register();
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
 		A12_NumberDiffAnalysis.INSTANCE.register();
 		A13_RangeNormalizationAnalysis.INSTANCE.register();
@@ -113,7 +113,7 @@ public class PBMain2 {
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
-			Shape rootShape = FigureFactoryRegistry.getFactory().createFigure(display);
+			Shape rootShape = FigureHandlerRegistry.getFigureHandler().createFigure(display);
 			// Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
 			SVGStringWriter writer = new SVGStringWriter(rootShape);
 

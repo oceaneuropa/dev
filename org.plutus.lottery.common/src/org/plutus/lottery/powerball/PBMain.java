@@ -18,11 +18,11 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
-import org.origin.svg.render.widget.WidgetFigureFactory;
+import org.origin.svg.render.widget.WidgetFigureHandler;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.render.FigureFactoryRegistry;
+import org.origin.svg.widgets.render.FigureHandlerRegistry;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.render.control.DrawPart;
 import org.plutus.lottery.render.control.LinkPart;
@@ -40,7 +40,7 @@ public class PBMain {
 	protected static Map<Integer, String> indexToPredictedLinkStrokeColor = new HashMap<Integer, String>();
 
 	static {
-		WidgetFigureFactory.register();
+		WidgetFigureHandler.register();
 		DrawFigureFactory.register();
 		PBFigureFactory.register();
 		NumberFigureFactory.register();
@@ -120,7 +120,7 @@ public class PBMain {
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
-			Shape rootShape = FigureFactoryRegistry.getFactory().createFigure(display);
+			Shape rootShape = FigureHandlerRegistry.getFigureHandler().createFigure(display);
 			// Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
 			SVGStringWriter writer = new SVGStringWriter(rootShape);
 
