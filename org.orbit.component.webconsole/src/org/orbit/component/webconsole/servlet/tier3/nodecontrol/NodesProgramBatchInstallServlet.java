@@ -12,13 +12,13 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -78,7 +78,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						continue;
 					}
 
-					IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (autoStartNode) {
 						boolean doStartNode = false;
 						if (nodeIndexItem == null) {
@@ -91,7 +91,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						}
 						if (doStartNode) {
 							// start current node, before installing apps on it.
-							boolean isStarted = ComponentClientsUtil.NodeControl.startNode(nodeControlClient, nodeId, options);
+							boolean isStarted = NodeUtil.startNode(nodeControlClient, nodeId, options);
 							if (!isStarted) {
 								message = MessageHelper.INSTANCE.add(message, "Cannot start node. nodeId='" + nodeId + "'.");
 								continue;
@@ -99,7 +99,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 
 							long totalWaitingTime = 0;
 							while (nodeIndexItem == null) {
-								nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+								nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 								try {
 									Thread.sleep(1000);
 								} catch (Exception e) {

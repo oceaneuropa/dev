@@ -14,6 +14,7 @@ import org.orbit.component.model.tier1.auth.TokenResponseDTO;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenResponseDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
@@ -31,6 +32,7 @@ import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.orbit.component.runtime.model.identity.LoginRequest;
 import org.orbit.component.runtime.model.identity.LoginResponse;
 import org.orbit.component.runtime.model.identity.LogoutRequest;
+import org.orbit.component.runtime.model.identity.RefreshTokenResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.origin.common.resources.IPath;
 import org.origin.common.resources.node.INode;
@@ -163,13 +165,41 @@ public class RuntimeModelConverter {
 			}
 
 			String tokenType = requestDTO.getTokenType();
-			String tokenValue = requestDTO.getTokenValue();
+			String accessToken = requestDTO.getAccessToken();
+			String refreshToken = requestDTO.getRefreshToken();
 
 			LogoutRequest request = new LogoutRequest();
 			request.setTokenType(tokenType);
-			request.setTokenValue(tokenValue);
+			request.setAccessToken(accessToken);
+			request.setRefreshToken(refreshToken);
 
 			return request;
+		}
+
+		/**
+		 * 
+		 * @param response
+		 * @return
+		 */
+		public RefreshTokenResponseDTO toResponse(RefreshTokenResponse response) {
+			if (response == null) {
+				return null;
+			}
+
+			boolean succeed = response.isSucceed();
+			String message = response.getMessage();
+			String tokenType = response.getTokenType();
+			String accessToken = response.getAccessToken();
+			String refreshToken = response.getRefreshToken();
+
+			RefreshTokenResponseDTO responseDTO = new RefreshTokenResponseDTO();
+			responseDTO.setSucceed(succeed);
+			responseDTO.setMessage(message);
+			responseDTO.setTokenType(tokenType);
+			responseDTO.setAccessToken(accessToken);
+			responseDTO.setRefreshToken(refreshToken);
+
+			return responseDTO;
 		}
 
 		/**
@@ -185,13 +215,15 @@ public class RuntimeModelConverter {
 			boolean succeed = loginResponse.isSucceed();
 			String message = loginResponse.getMessage();
 			String tokenType = loginResponse.getTokenType();
-			String tokenValue = loginResponse.getTokenValue();
+			String accessToken = loginResponse.getAccessToken();
+			String refreshToken = loginResponse.getRefreshToken();
 
 			LoginResponseDTO responseDTO = new LoginResponseDTO();
 			responseDTO.setSucceed(succeed);
 			responseDTO.setMessage(message);
 			responseDTO.setTokenType(tokenType);
-			responseDTO.setTokenValue(tokenValue);
+			responseDTO.setAccessToken(accessToken);
+			responseDTO.setRefreshToken(refreshToken);
 
 			return responseDTO;
 		}

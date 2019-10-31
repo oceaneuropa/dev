@@ -208,7 +208,7 @@ public class Extensions extends ProgramExtensions {
 		extension12.addInterface(factoryClass, ExtensionRegistryServiceIndexTimerFactory.class);
 		addExtension(extension12);
 
-		Extension extension13 = new Extension(extensionTypeId, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, "Config Registry Service Index Provider");
+		Extension extension13 = new Extension(extensionTypeId, InfraConstants.CONFIG_REGISTRY__INDEXER_ID, "Config Registry Service Index Provider");
 		extension13.addInterface(factoryClass, ConfigRegistryServiceIndexTimerFactory.class);
 		addExtension(extension13);
 	}

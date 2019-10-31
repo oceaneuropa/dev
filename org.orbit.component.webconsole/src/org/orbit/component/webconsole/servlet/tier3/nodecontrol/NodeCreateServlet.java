@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -56,7 +56,7 @@ public class NodeCreateServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(accessToken, platformId);
-				succeed = ComponentClientsUtil.NodeControl.createNode(nodeControlClient, id, name, typeId);
+				succeed = NodeUtil.createNode(nodeControlClient, id, name, typeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

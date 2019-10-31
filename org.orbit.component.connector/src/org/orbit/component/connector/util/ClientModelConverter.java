@@ -13,6 +13,8 @@ import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.identity.LoginRequest;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.LogoutRequest;
+import org.orbit.component.api.tier1.identity.RefreshTokenRequest;
+import org.orbit.component.api.tier1.identity.RefreshTokenResponse;
 import org.orbit.component.api.tier1.identity.RegisterRequest;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
@@ -42,6 +44,8 @@ import org.orbit.component.model.tier1.auth.TokenResponseDTO;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenResponseDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
@@ -174,17 +178,15 @@ public class ClientModelConverter {
 			return requestDTO;
 		}
 
-		public LogoutRequestDTO toRequestDTO(LogoutRequest request) {
+		public RefreshTokenRequestDTO toRequestDTO(RefreshTokenRequest request) {
 			if (request == null) {
 				return null;
 			}
 
-			String tokenType = request.getTokenType();
-			String tokenValue = request.getTokenValue();
+			String refreshToken = request.getRefreshToken();
 
-			LogoutRequestDTO requestDTO = new LogoutRequestDTO();
-			requestDTO.setTokenType(tokenType);
-			requestDTO.setTokenValue(tokenValue);
+			RefreshTokenRequestDTO requestDTO = new RefreshTokenRequestDTO();
+			requestDTO.setRefreshToken(refreshToken);
 
 			return requestDTO;
 		}
@@ -197,15 +199,55 @@ public class ClientModelConverter {
 			boolean succeed = responseDTO.isSucceed();
 			String message = responseDTO.getMessage();
 			String tokenType = responseDTO.getTokenType();
-			String tokenValue = responseDTO.getTokenValue();
+			String accessToken = responseDTO.getAccessToken();
+			String refreshToken = responseDTO.getRefreshToken();
 
 			LoginResponse response = new LoginResponse();
 			response.setSucceed(succeed);
 			response.setMessage(message);
 			response.setTokenType(tokenType);
-			response.setTokenValue(tokenValue);
+			response.setAccessToken(accessToken);
+			response.setRefreshToken(refreshToken);
 
 			return response;
+		}
+
+		public RefreshTokenResponse toResponse(RefreshTokenResponseDTO responseDTO) {
+			if (responseDTO == null) {
+				return null;
+			}
+
+			boolean succeed = responseDTO.isSucceed();
+			String message = responseDTO.getMessage();
+			String tokenType = responseDTO.getTokenType();
+			String accessToken = responseDTO.getAccessToken();
+			String refreshToken = responseDTO.getRefreshToken();
+
+			RefreshTokenResponse response = new RefreshTokenResponse();
+			response.setSucceed(succeed);
+			response.setMessage(message);
+			response.setTokenType(tokenType);
+			response.setAccessToken(accessToken);
+			response.setRefreshToken(refreshToken);
+
+			return response;
+		}
+
+		public LogoutRequestDTO toRequestDTO(LogoutRequest request) {
+			if (request == null) {
+				return null;
+			}
+
+			String tokenType = request.getTokenType();
+			String accessToken = request.getAccessToken();
+			String refreshToken = request.getRefreshToken();
+
+			LogoutRequestDTO requestDTO = new LogoutRequestDTO();
+			requestDTO.setTokenType(tokenType);
+			requestDTO.setAccessToken(accessToken);
+			requestDTO.setRefreshToken(refreshToken);
+
+			return requestDTO;
 		}
 	}
 

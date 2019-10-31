@@ -203,9 +203,23 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	}
 
 	@Override
-	public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 		try {
-			StatusDTO status = getWSClient().deleteIndexItem(indexProviderId, indexItemId);
+			StatusDTO status = getWSClient().removeIndexItem(indexProviderId, indexItemId);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			// e.printStackTrace();
+			throw new IOException(e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeIndexItems(String indexProviderId) throws IOException {
+		try {
+			StatusDTO status = getWSClient().removeIndexItems(indexProviderId);
 			if (status != null && status.success()) {
 				return true;
 			}

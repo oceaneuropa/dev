@@ -78,7 +78,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 				System.out.println("\tindexItemId = " + indexItemId);
 			}
 
-			indexProvider.deleteIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
+			indexProvider.removeIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
 		}
 	}
 

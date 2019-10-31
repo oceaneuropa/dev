@@ -10,7 +10,8 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.identity.LoginResponse;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.IdentityServiceUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -18,6 +19,10 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
+/**
+ * 
+ * @see OrbitHttpContext
+ */
 public class SignInServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 3614261826355225722L;
@@ -49,20 +54,20 @@ public class SignInServlet extends HttpServlet {
 				// Get identity service's access token
 				String identityServiceAccessToken = null;
 
-				boolean usernameExists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, identityServiceAccessToken, username_or_email_value);
-				boolean emailExists = ComponentClientsUtil.UserAccounts.emailExists(userRegistryUrl, identityServiceAccessToken, username_or_email_value);
+				boolean usernameExists = UserAccountUtil.usernameExists(userRegistryUrl, identityServiceAccessToken, username_or_email_value);
+				boolean emailExists = UserAccountUtil.emailExists(userRegistryUrl, identityServiceAccessToken, username_or_email_value);
 
 				if (usernameExists || emailExists) {
 					String username = usernameExists ? username_or_email_value : null;
 					String email = emailExists ? username_or_email_value : null;
 
-					LoginResponse loginResponse = ComponentClientsUtil.IDENTITY_SERVICE.login(identityServiceUrl, username, email, password);
+					LoginResponse loginResponse = IdentityServiceUtil.login(identityServiceUrl, username, email, password);
 					if (loginResponse != null) {
 						signInSucceed = loginResponse.isSucceed();
 						if (signInSucceed) {
 							// Login succeed
 							try {
-								OrbitTokenUtil.INSTANCE.updateSession(request, PlatformConstants.TOKEN_PROVIDER__ORBIT, loginResponse.getTokenType(), loginResponse.getTokenValue());
+								OrbitTokenUtil.INSTANCE.updateSession(request, PlatformConstants.TOKEN_PROVIDER__ORBIT, loginResponse.getTokenType(), loginResponse.getAccessToken(), loginResponse.getRefreshToken());
 
 							} catch (Exception e) {
 								// Cannot get token from sign in response. Consider as sign in failed.

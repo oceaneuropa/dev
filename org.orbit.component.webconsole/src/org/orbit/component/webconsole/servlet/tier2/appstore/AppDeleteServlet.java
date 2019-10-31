@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -44,7 +44,7 @@ public class AppDeleteServlet extends HttpServlet {
 				String currId = currIdVersion.substring(0, index);
 				String currVersion = currIdVersion.substring(index + 1);
 
-				boolean currSucceed = ComponentClientsUtil.AppStore.deleteApp(accessToken, currId, currVersion);
+				boolean currSucceed = AppStoreUtil.deleteApp(accessToken, currId, currVersion);
 				if (currSucceed) {
 					hasSucceed = true;
 				} else {

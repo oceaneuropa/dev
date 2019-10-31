@@ -18,7 +18,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
@@ -269,7 +269,7 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 		try {
 			// IndexServiceClient indexService = getIndexService();
 			String accessToken = getAccessToken();
-			IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
+			IndexServiceClient indexService = IndexServiceUtil.getClient(accessToken);
 
 			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_CONTROL_INDEXER_ID, IndexConstants.NODE_CONTROL_TYPE);
 

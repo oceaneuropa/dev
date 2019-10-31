@@ -6,7 +6,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier1.auth.GrantTypes;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.OthersUtil;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -33,14 +33,13 @@ public class AuthClientCommand implements CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(COMMAND_SCOPE, "orbit");
-		props.put(COMMAND_FUNCTION,
-				new String[] { //
-						"auth_ping", //
-						"auth_echo", //
-						// "authorize", //
-						// "token", //
-						"login" //
-				});
+		props.put(COMMAND_FUNCTION, new String[] { //
+				"auth_ping", //
+				"auth_echo", //
+				// "authorize", //
+				// "token", //
+				"login" //
+		});
 		OSGiServiceUtil.register(bundleContext, AuthClientCommand.class.getName(), this, props);
 	}
 
@@ -51,7 +50,7 @@ public class AuthClientCommand implements CommandActivator {
 	}
 
 	protected AuthClient getAuthClient(String url, String realm, String accessToken) {
-		AuthClient auth = ComponentClientsUtil.Auth.getAuthClient(url, accessToken);
+		AuthClient auth = OthersUtil.getAuthClient(url, accessToken);
 		if (auth == null) {
 			throw new IllegalStateException("AuthClient is null.");
 		}

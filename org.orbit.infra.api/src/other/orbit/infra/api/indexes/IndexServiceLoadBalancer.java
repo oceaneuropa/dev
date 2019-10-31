@@ -91,8 +91,13 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 		}
 
 		@Override
-		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return next().deleteIndexItem(indexProviderId, indexItemId);
+		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			return next().removeIndexItem(indexProviderId, indexItemId);
+		}
+
+		@Override
+		public boolean removeIndexItems(String indexProviderId) throws IOException {
+			return next().removeIndexItems(indexProviderId);
 		}
 
 		@Override
@@ -172,13 +177,13 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 		@Override
 		public void addIndexItemUpdater(IndexItemUpdater updater) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void removeIndexItemUpdater(IndexItemUpdater updater) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 
@@ -234,7 +239,12 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 		}
 
 		@Override
-		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean removeIndexItems(String indexProviderId) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
@@ -315,13 +325,13 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 		@Override
 		public void addIndexItemUpdater(IndexItemUpdater updater) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void removeIndexItemUpdater(IndexItemUpdater updater) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 

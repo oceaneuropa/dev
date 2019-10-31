@@ -72,7 +72,17 @@ public interface IndexServiceClient extends ServiceClient {
 	 * @return
 	 * @throws IOException
 	 */
-	boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
+	boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
+
+	/**
+	 * Remove index items.
+	 * 
+	 * @param indexProviderId
+	 * @param indexItemId
+	 * @return
+	 * @throws IOException
+	 */
+	boolean removeIndexItems(String indexProviderId) throws IOException;
 
 	/**
 	 * Set properties.

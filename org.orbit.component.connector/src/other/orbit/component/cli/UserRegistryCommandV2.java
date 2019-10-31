@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
@@ -33,18 +33,17 @@ public class UserRegistryCommandV2 {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
-				new String[] { //
-						"userregistry_ping", //
-						"userregistry_echo", //
-						"list_users", //
-						"get_user", //
-						"add_user", //
-						"change_password", //
-						"activate_user", //
-						"deactivate_user", //
-						"delete_user" //
-				} //
+		props.put("osgi.command.function", new String[] { //
+				"userregistry_ping", //
+				"userregistry_echo", //
+				"list_users", //
+				"get_user", //
+				"add_user", //
+				"change_password", //
+				"activate_user", //
+				"deactivate_user", //
+				"delete_user" //
+		} //
 		);
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommandV2.class.getName(), this, props);
 	}
@@ -56,7 +55,7 @@ public class UserRegistryCommandV2 {
 	}
 
 	protected UserAccountClient getUserRegistry(String url) {
-		return ComponentClientsUtil.UserAccounts.getUserAccountsClient(url, null);
+		return UserAccountUtil.getClient(url, null);
 	}
 
 	protected String getAccountId(String username) {

@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface ConfigRegistry {
 
-	ConfigRegistryClient getConfigRegistryClient();
+	ConfigRegistryClient getClient();
 
 	String getId();
 

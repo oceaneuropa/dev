@@ -3,11 +3,11 @@ package org.orbit.component.api.util;
 import org.orbit.component.api.ComponentConstants;
 import org.origin.common.model.AbstractConfigPropertiesHandler;
 
-public class ComponentServicesPropertiesHandler extends AbstractConfigPropertiesHandler {
+public class ComponentsConfigPropertiesHandler extends AbstractConfigPropertiesHandler {
 
-	protected static ComponentServicesPropertiesHandler INSTANCE = new ComponentServicesPropertiesHandler();
+	protected static ComponentsConfigPropertiesHandler INSTANCE = new ComponentsConfigPropertiesHandler();
 
-	public static ComponentServicesPropertiesHandler getInstance() {
+	public static ComponentsConfigPropertiesHandler getInstance() {
 		return INSTANCE;
 	}
 

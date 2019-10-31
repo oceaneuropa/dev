@@ -89,7 +89,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
+		indexProvider.removeIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

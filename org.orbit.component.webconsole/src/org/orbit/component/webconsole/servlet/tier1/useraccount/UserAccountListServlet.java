@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -43,7 +43,7 @@ public class UserAccountListServlet extends HttpServlet {
 		UserAccount[] userAccounts = null;
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-			userAccounts = ComponentClientsUtil.UserAccounts.getUserAccounts(userRegistryUrl, accessToken);
+			userAccounts = UserAccountUtil.getUserAccounts(userRegistryUrl, accessToken);
 
 		} catch (ClientException e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

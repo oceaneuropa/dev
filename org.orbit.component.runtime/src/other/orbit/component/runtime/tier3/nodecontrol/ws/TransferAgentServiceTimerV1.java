@@ -59,7 +59,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 	@Override
 	public synchronized void removeIndex(IndexProviderClient indexProvider) throws IOException {
 		if (this.indexItem != null) {
-			indexProvider.deleteIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
+			indexProvider.removeIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
 		}
 	}
 

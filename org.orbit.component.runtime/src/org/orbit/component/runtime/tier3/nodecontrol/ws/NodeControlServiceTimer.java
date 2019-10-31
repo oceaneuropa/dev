@@ -92,7 +92,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
+		indexProvider.removeIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

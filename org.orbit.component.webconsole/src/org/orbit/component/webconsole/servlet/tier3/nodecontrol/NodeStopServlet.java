@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -63,7 +63,7 @@ public class NodeStopServlet extends HttpServlet {
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(accessToken, platformId);
 				for (String currNodeId : nodeIds) {
 					try {
-						boolean currSucceed = ComponentClientsUtil.NodeControl.stopNode(nodeControlClient, currNodeId, options);
+						boolean currSucceed = NodeUtil.stopNode(nodeControlClient, currNodeId, options);
 						if (currSucceed) {
 							hasSucceed = true;
 						} else {

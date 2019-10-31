@@ -104,7 +104,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		// Start index timer
 		LOG.debug("start index timer");
 		// IndexServiceClient indexProvider = getIndexProvider();
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.CONFIG_REGISTRY__INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<ConfigRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);

@@ -6,10 +6,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
@@ -22,7 +22,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	 * @param service
 	 */
 	public ConfigRegistryServiceIndexTimer(ConfigRegistryService service) {
-		super(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
+		super(InfraConstants.CONFIG_REGISTRY__INDEXER_ID, "Index Timer [" + service.getName() + "]", service);
 		setDebug(true);
 	}
 
@@ -31,7 +31,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		ConfigRegistryService service = getService();
 
 		String name = service.getName();
-		return indexProvider.getIndexItem(getIndexProviderId(), InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), InfraConstants.CONFIG_REGISTRY__TYPE, name);
 	}
 
 	@Override
@@ -44,13 +44,13 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		return indexService.addIndexItem(getIndexProviderId(), InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), InfraConstants.CONFIG_REGISTRY__TYPE, name, props);
 	}
 
 	@Override
@@ -64,11 +64,11 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexService.setProperties(getIndexProviderId(), indexItemId, props);
 	}
@@ -84,7 +84,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	@Override
 	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
+		indexService.removeIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

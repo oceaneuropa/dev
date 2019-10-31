@@ -15,7 +15,8 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.DefaultNodeControlClientResolver;
 import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
@@ -77,11 +78,11 @@ public class NodeServiceListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
+				nodeInfo = NodeUtil.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
 				// services = PlatformClientsUtil.INSTANCE.getServices(platformClientResolver, parentPlatformId, nodeId);

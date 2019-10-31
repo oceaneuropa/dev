@@ -18,22 +18,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class ComponentClients implements LifecycleAware {
+public class ComponentClients implements LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ComponentClients.class);
 
-	private static Object lock = new Object[0];
-	private static ComponentClients instance = null;
+	private static ComponentClients INSTANCE = new ComponentClients();
 
 	public static ComponentClients getInstance() {
-		if (instance == null) {
-			synchronized (lock) {
-				if (instance == null) {
-					instance = new ComponentClients();
-				}
-			}
-		}
-		return instance;
+		return INSTANCE;
 	}
 
 	// tier1
@@ -201,19 +193,6 @@ public final class ComponentClients implements LifecycleAware {
 		return appStoreClient;
 	}
 
-	// /**
-	// *
-	// * @param properties
-	// * @return
-	// */
-	// public AppStoreClient getAppStore(Map<String, Object> properties) {
-	// AppStoreClient appStoreClient = this.appStoreConnector.getService(properties);
-	// if (appStoreClient == null) {
-	// throw new RuntimeException("AppStore is not available.");
-	// }
-	// return appStoreClient;
-	// }
-
 	/**
 	 * 
 	 * @param properties
@@ -373,4 +352,17 @@ public final class ComponentClients implements LifecycleAware {
 // throw new IllegalStateException("MissionControl is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 // }
 // return missionControl;
+// }
+
+// /**
+// *
+// * @param properties
+// * @return
+// */
+// public AppStoreClient getAppStore(Map<String, Object> properties) {
+// AppStoreClient appStoreClient = this.appStoreConnector.getService(properties);
+// if (appStoreClient == null) {
+// throw new RuntimeException("AppStore is not available.");
+// }
+// return appStoreClient;
 // }

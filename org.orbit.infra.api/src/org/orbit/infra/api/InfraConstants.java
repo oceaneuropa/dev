@@ -57,8 +57,8 @@ public class InfraConstants {
 	public static String CONFIG_REGISTRY__JDBC_PASSWORD = "infra.config_registry.jdbc.password";
 
 	// index item values
-	public static String IDX__CONFIG_REGISTRY__INDEXER_ID = "infra.config_registry.indexer";
-	public static String IDX__CONFIG_REGISTRY__TYPE = "ConfigRegistry";
+	public static String CONFIG_REGISTRY__INDEXER_ID = "infra.config_registry.indexer";
+	public static String CONFIG_REGISTRY__TYPE = "ConfigRegistry";
 
 	// EditPolicy values
 	public static String CONFIG_REGISTRY__EDITPOLICY_ID = "infra.config_registry.editpolicy";

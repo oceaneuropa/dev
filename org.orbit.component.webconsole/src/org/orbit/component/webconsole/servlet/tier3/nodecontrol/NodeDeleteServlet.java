@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -58,7 +58,7 @@ public class NodeDeleteServlet extends HttpServlet {
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(accessToken, platformId);
 				for (String currNodeId : nodeIds) {
 					try {
-						boolean currSucceed = ComponentClientsUtil.NodeControl.deleteNode(nodeControlClient, currNodeId);
+						boolean currSucceed = NodeUtil.deleteNode(nodeControlClient, currNodeId);
 						if (currSucceed) {
 							hasSucceed = true;
 						} else {

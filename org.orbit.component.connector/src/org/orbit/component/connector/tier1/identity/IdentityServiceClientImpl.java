@@ -7,12 +7,16 @@ import org.orbit.component.api.tier1.identity.LoginRequest;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.LogoutResponse;
+import org.orbit.component.api.tier1.identity.RefreshTokenRequest;
+import org.orbit.component.api.tier1.identity.RefreshTokenResponse;
 import org.orbit.component.api.tier1.identity.RegisterRequest;
 import org.orbit.component.api.tier1.identity.RegisterResponse;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenResponseDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
@@ -76,14 +80,25 @@ public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityService
 		if (request == null) {
 			throw new IllegalArgumentException("request is null");
 		}
-		LoginResponse response = new LoginResponse();
+		LoginResponse response = null;
 		LoginRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
 		LoginResponseDTO responseDTO = getWSClient().login(requestDTO);
 		if (responseDTO != null) {
-			LoginResponse theResponse = ClientModelConverter.Identity.toResponse(responseDTO);
-			if (theResponse != null) {
-				response = theResponse;
-			}
+			response = ClientModelConverter.Identity.toResponse(responseDTO);
+		}
+		return response;
+	}
+
+	@Override
+	public RefreshTokenResponse refreshToken(RefreshTokenRequest request) throws ClientException {
+		if (request == null) {
+			throw new IllegalArgumentException("request is null");
+		}
+		RefreshTokenResponse response = null;
+		RefreshTokenRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
+		RefreshTokenResponseDTO responseDTO = getWSClient().refreshToken(requestDTO);
+		if (responseDTO != null) {
+			response = ClientModelConverter.Identity.toResponse(responseDTO);
 		}
 		return response;
 	}

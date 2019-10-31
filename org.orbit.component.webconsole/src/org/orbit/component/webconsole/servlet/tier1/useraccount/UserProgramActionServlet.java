@@ -14,7 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.identity.LoginResponse;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.IdentityServiceUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.orbit.spirit.model.userprograms.UserProgram;
@@ -70,19 +71,19 @@ public class UserProgramActionServlet extends HttpServlet {
 				// Use admin user's access token to get the account information of other user with given accountId.
 				// This is for testing only. In real world, admin user should never be allowed to access other people's data(programs, files, etc).
 				String adminUserAccessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+				UserAccount userAccount = UserAccountUtil.getUserAccount(userRegistryUrl, adminUserAccessToken, accountId);
 
-				UserAccount userAccount = ComponentClientsUtil.UserAccounts.getUserAccount(userRegistryUrl, adminUserAccessToken, accountId);
 				if (userAccount != null) {
 					String username = userAccount.getUsername();
 					String email = userAccount.getEmail();
 					String password = userAccount.getPassword();
-					LoginResponse loginResponse = ComponentClientsUtil.IDENTITY_SERVICE.login(identityServiceUrl, username, email, password);
+					LoginResponse loginResponse = IdentityServiceUtil.login(identityServiceUrl, username, email, password);
 
 					if (loginResponse != null) {
 						// @see org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet
 						boolean signInSucceed = loginResponse.isSucceed();
 						if (signInSucceed) {
-							String accessToken = loginResponse.getTokenValue();
+							String accessToken = loginResponse.getAccessToken();
 
 							UserPrograms userPrograms = null;
 							try {

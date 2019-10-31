@@ -238,7 +238,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 				Integer id = indexItem.getIndexItemId();
 				String type = indexItem.getType();
 				String name = indexItem.getName();
-				Date lastUpdateTime = indexItem.getLastUpdateTime();
+				Date lastUpdateTime = indexItem.getDateModified();
 
 				Map<String, Object> properties = indexItem.getProperties();
 				String lastUpdateTimeStr = lastUpdateTime != null ? DateUtil.toString(lastUpdateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";

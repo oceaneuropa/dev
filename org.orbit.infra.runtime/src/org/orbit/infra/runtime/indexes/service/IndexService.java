@@ -10,11 +10,11 @@ import org.origin.common.service.WebServiceAware;
 
 public interface IndexService extends WebServiceAware, AccessTokenAware {
 
-	public String getName();
+	String getName();
 
-	public String getHostURL();
+	String getHostURL();
 
-	public String getContextRoot();
+	String getContextRoot();
 
 	/**
 	 * Get index items with specified indexProviderId.
@@ -23,7 +23,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public List<IndexItem> getIndexItems(String indexProviderId) throws ServerException;
+	List<IndexItem> getIndexItems(String indexProviderId) throws ServerException;
 
 	/**
 	 * Get index items with specified type and created by specified indexer provider.
@@ -33,7 +33,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws ServerException;
+	List<IndexItem> getIndexItems(String indexProviderId, String type) throws ServerException;
 
 	/**
 	 * Get index item.
@@ -44,7 +44,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws ServerException;
+	IndexItem getIndexItem(String indexProviderId, String type, String name) throws ServerException;
 
 	/**
 	 * Get index item.
@@ -53,7 +53,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws ServerException;
+	IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws ServerException;
 
 	/**
 	 * Add an index item.
@@ -65,7 +65,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws ServerException;
+	IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws ServerException;
 
 	/**
 	 * Remove an index item.
@@ -75,7 +75,16 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws ServerException;
+	boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws ServerException;
+
+	/**
+	 * Remove index items.
+	 * 
+	 * @param indexProviderId
+	 * @return
+	 * @throws ServerException
+	 */
+	boolean removeIndexItems(String indexProviderId) throws ServerException;
 
 	/**
 	 * Check whether a property of an index item exists.
@@ -86,7 +95,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException;
+	boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException;
 
 	/**
 	 * Get the values of all properties of an index item.
@@ -96,7 +105,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws ServerException;
+	Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws ServerException;
 
 	/**
 	 * Get the property value of an index item.
@@ -107,7 +116,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException;
+	Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException;
 
 	/**
 	 * Set the properties of an index item.
@@ -118,7 +127,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws ServerException;
+	boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws ServerException;
 
 	/**
 	 * Remove the properties of an index item.
@@ -129,7 +138,7 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException;
+	boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException;
 
 }
 
@@ -138,18 +147,18 @@ public interface IndexService extends WebServiceAware, AccessTokenAware {
 // *
 // * @return
 // */
-// public IndexServiceConfiguration getConfiguration();
+// IndexServiceConfiguration getConfiguration();
 
 // /**
 // * Add a IndexServiceListener.
 // *
 // * @param listener
 // */
-// public void addListener(IndexServiceListener listener);
+// void addListener(IndexServiceListener listener);
 
 // /**
 // * Remove a IndexServiceListener.
 // *
 // * @param listener
 // */
-// public void removeListener(IndexServiceListener listener);
+// void removeListener(IndexServiceListener listener);

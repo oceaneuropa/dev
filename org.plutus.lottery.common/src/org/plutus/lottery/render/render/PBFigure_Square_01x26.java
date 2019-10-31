@@ -1,6 +1,7 @@
 package org.plutus.lottery.render.render;
 
 import org.origin.svg.Text;
+import org.origin.svg.adapter.Notification;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.render.widget.AbstractControlFigure;
 import org.origin.svg.util.SVGConstants;
@@ -42,7 +43,7 @@ public class PBFigure_Square_01x26 extends AbstractControlFigure {
 	}
 
 	@Override
-	public void updateFigure() {
+	public void updateFigure(Notification notification) {
 	}
 
 }

@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extension.nodecontrol;
 import java.util.Map;
 
 import org.orbit.component.api.ComponentConstants;
-import org.orbit.component.api.util.ComponentServicesPropertiesHandler;
+import org.orbit.component.api.util.ComponentsConfigPropertiesHandler;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.util.InfraServicesPropertiesHandler;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
@@ -65,7 +65,7 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 			// }
 			// }
 			if (!properties.containsKey(ComponentConstants.ORBIT_DATACAST_URL)) {
-				String dataCastUrl = ComponentServicesPropertiesHandler.getInstance().getDataCastURL();
+				String dataCastUrl = ComponentsConfigPropertiesHandler.getInstance().getDataCastURL();
 				if (dataCastUrl != null && !dataCastUrl.isEmpty()) {
 					properties.put(ComponentConstants.ORBIT_DATACAST_URL, dataCastUrl);
 				}
@@ -73,7 +73,7 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 
 			// Add "orbit.app_store.url" property if not exist
 			if (!properties.containsKey(ComponentConstants.ORBIT_APP_STORE_URL)) {
-				String appStoreUrl = ComponentServicesPropertiesHandler.getInstance().getAppStoreURL();
+				String appStoreUrl = ComponentsConfigPropertiesHandler.getInstance().getAppStoreURL();
 				if (appStoreUrl != null && !appStoreUrl.isEmpty()) {
 					properties.put(ComponentConstants.ORBIT_APP_STORE_URL, appStoreUrl);
 				}

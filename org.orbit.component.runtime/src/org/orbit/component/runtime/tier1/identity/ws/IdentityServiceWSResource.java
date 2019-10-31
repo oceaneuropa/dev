@@ -12,11 +12,14 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenResponseDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
 import org.orbit.component.runtime.model.identity.LoginRequest;
 import org.orbit.component.runtime.model.identity.LoginResponse;
 import org.orbit.component.runtime.model.identity.LogoutRequest;
 import org.orbit.component.runtime.model.identity.LogoutResponse;
+import org.orbit.component.runtime.model.identity.RefreshTokenResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
@@ -107,6 +110,33 @@ public class IdentityServiceWSResource extends AbstractWSApplicationResource {
 			LoginRequest request = RuntimeModelConverter.Identity.toRequest(requestDTO);
 			LoginResponse response = service.login(request);
 			LoginResponseDTO responseDTO = RuntimeModelConverter.Identity.toResponse(response);
+			return Response.ok().entity(responseDTO).build();
+
+		} catch (ServerException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
+	}
+
+	/**
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/refreshToken (Body parameter: LoginRequestDTO)
+	 * 
+	 * @param requestDTO
+	 * @return
+	 */
+	@POST
+	@Path("refreshToken")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response refreshToken(RefreshTokenRequestDTO requestDTO) {
+		if (requestDTO == null) {
+			ErrorDTO nullDTOError = new ErrorDTO("requestDTO is null.");
+			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
+		}
+
+		try {
+			IdentityService service = getService();
+			RefreshTokenResponse response = service.refreshToken(requestDTO.getRefreshToken());
+			RefreshTokenResponseDTO responseDTO = RuntimeModelConverter.Identity.toResponse(response);
 			return Response.ok().entity(responseDTO).build();
 
 		} catch (ServerException e) {

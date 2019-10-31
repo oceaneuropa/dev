@@ -16,7 +16,9 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.DefaultNodeControlClientResolver;
 import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.io.util.OrbitClientHelper;
@@ -83,11 +85,11 @@ public class NodeProgramListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
+				nodeInfo = NodeUtil.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
 				// Get node's programs (metadata) from config registry.
 				List<AppManifest> nodeAppManifests = new ArrayList<AppManifest>();
@@ -107,7 +109,7 @@ public class NodeProgramListServlet extends HttpServlet {
 						if (currAppId != null && !currAppId.isEmpty()) {
 							try {
 								// When app version is null or empty, AppStore should return app with latest version.
-								AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, currAppId, currAppVersion);
+								AppManifest appManifest = AppStoreUtil.getApp(accessToken, currAppId, currAppVersion);
 								if (appManifest != null) {
 									nodeAppManifests.add(appManifest);
 								}

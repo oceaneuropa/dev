@@ -7,7 +7,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -50,7 +50,7 @@ public class AppStoreClientCommand implements Annotated, CommandActivator {
 
 	protected AppStoreClient getAppStore() {
 		// String appStoreUrl = (String) this.properties.get(ComponentConstants.ORBIT_APP_STORE_URL);
-		AppStoreClient appStore = ComponentClientsUtil.AppStore.getAppStoreClient(null);
+		AppStoreClient appStore = AppStoreUtil.getClient(null);
 		if (appStore == null) {
 			throw new IllegalStateException("AppStore is null.");
 		}

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier2.appstore.AppManifest;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -47,8 +47,7 @@ public class AppListServlet extends HttpServlet {
 		AppManifest[] appManifests = null;
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-
-			appManifests = ComponentClientsUtil.AppStore.getApps(accessToken);
+			appManifests = AppStoreUtil.getApps(accessToken);
 
 		} catch (ClientException e) {
 			e.printStackTrace();

@@ -1,11 +1,13 @@
 package org.orbit.infra.runtime.indexes.ws;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,11 +26,10 @@ import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.Printer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * Index items resource
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&name={name}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid} (Body parameter: IndexItemDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}
  * 
  *     Not being used:
  *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/exists?type={type}&name={name}
@@ -49,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemsWSResource extends AbstractWSApplicationResource {
 
-	protected static Logger LOG = LoggerFactory.getLogger(IndexItemsWSResource.class);
+	// protected static Logger LOG = LoggerFactory.getLogger(IndexItemsWSResource.class);
 
 	@Inject
 	public IndexService service;
@@ -196,6 +198,41 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		return Response.ok().entity(newIndexItemDTO).build();
+	}
+
+	/**
+	 * Remove index items.
+	 * 
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}
+	 * 
+	 * @param indexProviderId
+	 * @return
+	 */
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response removeIndexItems(@PathParam("indexproviderid") String indexProviderId) {
+		if (indexProviderId == null) {
+			ErrorDTO nullIndexProviderIdError = new ErrorDTO("indexProviderId path parameter is invalid.");
+			return Response.status(Status.BAD_REQUEST).entity(nullIndexProviderIdError).build();
+		}
+
+		IndexService indexService = getService();
+		boolean succeed = false;
+		try {
+			succeed = indexService.removeIndexItems(indexProviderId);
+
+		} catch (ServerException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
+
+		if (succeed) {
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexProvider (indexProviderId={0}) is removed.", new Object[] { indexProviderId }));
+			return Response.ok().entity(statusDTO).build();
+		} else {
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("IndexProvider (indexProviderId={0}) is not removed.", new Object[] { indexProviderId }));
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
+		}
 	}
 
 }

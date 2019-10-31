@@ -2,6 +2,7 @@ package org.plutus.lottery.render.render;
 
 import org.origin.svg.Circle;
 import org.origin.svg.Text;
+import org.origin.svg.adapter.Notification;
 import org.origin.svg.render.widget.AbstractControlFigure;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGConstants;
@@ -90,7 +91,7 @@ public class NumberFigure extends AbstractControlFigure {
 	}
 
 	@Override
-	public void updateFigure() {
+	public void updateFigure(Notification notification) {
 	}
 
 }

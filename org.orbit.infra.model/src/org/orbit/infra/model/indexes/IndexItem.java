@@ -19,14 +19,14 @@ public class IndexItem {
 	protected String name;
 	protected Map<String, Object> properties = new HashMap<String, Object>(); // properties that are persisted
 	protected Map<String, Object> runtimeProperties = new HashMap<String, Object>(); // properties that exists only at runtime and not persisted
-	protected Date createTime;
-	protected Date lastUpdateTime;
+	protected Date dateCreated;
+	protected Date dateModified;
 
 	public IndexItem() {
 	}
 
 	public IndexItem clone() {
-		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.type, this.name, this.properties, this.createTime, this.lastUpdateTime);
+		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.type, this.name, this.properties, this.dateCreated, this.dateModified);
 		clone.setRuntimeProperties(this.runtimeProperties);
 		return clone;
 	}
@@ -53,8 +53,8 @@ public class IndexItem {
 		this.type = type != null ? type : DEFAULT_TYPE;
 		this.name = name;
 		this.properties = properties;
-		this.createTime = createTime;
-		this.lastUpdateTime = lastUpdateTime;
+		this.dateCreated = createTime;
+		this.dateModified = lastUpdateTime;
 	}
 
 	public Integer getIndexItemId() {
@@ -132,26 +132,26 @@ public class IndexItem {
 		this.runtimeProperties = runtimeProperties;
 	}
 
-	public Date getCreateTime() {
-		return this.createTime;
+	public Date getDateCreated() {
+		return this.dateCreated;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
-	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+	public Date getDateModified() {
+		return this.dateModified;
 	}
 
-	public void setLastUpdateTime(Date lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
 	}
 
 	@Override
 	public String toString() {
-		String createTimeString = this.createTime != null ? DateUtil.toString(this.createTime, DateUtil.getJdbcDateFormat()) : null;
-		String lastUpdateTimeString = this.lastUpdateTime != null ? DateUtil.toString(this.lastUpdateTime, DateUtil.getJdbcDateFormat()) : null;
+		String createTimeString = this.dateCreated != null ? DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat()) : null;
+		String lastUpdateTimeString = this.dateModified != null ? DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat()) : null;
 		String propertiesString = JSONUtil.toJsonString(this.properties);
 		String runtimePropertiesString = JSONUtil.toJsonString(this.runtimeProperties);
 

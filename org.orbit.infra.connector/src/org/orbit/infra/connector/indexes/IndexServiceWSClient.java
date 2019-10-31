@@ -221,11 +221,39 @@ public class IndexServiceWSClient extends WSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO deleteIndexItem(String indexProviderId, Integer indexItemId) throws ClientException {
+	public StatusDTO removeIndexItem(String indexProviderId, Integer indexItemId) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId));
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).delete();
+			checkResponse(target, response);
+
+			status = response.readEntity(StatusDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	/**
+	 * Remove index items.
+	 * 
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}
+	 * 
+	 * @param indexProviderId
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO removeIndexItems(String indexProviderId) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path("indexitems").path(indexProviderId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(target, response);

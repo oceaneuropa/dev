@@ -376,6 +376,26 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
+	public boolean removeIndexItems(String indexProviderId) throws ServerException {
+		LOG.debug("removeIndexItems(String)");
+		LOG.debug("    indexProviderId = " + indexProviderId);
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
+			DatabaseUtil.dropTable(conn, tableHandler);
+			return true;
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return false;
+	}
+
+	@Override
 	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException {
 		LOG.debug("hasProperty(String, Integer, String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);

@@ -10,7 +10,7 @@ import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -73,7 +73,7 @@ public class UserRegistryClientCommand implements CommandActivator {
 
 	protected UserAccountClient getUserRegistry() {
 		String userRegistryUrl = (String) this.properties.get(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
-		UserAccountClient userAccountClient = ComponentClientsUtil.UserAccounts.getUserAccountsClient(userRegistryUrl, null);
+		UserAccountClient userAccountClient = UserAccountUtil.getClient(userRegistryUrl, null);
 		if (userAccountClient == null) {
 			throw new IllegalStateException("UserRegistry is null.");
 		}

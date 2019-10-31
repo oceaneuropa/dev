@@ -18,7 +18,7 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
-import org.origin.svg.render.widget.WidgetFigureHandler;
+import org.origin.svg.render.widget.util.WidgetFigureHandler;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
@@ -41,7 +41,7 @@ public class MegaMain {
 	protected static Map<Integer, String> indexToPredictedLinkStrokeColor = new HashMap<Integer, String>();
 
 	static {
-		WidgetFigureHandler.register();
+		FigureHandlerRegistry.register(new WidgetFigureHandler());
 		DrawFigureFactory.register();
 		PBFigureFactory.register();
 		NumberFigureFactory.register();

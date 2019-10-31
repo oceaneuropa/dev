@@ -13,10 +13,12 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenRequestDTO;
+import org.orbit.component.model.tier1.identity.RefreshTokenResponseDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
 
@@ -127,6 +129,32 @@ public class IdentityWSClient extends WSClient {
 			checkResponse(target, response);
 
 			result = response.readEntity(LoginResponseDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param requestDTO
+	 * @return
+	 * @throws ClientException
+	 */
+	public RefreshTokenResponseDTO refreshToken(RefreshTokenRequestDTO requestDTO) throws ClientException {
+		RefreshTokenResponseDTO result = null;
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path("refreshToken"); //$NON-NLS-1$
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<RefreshTokenRequestDTO>(requestDTO) {
+			}));
+			checkResponse(target, response);
+
+			result = response.readEntity(RefreshTokenResponseDTO.class);
 
 		} catch (ClientException e) {
 			handleException(e);

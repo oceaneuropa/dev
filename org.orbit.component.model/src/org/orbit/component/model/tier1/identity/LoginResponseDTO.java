@@ -13,7 +13,9 @@ public class LoginResponseDTO {
 	@XmlElement
 	protected String tokenType;
 	@XmlElement
-	protected String tokenValue;
+	protected String accessToken;
+	@XmlElement
+	protected String refreshToken;
 
 	@XmlElement
 	public boolean isSucceed() {
@@ -43,12 +45,21 @@ public class LoginResponseDTO {
 	}
 
 	@XmlElement
-	public String getTokenValue() {
-		return tokenValue;
+	public String getAccessToken() {
+		return this.accessToken;
 	}
 
-	public void setTokenValue(String tokenValue) {
-		this.tokenValue = tokenValue;
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	@XmlElement
+	public String getRefreshToken() {
+		return this.refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 
 }

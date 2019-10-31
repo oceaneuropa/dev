@@ -16,14 +16,16 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.ExtensionRegistryUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -80,30 +82,30 @@ public class NodePropertyListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
+				nodeInfo = NodeUtil.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
 
 					if (nodePlatformId != null) {
-						List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<ExtensionItem> indexerExtensionItems = ExtensionRegistryUtil.getExtensionItems(nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
 							String indexerId = indexerExtensionItem.getExtensionId();
 
-							List<IndexItem> currIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, indexerId, nodePlatformId);
+							List<IndexItem> currIndexItems = IndexServiceUtil.getIndexItemsOfPlatform(accessToken, indexerId, nodePlatformId);
 							if (currIndexItems != null && !currIndexItems.isEmpty()) {
 								indexItems.addAll(currIndexItems);
 							}
 						}
 
 						// Get all extensions from the platform (of the Node)
-						extensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(accessToken, nodePlatformId);
-						extensionItemMap = InfraClientsUtil.EXTENSION_REGISTRY.toExtensionItemMap(extensionItems);
+						extensionItems = ExtensionRegistryUtil.getExtensionItems(accessToken, nodePlatformId);
+						extensionItemMap = ExtensionRegistryUtil.toMap(extensionItems);
 					}
 				}
 

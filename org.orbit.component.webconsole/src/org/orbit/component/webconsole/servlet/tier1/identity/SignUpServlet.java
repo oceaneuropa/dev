@@ -11,7 +11,8 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.RegisterResponse;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.IdentityServiceUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -57,8 +58,8 @@ public class SignUpServlet extends HttpServlet {
 				// Get identity service's access token
 				String identityServiceAccessToken = null;
 
-				boolean usernameExists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, identityServiceAccessToken, username);
-				boolean emailExists = ComponentClientsUtil.UserAccounts.emailExists(userRegistryUrl, identityServiceAccessToken, email);
+				boolean usernameExists = UserAccountUtil.usernameExists(userRegistryUrl, identityServiceAccessToken, username);
+				boolean emailExists = UserAccountUtil.emailExists(userRegistryUrl, identityServiceAccessToken, email);
 
 				if (usernameExists) {
 					message = MessageHelper.INSTANCE.add(message, "username '" + username + "' is already taken.");
@@ -68,7 +69,7 @@ public class SignUpServlet extends HttpServlet {
 				}
 
 				if (!usernameExists && !emailExists) {
-					RegisterResponse registerResponse = ComponentClientsUtil.IDENTITY_SERVICE.register(identityServiceUrl, username, email, password);
+					RegisterResponse registerResponse = IdentityServiceUtil.register(identityServiceUrl, username, email, password);
 					if (registerResponse != null) {
 						signUpSucceed = registerResponse.isSucceed();
 						String responseMessage = registerResponse.getMessage();
@@ -86,13 +87,13 @@ public class SignUpServlet extends HttpServlet {
 		boolean signInSucceed = false;
 		if (signUpSucceed) {
 			try {
-				LoginResponse loginResponse = ComponentClientsUtil.IDENTITY_SERVICE.login(identityServiceUrl, username, email, password);
+				LoginResponse loginResponse = IdentityServiceUtil.login(identityServiceUrl, username, email, password);
 				if (loginResponse != null) {
 					signInSucceed = loginResponse.isSucceed();
 					if (signInSucceed) {
 						// Sign in succeed
 						try {
-							OrbitTokenUtil.INSTANCE.updateSession(request, PlatformConstants.TOKEN_PROVIDER__ORBIT, loginResponse.getTokenType(), loginResponse.getTokenValue());
+							OrbitTokenUtil.INSTANCE.updateSession(request, PlatformConstants.TOKEN_PROVIDER__ORBIT, loginResponse.getTokenType(), loginResponse.getAccessToken(), loginResponse.getRefreshToken());
 
 						} catch (Exception e) {
 							// Cannot get token from sign in response. Consider as sign in failed.

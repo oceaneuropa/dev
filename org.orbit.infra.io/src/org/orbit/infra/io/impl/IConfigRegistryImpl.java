@@ -10,7 +10,7 @@ import java.util.Map;
 import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.ConfigRegistryUtil;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
@@ -224,7 +224,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = InfraClientsUtil.CONFIG_REGISTRY.listRootConfigElements(clientResolver, accessToken, configRegistryId);
+			ConfigElement[] configElements = ConfigRegistryUtil.listRootConfigElements(clientResolver, accessToken, configRegistryId);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -250,7 +250,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.getConfigElement(clientResolver, accessToken, configRegistryId, null, name);
+			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, null, name);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -270,7 +270,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = InfraClientsUtil.CONFIG_REGISTRY.listConfigElements(clientResolver, accessToken, configRegistryId, parentElementId);
+			ConfigElement[] configElements = ConfigRegistryUtil.listConfigElements(clientResolver, accessToken, configRegistryId, parentElementId);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -296,7 +296,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = InfraClientsUtil.CONFIG_REGISTRY.listConfigElements(clientResolver, accessToken, configRegistryId, parentPath);
+			ConfigElement[] configElements = ConfigRegistryUtil.listConfigElements(clientResolver, accessToken, configRegistryId, parentPath);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -322,7 +322,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.getConfigElement(clientResolver, accessToken, configRegistryId, elementId);
+			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, elementId);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -342,7 +342,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.getConfigElement(clientResolver, accessToken, configRegistryId, path);
+			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, path);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -362,7 +362,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.getConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name);
+			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -382,7 +382,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			path = InfraClientsUtil.CONFIG_REGISTRY.getConfigElementPath(clientResolver, accessToken, configRegistryId, elementId);
+			path = ConfigRegistryUtil.getConfigElementPath(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -400,7 +400,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = InfraClientsUtil.CONFIG_REGISTRY.configElementExists(clientResolver, accessToken, configRegistryId, elementId);
+			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -418,7 +418,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = InfraClientsUtil.CONFIG_REGISTRY.configElementExists(clientResolver, accessToken, configRegistryId, path);
+			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, path);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -436,7 +436,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = InfraClientsUtil.CONFIG_REGISTRY.configElementExists(clientResolver, accessToken, configRegistryId, parentElementId, name);
+			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, parentElementId, name);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -454,7 +454,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.createConfigElement(clientResolver, accessToken, configRegistryId, path, attributes, generateUniqueName);
+			ConfigElement configElement = ConfigRegistryUtil.createConfigElement(clientResolver, accessToken, configRegistryId, path, attributes, generateUniqueName);
 			if (configElement == null) {
 				throw new IOException("Config element cannot be created.");
 			}
@@ -476,7 +476,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = InfraClientsUtil.CONFIG_REGISTRY.createConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name, attributes, generateUniqueName);
+			ConfigElement configElement = ConfigRegistryUtil.createConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name, attributes, generateUniqueName);
 			if (configElement == null) {
 				throw new IOException("Config element cannot be created.");
 			}
@@ -503,7 +503,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = InfraClientsUtil.CONFIG_REGISTRY.updateConfigElementName(clientResolver, accessToken, configRegistryId, elementId, newName);
+			succeed = ConfigRegistryUtil.updateConfigElementName(clientResolver, accessToken, configRegistryId, elementId, newName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -521,7 +521,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = InfraClientsUtil.CONFIG_REGISTRY.setConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, oldAttributeName, attributeName, attributeValue);
+			succeed = ConfigRegistryUtil.setConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, oldAttributeName, attributeName, attributeValue);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -539,7 +539,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = InfraClientsUtil.CONFIG_REGISTRY.setConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributes);
+			succeed = ConfigRegistryUtil.setConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributes);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -557,7 +557,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = InfraClientsUtil.CONFIG_REGISTRY.removeConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, attributeName);
+			succeed = ConfigRegistryUtil.removeConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, attributeName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -575,7 +575,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = InfraClientsUtil.CONFIG_REGISTRY.removeConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributeName);
+			succeed = ConfigRegistryUtil.removeConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributeName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -593,7 +593,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			isDeleted = InfraClientsUtil.CONFIG_REGISTRY.deleteConfigElement(clientResolver, accessToken, configRegistryId, elementId);
+			isDeleted = ConfigRegistryUtil.deleteConfigElement(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -611,7 +611,7 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			isDeleted = InfraClientsUtil.CONFIG_REGISTRY.deleteConfigElement(clientResolver, accessToken, configRegistryId, path);
+			isDeleted = ConfigRegistryUtil.deleteConfigElement(clientResolver, accessToken, configRegistryId, path);
 
 		} catch (ClientException e) {
 			handle(e);

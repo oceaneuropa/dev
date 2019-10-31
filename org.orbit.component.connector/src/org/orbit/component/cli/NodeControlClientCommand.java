@@ -12,7 +12,8 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -80,7 +81,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 
 	protected DomainManagementClient getDomainService() {
 		String domainServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
-		DomainManagementClient domainService = ComponentClientsUtil.DomainControl.getDomainClient(domainServiceUrl, null);
+		DomainManagementClient domainService = DomainUtil.getClient(domainServiceUrl, null);
 		if (domainService == null) {
 			throw new IllegalStateException("DomainManagementClient is null.");
 		}
@@ -93,7 +94,7 @@ public class NodeControlClientCommand extends ServiceClientCommand implements Co
 		if (platformConfig != null) {
 			String nodeControlServiceUrl = platformConfig.getHostURL() + platformConfig.getContextRoot();
 
-			NodeControlClient nodeControlClient = ComponentClientsUtil.NodeControl.getNodeControlClient(nodeControlServiceUrl, null);
+			NodeControlClient nodeControlClient = NodeUtil.getClient(nodeControlServiceUrl, null);
 			if (nodeControlClient == null) {
 				throw new IllegalStateException("NodeControl is null.");
 			}

@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -47,7 +47,7 @@ public class NodeControlClientCommandGeneric implements CommandActivator {
 	}
 
 	protected NodeControlClient getNodeControl(String url) {
-		NodeControlClient nodeControl = ComponentClientsUtil.NodeControl.getNodeControlClient(url, null);
+		NodeControlClient nodeControl = NodeUtil.getClient(url, null);
 		if (nodeControl == null) {
 			throw new IllegalStateException("NodeControlClient is null.");
 		}

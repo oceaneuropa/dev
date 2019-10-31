@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.MachineConfig;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -42,8 +42,7 @@ public class MachineListServlet extends HttpServlet {
 		MachineConfig[] machineConfigs = null;
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-
-			machineConfigs = ComponentClientsUtil.DomainControl.getMachineConfigs(domainServiceUrl, accessToken);
+			machineConfigs = DomainUtil.getMachineConfigs(domainServiceUrl, accessToken);
 
 		} catch (Exception e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

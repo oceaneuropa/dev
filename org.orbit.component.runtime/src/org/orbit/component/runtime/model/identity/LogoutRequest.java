@@ -3,7 +3,8 @@ package org.orbit.component.runtime.model.identity;
 public class LogoutRequest {
 
 	protected String tokenType;
-	protected String tokenValue;
+	protected String accessToken;
+	protected String refreshToken;
 
 	public String getTokenType() {
 		return this.tokenType;
@@ -13,12 +14,20 @@ public class LogoutRequest {
 		this.tokenType = tokenType;
 	}
 
-	public String getTokenValue() {
-		return tokenValue;
+	public String getAccessToken() {
+		return this.accessToken;
 	}
 
-	public void setTokenValue(String tokenValue) {
-		this.tokenValue = tokenValue;
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getRefreshToken() {
+		return this.refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
 	}
 
 }

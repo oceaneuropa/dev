@@ -32,6 +32,7 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		Resource.Builder indexItemsWSResource = Resource.builder("/indexitems/{indexproviderid}");
 		new WSMethodInflector(indexItemsWSResource, "", GET, JSON, createClient(), switcher);
 		new WSMethodInflector(indexItemsWSResource, "", POST, JSON, createClient(), switcher);
+		new WSMethodInflector(indexItemsWSResource, "", DELETE, JSON, createClient(), switcher);
 
 		Resource.Builder indexItemWSResource = Resource.builder("/indexitems/{indexproviderid}/{indexitemid}");
 		new WSMethodInflector(indexItemWSResource, "", GET, JSON, createClient(), switcher);

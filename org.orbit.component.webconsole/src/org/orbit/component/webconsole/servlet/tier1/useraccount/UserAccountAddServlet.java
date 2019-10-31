@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.UserAccountUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -53,7 +53,7 @@ public class UserAccountAddServlet extends HttpServlet {
 		if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-				succeed = ComponentClientsUtil.UserAccounts.addUserAccount(userRegistryUrl, accessToken, username, email, password, firstName, lastName, phone);
+				succeed = UserAccountUtil.addUserAccount(userRegistryUrl, accessToken, username, email, password, firstName, lastName, phone);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

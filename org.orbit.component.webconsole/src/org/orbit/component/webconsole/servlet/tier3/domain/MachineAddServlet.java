@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -44,8 +44,7 @@ public class MachineAddServlet extends HttpServlet {
 		if (!id.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-
-				succeed = ComponentClientsUtil.DomainControl.addMachineConfig(domainServiceUrl, accessToken, id, name, ip);
+				succeed = DomainUtil.addMachineConfig(domainServiceUrl, accessToken, id, name, ip);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

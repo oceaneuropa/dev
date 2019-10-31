@@ -13,14 +13,17 @@ import org.orbit.component.runtime.model.identity.LoginRequest;
 import org.orbit.component.runtime.model.identity.LoginResponse;
 import org.orbit.component.runtime.model.identity.LogoutRequest;
 import org.orbit.component.runtime.model.identity.LogoutResponse;
+import org.orbit.component.runtime.model.identity.RefreshTokenResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
+import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.JWTTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.util.ExtensionHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.StatusDTO;
@@ -302,7 +305,8 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 				boolean succeed = false;
 				String message = null;
 				String tokenType = null;
-				String tokenValue = null;
+				String accessToken = null;
+				String refreshToken = null;
 
 				UserAccount userAccount = null;
 
@@ -330,22 +334,19 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 				}
 
 				if (succeed) {
-					// Generate token
-					tokenType = "Bearer";
-
 					JWTTokenHandler tokenHandler = ExtensionHelper.JWT.getTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT);
 					if (tokenHandler == null) {
 						throw new ServerException("500", "JWTTokenHandler is null.");
 					}
 
-					// Get user basic information
+					// User information
 					String _accountId = userAccount.getAccountId();
 					String _username = userAccount.getUsername();
 					String _email = userAccount.getEmail();
 					String firstName = userAccount.getFirstName();
 					String lastName = userAccount.getLastName();
 
-					// Need to get roles, securityLevel and classificationLevels associated with UserAccount.
+					// Roles, securityLevel and classificationLevels.
 					String roles = OrbitRoles.SYSTEM_ADMIN + "," + OrbitRoles.USER;
 					int securityLevel = Secured.SecurityLevels.LEVEL_1;
 					String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
@@ -360,7 +361,15 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
 					payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
 
-					tokenValue = tokenHandler.createToken(payload);
+					// access token expires in 30 minutes by default
+					accessToken = tokenHandler.createToken(payload);
+
+					// refresh token expires in 12 hours
+					Map<String, Object> options = new HashMap<String, Object>();
+					options.put(JWTTokenHandler.OPTION__EXPIRE_MINUTES, new Integer(12 * 60));
+					refreshToken = tokenHandler.createToken(options, payload);
+
+					tokenType = "Bearer";
 
 				} else {
 					message = "Invalid username or password.";
@@ -369,10 +378,9 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 				response = new LoginResponse();
 				response.setSucceed(succeed);
 				response.setMessage(message);
-				if (succeed) {
-					response.setTokenType(tokenType);
-					response.setTokenValue(tokenValue);
-				}
+				response.setTokenType(tokenType);
+				response.setAccessToken(accessToken);
+				response.setRefreshToken(refreshToken);
 			}
 
 		} catch (Exception e) {
@@ -382,11 +390,128 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	}
 
 	@Override
-	public LogoutResponse logout(LogoutRequest request) throws ServerException {
-		String tokenType = request.getTokenType();
-		String tokenValue = request.getTokenValue();
+	public RefreshTokenResponse refreshToken(String refreshToken) throws ServerException {
+		boolean succeed = false;
+		String message = null;
+		String tokenType = null;
+		String accessToken = null;
+		String newRefreshToken = null;
 
-		return null;
+		try {
+			// Validate the refresh token
+			boolean isRefreshTokenValid = OrbitTokenUtil.INSTANCE.isTokenValid(PlatformConstants.TOKEN_PROVIDER__ORBIT, refreshToken);
+
+			if (isRefreshTokenValid) {
+				UserAccount userAccount = null;
+				String accountId = OrbitTokenUtil.INSTANCE.getAccountId(PlatformConstants.TOKEN_PROVIDER__ORBIT, refreshToken);
+				if (accountId != null) {
+					userAccount = getUserAccountPersistence().getUserAccountByAccountId(accountId);
+				}
+
+				if (userAccount != null) {
+					JWTTokenHandler tokenHandler = ExtensionHelper.JWT.getTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT);
+					if (tokenHandler == null) {
+						throw new ServerException("500", "JWTTokenHandler is null.");
+					}
+
+					// User information
+					String _accountId = userAccount.getAccountId();
+					String _username = userAccount.getUsername();
+					String _email = userAccount.getEmail();
+					String firstName = userAccount.getFirstName();
+					String lastName = userAccount.getLastName();
+
+					// Roles, securityLevel and classificationLevels
+					String roles = OrbitRoles.SYSTEM_ADMIN + "," + OrbitRoles.USER;
+					int securityLevel = Secured.SecurityLevels.LEVEL_1;
+					String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
+
+					Map<String, String> payload = new LinkedHashMap<String, String>();
+					payload.put(JWTTokenHandler.PAYLOAD__ACCOUNT_ID, _accountId);
+					payload.put(JWTTokenHandler.PAYLOAD__USERNAME, _username);
+					payload.put(JWTTokenHandler.PAYLOAD__EMAIL, _email);
+					payload.put(JWTTokenHandler.PAYLOAD__FIRST_NAME, firstName);
+					payload.put(JWTTokenHandler.PAYLOAD__LAST_NAME, lastName);
+					payload.put(JWTTokenHandler.PAYLOAD__ROLES, roles);
+					payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
+					payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
+
+					// access token expires in 30 minutes by default
+					accessToken = tokenHandler.createToken(payload);
+
+					// refresh token expires in 12 hours
+					Map<String, Object> options = new HashMap<String, Object>();
+					options.put(JWTTokenHandler.OPTION__EXPIRE_MINUTES, new Integer(12 * 60));
+					newRefreshToken = tokenHandler.createToken(options, payload);
+
+					succeed = true;
+					message = "Token is refreshed.";
+					tokenType = "Bearer";
+
+				} else {
+					message = "User is unknown.";
+				}
+			} else {
+				message = "Refresh token is invalid.";
+			}
+		} catch (Exception e) {
+			handleException(e);
+		}
+
+		RefreshTokenResponse response = new RefreshTokenResponse();
+		response.setSucceed(succeed);
+		response.setMessage(message);
+		response.setTokenType(tokenType);
+		response.setAccessToken(accessToken);
+		response.setRefreshToken(newRefreshToken);
+
+		return response;
+	}
+
+	@Override
+	public LogoutResponse logout(LogoutRequest request) throws ServerException {
+		boolean succeed = false;
+		String message = "";
+		try {
+			// String tokenType = request.getTokenType();
+			String accessToken = request.getAccessToken();
+			String refreshToken = request.getAccessToken();
+
+			String accountId = null;
+			boolean isAccessTokenValid = OrbitTokenUtil.INSTANCE.isTokenValid(PlatformConstants.TOKEN_PROVIDER__ORBIT, accessToken);
+			if (isAccessTokenValid) {
+				accountId = OrbitTokenUtil.INSTANCE.getAccountId(PlatformConstants.TOKEN_PROVIDER__ORBIT, accessToken);
+			}
+			if (accountId == null) {
+				boolean isRefreshTokenValid = OrbitTokenUtil.INSTANCE.isTokenValid(PlatformConstants.TOKEN_PROVIDER__ORBIT, refreshToken);
+				if (isRefreshTokenValid) {
+					accountId = OrbitTokenUtil.INSTANCE.getAccountId(PlatformConstants.TOKEN_PROVIDER__ORBIT, refreshToken);
+				}
+			}
+
+			UserAccount userAccount = null;
+			if (accountId != null) {
+				userAccount = getUserAccountPersistence().getUserAccountByAccountId(accountId);
+			}
+
+			if (userAccount != null) {
+				// Perform other sign out logic here...
+				succeed = true;
+				message = "User signed out successfully.";
+
+			} else {
+				message = "User is unknown.";
+			}
+
+		} catch (Exception e) {
+			handleException(e);
+		}
+
+		LogoutResponse response = new LogoutResponse();
+		response.setSucceed(succeed);
+		response.setMessage(message);
+
+		return response;
 	}
 
 }

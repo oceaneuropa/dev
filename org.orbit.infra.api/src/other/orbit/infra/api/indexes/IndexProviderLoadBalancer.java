@@ -93,8 +93,13 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProviderClient>
 		}
 
 		@Override
-		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return next().deleteIndexItem(indexProviderId, indexItemId);
+		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			return next().removeIndexItem(indexProviderId, indexItemId);
+		}
+
+		@Override
+		public boolean removeIndexItems(String indexProviderId) throws IOException {
+			return next().removeIndexItems(indexProviderId);
 		}
 
 		@Override
@@ -247,7 +252,12 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProviderClient>
 		}
 
 		@Override
-		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean removeIndexItems(String indexProviderId) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -52,7 +52,7 @@ public class PlatformDeleteServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				for (String currId : ids) {
-					boolean currSucceed = ComponentClientsUtil.DomainControl.removePlatformConfig(domainServiceUrl, accessToken, machineId, currId);
+					boolean currSucceed = DomainUtil.removePlatformConfig(domainServiceUrl, accessToken, machineId, currId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

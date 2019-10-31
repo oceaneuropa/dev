@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.MachineConfig;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -46,12 +46,12 @@ public class MachineUpdateServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				MachineConfig machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, id);
+				MachineConfig machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, id);
 				if (machineConfig == null) {
 					message = MessageHelper.INSTANCE.add(message, "Machine configuration is not found.");
 
 				} else {
-					succeed = ComponentClientsUtil.DomainControl.updateMachineConfig(domainServiceUrl, accessToken, id, name, ip);
+					succeed = DomainUtil.updateMachineConfig(domainServiceUrl, accessToken, id, name, ip);
 				}
 
 			} catch (ClientException e) {

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.platform.sdk.downloader.Downloader;
 import org.origin.common.rest.client.ClientException;
 
@@ -23,7 +23,7 @@ public class AppStoreDownloader implements Downloader {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 
-		AppStoreClient appStore = ComponentClientsUtil.AppStore.getAppStoreClient(accessToken);
+		AppStoreClient appStore = AppStoreUtil.getClient(accessToken);
 		if (appStore != null) {
 			for (OutputStream currOutput : output) {
 				try {

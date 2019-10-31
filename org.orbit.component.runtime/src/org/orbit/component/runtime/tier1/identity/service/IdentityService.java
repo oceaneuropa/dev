@@ -4,6 +4,7 @@ import org.orbit.component.runtime.model.identity.LoginRequest;
 import org.orbit.component.runtime.model.identity.LoginResponse;
 import org.orbit.component.runtime.model.identity.LogoutRequest;
 import org.orbit.component.runtime.model.identity.LogoutResponse;
+import org.orbit.component.runtime.model.identity.RefreshTokenResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.origin.common.rest.server.ServerException;
@@ -19,6 +20,8 @@ public interface IdentityService extends WebServiceAware, AccessTokenAware {
 	RegisterResponse register(RegisterRequest request) throws ServerException;
 
 	LoginResponse login(LoginRequest request) throws ServerException;
+
+	RefreshTokenResponse refreshToken(String refreshToken) throws ServerException;
 
 	LogoutResponse logout(LogoutRequest request) throws ServerException;
 

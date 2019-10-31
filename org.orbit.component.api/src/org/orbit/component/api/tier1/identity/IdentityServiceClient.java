@@ -13,6 +13,8 @@ public interface IdentityServiceClient extends ServiceClient {
 
 	LoginResponse login(LoginRequest request) throws ClientException;
 
+	RefreshTokenResponse refreshToken(RefreshTokenRequest request) throws ClientException;
+
 	LogoutResponse logout(LogoutRequest request) throws ClientException;
 
 }

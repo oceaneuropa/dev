@@ -15,7 +15,7 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
-import org.origin.svg.render.widget.WidgetFigureHandler;
+import org.origin.svg.render.widget.util.WidgetFigureHandler;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
 import org.origin.svg.widgets.render.FigureHandlerRegistry;
@@ -42,7 +42,7 @@ import org.plutus.lottery.util.DrawReaderV2;
 public class PBMain2 {
 
 	static {
-		WidgetFigureHandler.register();
+		FigureHandlerRegistry.register(new WidgetFigureHandler());
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
 		A12_NumberDiffAnalysis.INSTANCE.register();
 		A13_RangeNormalizationAnalysis.INSTANCE.register();

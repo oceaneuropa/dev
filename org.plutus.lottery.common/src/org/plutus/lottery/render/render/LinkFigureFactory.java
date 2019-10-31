@@ -3,10 +3,10 @@ package org.plutus.lottery.render.render;
 import org.origin.svg.Shape;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.widgets.render.FigureHandlerRegistry;
-import org.origin.svg.widgets.render.TypedFigureHandler;
+import org.origin.svg.widgets.render.FigureHandlerByType;
 import org.plutus.lottery.render.control.LinkPart;
 
-public class LinkFigureFactory extends TypedFigureHandler<LinkPart> {
+public class LinkFigureFactory extends FigureHandlerByType<LinkPart> {
 
 	public static LinkFigureFactory INSTANCE = new LinkFigureFactory();
 

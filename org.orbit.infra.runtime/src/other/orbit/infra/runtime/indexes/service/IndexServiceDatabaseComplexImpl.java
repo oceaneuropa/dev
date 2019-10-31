@@ -824,8 +824,8 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 							IndexItem indexItemFromDatabase = indexItemEntry.getValue();
 							IndexItem cachedIndexItem = snapshotToCachedIndexItemMap.get(indexItemSnapshot);
 
-							Date lastUpdateTimeCached = cachedIndexItem.getLastUpdateTime();
-							Date lastUpdateTimeSnapshot = indexItemSnapshot.getLastUpdateTime();
+							Date lastUpdateTimeCached = cachedIndexItem.getDateModified();
+							Date lastUpdateTimeSnapshot = indexItemSnapshot.getDateModified();
 
 							boolean matchLastUpdateTime = CompareUtil.equals(lastUpdateTimeCached, lastUpdateTimeSnapshot, true);
 							if (!matchLastUpdateTime) {
@@ -1342,6 +1342,11 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		return succeed;
 	}
 
+	@Override
+	public boolean removeIndexItems(String indexProviderId) throws ServerException {
+		return false;
+	}
+
 	/**
 	 * Set the properties of an index item.
 	 * 
@@ -1653,7 +1658,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			}
 
 			indexItemToUpdate.setProperties(properties);
-			indexItemToUpdate.setLastUpdateTime(lastUpdateTime);
+			indexItemToUpdate.setDateModified(lastUpdateTime);
 
 			if (debug) {
 				System.out.println(getClassName() + ".udpateCachedIndexItem() index item (indexItemId=" + indexItemId + ") is updated in the cached data.");
@@ -1691,16 +1696,16 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		String type1 = indexItemSnapshot.getType();
 		String name1 = indexItemSnapshot.getName();
 		Map<String, Object> properties1 = indexItemSnapshot.getProperties();
-		Date createTime1 = indexItemSnapshot.getCreateTime();
-		Date lastUpdateTime1 = indexItemSnapshot.getLastUpdateTime();
+		Date createTime1 = indexItemSnapshot.getDateCreated();
+		Date lastUpdateTime1 = indexItemSnapshot.getDateModified();
 
 		Integer indexItemId2 = indexItemFromDatabase.getIndexItemId();
 		String indexProviderId2 = indexItemFromDatabase.getIndexProviderId();
 		String type2 = indexItemFromDatabase.getType();
 		String name2 = indexItemFromDatabase.getName();
 		Map<String, Object> properties2 = indexItemFromDatabase.getProperties();
-		Date createTime2 = indexItemFromDatabase.getCreateTime();
-		Date lastUpdateTime2 = indexItemFromDatabase.getLastUpdateTime();
+		Date createTime2 = indexItemFromDatabase.getDateCreated();
+		Date lastUpdateTime2 = indexItemFromDatabase.getDateModified();
 
 		boolean matchIndexItemId = CompareUtil.equals(indexItemId1, indexItemId2, false);
 		boolean matchIndexProviderId = CompareUtil.equals(indexProviderId1, indexProviderId2, true);
@@ -1744,16 +1749,16 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		String type1 = cachedIndexItem.getType();
 		String name1 = cachedIndexItem.getName();
 		Map<String, Object> properties1 = cachedIndexItem.getProperties();
-		Date createTime1 = cachedIndexItem.getCreateTime();
-		Date lastUpdateTime1 = cachedIndexItem.getLastUpdateTime();
+		Date createTime1 = cachedIndexItem.getDateCreated();
+		Date lastUpdateTime1 = cachedIndexItem.getDateModified();
 
 		Integer indexItemId2 = indexItemFromDatabase.getIndexItemId();
 		String indexProviderId2 = indexItemFromDatabase.getIndexProviderId();
 		String type2 = indexItemFromDatabase.getType();
 		String name2 = indexItemFromDatabase.getName();
 		Map<String, Object> properties2 = indexItemFromDatabase.getProperties();
-		Date createTime2 = indexItemFromDatabase.getCreateTime();
-		Date lastUpdateTime2 = indexItemFromDatabase.getLastUpdateTime();
+		Date createTime2 = indexItemFromDatabase.getDateCreated();
+		Date lastUpdateTime2 = indexItemFromDatabase.getDateModified();
 
 		boolean matchIndexItemId = CompareUtil.equals(indexItemId1, indexItemId2, false);
 		if (!matchIndexItemId) {
@@ -1786,13 +1791,13 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 		boolean matchCreateTime = CompareUtil.equals(createTime1, createTime2, true);
 		if (!matchCreateTime) {
-			cachedIndexItem.setCreateTime(createTime2);
+			cachedIndexItem.setDateCreated(createTime2);
 			isUpdated = true;
 		}
 
 		boolean matchLastUpdateTime = CompareUtil.equals(lastUpdateTime1, lastUpdateTime2, true);
 		if (!matchLastUpdateTime) {
-			cachedIndexItem.setLastUpdateTime(lastUpdateTime2);
+			cachedIndexItem.setDateModified(lastUpdateTime2);
 			isUpdated = true;
 		}
 

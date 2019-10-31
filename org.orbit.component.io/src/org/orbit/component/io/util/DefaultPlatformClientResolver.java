@@ -3,7 +3,7 @@ package org.orbit.component.io.util;
 import java.io.IOException;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformClientResolver;
 
@@ -28,7 +28,7 @@ public class DefaultPlatformClientResolver implements PlatformClientResolver {
 	public PlatformClient resolve(String parentPlatformId, String platformId, String... platformTypes) throws IOException {
 		PlatformClient platformClient = null;
 
-		IndexItem platformIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(this.accessToken, parentPlatformId, platformId, platformTypes);
+		IndexItem platformIndexItem = IndexServiceUtil.getIndexItem(this.accessToken, parentPlatformId, platformId, platformTypes);
 		if (platformIndexItem != null) {
 			platformClient = OrbitClientHelper.INSTANCE.getPlatformClient(this.accessToken, platformIndexItem);
 		}

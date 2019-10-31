@@ -4,6 +4,8 @@ import org.orbit.component.webconsole.extension.PublicWebApplicationActivator;
 import org.orbit.component.webconsole.extension.PublicWebApplicationPropertyTester;
 import org.orbit.component.webconsole.extension.WebApplicationActivator;
 import org.orbit.component.webconsole.extension.WebApplicationPropertyTester;
+import org.orbit.component.webconsole.util.OrbitHttpContextProvider;
+import org.orbit.platform.sdk.http.HttpContextProvider;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
@@ -27,8 +29,20 @@ public class Extensions extends ProgramExtensions {
 	public void createExtensions() {
 		LOG.debug("createExtensions()");
 
+		createHttpContextProviderExtensions();
 		createServiceActivatorExtensions();
 		createPropertyTesterExtensions();
+	}
+
+	protected void createHttpContextProviderExtensions() {
+		String typeId = HttpContextProvider.EXTENSION_TYPE_ID;
+
+		// Extension extension1 = new Extension(typeId, PlatformHttpContextProvider.ID);
+		Extension extension1 = new Extension(typeId, OrbitHttpContextProvider.ID);
+		extension1.setProperty(HttpContextProvider.PROP__PROVIDER, "orbit");
+		// extension1.addInterface(HttpContextProvider.class, PlatformHttpContextProvider.class);
+		extension1.addInterface(HttpContextProvider.class, OrbitHttpContextProvider.class);
+		addExtension(extension1);
 	}
 
 	protected void createServiceActivatorExtensions() {

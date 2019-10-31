@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
@@ -51,12 +51,12 @@ public class PlatformUpdateServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				PlatformConfig platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, id);
+				PlatformConfig platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, id);
 				if (platformConfig == null) {
 					message = MessageHelper.INSTANCE.add(message, "Platform configuration is not found.");
 
 				} else {
-					succeed = ComponentClientsUtil.DomainControl.updatePlatformConfig(domainServiceUrl, accessToken, machineId, id, name, hostUrl, theContextRoot);
+					succeed = DomainUtil.updatePlatformConfig(domainServiceUrl, accessToken, machineId, id, name, hostUrl, theContextRoot);
 				}
 
 			} catch (ClientException e) {

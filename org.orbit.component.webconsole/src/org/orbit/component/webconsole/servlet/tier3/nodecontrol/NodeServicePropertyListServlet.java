@@ -13,13 +13,14 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.DefaultNodeControlClientResolver;
 import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ServiceInfo;
 import org.orbit.platform.api.ServicePropertyInfo;
@@ -91,13 +92,13 @@ public class NodeServicePropertyListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, parentPlatformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
+				nodeInfo = NodeUtil.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
 				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(accessToken);
 				serviceInfo = PlatformClientsUtil.INSTANCE.getService(platformClientResolver, parentPlatformId, nodeId, sid);

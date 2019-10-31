@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -135,8 +135,7 @@ public class AppUploadServlet extends HttpServlet {
 
 					// 8. Upload file to app store
 					String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-
-					boolean succeed = ComponentClientsUtil.AppStore.uploadAppFile(accessToken, id, appId, appVersion, localFiles);
+					boolean succeed = AppStoreUtil.uploadAppFile(accessToken, id, appId, appVersion, localFiles);
 					if (succeed) {
 						message = MessageHelper.INSTANCE.add(message, "App file is uploaded to app store.");
 					} else {

@@ -15,13 +15,14 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.ExtensionRegistryUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.PlatformServiceMetadata;
@@ -39,9 +40,9 @@ public class PlatformListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		// String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		// String extensionRegistryUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String message = null;
@@ -67,12 +68,11 @@ public class PlatformListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-
-				platformConfigs = ComponentClientsUtil.DomainControl.getPlatformConfigs(domainServiceUrl, accessToken, machineId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfigs = DomainUtil.getPlatformConfigs(domainServiceUrl, accessToken, machineId);
 
 				// Get index items for platforms
-				platformIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER, PlatformConstants.PLATFORM_TYPE__NODE);
+				platformIdToIndexItemMap = IndexServiceUtil.getPlatformIdToIndexItem(accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER, PlatformConstants.PLATFORM_TYPE__NODE);
 
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
@@ -108,9 +108,9 @@ public class PlatformListServlet extends HttpServlet {
 
 						Map<String, List<IndexItem>> indexerIdToIndexItemsMap = new LinkedHashMap<String, List<IndexItem>>();
 						// Get extensions indexer ids from the platform
-						List<String> indexerIds = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionIdsOfPlatform(accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<String> indexerIds = ExtensionRegistryUtil.getExtensionIds(accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (String indexerId : indexerIds) {
-							List<IndexItem> currIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, indexerId, platformId);
+							List<IndexItem> currIndexItems = IndexServiceUtil.getIndexItemsOfPlatform(accessToken, indexerId, platformId);
 							indexerIdToIndexItemsMap.put(indexerId, currIndexItems);
 						}
 						platformIdToIndexerIdToIndexItemsMap.put(platformId, indexerIdToIndexItemsMap);

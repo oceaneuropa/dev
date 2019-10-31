@@ -16,13 +16,14 @@ import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ClientComparators;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
+import org.orbit.component.api.util.NodeUtil;
 import org.orbit.component.io.util.DefaultNodeControlClientResolver;
 import org.orbit.component.io.util.OrbitClientHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.PlatformServiceMetadata;
@@ -77,15 +78,15 @@ public class NodeListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
+				machineConfig = DomainUtil.getMachineConfig(domainServiceUrl, accessToken, machineId);
+				platformConfig = DomainUtil.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver();
-				nodeInfos = ComponentClientsUtil.NodeControl.getNodes(nodeControlClientResolver, accessToken, platformId);
+				nodeInfos = NodeUtil.getNodes(nodeControlClientResolver, accessToken, platformId);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					nodeIdToIndexItemMap = InfraClientsUtil.INDEX_SERVICE.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
+					nodeIdToIndexItemMap = IndexServiceUtil.getPlatformIdToIndexItem(accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
 
 					// List<NodeInfo> offlineNodes = new ArrayList<NodeInfo>();
 					// List<NodeInfo> onlineNodes = new ArrayList<NodeInfo>();

@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.orbit.component.api.tier2.appstore.AppManifest;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.component.io.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.api.ProgramInfo;
 import org.orbit.platform.api.util.PlatformClientsUtil;
@@ -46,7 +46,7 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 
 			List<String> programIdAndVersionList = new ArrayList<String>();
 			for (String nodeId : nodeIds) {
-				IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem == null) {
 					continue;
 				}
@@ -74,7 +74,7 @@ public class NodesProgramBatchUninstallProviderServlet extends HttpServlet {
 				String programId = programIdAndVersion.substring(0, index);
 				String programVersion = programIdAndVersion.substring(index + 1);
 
-				AppManifest appManifest = ComponentClientsUtil.AppStore.getApp(accessToken, programId, programVersion);
+				AppManifest appManifest = AppStoreUtil.getApp(accessToken, programId, programVersion);
 				if (appManifest != null) {
 					appManifests.add(appManifest);
 				}

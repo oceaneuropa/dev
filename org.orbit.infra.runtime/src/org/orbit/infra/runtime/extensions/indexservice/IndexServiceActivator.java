@@ -3,9 +3,9 @@ package org.orbit.infra.runtime.extensions.indexservice;
 import java.util.Map;
 
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.infra.runtime.indexes.service.IndexServiceIMImpl;
 import org.orbit.platform.sdk.IProcess;
+import org.orbit.platform.sdk.IProcessContext;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
@@ -28,7 +28,8 @@ public class IndexServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start IndexService
-		IndexServiceImpl indexService = new IndexServiceImpl(properties);
+		// IndexServiceImpl indexService = new IndexServiceImpl(properties);
+		IndexServiceIMImpl indexService = new IndexServiceIMImpl(properties);
 		indexService.start(bundleContext);
 
 		process.adapt(IndexService.class, indexService);

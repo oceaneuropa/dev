@@ -11,9 +11,9 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponseDTO;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.ClientException;
 
 /*
  * Auth web service client.
@@ -110,8 +110,9 @@ public class AuthWSClient extends WSClient {
 			if (tokenResponse != null) {
 				String tokenType = tokenResponse.getToken_type();
 				String accessToken = tokenResponse.getAccess_token();
+				String refreshToken = tokenResponse.getRefresh_token();
 				if (accessToken != null) {
-					updateToken(tokenType, accessToken);
+					updateToken(tokenType, accessToken, refreshToken);
 				}
 			}
 

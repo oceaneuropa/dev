@@ -46,7 +46,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public ConfigRegistryClient getConfigRegistryClient() {
+	public ConfigRegistryClient getClient() {
 		return this.configRegistryClient;
 	}
 

@@ -14,7 +14,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.DomainUtil;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -84,7 +84,7 @@ public class DomainManagementClientCommand implements Annotated, CommandActivato
 
 	protected DomainManagementClient getDomainManagementCLient() {
 		String domainServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
-		DomainManagementClient domainService = ComponentClientsUtil.DomainControl.getDomainClient(domainServiceUrl, null);
+		DomainManagementClient domainService = DomainUtil.getClient(domainServiceUrl, null);
 		if (domainService == null) {
 			throw new IllegalStateException("DomainManagementClient is null.");
 		}

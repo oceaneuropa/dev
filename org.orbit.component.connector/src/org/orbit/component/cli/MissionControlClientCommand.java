@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier4.missioncontrol.Mission;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
-import org.orbit.component.api.util.ComponentClientsUtil;
+import org.orbit.component.api.util.OthersUtil;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -69,7 +69,7 @@ public class MissionControlClientCommand extends ServiceClientCommand implements
 
 	protected MissionControlClient getMissionControl() {
 		String missionControlUrl = (String) this.properties.get(ComponentConstants.ORBIT_MISSION_CONTROL_URL);
-		MissionControlClient missionControl = ComponentClientsUtil.MissionControl.getMissionControlClient(missionControlUrl, null);
+		MissionControlClient missionControl = OthersUtil.getMissionControlClient(missionControlUrl, null);
 		if (missionControl == null) {
 			throw new IllegalStateException("MissionControl is null.");
 		}

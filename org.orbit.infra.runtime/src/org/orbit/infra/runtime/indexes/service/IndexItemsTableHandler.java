@@ -260,7 +260,7 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 
 		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (type, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?)", new Object[] { type, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {
-			newIndexItemVO = new IndexItemVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
+			newIndexItemVO = new IndexItemVO(indexItemId, this.indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
 		}
 		return newIndexItemVO;
 	}

@@ -39,8 +39,8 @@ public class RuntimeModelConverter {
 			indexItemDTO.setType(indexItem.getType());
 			indexItemDTO.setName(indexItem.getName());
 			indexItemDTO.setProperties(indexItem.getProperties());
-			indexItemDTO.setCreateTime(indexItem.getCreateTime());
-			indexItemDTO.setUpdateTime(indexItem.getLastUpdateTime());
+			indexItemDTO.setCreateTime(indexItem.getDateCreated());
+			indexItemDTO.setUpdateTime(indexItem.getDateModified());
 
 			return indexItemDTO;
 		}

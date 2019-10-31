@@ -17,13 +17,14 @@ public class IdentityWSApplicationDesc extends WSApplicationDesc {
 		setRemoteFeature(FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO);
 
 		WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");
-		// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
-		// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");
-
 		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "exists");
 		new WSMethodDesc(rootWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "register");
 		new WSMethodDesc(rootWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "login");
+		new WSMethodDesc(rootWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "refreshToken");
 		new WSMethodDesc(rootWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "logout");
 	}
 
 }
+
+// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
+// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");

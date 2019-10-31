@@ -13,7 +13,7 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -61,7 +61,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				// IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(accessToken, nodeId);
-				IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = IndexServiceUtil.getIndexItem(accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					isNodeOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				}

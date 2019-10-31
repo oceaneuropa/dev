@@ -12,7 +12,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.util.PlatformClientsUtil;
@@ -32,7 +32,7 @@ public class OrbitClientHelper {
 	public IndexItem getPlatformIndexItem(String accessToken, String platformId) throws IOException {
 		IndexItem platformIndexItem = null;
 		if (platformId != null) {
-			IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
+			IndexServiceClient indexService = IndexServiceUtil.getClient(accessToken);
 			if (indexService != null) {
 				platformIndexItem = indexService.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE, platformId);
 			}
@@ -52,7 +52,7 @@ public class OrbitClientHelper {
 	public IndexItem getNodeIndexItem(String accessToken, String platformParentId, String nodePlatformid) throws IOException {
 		IndexItem nodeIndexItem = null;
 		if (platformParentId != null && nodePlatformid != null) {
-			IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(accessToken);
+			IndexServiceClient indexService = IndexServiceUtil.getClient(accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -114,7 +114,7 @@ public class OrbitClientHelper {
 		if (platformId != null) {
 
 			IndexItem nodeControlIndexItem = null;
-			List<IndexItem> nodeControlIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
+			List<IndexItem> nodeControlIndexItems = IndexServiceUtil.getIndexItemsOfPlatform(accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
 			if (nodeControlIndexItems != null && !nodeControlIndexItems.isEmpty()) {
 				for (IndexItem currNodeControlIndexItem : nodeControlIndexItems) {
 					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(currNodeControlIndexItem);

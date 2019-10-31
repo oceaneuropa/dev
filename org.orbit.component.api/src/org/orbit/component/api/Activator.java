@@ -1,7 +1,7 @@
 package org.orbit.component.api;
 
 import org.orbit.component.api.util.ComponentClients;
-import org.orbit.component.api.util.ComponentServicesPropertiesHandler;
+import org.orbit.component.api.util.ComponentsConfigPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		ComponentServicesPropertiesHandler.getInstance().start(bundleContext);
+		ComponentsConfigPropertiesHandler.getInstance().start(bundleContext);
 
 		ComponentClients.getInstance().start(bundleContext);
 	}
@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		ComponentClients.getInstance().stop(bundleContext);
 
-		ComponentServicesPropertiesHandler.getInstance().stop(bundleContext);
+		ComponentsConfigPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 		Activator.instance = null;

@@ -3,11 +3,11 @@ package org.plutus.lottery.render.render;
 import org.origin.svg.Shape;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.widgets.render.FigureHandlerRegistry;
-import org.origin.svg.widgets.render.TypedFigureHandler;
+import org.origin.svg.widgets.render.FigureHandlerByType;
 import org.plutus.lottery.powerball.PBConstants;
 import org.plutus.lottery.render.control.DrawPart;
 
-public class DrawFigureFactory extends TypedFigureHandler<DrawPart> {
+public class DrawFigureFactory extends FigureHandlerByType<DrawPart> {
 
 	public static DrawFigureFactory INSTANCE = new DrawFigureFactory();
 
