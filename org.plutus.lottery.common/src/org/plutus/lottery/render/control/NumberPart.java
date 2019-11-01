@@ -3,7 +3,7 @@ package org.plutus.lottery.render.control;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Control;
-import org.origin.svg.widgets.layout.SVGWT;
+import org.origin.svg.widgets.layout.WWT;
 
 public class NumberPart extends Control {
 
@@ -25,7 +25,7 @@ public class NumberPart extends Control {
 	 * @param isDummy
 	 */
 	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match, boolean isDummy) {
-		super(parent, SVGWT.DEFAULT, null);
+		super(parent, WWT.DEFAULT, null);
 		this.number = number;
 		this.isPBNumber = isPBNumber;
 		this.match = match;

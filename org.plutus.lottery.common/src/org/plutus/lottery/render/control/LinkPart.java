@@ -3,7 +3,7 @@ package org.plutus.lottery.render.control;
 import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Control;
 import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.layout.SVGWT;
+import org.origin.svg.widgets.layout.WWT;
 
 public class LinkPart extends Control {
 
@@ -34,7 +34,7 @@ public class LinkPart extends Control {
 	 * @param target
 	 */
 	public LinkPart(Composite parent, NumberPart source, NumberPart target) {
-		super(parent, SVGWT.DEFAULT, null);
+		super(parent, WWT.DEFAULT, null);
 		checkSource(source);
 		checkTarget(target);
 
