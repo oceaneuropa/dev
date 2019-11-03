@@ -4,9 +4,9 @@ import org.origin.svg.Rect;
 import org.origin.svg.Text;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.graphics.Rectangle;
-import org.origin.svg.render.widget.AbstractControlFigure;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGConstants;
+import org.origin.wwt.render.widget.AbstractControlFigure;
 import org.plutus.lottery.render.control.YearPart;
 
 public class YearFigure extends AbstractControlFigure {

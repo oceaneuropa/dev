@@ -1,9 +1,9 @@
 package org.plutus.lottery.render.control;
 
 import org.origin.svg.graphics.Point;
-import org.origin.svg.widgets.Composite;
-import org.origin.svg.widgets.Control;
-import org.origin.svg.widgets.layout.WWT;
+import org.origin.wwt.widgets.Composite;
+import org.origin.wwt.widgets.Control;
+import org.origin.wwt.widgets.layout.WWT;
 
 public class NumberPart extends Control {
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.origin.svg.graphics.Rectangle;
-import org.origin.svg.widgets.Composite;
-import org.origin.svg.widgets.Display;
+import org.origin.wwt.widgets.Composite;
+import org.origin.wwt.widgets.Display;
 
 public class IntegersPart extends Composite {
 

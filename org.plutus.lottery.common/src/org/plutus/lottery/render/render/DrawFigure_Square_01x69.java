@@ -3,8 +3,8 @@ package org.plutus.lottery.render.render;
 import org.origin.svg.Text;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.graphics.Rectangle;
-import org.origin.svg.render.widget.AbstractControlFigure;
 import org.origin.svg.util.SVGConstants;
+import org.origin.wwt.render.widget.AbstractControlFigure;
 import org.plutus.lottery.render.control.DrawPart;
 
 public class DrawFigure_Square_01x69 extends AbstractControlFigure {

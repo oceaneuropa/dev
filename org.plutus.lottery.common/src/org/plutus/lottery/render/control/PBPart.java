@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.svg.graphics.Rectangle;
-import org.origin.svg.widgets.Composite;
-import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.util.StyleUtil;
+import org.origin.wwt.widgets.Composite;
+import org.origin.wwt.widgets.Display;
+import org.origin.wwt.widgets.util.StyleUtil;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.PBConstants;
 

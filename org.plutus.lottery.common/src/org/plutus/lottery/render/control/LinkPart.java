@@ -1,9 +1,7 @@
 package org.plutus.lottery.render.control;
 
-import org.origin.svg.widgets.Composite;
-import org.origin.svg.widgets.Control;
-import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.layout.WWT;
+import org.origin.wwt.widgets.Control;
+import org.origin.wwt.widgets.layout.WWT;
 
 public class LinkPart extends Control {
 
@@ -12,20 +10,20 @@ public class LinkPart extends Control {
 	protected boolean isPredicted;
 	protected String strokeColor;
 
-	/**
-	 * 
-	 * @param display
-	 * @param source
-	 * @param target
-	 */
-	public LinkPart(Display display, NumberPart source, NumberPart target) {
-		super(display);
-		checkSource(source);
-		checkTarget(target);
-
-		this.source = source;
-		this.target = target;
-	}
+	// /**
+	// *
+	// * @param display
+	// * @param source
+	// * @param target
+	// */
+	// public LinkPart(Display display, NumberPart source, NumberPart target) {
+	// super(display);
+	// checkSource(source);
+	// checkTarget(target);
+	//
+	// this.source = source;
+	// this.target = target;
+	// }
 
 	/**
 	 * 
@@ -33,7 +31,7 @@ public class LinkPart extends Control {
 	 * @param source
 	 * @param target
 	 */
-	public LinkPart(Composite parent, NumberPart source, NumberPart target) {
+	public LinkPart(Control parent, NumberPart source, NumberPart target) {
 		super(parent, WWT.DEFAULT, null);
 		checkSource(source);
 		checkTarget(target);
