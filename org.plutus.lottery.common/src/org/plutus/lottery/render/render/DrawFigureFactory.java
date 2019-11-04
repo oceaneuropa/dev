@@ -2,6 +2,7 @@ package org.plutus.lottery.render.render;
 
 import org.origin.svg.Shape;
 import org.origin.svg.adapter.Notification;
+import org.origin.wwt.widgets.Control;
 import org.origin.wwt.widgets.render.FigureHandlerByType;
 import org.origin.wwt.widgets.render.FigureHandlerRegistry;
 import org.plutus.lottery.powerball.PBConstants;

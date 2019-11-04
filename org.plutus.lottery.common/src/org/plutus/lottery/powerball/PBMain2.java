@@ -113,7 +113,7 @@ public class PBMain2 {
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
-			Shape rootShape = FigureHandlerRegistry.getFigureHandler().createFigure(display);
+			Shape rootShape = FigureHandlerRegistry.getFigureHandler(display).createFigure(display);
 			// Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
 			SVGStringWriter writer = new SVGStringWriter(rootShape);
 
