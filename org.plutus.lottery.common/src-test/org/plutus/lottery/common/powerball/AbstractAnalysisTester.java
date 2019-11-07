@@ -10,6 +10,7 @@ import org.plutus.lottery.common.AnalysisContext;
 import org.plutus.lottery.common.AnalysisRegistry;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
+import org.plutus.lottery.powerball.analysis.A14_FirtDigitsAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
 import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
@@ -40,6 +41,7 @@ public abstract class AbstractAnalysisTester {
 		printDraws = false;
 
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
+		A14_FirtDigitsAnalysis.INSTANCE.register();
 		A21_OddEvenAnalysis.INSTANCE.register();
 		A24_RepetitionAnalysis.INSTANCE.register();
 		A22_SumAnalysis.INSTANCE.register();

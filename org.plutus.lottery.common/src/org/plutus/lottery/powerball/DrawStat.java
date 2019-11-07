@@ -92,6 +92,11 @@ public class DrawStat {
 	// 最近30期重复最多数字(前10位)
 	public static String PROP_NUMBER_COUNTS_30DRAWS_FIRST10 = "PROP_NUMBER_COUNTS_30DRAWS_FIRST10";
 
+	// 首位数字组合的计数统计
+	public static String PROP_FIRST_DIGITS_TO_COUNT_MAP = "PROP_FIRST_DIGITS_TO_COUNT_MAP";
+	public static String PROP_FIRST_DIGITS_TO_COUNT_TREEMAP = "PROP_FIRST_DIGITS_TO_COUNT_TREEMAP";
+	public static String PROP_FIRST_DIGITS_TO_COUNT_LIST = "PROP_FIRST_DIGITS_TO_COUNT_LIST";
+
 	// --------------------------------------------------------------------------------------------------
 	// Combination
 	// --------------------------------------------------------------------------------------------------
