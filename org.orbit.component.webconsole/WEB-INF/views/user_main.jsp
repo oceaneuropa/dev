@@ -11,12 +11,12 @@
 	String fullName = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_FULLNAME);
 	String tokenType = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_TOKEN_TYPE);
 	String accessToken = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_ACCESS_TOKEN);
+	String refreshToken = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_REFRESH_TOKEN);
 	boolean isTokenValid = false;
 	Object isTokenValidObj = request.getAttribute("isTokenValid");
 	if (isTokenValidObj instanceof Boolean) {
 		isTokenValid = (Boolean) isTokenValidObj;
 	}
-
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -36,7 +36,9 @@
 			Username: <%=username%> <br/>
 			Full Name: <%=fullName%> <br/>
 			Token Type: <%=tokenType%> <br/>
-			Token Valid: <%=isTokenValid%>
+			Token Valid: <%=isTokenValid%> <br/>
+			Access Token: <%=accessToken%> <br/>
+			Refresh Token: <%=refreshToken%> <br/>
 		</div>
 	</div>
 
