@@ -161,7 +161,7 @@ public class PBMain {
 
 		int display_width = (draws.size() + 1) * draw_width + 100;
 		Size size = new Size(display_width, draw_h + pb_h + 100);
-		Display display = new Display(size.getWidth(), size.getHeight(), null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
 
 		Date last = null;
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
@@ -426,7 +426,7 @@ public class PBMain {
 		int total_h = ((draws.size() + 1) / 10) * (72 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display(size.getWidth(), size.getHeight(), null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
@@ -479,7 +479,7 @@ public class PBMain {
 		int total_h = ((draws.size() + 1) / 8) * (52 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display(size.getWidth(), size.getHeight(), null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
