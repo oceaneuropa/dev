@@ -160,7 +160,7 @@ public class MegaMain {
 
 		int display_width = (draws.size() + 1) * draw_width + 100;
 		Size size = new Size(display_width, draw_h + pb_h + 100);
-		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
+		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null);
 
 		Date last = null;
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
@@ -170,7 +170,7 @@ public class MegaMain {
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
 			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_01_PER_ROW, MetaConstants.WHITE_BALL_MAX);
-			drawPart.setBounds(drawBounds);
+			drawPart.setBounds(drawBounds.x, drawBounds.y, drawBounds.width, drawBounds.height);
 			drawPart.createContents();
 			drawParts.add(drawPart);
 
@@ -189,9 +189,8 @@ public class MegaMain {
 
 		// Part for dummy draw
 		{
-			Rectangle drawBounds = new Rectangle(draw_x, draw_y + 3, draw_w, draw_h);
 			DrawPart drawPart = new DrawPart(display, dummyDraw, PBConstants.DRAW_SQUARE_01_PER_ROW, MetaConstants.WHITE_BALL_MAX);
-			drawPart.setBounds(drawBounds);
+			drawPart.setBounds(draw_x, draw_y + 3, draw_w, draw_h);
 			drawPart.createContents();
 			drawParts.add(drawPart);
 		}
@@ -334,10 +333,9 @@ public class MegaMain {
 			List<PBPart> pbParts = new ArrayList<PBPart>();
 			for (int i = 0; i < draws.size(); i++) {
 				Draw draw = draws.get(i);
-				Rectangle pbBounds = new Rectangle(pb_x, pb_y, pb_w, pb_h);
 
 				PBPart pbPart = new PBPart(display, draw, PBConstants.PB_SQUARE_01_PER_ROW, MetaConstants.MEGA_BALL_MAX);
-				pbPart.setBounds(pbBounds);
+				pbPart.setBounds(pb_x, pb_y, pb_w, pb_h);
 				pbPart.createContents();
 				pbParts.add(pbPart);
 
@@ -346,10 +344,8 @@ public class MegaMain {
 
 			// Part for dummy draw
 			{
-				Rectangle pbBounds = new Rectangle(pb_x, pb_y + 3, pb_w, pb_h);
-
 				PBPart pbPart = new PBPart(display, dummyDraw, PBConstants.PB_SQUARE_01_PER_ROW, MetaConstants.MEGA_BALL_MAX);
-				pbPart.setBounds(pbBounds);
+				pbPart.setBounds(pb_x, pb_y + 3, pb_w, pb_h);
 				pbPart.createContents();
 				pbParts.add(pbPart);
 			}
@@ -430,7 +426,7 @@ public class MegaMain {
 		int total_h = ((draws.size() + 1) / 10) * (72 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
+		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
@@ -448,13 +444,11 @@ public class MegaMain {
 			int drawId = draw.getDrawId();
 			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
 
-			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
-
 			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_10_PER_ROW, MetaConstants.WHITE_BALL_MAX);
 			drawPart.setPredictedDraws(predictedDraws);
 			drawPart.setIndexToPredictedLinkStrokeColor(indexToPredictedLinkStrokeColor);
 			drawPart.setShowLinks(true);
-			drawPart.setBounds(drawBounds);
+			drawPart.setBounds(draw_x, draw_y, draw_w, draw_h);
 			drawPart.createContents();
 			drawParts.add(drawPart);
 
@@ -483,7 +477,7 @@ public class MegaMain {
 		int total_h = ((draws.size() + 1) / 8) * (52 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
+		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
@@ -501,13 +495,11 @@ public class MegaMain {
 			int drawId = draw.getDrawId();
 			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
 
-			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
-
 			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_14_PER_ROW, MetaConstants.WHITE_BALL_MAX);
 			drawPart.setPredictedDraws(predictedDraws);
 			drawPart.setIndexToPredictedLinkStrokeColor(indexToPredictedLinkStrokeColor);
 			drawPart.setShowLinks(true);
-			drawPart.setBounds(drawBounds);
+			drawPart.setBounds(draw_x, draw_y, draw_w, draw_h);
 			drawPart.createContents();
 			drawParts.add(drawPart);
 

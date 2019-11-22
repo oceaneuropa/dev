@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.svg.graphics.Rectangle;
 import org.origin.wwt.widgets.Composite;
 import org.origin.wwt.widgets.Display;
 import org.origin.wwt.widgets.util.StyleUtil;
@@ -88,10 +87,8 @@ public class PBPart extends Composite {
 
 		boolean isDummy = this.draw.isDummy();
 		for (int number = 1; number <= this.maxNum; number++) {
-			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
-
 			NumberPart numberPart = new NumberPart(this, number, true, this.draw.isPB(number), isDummy);
-			numberPart.setBounds(numberBounds);
+			numberPart.setBounds(number_x, number_y, number_w, number_h);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);

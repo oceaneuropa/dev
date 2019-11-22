@@ -13,7 +13,6 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.util.SystemUtils;
 import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
-import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.wwt.render.widget.util.WidgetFigureHandler;
@@ -135,18 +134,16 @@ public class PBMain2 {
 
 		int display_width = draws.size() * draw_width + 100;
 		Size size = new Size(display_width, draw_h + 100);
-		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, false, true);
+		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null);
 
 		List<IntegersPart> integersParts = new ArrayList<IntegersPart>();
 		for (int i = 0; i < draws.size(); i++) {
 			Draw draw = draws.get(i);
 			int avg = draw.getStat().get(DrawStat.PROP_AVG, Integer.class);
 
-			Rectangle integersBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
-
 			IntegersPart integersPart = new IntegersPart(display, 1, 69, PBConstants.NONE);
 			integersPart.setMatchedNum(avg);
-			integersPart.setBounds(integersBounds);
+			integersPart.setBounds(draw_x, draw_y, draw_w, draw_h);
 			integersPart.createContents();
 			integersParts.add(integersPart);
 

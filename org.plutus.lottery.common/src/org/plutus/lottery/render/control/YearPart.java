@@ -61,10 +61,8 @@ public class YearPart extends Composite {
 		int draw_h = 50;
 
 		for (Draw draw : this.draws) {
-			Rectangle currBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
-
 			DrawPart drawPart = new DrawPart(this, draw, PBConstants.DRAW_SQUARE_14_PER_ROW);
-			drawPart.setBounds(currBounds);
+			drawPart.setBounds(draw_x, draw_y, draw_w, draw_h);
 			drawPart.createContents();
 			this.drawParts.add(drawPart);
 

@@ -131,10 +131,8 @@ public class DrawPart extends Composite {
 
 		boolean isDummy = this.draw.isDummy();
 		for (int number = 1; number <= this.maxNum; number++) {
-			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
-
 			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), isDummy);
-			numberPart.setBounds(numberBounds);
+			numberPart.setBounds(number_x, number_y, number_w, number_h);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
@@ -160,7 +158,7 @@ public class DrawPart extends Composite {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
 			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), false);
-			numberPart.setBounds(numberBounds);
+			numberPart.setBounds(number_x, number_y, number_w, number_h);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
@@ -231,7 +229,7 @@ public class DrawPart extends Composite {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
 			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), false);
-			numberPart.setBounds(numberBounds);
+			numberPart.setBounds(number_x, number_y, number_w, number_h);
 			numberPart.createContents();
 			this.numberParts.add(numberPart);
 			this.numberPartsMap.put(number, numberPart);
@@ -323,7 +321,7 @@ public class DrawPart extends Composite {
 
 		int shift = 0;
 		for (NumberPart currOtherMatchedNumber : theMatchedNumbers) {
-			Point currPoint = currOtherMatchedNumber.getIndex().clone();
+			Point currPoint = new Point(currOtherMatchedNumber.getIndex());
 			// Point currPoint = currOtherMatchedNumber.getLocation().clone();
 			currPoint.shiftX(shift);
 			currPoint.shiftY(shift);
@@ -349,7 +347,7 @@ public class DrawPart extends Composite {
 		maxAngle = -1;
 		// shift = 0;
 		for (NumberPart currOtherMatchedNumber : theMatchedNumbers) {
-			Point currPoint = currOtherMatchedNumber.getIndex().clone();
+			Point currPoint = new Point(currOtherMatchedNumber.getIndex());
 			// Point currPoint = currOtherMatchedNumber.getLocation().clone();
 			currPoint.shiftX(shift);
 			currPoint.shiftY(shift);

@@ -3,7 +3,6 @@ package org.plutus.lottery.render.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.origin.svg.graphics.Rectangle;
 import org.origin.wwt.widgets.Composite;
 import org.origin.wwt.widgets.Display;
 
@@ -59,10 +58,8 @@ public class IntegersPart extends Composite {
 		int number_h = 10;
 
 		for (int i = this.startNum; i <= this.endNum; i++) {
-			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
-
 			NumberPart numberPart = new NumberPart(this, i, false, this.matchedNums.contains(i), false);
-			numberPart.setBounds(numberBounds);
+			numberPart.setBounds(number_x, number_y, number_w, number_h);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
