@@ -2,10 +2,10 @@ package org.plutus.lottery.render.control;
 
 import org.origin.svg.graphics.Point;
 import org.origin.wwt.widgets.Composite;
-import org.origin.wwt.widgets.Control;
+import org.origin.wwt.widgets.WebWidget;
 import org.origin.wwt.widgets.layout.WWT;
 
-public class NumberPart extends Control {
+public class NumberPart extends WebWidget {
 
 	protected int number;
 	protected boolean isPBNumber;
@@ -25,7 +25,7 @@ public class NumberPart extends Control {
 	 * @param isDummy
 	 */
 	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match, boolean isDummy) {
-		super(parent, WWT.DEFAULT, null);
+		super(parent, WWT.NOT_SET, null);
 		this.number = number;
 		this.isPBNumber = isPBNumber;
 		this.match = match;

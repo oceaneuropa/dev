@@ -3,7 +3,7 @@ package org.plutus.lottery.render.render;
 import org.origin.svg.Line;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.util.ColorConstants;
-import org.origin.wwt.widgets.Control;
+import org.origin.wwt.widgets.WebWidget;
 import org.plutus.lottery.render.control.LinkPart;
 
 public class LinkFigure extends Line {
@@ -38,7 +38,7 @@ public class LinkFigure extends Line {
 		}
 	}
 
-	public void updateFigure(Control control, Notification notification) {
+	public void updateFigure(WebWidget control, Notification notification) {
 
 	}
 

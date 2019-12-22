@@ -1,9 +1,9 @@
 package org.plutus.lottery.render.control;
 
-import org.origin.wwt.widgets.Control;
+import org.origin.wwt.widgets.WebWidget;
 import org.origin.wwt.widgets.layout.WWT;
 
-public class LinkPart extends Control {
+public class LinkPart extends WebWidget {
 
 	protected NumberPart source;
 	protected NumberPart target;
@@ -31,8 +31,8 @@ public class LinkPart extends Control {
 	 * @param source
 	 * @param target
 	 */
-	public LinkPart(Control parent, NumberPart source, NumberPart target) {
-		super(parent, WWT.DEFAULT, null);
+	public LinkPart(WebWidget parent, NumberPart source, NumberPart target) {
+		super(parent, WWT.NOT_SET, null);
 		checkSource(source);
 		checkTarget(target);
 
