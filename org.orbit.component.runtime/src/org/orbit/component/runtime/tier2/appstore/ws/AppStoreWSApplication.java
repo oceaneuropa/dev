@@ -1,6 +1,7 @@
 package org.orbit.component.runtime.tier2.appstore.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.origin.common.rest.server.FeatureConstants;
@@ -24,6 +25,18 @@ public class AppStoreWSApplication extends OrbitWSApplication {
 		});
 		register(AppStoreWSAppsResource.class);
 		register(AppStoreWSAppResource.class);
+		register(AppStoreWSContentResource.class);
+	}
+
+	@Override
+	protected boolean hasFeature(int targetFeature) {
+		if (OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER == targetFeature) {
+			return false;
+		}
+		if ((this.feature & targetFeature) == targetFeature) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

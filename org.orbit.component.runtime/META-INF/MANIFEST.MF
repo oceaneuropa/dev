@@ -42,5 +42,6 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,1.0.0)",
  org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)",
  org.orbit.component.api;bundle-version="[1.0.0,2.0.0)",
  org.orbit.component.io;bundle-version="[1.0.0,2.0.0)",
- org.orbit.component.model;bundle-version="[1.0.0,2.0.0)"
+ org.orbit.component.model;bundle-version="[1.0.0,2.0.0)",
+ org.orbit.platform.runtime;bundle-version="[1.0.0,2.0.0)"
 Bundle-ActivationPolicy: lazy

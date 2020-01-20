@@ -89,8 +89,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 	/**
 	 * Upload an app.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/app/content?id={id}&appId={appId}&appVersion={appVersion} (FormData: InputStream and
-	 * FormDataContentDisposition)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/app/content?id={id}&appId={appId}&appVersion={appVersion} (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
 	 * @param appVersion
