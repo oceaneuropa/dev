@@ -117,12 +117,13 @@ public class AppStoreWSContentResource extends AbstractWSApplicationResource {
 		}
 
 		if (withinWebInf) {
-			String fileExtension = null;
-			String fileName = file.getName();
-			int index = fileName.lastIndexOf(".");
-			if (index >= 0 && index < fileName.length() - 1) {
-				fileExtension = fileName.substring(index + 1);
-			}
+			// String fileExtension = null;
+			// String fileName = file.getName();
+			// int index = fileName.lastIndexOf(".");
+			// if (index >= 0 && index < fileName.length() - 1) {
+			// fileExtension = fileName.substring(index + 1);
+			// }
+
 			StreamingOutput output = new StreamingOutput() {
 				@Override
 				public void write(OutputStream outputStream) throws IOException, WebApplicationException {
