@@ -75,8 +75,8 @@ public class AppStoreWSContentResource extends AbstractWSApplicationResource {
 	// @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
 	// @Produces({ "image/png", MediaType.APPLICATION_OCTET_STREAM })
 	// @Produces(MediaType.TEXT_HTML)
-	// @Produces("image/png")
-	@Produces(MediaType.WILDCARD)
+	@Produces("image/png")
+	// @Produces(MediaType.WILDCARD)
 	public Response getWebContent(@PathParam("appId") String appId, @PathParam("appVersion") String appVersion, @PathParam("filePath") String filePath) {
 		if (appId == null || appId.isEmpty()) {
 			return Response.status(Status.BAD_REQUEST).entity("Invalid path. Application id is not set.").build();

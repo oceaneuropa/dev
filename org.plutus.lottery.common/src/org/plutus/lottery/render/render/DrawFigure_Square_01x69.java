@@ -4,10 +4,10 @@ import org.origin.svg.Text;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.util.SVGConstants;
-import org.origin.wwt.widgets.render.AbstractControlFigure;
+import org.origin.wwt.widgets.render.AbstractFigure;
 import org.plutus.lottery.render.control.DrawPart;
 
-public class DrawFigure_Square_01x69 extends AbstractControlFigure {
+public class DrawFigure_Square_01x69 extends AbstractFigure {
 
 	/**
 	 * 

@@ -5,10 +5,10 @@ import org.origin.svg.Text;
 import org.origin.svg.adapter.Notification;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGConstants;
-import org.origin.wwt.widgets.render.AbstractControlFigure;
+import org.origin.wwt.widgets.render.AbstractFigure;
 import org.plutus.lottery.render.control.NumberPart;
 
-public class NumberFigure extends AbstractControlFigure {
+public class NumberFigure extends AbstractFigure {
 
 	public NumberFigure(NumberPart numberPart) {
 		super(numberPart);
