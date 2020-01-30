@@ -132,8 +132,10 @@ public class AppStoreWSContentResource extends AbstractWSApplicationResource {
 				}
 			};
 
+			// e.g.
 			// http://127.0.0.1:8003/orbit/v1/appstore/webcontent/org.orbit.app.calculator/1.0.0/images/calculator_64x64.png
 			// http://127.0.0.1:8003/orbit/v1/appstore/webcontent/org.orbit.app.calculator/1.0.0/js/calculator_1.js
+			// http://127.0.0.1:8003/orbit/v1/appstore/webcontent/org.orbit.app.calculator/1.0.0/images/icon_m.png
 
 			// .header("Content-Disposition", "inline; filename=" + file.getName())
 			// .header("Content-Disposition", "attachment; filename=" + file.getName())
