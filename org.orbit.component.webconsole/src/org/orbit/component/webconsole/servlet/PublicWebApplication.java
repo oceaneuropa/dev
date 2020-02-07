@@ -9,7 +9,6 @@ import org.orbit.component.webconsole.servlet.tier1.identity.SignInPage;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignUpPage;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignUpServlet;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -65,6 +64,8 @@ public class PublicWebApplication extends PlatformWebApplication {
 		String bundlePrefix = "/org.orbit.component.webconsole";
 
 		// Web resources
+		addResource(new ResourceMetadataImpl("/images/apps", bundlePrefix + "/WEB-INF/images/apps"));
+
 		addResource(new ResourceMetadataImpl("/views/css", bundlePrefix + "/WEB-INF/views/css"));
 		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
