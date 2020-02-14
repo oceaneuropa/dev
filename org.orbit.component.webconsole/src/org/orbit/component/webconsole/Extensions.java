@@ -5,8 +5,8 @@ import org.orbit.component.webconsole.extension.PublicWebApplicationPropertyTest
 import org.orbit.component.webconsole.extension.WebApplicationActivator;
 import org.orbit.component.webconsole.extension.WebApplicationPropertyTester;
 import org.orbit.component.webconsole.util.OrbitHttpContextProvider;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.http.HttpContextProvider;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;

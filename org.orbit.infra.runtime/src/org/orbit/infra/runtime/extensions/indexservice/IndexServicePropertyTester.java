@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.platform.sdk.ProcessContext;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -26,8 +26,8 @@ public class IndexServicePropertyTester implements IPropertyTester {
 		boolean result = false;
 
 		BundleContext bundleContext = null;
-		if (context instanceof IProcessContext) {
-			IProcessContext platformContext = (IProcessContext) context;
+		if (context instanceof ProcessContext) {
+			ProcessContext platformContext = (ProcessContext) context;
 			bundleContext = platformContext.getBundleContext();
 		}
 

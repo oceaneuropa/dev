@@ -10,9 +10,9 @@ package org.orbit.infra.webconsole.extension;
 import java.util.Map;
 
 import org.orbit.infra.webconsole.servlet.WebApplication;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.platform.sdk.ProcessContext;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
 public class WebApplicationActivator implements ServiceActivator {
@@ -22,7 +22,7 @@ public class WebApplicationActivator implements ServiceActivator {
 	public static WebApplicationActivator INSTANCE = new WebApplicationActivator();
 
 	@Override
-	public void start(IProcessContext context, IProcess process) {
+	public void start(ProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -33,7 +33,7 @@ public class WebApplicationActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IProcessContext context, IProcess process) {
+	public void stop(ProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 
 		WebApplication webApp = process.getAdapter(WebApplication.class);

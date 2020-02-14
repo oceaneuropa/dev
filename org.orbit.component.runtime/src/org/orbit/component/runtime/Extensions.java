@@ -60,9 +60,9 @@ import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeStatusWSComm
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeStopWSCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeUpdateWSCommand;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;

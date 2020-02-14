@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
-import org.orbit.platform.runtime.programs.ProgramUtil;
+import org.orbit.platform.runtime.util.ProgramUtil;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.io.FileUtil;

@@ -4,9 +4,9 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.orbit.infra.runtime.configregistry.service.impl.ConfigRegistryServiceImpl;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.platform.sdk.ProcessContext;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
@@ -17,7 +17,7 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 	public static ConfigRegistryServiceActivator INSTANCE = new ConfigRegistryServiceActivator();
 
 	@Override
-	public void start(IProcessContext context, IProcess process) throws Exception {
+	public void start(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -29,7 +29,7 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IProcessContext context, IProcess process) throws Exception {
+	public void stop(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop service

@@ -10,9 +10,9 @@ package org.orbit.component.runtime.extension.missioncontrol;
 import java.util.Map;
 
 import org.orbit.component.runtime.OrbitRelays;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.platform.sdk.ProcessContext;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.osgi.framework.BundleContext;
 
@@ -23,7 +23,7 @@ public class MissionControlRelayActivator implements ServiceActivator {
 	public static MissionControlRelayActivator INSTANCE = new MissionControlRelayActivator();
 
 	@Override
-	public void start(IProcessContext context, IProcess process) {
+	public void start(ProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -36,7 +36,7 @@ public class MissionControlRelayActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IProcessContext context, IProcess process) {
+	public void stop(ProcessContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop relay

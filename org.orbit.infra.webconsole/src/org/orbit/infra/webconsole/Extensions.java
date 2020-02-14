@@ -2,7 +2,7 @@ package org.orbit.infra.webconsole;
 
 import org.orbit.infra.webconsole.extension.WebApplicationActivator;
 import org.orbit.infra.webconsole.extension.WebApplicationPropertyTester;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;

@@ -11,9 +11,9 @@ import java.util.Map;
 
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.service.impl.UserRegistryServiceImpl;
-import org.orbit.platform.sdk.IProcessContext;
+import org.orbit.platform.sdk.ProcessContext;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
@@ -24,7 +24,7 @@ public class UserRegistryServiceActivator implements ServiceActivator {
 	public static UserRegistryServiceActivator INSTANCE = new UserRegistryServiceActivator();
 
 	@Override
-	public void start(IProcessContext context, IProcess process) throws Exception {
+	public void start(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -36,7 +36,7 @@ public class UserRegistryServiceActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IProcessContext context, IProcess process) throws Exception {
+	public void stop(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop UserRegistryService
