@@ -120,7 +120,7 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<NodeControlService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<NodeControlService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {

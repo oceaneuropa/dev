@@ -1,20 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.webconsole.extension;
 
 import java.util.Map;
 
 import org.orbit.component.webconsole.servlet.PublicWebApplication;
+import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.IProcess;
 import org.osgi.framework.BundleContext;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class PublicWebApplicationActivator implements ServiceActivator {
 
 	public static final String ID = "org.orbit.component.webconsole.PublicWebApplicationActivator";

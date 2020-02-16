@@ -100,7 +100,7 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.IDENTITY_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<IdentityService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<IdentityService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {

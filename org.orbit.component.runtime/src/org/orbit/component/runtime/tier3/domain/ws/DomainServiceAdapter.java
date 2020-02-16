@@ -102,7 +102,7 @@ public class DomainServiceAdapter implements LifecycleAware {
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<DomainManagementService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<DomainManagementService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {

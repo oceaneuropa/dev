@@ -1,10 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.runtime.tier1.account.ws;
 
 import java.util.Map;
@@ -25,10 +18,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes
- * unavailable.
+/**
+ * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes unavailable.
  * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
  */
 public class UserRegistryServiceAdapter implements LifecycleAware {
 
@@ -117,7 +111,7 @@ public class UserRegistryServiceAdapter implements LifecycleAware {
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<UserRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<UserRegistryService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {

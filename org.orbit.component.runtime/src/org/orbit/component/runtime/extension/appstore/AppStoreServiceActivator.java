@@ -4,10 +4,9 @@ import java.util.Map;
 
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
+import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.IProcess;
-import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class AppStoreServiceActivator implements ServiceActivator {
@@ -21,8 +20,7 @@ public class AppStoreServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
-		// Start AppStoreService
-		AppStoreServiceImpl appStore = new AppStoreServiceImpl(properties);
+		AppStoreService appStore = new AppStoreServiceImpl(properties);
 		appStore.start(bundleContext);
 
 		process.adapt(AppStoreService.class, appStore);
@@ -30,12 +28,12 @@ public class AppStoreServiceActivator implements ServiceActivator {
 
 	@Override
 	public void stop(ProcessContext context, IProcess process) throws Exception {
-		BundleContext bundleContext = context.getBundleContext();
-
-		// Stop AppStoreService
 		AppStoreService appStore = process.getAdapter(AppStoreService.class);
-		if (appStore instanceof LifecycleAware) {
-			((LifecycleAware) appStore).stop(bundleContext);
+		if (appStore != null) {
+			BundleContext bundleContext = context.getBundleContext();
+			appStore.stop(bundleContext);
+
+			process.adapt(AppStoreService.class, null);
 		}
 	}
 

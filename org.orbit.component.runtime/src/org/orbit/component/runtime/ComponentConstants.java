@@ -1,12 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.runtime;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public interface ComponentConstants {
 
 	// ----------------------------------------------------------------------------------------

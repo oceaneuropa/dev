@@ -1,10 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.runtime.tier2.appstore.ws;
 
 import java.util.Map;
@@ -28,6 +21,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Adapter to start AppStoreWSApplication when AppStoreService becomes available and to stop AppStoreWSApplication when AppStoreService becomes unavailable.
  * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
  */
 public class AppStoreServiceAdapter implements LifecycleAware {
 
@@ -108,7 +103,7 @@ public class AppStoreServiceAdapter implements LifecycleAware {
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<AppStoreService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<AppStoreService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {

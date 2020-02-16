@@ -116,28 +116,28 @@ public abstract class ProgramExtensionImplV1 extends ExtensionImpl implements IE
 	// }
 
 	@Override
-	public Object[] createExecutableInstances() {
-		return this.interfacesSupport.createExecutableInstances();
+	public Object[] createInstances() {
+		return this.interfacesSupport.createInstances();
 	}
 
 	@Override
-	public <T> T createExecutableInstance(Class<T> clazz) {
-		return this.interfacesSupport.createExecutableInstance(clazz);
+	public <T> T createInstance(Class<T> clazz) {
+		return this.interfacesSupport.createInstance(clazz);
 	}
 
 	@Override
-	public InterfaceDescription[] getInterfaceDescriptions() {
-		return this.interfacesSupport.getInterfaceDescriptions();
+	public InterfaceDescription[] getDescriptions() {
+		return this.interfacesSupport.getDescriptions();
 	}
 
 	@Override
-	public InterfaceDescription getInterfaceDescription(Class<?> clazz) {
-		return this.interfacesSupport.getInterfaceDescription(clazz);
+	public InterfaceDescription getDescription(Class<?> clazz) {
+		return this.interfacesSupport.getDescription(clazz);
 	}
 
 	@Override
-	public InterfaceDescription getInterfaceDescription(Object object) {
-		return this.interfacesSupport.getInterfaceDescription(object);
+	public InterfaceDescription getDescription(Object object) {
+		return this.interfacesSupport.getDescription(object);
 	}
 
 	@Override

@@ -1,20 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.runtime.extension.missioncontrol;
 
 import java.util.Map;
 
 import org.orbit.component.runtime.OrbitRelays;
+import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.IProcess;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.osgi.framework.BundleContext;
+
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 
 public class MissionControlRelayActivator implements ServiceActivator {
 

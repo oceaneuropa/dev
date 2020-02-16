@@ -1,10 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2017, 2018 OceanEuropa.
- * All rights reserved.
- *
- * Contributors:
- *     OceanEuropa - initial API and implementation
- *******************************************************************************/
 package org.orbit.component.runtime;
 
 import org.orbit.component.runtime.cli.DomainManagementRuntimeCommand;
@@ -73,8 +66,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Component extensions
  * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
  */
 public class Extensions extends ProgramExtensions {
 

@@ -113,7 +113,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<ExtensionRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<ExtensionRegistryService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(service);
 				if (this.indexTimer != null) {
