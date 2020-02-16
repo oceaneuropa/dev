@@ -12,13 +12,12 @@ import org.origin.common.resource.Path;
 
 public class ConfigRegistryHelper {
 
+	protected static final String REGISTRY__PLATFORMS = "platforms";
+	protected static final String TYPE__PLATFORM = "Platform";
+
 	protected static final String PLATFORM_ID = "platform.id";
-	protected static final String PLATFORM_TYPE = "Platform";
-	protected static final String PLATFORM_NAME = "platforms";
 	protected static final String SERVICES = "services";
 	protected static final String CONFIG_INI = "config.ini";
-
-	public static ConfigRegistryHelper INSTANCE = new ConfigRegistryHelper();
 
 	/**
 	 * Get "platforms" IConfigRegistry.
@@ -28,14 +27,14 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigRegistry getPlatformsRegistry(String accessToken, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigRegistry getPlatformsRegistry(String accessToken, boolean createIfNotExist) throws IOException {
 		IConfigRegistry registry = null;
 		CFG cfg = CFG.getDefault(accessToken);
 		if (cfg != null && cfg.isOnline()) {
-			registry = cfg.getConfigRegistryByName(PLATFORM_NAME);
+			registry = cfg.getConfigRegistryByName(REGISTRY__PLATFORMS);
 			if (registry == null) {
 				if (createIfNotExist) {
-					registry = cfg.createConfigRegistry(PLATFORM_TYPE, PLATFORM_NAME, null, false);
+					registry = cfg.createConfigRegistry(TYPE__PLATFORM, REGISTRY__PLATFORMS, null, false);
 				}
 			}
 		}
@@ -51,7 +50,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPlatformElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPlatformElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null) {
 			return null;
 		}
@@ -75,7 +74,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getProgramsElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getProgramsElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null) {
 			return null;
 		}
@@ -108,7 +107,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement[] getProgramsElementChildren(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement[] getProgramsElementChildren(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null) {
 			return new IConfigElement[0];
 		}
@@ -134,7 +133,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPluginsElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPluginsElement(IConfigRegistry registry, String platformId, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null) {
 			return null;
 		}
@@ -168,7 +167,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPluginsElementChild(IConfigRegistry registry, String platformId, String bundleSymbolicName, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPluginsElementChild(IConfigRegistry registry, String platformId, String bundleSymbolicName, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null || bundleSymbolicName == null) {
 			return null;
 		}
@@ -200,7 +199,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPluginServicesElement(IConfigRegistry registry, String platformId, String bundleSymbolicName, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPluginServicesElement(IConfigRegistry registry, String platformId, String bundleSymbolicName, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null || bundleSymbolicName == null) {
 			return null;
 		}
@@ -233,7 +232,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPluginServicesElementChild(IConfigRegistry registry, String platformId, String bundleSymbolicName, String serviceName, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPluginServicesElementChild(IConfigRegistry registry, String platformId, String bundleSymbolicName, String serviceName, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null || bundleSymbolicName == null || serviceName == null) {
 			return null;
 		}
@@ -266,7 +265,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized IConfigElement getPluginServiceConfigIniElement(IConfigRegistry registry, String platformId, String bundleSymbolicName, String serviceName, boolean createIfNotExist) throws IOException {
+	public static synchronized IConfigElement getPluginServiceConfigIniElement(IConfigRegistry registry, String platformId, String bundleSymbolicName, String serviceName, boolean createIfNotExist) throws IOException {
 		if (registry == null || platformId == null || bundleSymbolicName == null || serviceName == null) {
 			return null;
 		}

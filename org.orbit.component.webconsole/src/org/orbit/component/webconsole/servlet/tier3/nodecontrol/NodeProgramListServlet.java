@@ -93,11 +93,11 @@ public class NodeProgramListServlet extends HttpServlet {
 
 				// Get node's programs (metadata) from config registry.
 				List<AppManifest> nodeAppManifests = new ArrayList<AppManifest>();
-				IConfigRegistry registry = ConfigRegistryHelper.INSTANCE.getPlatformsRegistry(accessToken, true);
+				IConfigRegistry registry = ConfigRegistryHelper.getPlatformsRegistry(accessToken, true);
 				if (registry != null) {
 					// IConfigRegistry not being null means CFG service is online and available.
 					// Get the children elements of the "/{platformId}/programs" config element.
-					IConfigElement[] programElements = ConfigRegistryHelper.INSTANCE.getProgramsElementChildren(registry, nodeId, true);
+					IConfigElement[] programElements = ConfigRegistryHelper.getProgramsElementChildren(registry, nodeId, true);
 
 					for (IConfigElement programElement : programElements) {
 						// String currName = programElement.getName();
