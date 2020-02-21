@@ -60,12 +60,12 @@ public class ConfigElementExistsWSCommand extends AbstractInfraCommand<ConfigReg
 		boolean exists = false;
 		if (hasElementId) {
 			String elementId = request.getStringParameter("element_id");
-			exists = configRegistry.exists(elementId);
+			exists = configRegistry.elementExists(elementId);
 
 		} else if (hasElementPath) {
 			String elementPathString = request.getStringParameter("element_path");
 			Path elementPath = new Path(elementPathString);
-			exists = configRegistry.exists(elementPath);
+			exists = configRegistry.elementExists(elementPath);
 
 		} else if (hasElementName) {
 			String parentElementId = null;
@@ -76,7 +76,7 @@ public class ConfigElementExistsWSCommand extends AbstractInfraCommand<ConfigReg
 				parentElementId = "-1";
 			}
 			String name = request.getStringParameter("element_name");
-			exists = configRegistry.exists(parentElementId, name);
+			exists = configRegistry.elementExists(parentElementId, name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

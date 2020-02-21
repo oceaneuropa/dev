@@ -52,7 +52,7 @@ public class UpdateConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean elementExists = configRegistry.exists(elementId);
+		boolean elementExists = configRegistry.elementExists(elementId);
 		if (!elementExists) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config element is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

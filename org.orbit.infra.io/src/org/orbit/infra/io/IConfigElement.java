@@ -14,7 +14,9 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 
 	CFG getCFG();
 
-	IConfigRegistry getIConfigRegistry();
+	IConfigRegistry getConfigRegistry();
+
+	IConfigElement getParent();
 
 	ConfigElement getConfigElement();
 
@@ -57,14 +59,18 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 	boolean removeAttributes(List<String> attributeNames) throws IOException;
 
 	// -----------------------------------------------------------------------------------
-	// Member Config Elements
+	// Children Config Elements
 	// -----------------------------------------------------------------------------------
-	IConfigElement[] memberConfigElements() throws IOException;
+	IConfigElement[] getChildrenElements() throws IOException;
 
-	boolean memberConfigElementExists(String name) throws IOException;
+	boolean childElementExists(String name) throws IOException;
 
-	IConfigElement getMemberConfigElement(String name) throws IOException;
+	IConfigElement getChildElement(String name) throws IOException;
 
-	IConfigElement createMemberConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+	IConfigElement getChildElement(Path path) throws IOException;
+
+	IConfigElement createChildElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+
+	IConfigElement createChildElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 }

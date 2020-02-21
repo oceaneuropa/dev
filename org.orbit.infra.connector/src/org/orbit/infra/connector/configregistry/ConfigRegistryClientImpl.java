@@ -341,7 +341,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement[] listRootConfigElements(String configRegistryId) throws ClientException {
+	public ConfigElement[] listRootElements(String configRegistryId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 
 		Request request = new Request(RequestConstants.CONFIG_ELEMENT__LIST_CONFIG_ELEMENTS);
@@ -364,7 +364,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement[] listConfigElements(String configRegistryId, String parentElementId) throws ClientException {
+	public ConfigElement[] listElements(String configRegistryId, String parentElementId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(parentElementId, "parentElementId is null.");
 
@@ -389,7 +389,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement[] listConfigElements(String configRegistryId, Path parentPath) throws ClientException {
+	public ConfigElement[] listElements(String configRegistryId, Path parentPath) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(parentPath, "parentPath is null.");
 
@@ -414,7 +414,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement getConfigElement(String configRegistryId, String elementId) throws ClientException {
+	public ConfigElement getElement(String configRegistryId, String elementId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 
@@ -436,7 +436,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement getConfigElement(String configRegistryId, Path path) throws ClientException {
+	public ConfigElement getElement(String configRegistryId, Path path) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(path, "path is null.");
 
@@ -458,7 +458,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement getConfigElement(String configRegistryId, String parentElementId, String name) throws ClientException {
+	public ConfigElement getElement(String configRegistryId, String parentElementId, String name) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(name, "name is null.");
 
@@ -483,7 +483,32 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public Path getConfigElementPath(String configRegistryId, String elementId) throws ClientException {
+	public ConfigElement getElement(String configRegistryId, String parentElementId, Path path) throws ClientException {
+		checkNullParameter(configRegistryId, "configRegistryId is null.");
+		checkNullParameter(path, "path is null.");
+
+		Request request = new Request(RequestConstants.CONFIG_ELEMENT__GET_CONFIG_ELEMENT);
+		request.setParameter("config_registry_id", configRegistryId);
+		if (parentElementId != null) {
+			request.setParameter("parent_element_id", parentElementId);
+		}
+		request.setParameter("element_path", path.getPathString());
+
+		ConfigElement configElement = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return configElement;
+	}
+
+	@Override
+	public Path getElementPath(String configRegistryId, String elementId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 
@@ -505,7 +530,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean configElementExists(String configRegistryId, String elementId) throws ClientException {
+	public boolean elementExists(String configRegistryId, String elementId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 
@@ -527,7 +552,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean configElementExists(String configRegistryId, Path path) throws ClientException {
+	public boolean elementExists(String configRegistryId, Path path) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(path, "path is null.");
 
@@ -549,7 +574,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean configElementExists(String configRegistryId, String parentElementId, String name) throws ClientException {
+	public boolean elementExists(String configRegistryId, String parentElementId, String name) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(name, "name is null.");
 
@@ -574,7 +599,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement createConfigElement(String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+	public ConfigElement createElement(String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(path, "path is null.");
 
@@ -600,7 +625,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public ConfigElement createConfigElement(String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+	public ConfigElement createElement(String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(name, "name is null.");
 
@@ -629,7 +654,36 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean updateConfigElementName(String configRegistryId, String elementId, String newName) throws ClientException {
+	public ConfigElement createElement(String configRegistryId, String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+		checkNullParameter(configRegistryId, "configRegistryId is null.");
+		checkNullParameter(path, "path is null.");
+
+		Request request = new Request(RequestConstants.CONFIG_ELEMENT__CREATE_CONFIG_ELEMENT);
+		request.setParameter("config_registry_id", configRegistryId);
+		if (parentElementId != null) {
+			request.setParameter("parent_element_id", parentElementId);
+		}
+		request.setParameter("element_path", path.getPathString());
+		if (attributes != null) {
+			request.setParameter("attributes", attributes);
+		}
+		request.setParameter("generate_unique_name", generateUniqueName);
+
+		ConfigElement configElement = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				configElement = ClientModelConverter.CONFIG_REGISTRY.getConfigElement(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return configElement;
+	}
+
+	@Override
+	public boolean updateElementName(String configRegistryId, String elementId, String newName) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 		checkNullParameter(newName, "newName is null.");
@@ -653,7 +707,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean setConfigElementAttribute(String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException {
+	public boolean setElementAttribute(String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 		checkNullParameter(attributeName, "attribute name is null.");
@@ -680,7 +734,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean setConfigElementAttributes(String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
+	public boolean setElementAttributes(String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 		checkNullParameter(attributes, "attributes is null.");
@@ -704,7 +758,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean removeConfigElementAttribute(String configRegistryId, String elementId, String attributeName) throws ClientException {
+	public boolean removeElementAttribute(String configRegistryId, String elementId, String attributeName) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 		checkNullParameter(attributeName, "attribute name is null.");
@@ -728,7 +782,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean removeConfigElementAttributes(String configRegistryId, String elementId, List<String> attributeNames) throws ClientException {
+	public boolean removeElementAttributes(String configRegistryId, String elementId, List<String> attributeNames) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 		checkNullParameter(attributeNames, "attributeName is null.");
@@ -752,7 +806,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean deleteConfigElement(String configRegistryId, String elementId) throws ClientException {
+	public boolean deleteElement(String configRegistryId, String elementId) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(elementId, "elementId is null.");
 
@@ -774,7 +828,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public boolean deleteConfigElement(String configRegistryId, Path path) throws ClientException {
+	public boolean deleteElement(String configRegistryId, Path path) throws ClientException {
 		checkNullParameter(configRegistryId, "configRegistryId is null.");
 		checkNullParameter(path, "path is null.");
 

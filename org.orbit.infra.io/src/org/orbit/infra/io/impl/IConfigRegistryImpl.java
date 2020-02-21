@@ -215,16 +215,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement[] listRootConfigElements() throws IOException {
+	public IConfigElement[] listRootElements() throws IOException {
 		String configRegistryId = getId();
 
 		List<IConfigElement> cfgEles = new ArrayList<IConfigElement>();
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = ConfigRegistryUtil.listRootConfigElements(clientResolver, accessToken, configRegistryId);
+			ConfigElement[] configElements = ConfigRegistryUtil.listRootElements(clientResolver, accessToken, configRegistryId);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -241,16 +240,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement getRootConfigElement(String name) throws IOException {
+	public IConfigElement getRootElement(String name) throws IOException {
 		String configRegistryId = getId();
 
 		IConfigElement cfgEle = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, null, name);
+			ConfigElement configElement = ConfigRegistryUtil.getElement(clientResolver, accessToken, configRegistryId, null, name);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -261,16 +259,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement[] listConfigElements(String parentElementId) throws IOException {
+	public IConfigElement[] listElements(String parentElementId) throws IOException {
 		String configRegistryId = getId();
 
 		List<IConfigElement> cfgEles = new ArrayList<IConfigElement>();
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = ConfigRegistryUtil.listConfigElements(clientResolver, accessToken, configRegistryId, parentElementId);
+			ConfigElement[] configElements = ConfigRegistryUtil.listElements(clientResolver, accessToken, configRegistryId, parentElementId);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -287,16 +284,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement[] listConfigElements(Path parentPath) throws IOException {
+	public IConfigElement[] listElements(Path parentPath) throws IOException {
 		String configRegistryId = getId();
 
 		List<IConfigElement> cfgEles = new ArrayList<IConfigElement>();
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement[] configElements = ConfigRegistryUtil.listConfigElements(clientResolver, accessToken, configRegistryId, parentPath);
+			ConfigElement[] configElements = ConfigRegistryUtil.listElements(clientResolver, accessToken, configRegistryId, parentPath);
 			if (configElements != null) {
 				for (ConfigElement configElement : configElements) {
 					IConfigElement cfgEle = toConfigElement(configElement);
@@ -313,16 +309,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement getConfigElement(String elementId) throws IOException {
+	public IConfigElement getElement(String elementId) throws IOException {
 		String configRegistryId = getId();
 
 		IConfigElement cfgEle = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, elementId);
+			ConfigElement configElement = ConfigRegistryUtil.getElement(clientResolver, accessToken, configRegistryId, elementId);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -333,16 +328,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement getConfigElement(Path path) throws IOException {
+	public IConfigElement getElement(Path path) throws IOException {
 		String configRegistryId = getId();
 
 		IConfigElement cfgEle = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, path);
+			ConfigElement configElement = ConfigRegistryUtil.getElement(clientResolver, accessToken, configRegistryId, path);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -353,16 +347,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement getConfigElement(String parentElementId, String name) throws IOException {
+	public IConfigElement getElement(String parentElementId, String name) throws IOException {
 		String configRegistryId = getId();
 
 		IConfigElement cfgEle = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.getConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name);
+			ConfigElement configElement = ConfigRegistryUtil.getElement(clientResolver, accessToken, configRegistryId, parentElementId, name);
 			if (configElement != null) {
 				cfgEle = toConfigElement(configElement);
 			}
@@ -373,16 +366,34 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public Path getConfigElementPath(String elementId) throws IOException {
+	public IConfigElement getElement(String parentElementId, Path path) throws IOException {
+		String configRegistryId = getId();
+
+		IConfigElement cfgEle = null;
+		try {
+			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
+			String accessToken = this.cfg.getAccessToken();
+
+			ConfigElement configElement = ConfigRegistryUtil.getElement(clientResolver, accessToken, configRegistryId, parentElementId, path);
+			if (configElement != null) {
+				cfgEle = toConfigElement(configElement);
+			}
+		} catch (ClientException e) {
+			handle(e);
+		}
+		return cfgEle;
+	}
+
+	@Override
+	public Path getElementPath(String elementId) throws IOException {
 		String configRegistryId = getId();
 
 		Path path = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			path = ConfigRegistryUtil.getConfigElementPath(clientResolver, accessToken, configRegistryId, elementId);
+			path = ConfigRegistryUtil.getElementPath(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -391,16 +402,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean configElementExists(String elementId) throws IOException {
+	public boolean elementExists(String elementId) throws IOException {
 		String configRegistryId = getId();
 
 		boolean exists = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, elementId);
+			exists = ConfigRegistryUtil.elementExists(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -409,16 +419,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean configElementExists(Path path) throws IOException {
+	public boolean elementExists(Path path) throws IOException {
 		String configRegistryId = getId();
 
 		boolean exists = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, path);
+			exists = ConfigRegistryUtil.elementExists(clientResolver, accessToken, configRegistryId, path);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -427,16 +436,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean configElementExists(String parentElementId, String name) throws IOException {
+	public boolean elementExists(String parentElementId, String name) throws IOException {
 		String configRegistryId = getId();
 
 		boolean exists = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			exists = ConfigRegistryUtil.configElementExists(clientResolver, accessToken, configRegistryId, parentElementId, name);
+			exists = ConfigRegistryUtil.elementExists(clientResolver, accessToken, configRegistryId, parentElementId, name);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -445,16 +453,20 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement createConfigElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+	public IConfigElement createRootElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		return createElement("-1", name, attributes, generateUniqueName);
+	}
+
+	@Override
+	public IConfigElement createElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		String configRegistryId = getId();
 
 		IConfigElement cfgEle = null;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.createConfigElement(clientResolver, accessToken, configRegistryId, path, attributes, generateUniqueName);
+			ConfigElement configElement = ConfigRegistryUtil.createElement(clientResolver, accessToken, configRegistryId, path, attributes, generateUniqueName);
 			if (configElement == null) {
 				throw new IOException("Config element cannot be created.");
 			}
@@ -467,43 +479,57 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public IConfigElement createConfigElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+	public IConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		String configRegistryId = getId();
 
-		IConfigElement cfgEle = null;
+		IConfigElement element = null;
 		try {
-			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
+			ConfigRegistryClientResolver resolver = this.cfg.getClientResolver();
 			String accessToken = this.cfg.getAccessToken();
 
-			ConfigElement configElement = ConfigRegistryUtil.createConfigElement(clientResolver, accessToken, configRegistryId, parentElementId, name, attributes, generateUniqueName);
+			ConfigElement configElement = ConfigRegistryUtil.createElement(resolver, accessToken, configRegistryId, parentElementId, name, attributes, generateUniqueName);
 			if (configElement == null) {
 				throw new IOException("Config element cannot be created.");
 			}
-			cfgEle = toConfigElement(configElement);
+			element = toConfigElement(configElement);
 
 		} catch (ClientException e) {
 			handle(e);
 		}
-		return cfgEle;
+		return element;
 	}
 
 	@Override
-	public IConfigElement createRootConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
-		return createConfigElement("-1", name, attributes, generateUniqueName);
+	public IConfigElement createElement(String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		String configRegistryId = getId();
+
+		IConfigElement element = null;
+		try {
+			ConfigRegistryClientResolver resolver = this.cfg.getClientResolver();
+			String accessToken = this.cfg.getAccessToken();
+
+			ConfigElement configElement = ConfigRegistryUtil.createElement(resolver, accessToken, configRegistryId, parentElementId, path, attributes, generateUniqueName);
+			if (configElement == null) {
+				throw new IOException("Config element cannot be created.");
+			}
+			element = toConfigElement(configElement);
+
+		} catch (ClientException e) {
+			handle(e);
+		}
+		return element;
 	}
 
 	@Override
-	public boolean updateConfigElementName(String elementId, String newName) throws IOException {
+	public boolean updateElementName(String elementId, String newName) throws IOException {
 		String configRegistryId = getId();
 
 		boolean succeed = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = ConfigRegistryUtil.updateConfigElementName(clientResolver, accessToken, configRegistryId, elementId, newName);
+			succeed = ConfigRegistryUtil.updateElementName(clientResolver, accessToken, configRegistryId, elementId, newName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -512,16 +538,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean setConfigElementAttribute(String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws IOException {
+	public boolean setElementAttribute(String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws IOException {
 		String configRegistryId = getId();
 
 		boolean succeed = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = ConfigRegistryUtil.setConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, oldAttributeName, attributeName, attributeValue);
+			succeed = ConfigRegistryUtil.setElementAttribute(clientResolver, accessToken, configRegistryId, elementId, oldAttributeName, attributeName, attributeValue);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -530,16 +555,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean setConfigElementAttributes(String elementId, Map<String, Object> attributes) throws IOException {
+	public boolean setElementAttributes(String elementId, Map<String, Object> attributes) throws IOException {
 		String configRegistryId = getId();
 
 		boolean succeed = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = ConfigRegistryUtil.setConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributes);
+			succeed = ConfigRegistryUtil.setElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributes);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -548,16 +572,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean removeConfigElementAttribute(String elementId, String attributeName) throws IOException {
+	public boolean removeElementAttribute(String elementId, String attributeName) throws IOException {
 		String configRegistryId = getId();
 
 		boolean succeed = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = ConfigRegistryUtil.removeConfigElementAttribute(clientResolver, accessToken, configRegistryId, elementId, attributeName);
+			succeed = ConfigRegistryUtil.removeElementAttribute(clientResolver, accessToken, configRegistryId, elementId, attributeName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -566,16 +589,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean removeConfigElementAttributes(String elementId, List<String> attributeName) throws IOException {
+	public boolean removeElementAttributes(String elementId, List<String> attributeName) throws IOException {
 		String configRegistryId = getId();
 
 		boolean succeed = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			succeed = ConfigRegistryUtil.removeConfigElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributeName);
+			succeed = ConfigRegistryUtil.removeElementAttributes(clientResolver, accessToken, configRegistryId, elementId, attributeName);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -584,16 +606,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean deleteConfigElement(String elementId) throws IOException {
+	public boolean deleteElement(String elementId) throws IOException {
 		String configRegistryId = getId();
 
 		boolean isDeleted = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			isDeleted = ConfigRegistryUtil.deleteConfigElement(clientResolver, accessToken, configRegistryId, elementId);
+			isDeleted = ConfigRegistryUtil.deleteElement(clientResolver, accessToken, configRegistryId, elementId);
 
 		} catch (ClientException e) {
 			handle(e);
@@ -602,16 +623,15 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
-	public boolean deleteConfigElement(Path path) throws IOException {
+	public boolean deleteElement(Path path) throws IOException {
 		String configRegistryId = getId();
 
 		boolean isDeleted = false;
 		try {
 			ConfigRegistryClientResolver clientResolver = this.cfg.getClientResolver();
-			// String serviceUrl = this.cfg.getConfigRegistryServiceUrl();
 			String accessToken = this.cfg.getAccessToken();
 
-			isDeleted = ConfigRegistryUtil.deleteConfigElement(clientResolver, accessToken, configRegistryId, path);
+			isDeleted = ConfigRegistryUtil.deleteElement(clientResolver, accessToken, configRegistryId, path);
 
 		} catch (ClientException e) {
 			handle(e);

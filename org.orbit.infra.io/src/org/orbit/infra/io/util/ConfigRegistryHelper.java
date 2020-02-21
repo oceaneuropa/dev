@@ -55,12 +55,12 @@ public class ConfigRegistryHelper {
 			return null;
 		}
 
-		IConfigElement platformElement = registry.getRootConfigElement(platformId);
+		IConfigElement platformElement = registry.getRootElement(platformId);
 
 		if (platformElement == null && createIfNotExist) {
 			Map<String, Object> attributes = new HashMap<String, Object>();
 			attributes.put(PLATFORM_ID, platformId);
-			platformElement = registry.createRootConfigElement(platformId, attributes, true);
+			platformElement = registry.createRootElement(platformId, attributes, true);
 		}
 		return platformElement;
 	}
@@ -82,16 +82,16 @@ public class ConfigRegistryHelper {
 		String name = "programs";
 
 		String pathString = MessageFormat.format("/{0}/programs", new Object[] { platformId });
-		IConfigElement programsElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement programsElement = registry.getElement(new Path(pathString));
 
 		if (programsElement == null) {
 			IConfigElement platformElement = getPlatformElement(registry, platformId, createIfNotExist);
 			if (platformElement != null) {
-				programsElement = platformElement.getMemberConfigElement(name);
+				programsElement = platformElement.getChildElement(name);
 
 				if (programsElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					programsElement = platformElement.createMemberConfigElement(name, attributes, false);
+					programsElement = platformElement.createChildElement(name, attributes, false);
 				}
 			}
 		}
@@ -115,7 +115,7 @@ public class ConfigRegistryHelper {
 		IConfigElement[] childrenElements = null;
 		IConfigElement programsElement = getProgramsElement(registry, platformId, createIfNotExist);
 		if (programsElement != null) {
-			childrenElements = programsElement.memberConfigElements();
+			childrenElements = programsElement.getChildrenElements();
 		}
 
 		if (childrenElements == null) {
@@ -141,16 +141,16 @@ public class ConfigRegistryHelper {
 		String name = "plugins";
 
 		String pathString = MessageFormat.format("/{0}/plugins", new Object[] { platformId });
-		IConfigElement pluginsElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement pluginsElement = registry.getElement(new Path(pathString));
 
 		if (pluginsElement == null) {
 			IConfigElement platformElement = getPlatformElement(registry, platformId, createIfNotExist);
 			if (platformElement != null) {
-				pluginsElement = platformElement.getMemberConfigElement(name);
+				pluginsElement = platformElement.getChildElement(name);
 
 				if (pluginsElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					pluginsElement = platformElement.createMemberConfigElement(name, attributes, false);
+					pluginsElement = platformElement.createChildElement(name, attributes, false);
 				}
 			}
 		}
@@ -173,16 +173,16 @@ public class ConfigRegistryHelper {
 		}
 
 		String pathString = MessageFormat.format("/{0}/plugins/{1}", new Object[] { platformId, bundleSymbolicName });
-		IConfigElement bundleElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement bundleElement = registry.getElement(new Path(pathString));
 
 		if (bundleElement == null) {
 			IConfigElement pluginsElement = getPluginsElement(registry, platformId, createIfNotExist);
 			if (pluginsElement != null) {
-				bundleElement = pluginsElement.getMemberConfigElement(bundleSymbolicName);
+				bundleElement = pluginsElement.getChildElement(bundleSymbolicName);
 
 				if (bundleElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					bundleElement = pluginsElement.createMemberConfigElement(bundleSymbolicName, attributes, false);
+					bundleElement = pluginsElement.createChildElement(bundleSymbolicName, attributes, false);
 				}
 			}
 		}
@@ -205,16 +205,16 @@ public class ConfigRegistryHelper {
 		}
 
 		String pathString = MessageFormat.format("/{0}/plugins/{1}/services", new Object[] { platformId, bundleSymbolicName });
-		IConfigElement servicesElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement servicesElement = registry.getElement(new Path(pathString));
 
 		if (servicesElement == null) {
 			IConfigElement bundleElement = getPluginsElementChild(registry, platformId, bundleSymbolicName, createIfNotExist);
 			if (bundleElement != null) {
-				servicesElement = bundleElement.getMemberConfigElement(SERVICES);
+				servicesElement = bundleElement.getChildElement(SERVICES);
 
 				if (servicesElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					servicesElement = bundleElement.createMemberConfigElement(SERVICES, attributes, false);
+					servicesElement = bundleElement.createChildElement(SERVICES, attributes, false);
 				}
 			}
 		}
@@ -238,16 +238,16 @@ public class ConfigRegistryHelper {
 		}
 
 		String pathString = MessageFormat.format("/{0}/plugins/{1}/services/{2}", new Object[] { platformId, bundleSymbolicName, serviceName });
-		IConfigElement serviceElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement serviceElement = registry.getElement(new Path(pathString));
 
 		if (serviceElement == null) {
 			IConfigElement bundleServicesElement = getPluginServicesElement(registry, platformId, bundleSymbolicName, createIfNotExist);
 			if (bundleServicesElement != null) {
-				serviceElement = bundleServicesElement.getMemberConfigElement(serviceName);
+				serviceElement = bundleServicesElement.getChildElement(serviceName);
 
 				if (serviceElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					serviceElement = bundleServicesElement.createMemberConfigElement(serviceName, attributes, false);
+					serviceElement = bundleServicesElement.createChildElement(serviceName, attributes, false);
 				}
 			}
 		}
@@ -271,16 +271,16 @@ public class ConfigRegistryHelper {
 		}
 
 		String pathString = MessageFormat.format("/{0}/plugins/{1}/services/{2}/config.ini", new Object[] { platformId, bundleSymbolicName, serviceName });
-		IConfigElement configIniElement = registry.getConfigElement(new Path(pathString));
+		IConfigElement configIniElement = registry.getElement(new Path(pathString));
 
 		if (configIniElement == null) {
 			IConfigElement bundleServiceElement = getPluginServicesElementChild(registry, platformId, bundleSymbolicName, serviceName, createIfNotExist);
 			if (bundleServiceElement != null) {
-				configIniElement = bundleServiceElement.getMemberConfigElement(CONFIG_INI);
+				configIniElement = bundleServiceElement.getChildElement(CONFIG_INI);
 
 				if (configIniElement == null && createIfNotExist) {
 					Map<String, Object> attributes = new HashMap<String, Object>();
-					configIniElement = bundleServiceElement.createMemberConfigElement(CONFIG_INI, attributes, false);
+					configIniElement = bundleServiceElement.createChildElement(CONFIG_INI, attributes, false);
 				}
 			}
 		}

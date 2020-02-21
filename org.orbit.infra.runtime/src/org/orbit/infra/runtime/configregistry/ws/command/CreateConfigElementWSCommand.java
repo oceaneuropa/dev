@@ -42,6 +42,7 @@ public class CreateConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
+		boolean hasParentElementId = request.hasParameter("parent_element_id");
 		boolean hasElementPath = request.hasParameter("element_path");
 		boolean hasElementName = request.hasParameter("element_name");
 
@@ -49,6 +50,7 @@ public class CreateConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 		if (request.hasParameter("attributes")) {
 			attributes = (Map<String, Object>) request.getMapParameter("attributes");
 		}
+
 		boolean generateUniqueName = false;
 		if (request.hasParameter("generate_unique_name")) {
 			generateUniqueName = true;
@@ -67,17 +69,21 @@ public class CreateConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		ConfigElement configElement = null;
+		ConfigElement element = null;
 
 		if (hasElementPath) {
 			String elementPathString = request.getStringParameter("element_path");
 			Path elementPath = new Path(elementPathString);
 
-			configElement = configRegistry.createElement(elementPath, attributes);
+			if (hasParentElementId) {
+				String parentElementId = request.getStringParameter("parent_element_id");
+				element = configRegistry.createElement(parentElementId, elementPath, attributes, generateUniqueName);
+			} else {
+				element = configRegistry.createElement(elementPath, attributes, generateUniqueName);
+			}
 
 		} else if (hasElementName) {
 			String parentElementId = null;
-			boolean hasParentElementId = request.hasParameter("parent_element_id");
 			if (hasParentElementId) {
 				parentElementId = request.getStringParameter("parent_element_id");
 			} else {
@@ -85,52 +91,23 @@ public class CreateConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 			}
 			String name = request.getStringParameter("element_name");
 
-			if (generateUniqueName) {
-				String defaultName = name;
-				boolean isLastSegmentNumber = false;
-				int lastNumber = -1;
-				int index = defaultName.lastIndexOf("_");
-				if (index > 0 && index < defaultName.length() - 1) {
-					String lastSegment = defaultName.substring(index + 1);
-					try {
-						lastNumber = Integer.parseInt(lastSegment);
-						isLastSegmentNumber = true;
-					} catch (Exception e) {
-					}
-				}
-
-				int appendNumber = 1;
-				if (isLastSegmentNumber) {
-					appendNumber = lastNumber + 1;
-				}
-				while (configRegistry.exists(parentElementId, name)) {
-					String nextName = null;
-					if (isLastSegmentNumber) {
-						nextName = defaultName.substring(0, index) + "_" + appendNumber;
-					} else {
-						nextName = defaultName + "_" + appendNumber;
-					}
-					name = nextName;
-					appendNumber++;
-				}
-
-			} else {
-				if (configRegistry.exists(parentElementId, name)) {
+			if (!generateUniqueName) {
+				if (configRegistry.elementExists(parentElementId, name)) {
 					ErrorDTO error = new ErrorDTO("Config registry with name '" + name + "' already exists.");
 					return Response.status(Status.BAD_REQUEST).entity(error).build();
 				}
 			}
 
-			configElement = configRegistry.createElement(parentElementId, name, attributes);
+			element = configRegistry.createElement(parentElementId, name, attributes, generateUniqueName);
 		}
 
-		if (configElement == null) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config element cannot be created.");
+		if (element == null) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Element cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		ConfigElementDTO configElementDTO = RuntimeModelConverter.CONFIG_REGISTRY.toDTO(configElement);
-		return Response.ok().entity(configElementDTO).build();
+		ConfigElementDTO elementDTO = RuntimeModelConverter.CONFIG_REGISTRY.toDTO(element);
+		return Response.ok().entity(elementDTO).build();
 	}
 
 }

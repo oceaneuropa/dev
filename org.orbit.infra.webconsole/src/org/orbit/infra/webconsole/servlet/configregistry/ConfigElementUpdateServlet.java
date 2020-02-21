@@ -62,7 +62,7 @@ public class ConfigElementUpdateServlet extends HttpServlet {
 						message = MessageHelper.INSTANCE.add(message, "Config registry is not found.");
 
 					} else {
-						IConfigElement configElement = configReg.getConfigElement(elementId);
+						IConfigElement configElement = configReg.getElement(elementId);
 						if (configElement == null) {
 							message = MessageHelper.INSTANCE.add(message, "Config element is not found.");
 

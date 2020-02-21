@@ -47,7 +47,7 @@ public class CFGImpl extends CFG {
 	}
 
 	@Override
-	public ServiceMetadata getServiceServiceMetadata() throws IOException {
+	public ServiceMetadata getServiceMetadata() throws IOException {
 		ServiceMetadata metadata = null;
 		try {
 			metadata = ConfigRegistryUtil.getServiceMetadata(this.clientResolver, this.accessToken);

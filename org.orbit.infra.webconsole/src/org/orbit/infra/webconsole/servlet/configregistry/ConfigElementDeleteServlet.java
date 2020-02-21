@@ -62,7 +62,7 @@ public class ConfigElementDeleteServlet extends HttpServlet {
 					} else {
 						for (String currElementId : elementIds) {
 							try {
-								boolean currSucceed = configReg.deleteConfigElement(currElementId);
+								boolean currSucceed = configReg.deleteElement(currElementId);
 								if (currSucceed) {
 									hasSucceed = true;
 								} else {

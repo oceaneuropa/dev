@@ -63,11 +63,11 @@ public class ConfigElementAddServlet extends HttpServlet {
 
 						if (parentElementId.isEmpty()) {
 							// root element
-							configElement = configReg.createRootConfigElement(name, attributes, true);
+							configElement = configReg.createRootElement(name, attributes, true);
 
 						} else {
 							// non-root element
-							configElement = configReg.createConfigElement(parentElementId, name, attributes, true);
+							configElement = configReg.createElement(parentElementId, name, attributes, true);
 						}
 					}
 				}

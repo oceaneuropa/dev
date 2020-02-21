@@ -7,7 +7,7 @@ import org.origin.common.resource.Path;
 
 public interface ConfigRegistry {
 
-	ConfigRegistryService getConfigRegistryService();
+	ConfigRegistryService getService();
 
 	ConfigRegistryMetadata getMetadata();
 
@@ -31,24 +31,28 @@ public interface ConfigRegistry {
 
 	ConfigElement getElement(String parentElementId, String name) throws IOException;
 
+	ConfigElement getElement(String parentElementId, Path path) throws IOException;
+
 	Path getPath(String elementId) throws IOException;
 
-	boolean exists(String elementId) throws IOException;
+	boolean elementExists(String elementId) throws IOException;
 
-	boolean exists(Path path) throws IOException;
+	boolean elementExists(Path path) throws IOException;
 
-	boolean exists(String parentElementId, String name) throws IOException;
+	boolean elementExists(String parentElementId, String name) throws IOException;
 
-	ConfigElement createElement(Path path, Map<String, Object> attributes) throws IOException;
+	ConfigElement createElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
-	ConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes) throws IOException;
+	ConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+
+	ConfigElement createElement(String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	boolean updateName(String elementId, String newName) throws IOException;
 
 	boolean updateAttributes(String elementId, Map<String, Object> attributes) throws IOException;
 
-	boolean delete(String elementId) throws IOException;
+	boolean deleteElement(String elementId) throws IOException;
 
-	boolean delete(Path path) throws IOException;
+	boolean deleteElement(Path path) throws IOException;
 
 }

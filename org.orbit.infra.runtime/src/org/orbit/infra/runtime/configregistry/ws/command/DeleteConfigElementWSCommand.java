@@ -58,12 +58,12 @@ public class DeleteConfigElementWSCommand extends AbstractInfraCommand<ConfigReg
 		boolean succeed = false;
 		if (hasElementId) {
 			String elementId = request.getStringParameter("element_id");
-			succeed = configRegistry.delete(elementId);
+			succeed = configRegistry.deleteElement(elementId);
 
 		} else if (hasElementPath) {
 			String elementPathString = request.getStringParameter("element_path");
 			Path elementPath = new Path(elementPathString);
-			succeed = configRegistry.delete(elementPath);
+			succeed = configRegistry.deleteElement(elementPath);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

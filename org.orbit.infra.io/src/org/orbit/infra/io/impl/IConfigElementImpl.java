@@ -17,6 +17,7 @@ import org.origin.common.resource.Path;
 public class IConfigElementImpl implements IConfigElement {
 
 	protected IConfigRegistry registry;
+	protected IConfigElement parent;
 	protected ConfigElement configElement;
 
 	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
@@ -44,8 +45,17 @@ public class IConfigElementImpl implements IConfigElement {
 	}
 
 	@Override
-	public IConfigRegistry getIConfigRegistry() {
+	public IConfigRegistry getConfigRegistry() {
 		return this.registry;
+	}
+
+	@Override
+	public IConfigElement getParent() {
+		return this.parent;
+	}
+
+	public void setParent(IConfigElement parent) {
+		this.parent = parent;
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class IConfigElementImpl implements IConfigElement {
 	public boolean sync() throws IOException {
 		boolean isSynced = false;
 		String elementId = getElementId();
-		IConfigElement cfgEle = this.registry.getConfigElement(elementId);
+		IConfigElement cfgEle = this.registry.getElement(elementId);
 		if (cfgEle != null) {
 			this.configElement = cfgEle.getConfigElement();
 			isSynced = true;
@@ -129,7 +139,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.registry.updateConfigElementName(elementId, newName);
+		boolean isUpdated = this.registry.updateElementName(elementId, newName);
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.setName(newName);
@@ -149,7 +159,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.registry.setConfigElementAttribute(elementId, oldName, attributeName, attributeValue);
+		boolean isUpdated = this.registry.setElementAttribute(elementId, oldName, attributeName, attributeValue);
 		if (isUpdated) {
 			if (!sync()) {
 				Map<String, Object> attributes = getAttributes();
@@ -174,7 +184,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.registry.setConfigElementAttributes(elementId, attributes);
+		boolean isUpdated = this.registry.setElementAttributes(elementId, attributes);
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.getAttributes().putAll(attributes);
@@ -190,7 +200,7 @@ public class IConfigElementImpl implements IConfigElement {
 			throw new IllegalArgumentException("attribute name is empty.");
 		}
 		String elementId = getElementId();
-		boolean isUpdated = this.registry.removeConfigElementAttribute(elementId, attributeName);
+		boolean isUpdated = this.registry.removeElementAttribute(elementId, attributeName);
 		if (isUpdated) {
 			if (!sync()) {
 				this.configElement.getAttributes().remove(attributeName);
@@ -207,7 +217,7 @@ public class IConfigElementImpl implements IConfigElement {
 		}
 
 		String elementId = getElementId();
-		boolean isUpdated = this.registry.removeConfigElementAttributes(elementId, attributeNames);
+		boolean isUpdated = this.registry.removeElementAttributes(elementId, attributeNames);
 		if (isUpdated) {
 			if (!sync()) {
 				for (String attributeName : attributeNames) {
@@ -223,27 +233,59 @@ public class IConfigElementImpl implements IConfigElement {
 	// Member Config Elements
 	// -----------------------------------------------------------------------------------
 	@Override
-	public IConfigElement[] memberConfigElements() throws IOException {
+	public IConfigElement[] getChildrenElements() throws IOException {
 		String parentElementId = getElementId();
-		return this.registry.listConfigElements(parentElementId);
+		IConfigElement[] children = this.registry.listElements(parentElementId);
+		if (children != null) {
+			for (IConfigElement child : children) {
+				if (child instanceof IConfigElementImpl) {
+					((IConfigElementImpl) child).setParent(this);
+				}
+			}
+		}
+		return children;
 	}
 
 	@Override
-	public IConfigElement getMemberConfigElement(String name) throws IOException {
+	public IConfigElement getChildElement(String name) throws IOException {
 		String parentElementId = getElementId();
-		return this.registry.getConfigElement(parentElementId, name);
+		IConfigElement child = this.registry.getElement(parentElementId, name);
+		if (child instanceof IConfigElementImpl) {
+			((IConfigElementImpl) child).setParent(this);
+		}
+		return child;
 	}
 
 	@Override
-	public boolean memberConfigElementExists(String name) throws IOException {
+	public IConfigElement getChildElement(Path path) throws IOException {
 		String parentElementId = getElementId();
-		return this.registry.configElementExists(parentElementId, name);
+		IConfigElement child = this.registry.getElement(parentElementId, path);
+		if (child instanceof IConfigElementImpl) {
+			((IConfigElementImpl) child).setParent(this);
+		}
+		return child;
 	}
 
 	@Override
-	public IConfigElement createMemberConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+	public boolean childElementExists(String name) throws IOException {
 		String parentElementId = getElementId();
-		return this.registry.createConfigElement(parentElementId, name, attributes, generateUniqueName);
+		return this.registry.elementExists(parentElementId, name);
+	}
+
+	@Override
+	public IConfigElement createChildElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		String parentElementId = getElementId();
+		IConfigElement child = this.registry.createElement(parentElementId, name, attributes, generateUniqueName);
+		if (child instanceof IConfigElementImpl) {
+			((IConfigElementImpl) child).setParent(this);
+		}
+		return child;
+	}
+
+	@Override
+	public IConfigElement createChildElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		String parentElementId = getElementId();
+		return this.registry.createElement(parentElementId, path, attributes, generateUniqueName);
 	}
 
 	/** DateRecordAware */

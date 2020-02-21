@@ -35,7 +35,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public ConfigRegistryService getConfigRegistryService() {
+	public ConfigRegistryService getService() {
 		return this.service;
 	}
 
@@ -234,26 +234,24 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 
 	@Override
 	public ConfigElement getElement(Path path) throws IOException {
-		ConfigElement result = null;
+		if (path == null || path.isEmpty()) {
+			// Path is empty, which cannot be used to resolve a element. Element cannot be resolved.
+			return null;
+		}
+
+		ConfigElement element = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
 
-			String[] segments = path.getSegments();
-			if (segments == null || segments.length == 0) {
-				// path is empty, which cannot be used to resolve a config element. Config element cannot be resolved.
-				return null;
-			}
-
 			String currParentElementId = "-1";
 
-			for (int i = 0; i < segments.length; i++) {
-				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+			String[] pathSegments = path.getSegments();
+			for (int i = 0; i < pathSegments.length; i++) {
+				ConfigElement currConfigElement = tableHandler.getByName(conn, currParentElementId, pathSegments[i]);
 
-				String currName = segments[i];
-				ConfigElement currConfigElement = tableHandler.getByName(conn, currParentElementId, currName);
-
+				boolean isLastSegment = (i == (pathSegments.length - 1)) ? true : false;
 				if (!isLastSegment) {
 					// Current element is an intermediate segment.
 					if (currConfigElement == null) {
@@ -267,13 +265,13 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 				} else {
 					// Current config element is the last segment, which should be the config element, if exists.
 					if (currConfigElement != null) {
-						result = currConfigElement;
+						element = currConfigElement;
 					}
 				}
 			}
 
-			if (result != null) {
-				result.setPath(path);
+			if (element != null) {
+				element.setPath(path);
 			}
 
 		} catch (SQLException e) {
@@ -281,46 +279,98 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
-		return result;
+		return element;
 	}
 
 	@Override
 	public ConfigElement getElement(String parentElementId, String name) throws IOException {
-		ConfigElement result = null;
+		ConfigElement element = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
 
-			result = tableHandler.getByName(conn, parentElementId, name);
+			element = tableHandler.getByName(conn, parentElementId, name);
 
-			updatePath(result);
+			if (element != null) {
+				updatePath(element);
+			}
 
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
-		return result;
+		return element;
 	}
 
 	@Override
-	public Path getPath(String elementId) throws IOException {
-		Path result = null;
+	public ConfigElement getElement(String parentElementId, Path path) throws IOException {
+		if (path == null || path.isEmpty()) {
+			// Path is empty, which cannot be used to resolve a element. Element cannot be resolved.
+			return null;
+		}
+
+		ConfigElement element = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
 
-			ConfigElement configElement = tableHandler.getByElementId(conn, elementId);
-			if (configElement == null) {
+			String currParentElementId = parentElementId;
+
+			String[] pathSegments = path.getSegments();
+			for (int i = 0; i < pathSegments.length; i++) {
+				ConfigElement currElement = tableHandler.getByName(conn, currParentElementId, pathSegments[i]);
+
+				boolean isLastSegment = (i == (pathSegments.length - 1)) ? true : false;
+				if (!isLastSegment) {
+					// Current element is an intermediate segment.
+					if (currElement == null) {
+						// Current intermediate element cannot be found. Element cannot be resolved. Element doesn't exist.
+						return null;
+					}
+
+					// Look for the next segment until reaching the last segment, which should be the element name, if exists.
+					currParentElementId = currElement.getElementId();
+
+				} else {
+					// Current element is the last segment, which should be the element, if exists.
+					if (currElement != null) {
+						element = currElement;
+					}
+				}
+			}
+
+			if (element != null) {
+				updatePath(element);
+			}
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return element;
+	}
+
+	@Override
+	public Path getPath(String elementId) throws IOException {
+		Path path = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
+
+			ConfigElement element = tableHandler.getByElementId(conn, elementId);
+			if (element == null) {
 				// Config element doesn't exists. Path cannot be constructed.
 				return null;
 			}
 
-			Path currPath = new Path(configElement.getName());
+			Path currPath = new Path(element.getName());
 
-			String currParentElementId = configElement.getParentElementId();
+			String currParentElementId = element.getParentElementId();
 			while (currParentElementId != null && !currParentElementId.isEmpty() && !currParentElementId.equals("-1")) {
 				ConfigElement parentConfigElement = tableHandler.getByElementId(conn, currParentElementId);
 				if (parentConfigElement == null) {
@@ -334,107 +384,97 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 				currParentElementId = parentConfigElement.getParentElementId();
 			}
 
-			result = new Path(Path.ROOT, currPath);
+			path = new Path(Path.ROOT, currPath);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
-		return result;
+		return path;
 	}
 
 	@Override
-	public boolean exists(String elementId) throws IOException {
-		ConfigElement configElement = getElement(elementId);
-		if (configElement != null) {
+	public boolean elementExists(String elementId) throws IOException {
+		ConfigElement element = getElement(elementId);
+		if (element != null) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean exists(Path path) throws IOException {
-		ConfigElement configElement = getElement(path);
-		if (configElement != null) {
+	public boolean elementExists(Path path) throws IOException {
+		ConfigElement element = getElement(path);
+		if (element != null) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean exists(String parentElementId, String name) throws IOException {
-		ConfigElement configElement = getElement(parentElementId, name);
-		if (configElement != null) {
+	public boolean elementExists(String parentElementId, String name) throws IOException {
+		ConfigElement element = getElement(parentElementId, name);
+		if (element != null) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public ConfigElement createElement(Path path, Map<String, Object> attributes) throws IOException {
+	public ConfigElement createElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		if (path == null || path.isEmpty()) {
 			throw new IOException("Path is empty.");
 		}
-		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
-			throw new IOException("Path is empty.");
+
+		ConfigElement element = null;
+		if (!generateUniqueName) {
+			element = getElement(path);
+			if (element != null) {
+				throw new IOException("Element with path '" + path.getPathString() + "' already exists.");
+			}
 		}
 
-		ConfigElement existingConfigElement = getElement(path);
-		if (existingConfigElement != null) {
-			throw new IOException("Config element with path '" + path.getPathString() + "' already exists.");
-		}
-
-		ConfigElement newConfigElement = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
 
-			Path currPath = null;
 			String currParentElementId = "-1";
 
-			for (int i = 0; i < segments.length; i++) {
-				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+			String[] pathSegments = path.getSegments();
+			for (int i = 0; i < pathSegments.length; i++) {
+				String currPathSegment = pathSegments[i];
+				ConfigElement currElement = tableHandler.getByName(conn, currParentElementId, currPathSegment);
 
-				String currName = segments[i];
-				// if (currPath == null) {
-				// currPath = new Path(Path.ROOT, currName);
-				// } else {
-				// currPath = new Path(currPath, currName);
-				// }
-				currPath = path.getPath(0, i + 1);
-
-				ConfigElement currConfigElement = tableHandler.getByName(conn, currParentElementId, currName);
-
+				boolean isLastSegment = (i == (pathSegments.length - 1)) ? true : false;
 				if (!isLastSegment) {
 					// Current element is an intermediate segment of the path.
-					// - Ensure the current config element exist
-					if (currConfigElement == null) {
-						currConfigElement = createElement(currParentElementId, currName, null);
+					// - Ensure the current element exist
+					if (currElement == null) {
+						currElement = createElement(currParentElementId, currPathSegment, null, false);
 					}
 
-					if (currConfigElement == null) {
-						// Current config element doesn't exist and cannot be created.
-						// - throw error
+					if (currElement == null) {
+						// Current element doesn't exist and cannot be created.
+						Path currPath = path.getPath(0, i + 1);
 						throw new IOException("Config element with path '" + currPath.getPathString() + "' cannot be created.");
 					}
 
 					// Look for the next segment of the path.
-					currParentElementId = currConfigElement.getElementId();
+					currParentElementId = currElement.getElementId();
 
 				} else {
 					// Current segment is the last segment of the path, which is for creating the new config element itself.
-					newConfigElement = createElement(currParentElementId, currName, attributes);
+					element = createElement(currParentElementId, currPathSegment, attributes, generateUniqueName);
 				}
 			}
 
-			if (newConfigElement == null) {
-				throw new RuntimeException("New config element cannot be created.");
+			if (element == null) {
+				throw new RuntimeException("New element cannot be created.");
 			}
 
-			updatePath(newConfigElement);
+			updatePath(element);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -442,38 +482,70 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		return newConfigElement;
+		return element;
 	}
 
 	@Override
-	public ConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes) throws IOException {
-		ConfigElement newConfigElement = null;
-
+	public ConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		ConfigElement element = null;
 		Connection conn = null;
 		try {
-			conn = getConnection();
-			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
-
 			if (parentElementId == null || parentElementId.isEmpty()) {
 				parentElementId = "-1";
 			}
 
-			// Check existence of parent config element
+			if (generateUniqueName) {
+				int number = 1;
+				boolean isLastSegmentNumber = false;
+				int lastNumber = -1;
+				int index = name.lastIndexOf("_");
+				if (index > 0 && index < name.length() - 1) {
+					String lastSegment = name.substring(index + 1);
+					try {
+						lastNumber = Integer.parseInt(lastSegment);
+						number = lastNumber + 1;
+						isLastSegmentNumber = true;
+					} catch (Exception e) {
+					}
+				}
+
+				String baseName = null;
+				if (isLastSegmentNumber) {
+					baseName = name.substring(0, index);
+				} else {
+					baseName = name;
+				}
+				while (elementExists(parentElementId, name)) {
+					name = baseName + "_" + number;
+					number++;
+				}
+
+			} else {
+				element = getElement(parentElementId, name);
+				if (element != null) {
+					throw new IOException("Element with name '" + name + "' already exists.");
+				}
+			}
+
+			// Check existence of parent element
 			if (!"-1".equals(parentElementId)) {
-				boolean parentExists = exists(parentElementId);
+				boolean parentExists = elementExists(parentElementId);
 				if (!parentExists) {
 					throw new RuntimeException("Parent config element with element id '" + parentElementId + "' does not exists.");
 				}
 			}
 
+			conn = getConnection();
+			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
+
 			String elementId = generateElementId();
 
-			newConfigElement = tableHandler.create(conn, elementId, parentElementId, name, attributes);
-			if (newConfigElement == null) {
+			element = tableHandler.create(conn, elementId, parentElementId, name, attributes);
+			if (element == null) {
 				throw new RuntimeException("New config element cannot be created.");
 			}
 
-			updatePath(newConfigElement);
+			updatePath(element);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -481,7 +553,75 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		return newConfigElement;
+		return element;
+	}
+
+	@Override
+	public ConfigElement createElement(String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		if (parentElementId == null || parentElementId.isEmpty()) {
+			parentElementId = "-1";
+		}
+		if (path == null || path.isEmpty()) {
+			throw new IOException("Path is empty.");
+		}
+
+		ConfigElement element = null;
+		if (!generateUniqueName) {
+			element = getElement(parentElementId, path);
+			if (element != null) {
+				throw new IOException("Element with path '" + path.getPathString() + "' already exists.");
+			}
+		}
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
+
+			String currParentElementId = parentElementId;
+
+			String[] pathSegments = path.getSegments();
+			for (int i = 0; i < pathSegments.length; i++) {
+				String currPathSegment = pathSegments[i];
+
+				ConfigElement currElement = tableHandler.getByName(conn, currParentElementId, currPathSegment);
+
+				boolean isLastSegment = (i == (pathSegments.length - 1)) ? true : false;
+				if (!isLastSegment) {
+					// Current element is an intermediate segment of the path.
+					// - Ensure the current config element exist
+					if (currElement == null) {
+						currElement = createElement(currParentElementId, currPathSegment, null, false);
+					}
+
+					if (currElement == null) {
+						// Current element doesn't exist and cannot be created.
+						Path currPath = path.getPath(0, i + 1);
+						throw new IOException("Element with path '" + currPath.getPathString() + "' cannot be created.");
+					}
+
+					// Look for the next segment of the path.
+					currParentElementId = currElement.getElementId();
+
+				} else {
+					// Current segment is the last segment of the path, which is for creating the new element itself.
+					element = createElement(currParentElementId, currPathSegment, attributes, generateUniqueName);
+				}
+			}
+
+			if (element == null) {
+				throw new RuntimeException("New element cannot be created.");
+			}
+
+			updatePath(element);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		return element;
 	}
 
 	public String generateElementId() {
@@ -499,7 +639,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 
 			ConfigElement configElement = tableHandler.getByElementId(conn, elementId);
 			if (configElement == null) {
-				throw new IOException("Config element doesn't exist.");
+				throw new IOException("Element doesn't exist.");
 			}
 
 			isUpdated = tableHandler.updateName(conn, elementId, name);
@@ -531,7 +671,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean delete(String elementId) throws IOException {
+	public boolean deleteElement(String elementId) throws IOException {
 		boolean isDeleted = false;
 		Connection conn = null;
 		try {
@@ -540,7 +680,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 
 			ConfigElement configElement = tableHandler.getByElementId(conn, elementId);
 			if (configElement == null) {
-				throw new IOException("Config element doesn't exist.");
+				throw new IOException("Element doesn't exist.");
 			}
 
 			isDeleted = doDelete(conn, tableHandler, configElement, new ArrayList<ConfigElement>());
@@ -554,7 +694,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean delete(Path path) throws IOException {
+	public boolean deleteElement(Path path) throws IOException {
 		boolean isDeleted = false;
 		Connection conn = null;
 		try {
@@ -563,7 +703,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 
 			ConfigElement configElement = getElement(path);
 			if (configElement == null) {
-				throw new IOException("Config element doesn't exist.");
+				throw new IOException("Element doesn't exist.");
 			}
 
 			doDelete(conn, tableHandler, configElement, new ArrayList<ConfigElement>());

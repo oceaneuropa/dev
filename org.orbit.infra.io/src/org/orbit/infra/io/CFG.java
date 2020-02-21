@@ -45,7 +45,7 @@ public abstract class CFG {
 	}
 
 	// public synchronized static void clear() {
-		// CFG_MAP.clear();
+	// CFG_MAP.clear();
 	// }
 
 	// protected String configRegistryServiceUrl;
@@ -90,10 +90,10 @@ public abstract class CFG {
 
 	public boolean isOnline() {
 		boolean isOnline = false;
-		ConfigRegistryClientResolver clientResolver = getClientResolver();
-		if (clientResolver != null) {
+		ConfigRegistryClientResolver resolver = getClientResolver();
+		if (resolver != null) {
 			String accessToken = getAccessToken();
-			ConfigRegistryClient client = clientResolver.resolve(accessToken);
+			ConfigRegistryClient client = resolver.resolve(accessToken);
 			if (client != null && client.ping()) {
 				isOnline = true;
 			}
@@ -104,7 +104,7 @@ public abstract class CFG {
 	// -----------------------------------------------------------------------------------
 	// Config Registries
 	// -----------------------------------------------------------------------------------
-	public abstract ServiceMetadata getServiceServiceMetadata() throws IOException;
+	public abstract ServiceMetadata getServiceMetadata() throws IOException;
 
 	public abstract IConfigRegistry[] getConfigRegistries() throws IOException;
 

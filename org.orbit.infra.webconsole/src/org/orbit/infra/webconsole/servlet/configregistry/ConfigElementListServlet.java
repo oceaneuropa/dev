@@ -67,15 +67,15 @@ public class ConfigElementListServlet extends HttpServlet {
 
 				} else {
 					if (parentElementId.isEmpty()) {
-						configElements = configReg.listRootConfigElements();
+						configElements = configReg.listRootElements();
 
 					} else {
-						configElements = configReg.listConfigElements(parentElementId);
+						configElements = configReg.listElements(parentElementId);
 
-						IConfigElement parentElement = configReg.getConfigElement(parentElementId);
+						IConfigElement parentElement = configReg.getElement(parentElementId);
 						while (parentElement != null) {
 							parentConfigElements.add(0, parentElement);
-							parentElement = configReg.getConfigElement(parentElement.getParentElementId());
+							parentElement = configReg.getElement(parentElement.getParentElementId());
 						}
 					}
 				}

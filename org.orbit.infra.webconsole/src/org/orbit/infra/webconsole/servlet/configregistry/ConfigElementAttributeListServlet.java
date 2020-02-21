@@ -73,7 +73,7 @@ public class ConfigElementAttributeListServlet extends HttpServlet {
 						message = MessageHelper.INSTANCE.add(message, "Config registry is not found.");
 
 					} else {
-						configElement = configReg.getConfigElement(elementId);
+						configElement = configReg.getElement(elementId);
 
 						if (configElement == null) {
 							message = MessageHelper.INSTANCE.add(message, "Config element is not found.");
@@ -81,10 +81,10 @@ public class ConfigElementAttributeListServlet extends HttpServlet {
 						} else {
 							attributes = configElement.getAttributes();
 
-							IConfigElement parentElement = configReg.getConfigElement(parentElementId);
+							IConfigElement parentElement = configReg.getElement(parentElementId);
 							while (parentElement != null) {
 								parentConfigElements.add(0, parentElement);
-								parentElement = configReg.getConfigElement(parentElement.getParentElementId());
+								parentElement = configReg.getElement(parentElement.getParentElementId());
 							}
 						}
 					}

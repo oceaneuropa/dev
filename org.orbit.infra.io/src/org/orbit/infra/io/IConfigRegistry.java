@@ -46,46 +46,50 @@ public interface IConfigRegistry {
 	// -----------------------------------------------------------------------------------
 	// Config Elements
 	// -----------------------------------------------------------------------------------
-	IConfigElement[] listRootConfigElements() throws IOException;
+	IConfigElement[] listRootElements() throws IOException;
 
-	IConfigElement getRootConfigElement(String name) throws IOException;
+	IConfigElement getRootElement(String name) throws IOException;
 
-	IConfigElement[] listConfigElements(String parentElementId) throws IOException;
+	IConfigElement[] listElements(String parentElementId) throws IOException;
 
-	IConfigElement[] listConfigElements(Path parentPath) throws IOException;
+	IConfigElement[] listElements(Path parentPath) throws IOException;
 
-	IConfigElement getConfigElement(String elementId) throws IOException;
+	IConfigElement getElement(String elementId) throws IOException;
 
-	IConfigElement getConfigElement(Path path) throws IOException;
+	IConfigElement getElement(Path path) throws IOException;
 
-	IConfigElement getConfigElement(String parentElementId, String name) throws IOException;
+	IConfigElement getElement(String parentElementId, String name) throws IOException;
 
-	Path getConfigElementPath(String elementId) throws IOException;
+	IConfigElement getElement(String parentElementId, Path path) throws IOException;
 
-	boolean configElementExists(String elementId) throws IOException;
+	Path getElementPath(String elementId) throws IOException;
 
-	boolean configElementExists(Path path) throws IOException;
+	boolean elementExists(String elementId) throws IOException;
 
-	boolean configElementExists(String parentElementId, String name) throws IOException;
+	boolean elementExists(Path path) throws IOException;
 
-	IConfigElement createConfigElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+	boolean elementExists(String parentElementId, String name) throws IOException;
 
-	IConfigElement createConfigElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+	IConfigElement createRootElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
-	IConfigElement createRootConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+	IConfigElement createElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
-	boolean updateConfigElementName(String elementId, String newName) throws IOException;
+	IConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
-	boolean setConfigElementAttribute(String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws IOException;
+	IConfigElement createElement(String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
-	boolean setConfigElementAttributes(String elementId, Map<String, Object> attributes) throws IOException;
+	boolean updateElementName(String elementId, String newName) throws IOException;
 
-	boolean removeConfigElementAttribute(String elementId, String attributeName) throws IOException;
+	boolean setElementAttribute(String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws IOException;
 
-	boolean removeConfigElementAttributes(String elementId, List<String> attributeNames) throws IOException;
+	boolean setElementAttributes(String elementId, Map<String, Object> attributes) throws IOException;
 
-	boolean deleteConfigElement(String elementId) throws IOException;
+	boolean removeElementAttribute(String elementId, String attributeName) throws IOException;
 
-	boolean deleteConfigElement(Path path) throws IOException;
+	boolean removeElementAttributes(String elementId, List<String> attributeNames) throws IOException;
+
+	boolean deleteElement(String elementId) throws IOException;
+
+	boolean deleteElement(Path path) throws IOException;
 
 }

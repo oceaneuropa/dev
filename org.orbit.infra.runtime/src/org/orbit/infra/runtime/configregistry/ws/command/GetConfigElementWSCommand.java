@@ -15,6 +15,11 @@ import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class GetConfigElementWSCommand extends AbstractInfraCommand<ConfigRegistryService> implements WSCommand {
 
 	public static String ID = "org.orbit.infra.runtime.configregistry.GetConfigElementWSCommand";
@@ -41,6 +46,7 @@ public class GetConfigElementWSCommand extends AbstractInfraCommand<ConfigRegist
 		}
 
 		boolean hasElementId = request.hasParameter("element_id");
+		boolean hasParentElementId = request.hasParameter("parent_element_id");
 		boolean hasElementPath = request.hasParameter("element_path");
 		boolean hasElementName = request.hasParameter("element_name");
 
@@ -65,19 +71,22 @@ public class GetConfigElementWSCommand extends AbstractInfraCommand<ConfigRegist
 			configElement = configRegistry.getElement(elementId);
 
 		} else if (hasElementPath) {
-			String elementPathString = request.getStringParameter("element_path");
-			Path elementPath = new Path(elementPathString);
-			configElement = configRegistry.getElement(elementPath);
+			String pathString = request.getStringParameter("element_path");
+			if (hasParentElementId) {
+				String parentElementId = request.getStringParameter("parent_element_id");
+				configElement = configRegistry.getElement(parentElementId, new Path(pathString));
+			} else {
+				configElement = configRegistry.getElement(new Path(pathString));
+			}
 
 		} else if (hasElementName) {
+			String name = request.getStringParameter("element_name");
 			String parentElementId = null;
-			boolean hasParentElementId = request.hasParameter("parent_element_id");
 			if (hasParentElementId) {
 				parentElementId = request.getStringParameter("parent_element_id");
 			} else {
 				parentElementId = "-1";
 			}
-			String name = request.getStringParameter("element_name");
 			configElement = configRegistry.getElement(parentElementId, name);
 		}
 
