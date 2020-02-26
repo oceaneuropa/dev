@@ -19,6 +19,9 @@ public class ConfigRegistryHelper {
 	protected static final String SERVICES = "services";
 	protected static final String CONFIG_INI = "config.ini";
 
+	protected static final String REGISTRY__USERS = "Users";
+	protected static final String TYPE__SETTINGS = "Settings";
+
 	/**
 	 * Get "platforms" IConfigRegistry.
 	 * 
@@ -287,6 +290,213 @@ public class ConfigRegistryHelper {
 		return configIniElement;
 	}
 
+	/**
+	 * 
+	 * @param accessToken
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized static IConfigRegistry getUsersConfigRegistry(String accessToken) throws IOException {
+		IConfigRegistry usersConfigReg = null;
+		CFG cfg = CFG.getDefault(accessToken);
+		if (cfg != null) {
+			usersConfigReg = cfg.getConfigRegistryByName(REGISTRY__USERS);
+			if (usersConfigReg == null) {
+				usersConfigReg = cfg.createConfigRegistry(TYPE__SETTINGS, REGISTRY__USERS, null, false);
+			}
+		}
+		return usersConfigReg;
+	}
+
+	/**
+	 * /Users/<username>/
+	 * 
+	 * @param usersConfigReg
+	 * @param username
+	 * @param createIfNotExist
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized static IConfigElement getUserConfigElement(IConfigRegistry usersConfigReg, String username, boolean createIfNotExist) throws IOException {
+		if (usersConfigReg == null) {
+			throw new IllegalArgumentException("usersConfigReg is null.");
+		}
+		if (username == null) {
+			throw new IllegalArgumentException("username is null.");
+		}
+
+		IConfigElement userElement = null;
+		if (usersConfigReg != null && username != null) {
+			IConfigElement[] userElements = usersConfigReg.listRootElements();
+			if (userElements != null) {
+				for (IConfigElement currUserElement : userElements) {
+					String currUsername = currUserElement.getAttribute("username", String.class);
+					if (username.equals(currUsername)) {
+						userElement = currUserElement;
+						break;
+					}
+				}
+			}
+
+			if (userElement == null) {
+				if (createIfNotExist) {
+					Map<String, Object> attributes = new HashMap<String, Object>();
+					attributes.put("username", username);
+					userElement = usersConfigReg.createRootElement(username, attributes, false);
+				}
+			}
+		}
+		return userElement;
+	}
+
+	/**
+	 * /Users/<username>/system/<path>/
+	 * 
+	 * @param usersConfigReg
+	 * @param username
+	 * @param createIfNotExist
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized static IConfigElement getUserSystemElement(IConfigRegistry usersConfigReg, String username, boolean createIfNotExist) throws IOException {
+		if (usersConfigReg == null) {
+			throw new IllegalArgumentException("usersConfigReg is null.");
+		}
+		if (username == null) {
+			throw new IllegalArgumentException("username is null.");
+		}
+
+		IConfigElement systemElement = null;
+
+		IConfigElement userElement = getUserConfigElement(usersConfigReg, username, createIfNotExist);
+		if (userElement != null) {
+			systemElement = userElement.getChildElement("system");
+			if (systemElement == null) {
+				if (createIfNotExist) {
+					Map<String, Object> attributes = new HashMap<String, Object>();
+					systemElement = userElement.createChildElement("system", attributes, false);
+				}
+			}
+		}
+
+		return systemElement;
+	}
+
+	/**
+	 * /Users/<username>/programs/<programId>
+	 * 
+	 * @param usersConfigReg
+	 * @param username
+	 * @param programId
+	 * @param createIfNotExist
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized static IConfigElement getUserProgramElement(IConfigRegistry usersConfigReg, String username, String programId, boolean createIfNotExist) throws IOException {
+		if (usersConfigReg == null) {
+			throw new IllegalArgumentException("usersConfigReg is null.");
+		}
+		if (username == null) {
+			throw new IllegalArgumentException("username is null.");
+		}
+		if (programId == null) {
+			throw new IllegalArgumentException("programId is null.");
+		}
+
+		IConfigElement programElement = null;
+
+		IConfigElement userElement = getUserConfigElement(usersConfigReg, username, createIfNotExist);
+		if (userElement != null) {
+			IConfigElement programsElement = userElement.getChildElement("programs");
+			if (programsElement == null) {
+				if (createIfNotExist) {
+					Map<String, Object> attributes = new HashMap<String, Object>();
+					programsElement = userElement.createChildElement("programs", attributes, false);
+				}
+			}
+
+			if (programsElement != null) {
+				programElement = programsElement.getChildElement(programId);
+				if (programElement == null) {
+					if (createIfNotExist) {
+						Map<String, Object> attributes = new HashMap<String, Object>();
+						attributes.put("programId", programId);
+						programElement = programsElement.createChildElement(programId, attributes, false);
+					}
+				}
+			}
+		}
+
+		return programElement;
+	}
+
+	/**
+	 * /Users/<username>/programs/<programId>/<programVersion>/
+	 * 
+	 * @param usersConfigReg
+	 * @param username
+	 * @param programId
+	 * @param programVersion
+	 * @param createIfNotExist
+	 * @return
+	 * @throws IOException
+	 */
+	protected synchronized static IConfigElement getUserProgramElement(IConfigRegistry usersConfigReg, String username, String programId, String programVersion, boolean createIfNotExist) throws IOException {
+		if (usersConfigReg == null) {
+			throw new IllegalArgumentException("usersConfigReg is null.");
+		}
+		if (username == null) {
+			throw new IllegalArgumentException("username is null.");
+		}
+		if (programId == null) {
+			throw new IllegalArgumentException("programId is null.");
+		}
+		if (programVersion == null) {
+			throw new IllegalArgumentException("programVersion is null.");
+		}
+
+		IConfigElement programVersionElement = null;
+
+		IConfigElement userElement = getUserConfigElement(usersConfigReg, username, createIfNotExist);
+		if (userElement != null) {
+			IConfigElement programsElement = userElement.getChildElement("programs");
+			if (programsElement == null) {
+				if (createIfNotExist) {
+					Map<String, Object> attributes = new HashMap<String, Object>();
+					programsElement = userElement.createChildElement("programs", attributes, false);
+				}
+			}
+
+			if (programsElement != null) {
+				IConfigElement programElement = programsElement.getChildElement(programId);
+				if (programElement == null) {
+					if (createIfNotExist) {
+						Map<String, Object> attributes = new HashMap<String, Object>();
+						attributes.put("programId", programId);
+						programElement = programsElement.createChildElement(programId, attributes, false);
+					}
+				}
+
+				if (programElement != null) {
+					if (programVersion == null || programVersion.isEmpty()) {
+						programVersion = "0.0.0";
+					}
+
+					programVersionElement = programElement.getChildElement(programVersion);
+					if (programVersionElement == null) {
+						if (createIfNotExist) {
+							Map<String, Object> attributes = new HashMap<String, Object>();
+							attributes.put("programId", programId);
+							attributes.put("programVersion", programVersion);
+							programVersionElement = programElement.createChildElement(programVersion, attributes, false);
+						}
+					}
+				}
+			}
+		}
+
+		return programVersionElement;
+	}
 }
 
 // /**
