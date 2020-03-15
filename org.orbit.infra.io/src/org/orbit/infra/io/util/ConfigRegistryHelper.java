@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.origin.common.osgi.OSGiVersionUtil;
 import org.origin.common.resource.Path;
 
 public class ConfigRegistryHelper {
@@ -391,7 +392,7 @@ public class ConfigRegistryHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public synchronized static IConfigElement[] getUserInstallationElements(IConfigRegistry usersConfigReg, String username, boolean createIfNotExist) throws IOException {
+	public synchronized static IConfigElement[] getUserInstallationProgramElements(IConfigRegistry usersConfigReg, String username, boolean createIfNotExist) throws IOException {
 		if (usersConfigReg == null) {
 			throw new IllegalArgumentException("usersConfigReg is null.");
 		}
@@ -408,6 +409,58 @@ public class ConfigRegistryHelper {
 			childrenElements = new IConfigElement[0];
 		}
 		return childrenElements;
+	}
+
+	/**
+	 * /Users/<username>/programs/<programId>
+	 * 
+	 * @param usersConfigReg
+	 * @param username
+	 * @param programId
+	 * @param createIfNotExist
+	 * @return
+	 * @throws IOException
+	 */
+	public synchronized static IConfigElement getUserInstallationProgramElement(IConfigRegistry usersConfigReg, String username, String programId, String programVersion, boolean createIfNotExist) throws IOException {
+		if (usersConfigReg == null) {
+			throw new IllegalArgumentException("usersConfigReg is null.");
+		}
+		if (username == null) {
+			throw new IllegalArgumentException("username is null.");
+		}
+		if (programId == null) {
+			throw new IllegalArgumentException("programId is null.");
+		}
+		if (programVersion == null) {
+			throw new IllegalArgumentException("programVersion is null.");
+		}
+
+		IConfigElement programElement = null;
+
+		IConfigElement installationElement = getUserInstallationElement(usersConfigReg, username, createIfNotExist);
+		if (installationElement != null) {
+			String name = OSGiVersionUtil.getProgramIdAndVersionString(programId, programVersion, "|");
+
+			IConfigElement[] childrenProgramElements = installationElement.getChildrenElements();
+			for (IConfigElement childProgramElement : childrenProgramElements) {
+				String currName = childProgramElement.getName();
+				if (name.equals(currName)) {
+					programElement = childProgramElement;
+					break;
+				}
+			}
+
+			if (programElement == null) {
+				if (createIfNotExist) {
+					Map<String, Object> attributes = new HashMap<String, Object>();
+					attributes.put("programId", programId);
+					attributes.put("programVersion", programVersion);
+					programElement = installationElement.createChildElement(name, attributes, false);
+				}
+			}
+		}
+
+		return programElement;
 	}
 
 	/**
