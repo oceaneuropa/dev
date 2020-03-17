@@ -11,6 +11,11 @@ import org.orbit.infra.io.IConfigRegistry;
 import org.origin.common.osgi.OSGiVersionUtil;
 import org.origin.common.resource.Path;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ConfigRegistryHelper {
 
 	protected static final String REGISTRY__PLATFORMS = "platforms";

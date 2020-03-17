@@ -361,13 +361,15 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
 					payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
 
-					// access token expires in 30 minutes by default
-					accessToken = tokenHandler.createToken(payload);
+					// access token expires in 12 hours
+					Map<String, Object> options1 = new HashMap<String, Object>();
+					options1.put(JWTTokenHandler.OPTION__EXPIRE_MINUTES, new Integer(12 * 60));
+					accessToken = tokenHandler.createToken(options1, payload);
 
-					// refresh token expires in 12 hours
-					Map<String, Object> options = new HashMap<String, Object>();
-					options.put(JWTTokenHandler.OPTION__EXPIRE_MINUTES, new Integer(12 * 60));
-					refreshToken = tokenHandler.createToken(options, payload);
+					// refresh token expires in 24 hours
+					Map<String, Object> options2 = new HashMap<String, Object>();
+					options2.put(JWTTokenHandler.OPTION__EXPIRE_MINUTES, new Integer(24 * 60));
+					refreshToken = tokenHandler.createToken(options2, payload);
 
 					tokenType = "Bearer";
 
