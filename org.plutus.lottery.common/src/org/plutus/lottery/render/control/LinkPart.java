@@ -32,7 +32,7 @@ public class LinkPart extends WebWidget {
 	 * @param target
 	 */
 	public LinkPart(WebWidget parent, NumberPart source, NumberPart target) {
-		super(parent, WWT.NOT_SET, null);
+		super(parent, WWT.NONE);
 		checkSource(source);
 		checkTarget(target);
 

@@ -25,7 +25,7 @@ public class NumberPart extends WebWidget {
 	 * @param isDummy
 	 */
 	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match, boolean isDummy) {
-		super(parent, WWT.NOT_SET, null);
+		super(parent, WWT.NONE);
 		this.number = number;
 		this.isPBNumber = isPBNumber;
 		this.match = match;
