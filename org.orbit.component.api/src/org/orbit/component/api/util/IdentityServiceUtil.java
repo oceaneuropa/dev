@@ -10,8 +10,8 @@ import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.LogoutResponse;
 import org.orbit.component.api.tier1.identity.RefreshTokenRequest;
 import org.orbit.component.api.tier1.identity.RefreshTokenResponse;
-import org.orbit.component.api.tier1.identity.RegisterRequest;
-import org.orbit.component.api.tier1.identity.RegisterResponse;
+import org.orbit.component.api.tier1.identity.CreateNewAccountRequest;
+import org.orbit.component.api.tier1.identity.CreateNewAccountResponse;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConstants;
 
@@ -44,12 +44,12 @@ public class IdentityServiceUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static RegisterResponse register(String identityServiceUrl, String username, String email, String password) throws ClientException {
-		RegisterResponse response = null;
+	public static CreateNewAccountResponse createNewAccount(String identityServiceUrl, String username, String email, String password) throws ClientException {
+		CreateNewAccountResponse response = null;
 		IdentityServiceClient identityServiceClient = getClient(identityServiceUrl, username);
 		if (identityServiceClient != null) {
-			RegisterRequest request = new RegisterRequest(username, email, password);
-			response = identityServiceClient.register(request);
+			CreateNewAccountRequest request = new CreateNewAccountRequest(username, email, password);
+			response = identityServiceClient.createNewAccount(request);
 		}
 		return response;
 	}

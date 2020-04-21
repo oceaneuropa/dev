@@ -5,15 +5,15 @@ import java.util.Map;
 
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.tier1.identity.SignOutServlet;
-import org.orbit.component.webconsole.servlet.tier1.identity.UserMainPage;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountAddServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountDeleteServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountListServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountUpdateServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramActionServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramAddServlet;
-import org.orbit.component.webconsole.servlet.tier1.useraccount.UserProgramsListServlet;
+import org.orbit.component.webconsole.servlet.tier1.SignOutServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserAccountAddServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserAccountDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserAccountListServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserAccountUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserMainPage;
+import org.orbit.component.webconsole.servlet.tier1.UserProgramActionServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserProgramAddServlet;
+import org.orbit.component.webconsole.servlet.tier1.UserProgramsListServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppAddServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier2.appstore.AppDownloadServlet;
@@ -77,16 +77,12 @@ public class WebApplication extends PlatformWebApplication {
 	@Override
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
-				// InfraConstants.ORBIT_INDEX_SERVICE_URL, //
-				// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
 				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
 				ComponentConstants.ORBIT_AUTH_URL, //
-				// ComponentConstants.ORBIT_REGISTRY_URL, //
-				// ComponentConstants.ORBIT_APP_STORE_URL, //
 				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
 				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
 				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //
@@ -118,12 +114,7 @@ public class WebApplication extends PlatformWebApplication {
 		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
-		// Identity
-		// addServlet(new ServletMetadataImpl("/signup", new SignUpPage(), dicts)); // public
-		// addServlet(new ServletMetadataImpl("/signin", new SignInPage(), dicts)); // public
-		// addServlet(new ServletMetadataImpl("/signup_req", new SignUpServlet(), dicts)); // public
-		// addServlet(new ServletMetadataImpl("/signin_req", new SignInServlet(), dicts)); // public
-
+		// main and signout
 		addServlet(new ServletMetadataImpl("/signout", new SignOutServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/user_main", new UserMainPage(), dicts));
 
@@ -206,3 +197,14 @@ public class WebApplication extends PlatformWebApplication {
 	}
 
 }
+
+// InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+// InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+// ComponentConstants.ORBIT_REGISTRY_URL, //
+// ComponentConstants.ORBIT_APP_STORE_URL, //
+
+// Identity
+// addServlet(new ServletMetadataImpl("/signup", new SignUpPage(), dicts)); // public
+// addServlet(new ServletMetadataImpl("/signin", new SignInPage(), dicts)); // public
+// addServlet(new ServletMetadataImpl("/signup_req", new SignUpServlet(), dicts)); // public
+// addServlet(new ServletMetadataImpl("/signin_req", new SignInServlet(), dicts)); // public

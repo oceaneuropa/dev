@@ -9,8 +9,8 @@ import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.LogoutResponse;
 import org.orbit.component.api.tier1.identity.RefreshTokenRequest;
 import org.orbit.component.api.tier1.identity.RefreshTokenResponse;
-import org.orbit.component.api.tier1.identity.RegisterRequest;
-import org.orbit.component.api.tier1.identity.RegisterResponse;
+import org.orbit.component.api.tier1.identity.CreateNewAccountRequest;
+import org.orbit.component.api.tier1.identity.CreateNewAccountResponse;
 import org.orbit.component.connector.util.ClientModelConverter;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
@@ -59,11 +59,11 @@ public class IdentityServiceClientImpl extends ServiceClientImpl<IdentityService
 	}
 
 	@Override
-	public RegisterResponse register(RegisterRequest request) throws ClientException {
+	public CreateNewAccountResponse createNewAccount(CreateNewAccountRequest request) throws ClientException {
 		if (request == null) {
 			throw new IllegalArgumentException("request is null");
 		}
-		RegisterResponse response = new RegisterResponse();
+		CreateNewAccountResponse response = new CreateNewAccountResponse();
 		RegisterRequestDTO requestDTO = ClientModelConverter.Identity.toRequestDTO(request);
 		StatusDTO status = getWSClient().register(requestDTO);
 		if (status != null) {

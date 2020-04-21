@@ -15,7 +15,7 @@ import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.RefreshTokenRequest;
 import org.orbit.component.api.tier1.identity.RefreshTokenResponse;
-import org.orbit.component.api.tier1.identity.RegisterRequest;
+import org.orbit.component.api.tier1.identity.CreateNewAccountRequest;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.CreateAppRequest;
@@ -140,7 +140,7 @@ public class ClientModelConverter {
 
 	public static class Identity {
 
-		public RegisterRequestDTO toRequestDTO(RegisterRequest request) {
+		public RegisterRequestDTO toRequestDTO(CreateNewAccountRequest request) {
 			if (request == null) {
 				return null;
 			}

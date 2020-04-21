@@ -1,5 +1,10 @@
 package org.orbit.component.api.tier1.identity;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class LoginRequest {
 
 	protected String clientId;

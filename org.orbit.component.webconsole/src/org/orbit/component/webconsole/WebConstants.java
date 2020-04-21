@@ -2,6 +2,9 @@ package org.orbit.component.webconsole;
 
 public class WebConstants {
 
+	public static String MAIN_WEB_CONSOLE_AUTOSTART = "main.web_console.autostart";
+	public static String MAIN_WEB_CONSOLE_CONTEXT_ROOT = "main.web_console.context_root";
+
 	public static String PLATFORM_WEB_CONSOLE_AUTOSTART = "platform.web_console.autostart";
 	public static String PLATFORM_WEB_CONSOLE_CONTEXT_ROOT = "platform.web_console.context_root";
 

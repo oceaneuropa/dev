@@ -9,9 +9,9 @@ public interface IdentityServiceClient extends ServiceClient {
 
 	boolean emailExists(String email) throws ClientException;
 
-	RegisterResponse register(RegisterRequest request) throws ClientException;
-
 	LoginResponse login(LoginRequest request) throws ClientException;
+
+	CreateNewAccountResponse createNewAccount(CreateNewAccountRequest request) throws ClientException;
 
 	RefreshTokenResponse refreshToken(RefreshTokenRequest request) throws ClientException;
 
