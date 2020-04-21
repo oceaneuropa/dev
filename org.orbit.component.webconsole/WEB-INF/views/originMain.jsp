@@ -3,13 +3,13 @@
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
-	String mainContextRoot = getServletConfig().getInitParameter(WebConstants.MAIN_WEB_CONSOLE_CONTEXT_ROOT);
+	String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Main</title>
+<title>Origin</title>
 
 <link rel="stylesheet" href="<%=mainContextRoot + "/views/css/style.css"%>">
 <link rel="stylesheet" href="<%=mainContextRoot + "/views/css/main.css"%>">
@@ -34,7 +34,7 @@ function createNewAccount() {
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div>
-		<div class="title1" style="width: 50%; margin: auto; padding: 50px; text-align: center;">
+		<div class="title1" style="width: 50%; margin: auto; padding: 50px; text-align: center; user-select: none;">
 			Origin
 		</div>
 		<div class="form_main_div01" style="user-select: none;">
@@ -45,7 +45,11 @@ function createNewAccount() {
 							Account Name:<br />
 							<input type="text" name="username" class="text_field_01" size="35"><br />
 							Password:<br />
-							<input type="password" name="password" class="text_field_01"><br />
+							<input type="password" name="password" class="text_field_01"><br /> 
+						</td>
+					</tr>
+					<tr>
+						<td align="center">
 							<input type="button" class="main_button_01" onclick="login()" value="Login">
 							<input type="button" class="main_button_01" onclick="createNewAccount()" value="Create New Account"> 
 						</td>

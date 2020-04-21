@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.tier1;
+package org.orbit.component.webconsole.servlet.origin;
 
 import java.io.IOException;
 
@@ -17,13 +17,13 @@ import org.origin.common.util.ServletUtil;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class MainCreateNewAccountPage extends HttpServlet {
+public class MainPage extends HttpServlet {
 
-	private static final long serialVersionUID = -1412386864914553909L;
+	private static final long serialVersionUID = -8798612634123701761L;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.MAIN_WEB_CONSOLE_CONTEXT_ROOT);
+		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 		String message = "";
 
 		HttpSession session = request.getSession(false);
@@ -43,7 +43,7 @@ public class MainCreateNewAccountPage extends HttpServlet {
 		if (message != null && !message.isEmpty()) {
 			request.setAttribute("message", message);
 		}
-		request.getRequestDispatcher(contextRoot + "/views/mainCreateNewAccount.jsp").forward(request, response);
+		request.getRequestDispatcher(mainContextRoot + "/views/originMain.jsp").forward(request, response);
 	}
 
 }

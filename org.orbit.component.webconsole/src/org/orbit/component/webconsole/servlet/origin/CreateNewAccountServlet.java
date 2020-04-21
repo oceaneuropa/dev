@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.tier1;
+package org.orbit.component.webconsole.servlet.origin;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class MainCreateNewAccountServlet extends HttpServlet {
+public class CreateNewAccountServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 3715555154356311555L;
 
@@ -29,7 +29,7 @@ public class MainCreateNewAccountServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.MAIN_WEB_CONSOLE_CONTEXT_ROOT);
+		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 		String identityServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_IDENTITY_SERVICE_URL);
 		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
@@ -118,7 +118,7 @@ public class MainCreateNewAccountServlet extends HttpServlet {
 		session.setAttribute("message", message);
 
 		if (createNewAccountSucceed && loginSucceed) {
-			response.sendRedirect(mainContextRoot + "/landingPage");
+			response.sendRedirect(mainContextRoot + "/home");
 		} else {
 			response.sendRedirect(mainContextRoot + "/createNewAccountPage");
 		}

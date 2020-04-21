@@ -1,18 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
-<%@ page import="org.orbit.platform.sdk.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
-	String mainContextRoot = getServletConfig().getInitParameter(WebConstants.MAIN_WEB_CONSOLE_CONTEXT_ROOT);
-	
-	String username = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_USERNAME);
+	String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Origin</title>
+<title>Create New Account</title>
 
 <link rel="stylesheet" href="<%=mainContextRoot + "/views/css/style.css"%>">
 <link rel="stylesheet" href="<%=mainContextRoot + "/views/css/main.css"%>">
@@ -23,10 +20,13 @@ body {
 </style>
 
 <script type="text/javascript">
-function logout() {
-	window.location.href = "<%=mainContextRoot + "/logoutHandler"%>";
+function mainPage() {
+	window.location.href = "<%=mainContextRoot%>";
 }
-
+function createNewAccount() {
+	document.getElementById('new_form').action="<%=mainContextRoot + "/createNewAccountHandler"%>";
+	document.getElementById('new_form').submit();
+}
 </script>
 
 </head>
@@ -41,8 +41,16 @@ function logout() {
 				<form id="new_form" method="post" action="<%=mainContextRoot + "/main_signin"%>">
 					<tr>
 						<td>
-							Welcome <%=username%><br/>
-							<input type="button" class="main_button_01" onclick="logout()" value="Exit"> 
+							Account Name:<br />
+							<input type="text" name="username" class="text_field_01" size="35"><br />
+							Email:<br />
+							<input type="text" name="email" class="text_field_01" size="35"><br />
+							New Password:<br />
+							<input type="password" name="password" class="text_field_01"><br />
+							Confirm Password:<br />
+							<input type="password" name="password" class="text_field_01"><br />
+							<input type="button" class="main_button_01" onclick="createNewAccount()" value="Create Account">
+							<input type="button" class="main_button_01" onclick="mainPage()" value="Back"> 
 						</td>
 					</tr>
 				</form>

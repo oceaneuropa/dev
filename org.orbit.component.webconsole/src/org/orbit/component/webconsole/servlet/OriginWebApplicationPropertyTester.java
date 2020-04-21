@@ -14,9 +14,9 @@ import org.osgi.framework.BundleContext;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class MainWebApplicationPropertyTester implements IPropertyTester {
+public class OriginWebApplicationPropertyTester implements IPropertyTester {
 
-	public static String ID = "org.orbit.component.webconsole.MainWebApplicationPropertyTester";
+	public static String ID = "org.orbit.component.webconsole.OriginWebApplicationPropertyTester";
 
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {
@@ -27,8 +27,8 @@ public class MainWebApplicationPropertyTester implements IPropertyTester {
 		}
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, WebConstants.MAIN_WEB_CONSOLE_AUTOSTART);
-			String autoStart = (String) properties.get(WebConstants.MAIN_WEB_CONSOLE_AUTOSTART);
+			PropertyUtil.loadProperty(bundleContext, properties, WebConstants.ORIGIN__WEB_CONSOLE_AUTOSTART);
+			String autoStart = (String) properties.get(WebConstants.ORIGIN__WEB_CONSOLE_AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

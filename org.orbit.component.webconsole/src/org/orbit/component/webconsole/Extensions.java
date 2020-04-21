@@ -1,7 +1,7 @@
 package org.orbit.component.webconsole;
 
-import org.orbit.component.webconsole.servlet.MainWebApplicationActivator;
-import org.orbit.component.webconsole.servlet.MainWebApplicationPropertyTester;
+import org.orbit.component.webconsole.servlet.OriginWebApplicationActivator;
+import org.orbit.component.webconsole.servlet.OriginWebApplicationPropertyTester;
 import org.orbit.component.webconsole.servlet.OrbitHttpContextProvider;
 import org.orbit.component.webconsole.servlet.PublicWebApplicationActivator;
 import org.orbit.component.webconsole.servlet.PublicWebApplicationPropertyTester;
@@ -54,9 +54,9 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// Main Web Application Activator
-		Extension extension1 = new Extension(typeId, MainWebApplicationActivator.ID, "Main Web Application Activator");
-		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, MainWebApplicationActivator.class);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(MainWebApplicationPropertyTester.ID));
+		Extension extension1 = new Extension(typeId, OriginWebApplicationActivator.ID, "Main Web Application Activator");
+		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, OriginWebApplicationActivator.class);
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(OriginWebApplicationPropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
@@ -82,8 +82,8 @@ public class Extensions extends ProgramExtensions {
 		String typeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// Main Web Application
-		Extension extension1 = new Extension(typeId, MainWebApplicationPropertyTester.ID);
-		extension1.addInterface(IPropertyTester.class, MainWebApplicationPropertyTester.class);
+		Extension extension1 = new Extension(typeId, OriginWebApplicationPropertyTester.ID);
+		extension1.addInterface(IPropertyTester.class, OriginWebApplicationPropertyTester.class);
 		addExtension(extension1);
 
 		// Public Web Application

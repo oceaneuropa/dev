@@ -78,7 +78,7 @@ public class OrbitHttpContext extends PlatformHttpContext {
 			if (requestURL.contains("/orbit/webconsole/public/")) {
 				return true;
 			}
-			if (requestURL.startsWith("/main")) {
+			if (requestURL.startsWith("/origin")) {
 				return true;
 			}
 			if (requestURL.endsWith(".css") || requestURL.endsWith(".js")) {

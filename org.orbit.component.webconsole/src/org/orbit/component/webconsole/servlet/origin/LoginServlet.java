@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.tier1;
+package org.orbit.component.webconsole.servlet.origin;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class MainLoginServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -1526198364210932098L;
 
@@ -28,7 +28,7 @@ public class MainLoginServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.MAIN_WEB_CONSOLE_CONTEXT_ROOT);
+		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 		String identityServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_IDENTITY_SERVICE_URL);
 		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 
@@ -92,7 +92,7 @@ public class MainLoginServlet extends HttpServlet {
 
 		if (loginSucceed) {
 			// to main landing page
-			response.sendRedirect(mainContextRoot + "/landingPage");
+			response.sendRedirect(mainContextRoot + "/home");
 		} else {
 			// back to main page
 			response.sendRedirect(mainContextRoot + "/");
