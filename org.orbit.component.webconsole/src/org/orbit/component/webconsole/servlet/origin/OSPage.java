@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.infra.api.InfraConstants;
@@ -19,6 +20,7 @@ import org.orbit.spirit.api.util.SpiritClientsUtil;
 import org.orbit.spirit.io.util.DefaultGaiaClientResolver;
 import org.orbit.spirit.io.util.SpiritIndexItemHelper;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
 /**
@@ -34,10 +36,10 @@ public class OSPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 		String cubeContextRoot = getServletConfig().getInitParameter(WebConstants.CUBE__WEB_CONSOLE_CONTEXT_ROOT);
-
 		String pathInfo = request.getPathInfo();
 
 		String gaiaId = ServletUtil.getParameter(request, "gaiaId", "gaia1");
+		String cubeId = ServletUtil.getParameter(request, "cubeId", null);
 		String cubeName = ServletUtil.getParameter(request, "cubeName", "");
 		if (pathInfo != null) {
 			if (pathInfo.startsWith("/")) {
@@ -45,6 +47,8 @@ public class OSPage extends HttpServlet {
 			}
 			cubeName = pathInfo;
 		}
+
+		String message = "";
 
 		Integer screenWidth = null;
 		Integer screenHeight = null;
@@ -68,37 +72,60 @@ public class OSPage extends HttpServlet {
 		}
 
 		String cubeManagerId = null;
-		String cubeId = null;
 
 		String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 		GaiaClientResolver gaiaClientResolver = new DefaultGaiaClientResolver();
+
 		IndexItem gaiaIndexItem = SpiritIndexItemHelper.getGaiaIndexItem(accessToken, gaiaId);
 		if (gaiaIndexItem != null) {
 			String gaiaServiceUrl = (String) gaiaIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 			boolean isGaiaOnline = IndexItemHelper.INSTANCE.isOnline(gaiaIndexItem);
 			if (isGaiaOnline) {
 				try {
-					EntityMetadata[] entityMetadatas = SpiritClientsUtil.GAIA.getEntityMetadatas(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, EntityMetadataComparator.ASC);
-					for (EntityMetadata entityMetadata : entityMetadatas) {
-						String currEarthId = entityMetadata.getEarthId();
-						String currCubeId = entityMetadata.getEntityId();
-						String currCubeName = entityMetadata.getName();
+					if (cubeId == null) {
+						// cubeId parameter is not set
+						// - find the cubeId and cubeManagerId by cube name
+						EntityMetadata[] entityMetadatas = SpiritClientsUtil.GAIA.getEntityMetadatas(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, EntityMetadataComparator.ASC);
+						for (EntityMetadata entityMetadata : entityMetadatas) {
+							String currEarthId = entityMetadata.getEarthId();
+							String currCubeId = entityMetadata.getEntityId();
+							String currCubeName = entityMetadata.getName();
 
-						if (cubeName.equals(currCubeName)) {
+							if (cubeName.equals(currCubeName)) {
+								cubeManagerId = currEarthId;
+								cubeId = currCubeId;
+								break;
+							}
+						}
+					} else {
+						// cubeId parameter is set
+						// - find cubeManagerId by cubeId
+						EntityMetadata entityMetadata = SpiritClientsUtil.GAIA.getEntityMetadataById(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, cubeId);
+						if (entityMetadata != null) {
+							String currEarthId = entityMetadata.getEarthId();
 							cubeManagerId = currEarthId;
-							cubeId = currCubeId;
-							break;
 						}
 					}
 				} catch (ClientException e) {
 					e.printStackTrace();
 				}
+			} else {
+				// GAIA is offline
+				message = MessageHelper.INSTANCE.add(message, "GAIA is offline.");
 			}
 		}
 
 		if (cubeManagerId == null || cubeId == null) {
-			// back to main landing page
-			response.sendRedirect(mainContextRoot + "/home");
+			// Cube is not found
+			// - Failed to join OS instance
+			// - back to main landing page
+			message = MessageHelper.INSTANCE.add(message, "Failed to join OS instance.");
+
+			HttpSession session = request.getSession(true);
+			session.setAttribute("message", message);
+			session.setAttribute("redirectURL", mainContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
+
+			response.sendRedirect(mainContextRoot + "/message");
 
 		} else {
 			// to capsule page

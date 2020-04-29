@@ -18,4 +18,11 @@ public class WebConstants {
 	public static String CUBE__WEB_CONSOLE_CONTEXT_ROOT = "cube.web_console.context_root";
 	public static String TYPE__GLASS_CUBE = "GlassCube";
 
+	// Servlet paths
+	public static String ORIGIN_HOME_PAGE_PATH = "/home";
+	public static String ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH = "/createNewAccount";
+	public static String ORIGIN_CREATE_NEW_ACCOUNT_HANDLER_PATH = "/createNewAccountHandler";
+	public static String ORIGIN_CREATE_NEW_OS_PAGE_PATH = "/createNewOS";
+	public static String ORIGIN_CREATE_NEW_OS_HANDLER_PATH = "/createNewOSHandler";
+
 }

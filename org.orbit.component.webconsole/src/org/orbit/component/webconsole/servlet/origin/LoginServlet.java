@@ -92,7 +92,7 @@ public class LoginServlet extends HttpServlet {
 
 		if (loginSucceed) {
 			// to main landing page
-			response.sendRedirect(mainContextRoot + "/home");
+			response.sendRedirect(mainContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
 		} else {
 			// back to main page
 			response.sendRedirect(mainContextRoot + "/");

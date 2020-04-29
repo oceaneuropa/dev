@@ -4,6 +4,15 @@
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
+	
+	String message = (String) request.getAttribute("message");
+	String redirectURL = (String) request.getAttribute("redirectURL");
+	if (message == null) {
+		message = "";
+	}
+	if (redirectURL == null) {
+		redirectURL = "";
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -20,45 +29,28 @@ body {
 </style>
 
 <script type="text/javascript">
-function loginPage() {
-	window.location.href = "<%=mainContextRoot%>";
+function goToRedirectURL() {
+	window.location.href = "<%=redirectURL%>";
 }
-
-function createNewAccountPage() {
-	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH%>";
-}
-
-function login() {
-	document.getElementById('new_form').action="<%=mainContextRoot + "/loginHandler"%>";
-	document.getElementById('new_form').submit();
-}
-
 </script>
 
 </head>
 <body>
-	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
+	<!-- jsp:include page="<%=platformContextRoot + "/top_message"%>" / -->
 	<div>
 		<div class="title1" style="width: 50%; margin: auto; padding: 50px; text-align: center; user-select: none;">
 			Origin
 		</div>
 		<div class="form_main_div01" style="user-select: none;">
-			<table class="form_table01" style="width: 350px; color: #efefef;">
+			<table class="form_table01" style="width: 300px; color: #efefef;">
 				<tr>
-					<td valign="top" height="200" >
-						<form id="new_form" method="post" action="<%=mainContextRoot + "/main_signin"%>">
-							Account Name:<br />
-							<input type="text" name="username" class="text_field_01" size="35"><br />
-							Password:<br />
-							<input type="password" name="password" class="text_field_01"> 
-						</form>
-						<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="login()" value="Login">
+					<td align="center" valign="top" height="40">
+						<%=message%>
 					</td>
 				</tr>
 				<tr>
 					<td align="center">
-						<input type="button" class="main_button_01" onclick="loginPage()" value="Login Page">
-						<input type="button" class="main_button_01" onclick="createNewAccountPage()" value="Create Account Page >"> 
+						<input type="button" class="main_button_01" onclick="goToRedirectURL()" value="OK"> 
 					</td>
 				</tr>
 			</table>

@@ -118,9 +118,9 @@ public class CreateNewAccountServlet extends HttpServlet {
 		session.setAttribute("message", message);
 
 		if (createNewAccountSucceed && loginSucceed) {
-			response.sendRedirect(mainContextRoot + "/home");
+			response.sendRedirect(mainContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
 		} else {
-			response.sendRedirect(mainContextRoot + "/createNewAccountPage");
+			response.sendRedirect(mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH);
 		}
 	}
 

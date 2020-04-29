@@ -20,11 +20,16 @@ body {
 </style>
 
 <script type="text/javascript">
-function mainPage() {
+function loginPage() {
 	window.location.href = "<%=mainContextRoot%>";
 }
+
+function createNewAccountPage() {
+	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH%>";
+}
+
 function createNewAccount() {
-	document.getElementById('new_form').action="<%=mainContextRoot + "/createNewAccountHandler"%>";
+	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_HANDLER_PATH%>";
 	document.getElementById('new_form').submit();
 }
 </script>
@@ -37,10 +42,10 @@ function createNewAccount() {
 			Origin
 		</div>
 		<div class="form_main_div01" style="user-select: none;">
-			<table class="form_table01" style="width: 300px; color: #efefef;">
-				<form id="new_form" method="post" action="<%=mainContextRoot + "/main_signin"%>">
-					<tr>
-						<td>
+			<table class="form_table01" style="width: 350px; color: #efefef;">
+				<tr>
+					<td valign="top" height="330">
+						<form id="new_form" method="post" action="<%=mainContextRoot + "/main_signin"%>">
 							Account Name:<br />
 							<input type="text" name="username" class="text_field_01" size="35"><br />
 							Email:<br />
@@ -48,12 +53,17 @@ function createNewAccount() {
 							New Password:<br />
 							<input type="password" name="password" class="text_field_01"><br />
 							Confirm Password:<br />
-							<input type="password" name="password" class="text_field_01"><br />
-							<input type="button" class="main_button_01" onclick="createNewAccount()" value="Create Account">
-							<input type="button" class="main_button_01" onclick="mainPage()" value="Back"> 
-						</td>
-					</tr>
-				</form>
+							<input type="password" name="password" class="text_field_01">
+						</form>
+						<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="createNewAccount()" value="Create New Account">
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						<input type="button" class="main_button_01" onclick="loginPage()" value="< Login Page">
+						<input type="button" class="main_button_01" onclick="createNewAccountPage()" value="Create Account Page">
+					</td>
+				</tr>
 			</table>
 		</div>
 	</div>

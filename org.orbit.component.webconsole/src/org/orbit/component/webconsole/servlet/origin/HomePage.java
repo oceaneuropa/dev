@@ -39,8 +39,7 @@ public class HomePage extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String cubeContextRoot = getServletConfig().getInitParameter(WebConstants.CUBE__WEB_CONSOLE_CONTEXT_ROOT);
-		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
+		String originContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = "";
 		String reqMessage = ServletUtil.getParameter(request, "message", "");
@@ -91,11 +90,12 @@ public class HomePage extends HttpServlet {
 		}
 		request.setAttribute("cubes", allCubes);
 
-		request.getRequestDispatcher(mainContextRoot + "/views/originHome.jsp").forward(request, response);
+		request.getRequestDispatcher(originContextRoot + "/views/originHome.jsp").forward(request, response);
 	}
 
 }
 
+// String cubeContextRoot = getServletConfig().getInitParameter(WebConstants.CUBE__WEB_CONSOLE_CONTEXT_ROOT);
 // boolean isTokenValid = false;
 // HttpSession session = request.getSession(false);
 // if (session != null) {
@@ -104,5 +104,4 @@ public class HomePage extends HttpServlet {
 // String refreshToken = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_REFRESH_TOKEN);
 // isTokenValid = ExtensionHelper.JWT.isTokenValid(PlatformConstants.TOKEN_PROVIDER__ORBIT, accessToken);
 // }
-
 // request.setAttribute("isTokenValid", isTokenValid);

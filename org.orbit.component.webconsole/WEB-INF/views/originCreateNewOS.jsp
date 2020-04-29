@@ -29,7 +29,7 @@ body {
 
 .select01 {
   width: 100%;
-  height: 300px;
+  height: 250px;
   padding: 2px 2px;
   margin: 8px 0;
   display: inline-block;
@@ -78,12 +78,14 @@ function instanceOnSelection(selectionElement) {
 	document.getElementById("join_cubeName").value = cubeName;
 }
 
-function joinOS() {
-	var cubeName = document.getElementById("join_cubeName").value;
-	var password = document.getElementById("join_password").value;
+function join() {
+	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH%>";
+}
 
-	// window.location.href = "<%=mainContextRoot%>/worldPage?cubeName=" + cubeName + "&password=" + password;
-	window.location.href = "<%=mainContextRoot%>/OS/" + cubeName;
+function createNewOS() {
+	// createNewOSHandler
+	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_HANDLER_PATH%>";
+	document.getElementById('new_form').submit();
 }
 
 </script>
@@ -96,40 +98,26 @@ function joinOS() {
 			Origin
 		</div>
 		<div class="form_main_div01" style="user-select: none;">
-			<table class="form_table01" style="width: 600px; color: #efefef;">
-					<tr>
-						<td width="200" height="350" valign="top" style="padding: 0px 15px;">
-							OS Instances: <br/>
-							<select class="select01" id="instances" name="rooms" size="12" onchange="instanceOnSelection(this);" >
-								<%
-								for (int i = 0; i < cubes.size(); i++) {
-									GlassCube cube = cubes.get(i);
-									String cubeId = cube.getId();
-									String cubeName = cube.getName();
-									String cubeManagerId = (String) cube.getProperty("cube_manager.id");
-								%>
-				  				<option value="<%=cubeId%>" data-cubeManagerId="<%=cubeManagerId%>" ><%=cubeName%></option>
-								<%
-								}
-								%>
-							</select>
-						</td>
-						<td width="200" valign="top" style="padding: 0px 15px;">
-							<form id="form_join" method="post" action="<%=mainContextRoot + "/join"%>">
-								OS Name: <input id="join_cubeName" type="text" name="cubeName" class="text_field_01" size="35">
-								Password: <input id="join_password" type="password" name="password" class="text_field_01">
-							</form>
-							<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="joinOS()" value="Join OS">
-						</td>
-					</tr>
-					<tr>
-						<td width="200" align="center" colspan="2" style="padding: 20px 10px;">
-							<input type="button" class="main_button_01" onclick="homePage()" value="Home Page">
-							<input type="button" class="main_button_01" onclick="createNewOSPage()" value="Create OS Page >">
-							<!-- <input type="button" class="main_button_01" onclick="deleteOS()" value="Delete">  -->
-							<input type="button" class="main_button_01" onclick="logout()" value="Logout">
-						</td>
-					</tr>	
+			<table class="form_table01" style="width: 400px; color: #efefef;">
+				<tr>
+					<td width="300" height="350" valign="top" style="padding: 0px 15px;">
+						<form id="new_form" method="post" action="<%=mainContextRoot + "/join"%>">
+							OS Name:<br />
+							<input id="_name" type="text" name="name" class="text_field_01" size="35"><br />
+							Password:<br />
+							<input id="_access_code" type="password" name="access_code" class="text_field_01">
+						</form>
+						<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="createNewOS()" value="Create OS">
+					</td>
+				</tr>
+				<tr>
+					<td width="100" align="center" style="padding: 20px 10px;">
+						<input type="button" class="main_button_01" onclick="homePage()" value="< Home Page">
+						<input type="button" class="main_button_01" onclick="createNewOSPage()" value="Create OS Page">
+						<!-- <input type="button" class="main_button_01" onclick="deleteOS()" value="Delete">  -->
+						<input type="button" class="main_button_01" onclick="logout()" value="Logout">
+					</td>
+				</tr>	
 			</table>
 		</div>
 	</div>

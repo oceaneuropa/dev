@@ -7,11 +7,14 @@ import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.origin.CreateNewAccountPage;
 import org.orbit.component.webconsole.servlet.origin.CreateNewAccountServlet;
+import org.orbit.component.webconsole.servlet.origin.CreateNewOSInstancePage;
+import org.orbit.component.webconsole.servlet.origin.CreateNewOSInstanceServlet;
 import org.orbit.component.webconsole.servlet.origin.HomePage;
 import org.orbit.component.webconsole.servlet.origin.LoginServlet;
 import org.orbit.component.webconsole.servlet.origin.LogoutServlet;
-import org.orbit.component.webconsole.servlet.origin.OSPage;
 import org.orbit.component.webconsole.servlet.origin.MainPage;
+import org.orbit.component.webconsole.servlet.origin.MessagePage;
+import org.orbit.component.webconsole.servlet.origin.OSPage;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -69,14 +72,19 @@ public class OriginWebApplication extends PlatformWebApplication {
 		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
-		// Main
+		// Origin
 		addServlet(new ServletMetadataImpl("/", new MainPage(), dicts));
+		addServlet(new ServletMetadataImpl("/message", new MessagePage(), dicts));
 		addServlet(new ServletMetadataImpl("/loginHandler", new LoginServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/logoutHandler", new LogoutServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/createNewAccountPage", new CreateNewAccountPage(), dicts));
-		addServlet(new ServletMetadataImpl("/createNewAccountHandler", new CreateNewAccountServlet(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH, new CreateNewAccountPage(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_HANDLER_PATH, new CreateNewAccountServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/home", new HomePage(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_HOME_PAGE_PATH, new HomePage(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_OS_PAGE_PATH, new CreateNewOSInstancePage(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_OS_HANDLER_PATH, new CreateNewOSInstanceServlet(), dicts));
+
+		// https://stackoverflow.com/questions/8715474/servlet-and-path-parameters-like-xyz-value-test-how-to-map-in-web-xml
 		addServlet(new ServletMetadataImpl("/OS/*", new OSPage(), dicts));
 
 		// Add JSPs
