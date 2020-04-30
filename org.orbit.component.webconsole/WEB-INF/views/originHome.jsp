@@ -63,7 +63,7 @@ function logout() {
 	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_LOGOUT_SERVLET_PATH%>";
 }
 
-function instanceOnSelection(selectionElement) {
+function onSelectOS(selectionElement) {
 	// var cubeManagerId = $("option:selected", "#instances").attr("data-cubeManagerId");
 	// var cubeId = document.getElementById("instances").value;
 	// var cubeId = selectionElement.options[selectionElement.selectedIndex].value;
@@ -76,6 +76,12 @@ function instanceOnSelection(selectionElement) {
 	// document.getElementById("join_cubeManagerId").value = cubeManagerId;
 	// document.getElementById("join_cubeId").value = cubeId;
 	document.getElementById("_cubeName").value = cubeName;
+}
+
+function onDBClickOS(optionElement) {
+	var cubeName = optionElement.text;
+	document.getElementById("_cubeName").value = cubeName;
+	joinOS();
 }
 
 function joinOS() {
@@ -105,7 +111,7 @@ function shutdownOS() {
 					<tr>
 						<td width="200" height="350" valign="top" style="padding: 0px 15px;">
 							OS Instances: <br/>
-							<select class="select01" id="instances" name="rooms" size="12" onchange="instanceOnSelection(this);" >
+							<select class="select01" id="instances" name="rooms" size="12" onchange="onSelectOS(this);" >
 								<%
 								for (int i = 0; i < cubes.size(); i++) {
 									GlassCube cube = cubes.get(i);
@@ -113,7 +119,7 @@ function shutdownOS() {
 									String cubeName = cube.getName();
 									String cubeManagerId = (String) cube.getProperty("cube_manager.id");
 								%>
-				  				<option value="<%=cubeId%>" data-cubeManagerId="<%=cubeManagerId%>" ><%=cubeName%></option>
+				  				<option value="<%=cubeId%>" data-cubeManagerId="<%=cubeManagerId%>" ondblclick="onDBClickOS(this);" ><%=cubeName%></option>
 								<%
 								}
 								%>

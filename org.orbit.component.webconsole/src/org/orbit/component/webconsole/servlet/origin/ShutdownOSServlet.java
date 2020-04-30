@@ -111,6 +111,11 @@ public class ShutdownOSServlet extends HttpServlet {
 			return;
 		}
 
+		// see https://www.codebyamir.com/blog/java-servlet-essentials-sendredirect-vs-forward
+		// RequestDispatcher requestDispatcher = request.getRequestDispatcher(originContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
+		// requestDispatcher.forward(request, response);
+
+		response.setHeader("Cache-Control", "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0");
 		response.sendRedirect(originContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
 	}
 
