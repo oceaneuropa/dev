@@ -14,7 +14,7 @@ import org.orbit.component.webconsole.WebConstants;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class CreateNewOSInstancePage extends HttpServlet {
+public class CreateNewOSPage extends HttpServlet {
 
 	private static final long serialVersionUID = -5194019022965159581L;
 

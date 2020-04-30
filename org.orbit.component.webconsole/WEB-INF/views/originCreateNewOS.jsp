@@ -60,7 +60,7 @@ function createNewOSPage() {
 }
 
 function logout() {
-	window.location.href = "<%=mainContextRoot + "/logoutHandler"%>";
+	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_LOGOUT_SERVLET_PATH%>";
 }
 
 function instanceOnSelection(selectionElement) {
@@ -84,7 +84,7 @@ function join() {
 
 function createNewOS() {
 	// createNewOSHandler
-	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_HANDLER_PATH%>";
+	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_SERVLET_PATH%>";
 	document.getElementById('new_form').submit();
 }
 

@@ -34,7 +34,7 @@ public class OSPage extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String mainContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
+		String originContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 		String cubeContextRoot = getServletConfig().getInitParameter(WebConstants.CUBE__WEB_CONSOLE_CONTEXT_ROOT);
 		String pathInfo = request.getPathInfo();
 
@@ -49,6 +49,15 @@ public class OSPage extends HttpServlet {
 		}
 
 		String message = "";
+
+		if (cubeName.isEmpty()) {
+			HttpSession session = request.getSession(true);
+			message = MessageHelper.INSTANCE.add(message, "OS name cannot be empty.");
+			session.setAttribute("message", message);
+			session.setAttribute("redirectURL", originContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
+			response.sendRedirect(originContextRoot + WebConstants.ORIGIN_MESSAGE_PAGE_PATH);
+			return;
+		}
 
 		Integer screenWidth = null;
 		Integer screenHeight = null;
@@ -123,9 +132,9 @@ public class OSPage extends HttpServlet {
 
 			HttpSession session = request.getSession(true);
 			session.setAttribute("message", message);
-			session.setAttribute("redirectURL", mainContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
+			session.setAttribute("redirectURL", originContextRoot + WebConstants.ORIGIN_HOME_PAGE_PATH);
 
-			response.sendRedirect(mainContextRoot + "/message");
+			response.sendRedirect(originContextRoot + WebConstants.ORIGIN_MESSAGE_PAGE_PATH);
 
 		} else {
 			// to capsule page

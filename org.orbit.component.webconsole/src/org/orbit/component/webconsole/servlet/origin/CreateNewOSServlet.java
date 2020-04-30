@@ -33,7 +33,7 @@ import org.origin.common.util.ServletUtil;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class CreateNewOSInstanceServlet extends HttpServlet {
+public class CreateNewOSServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -1737645312623318772L;
 
@@ -43,16 +43,16 @@ public class CreateNewOSInstanceServlet extends HttpServlet {
 		String originContextRoot = getServletConfig().getInitParameter(WebConstants.ORIGIN__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String gaiaId = ServletUtil.getParameter(request, "gaiaId", "gaia1");
-		String cubeName = ServletUtil.getParameter(request, "name", "");
+		String name = ServletUtil.getParameter(request, "name", "");
 		String accessCode = ServletUtil.getParameter(request, "access_code", "");
 		String accessType = ServletUtil.getParameter(request, "access_type", accessCode.isEmpty() ? "public" : "private");
 		String message = "";
 
-		if (cubeName.isEmpty()) {
-			message = MessageHelper.INSTANCE.add(message, "OS name cannot be empty.");
+		if (name.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "Name cannot be empty.");
 			session.setAttribute("message", message);
 			session.setAttribute("redirectURL", originContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_PAGE_PATH);
-			response.sendRedirect(originContextRoot + "/message");
+			response.sendRedirect(originContextRoot + WebConstants.ORIGIN_MESSAGE_PAGE_PATH);
 			return;
 		}
 
@@ -60,6 +60,7 @@ public class CreateNewOSInstanceServlet extends HttpServlet {
 		GaiaClientResolver gaiaClientResolver = new DefaultGaiaClientResolver();
 		EarthClientResolver earthClientResolver = new DefaultEarthClientResolver();
 
+		// see EntityMetadataAddServlet
 		EntityMetadata entityMetadata = null;
 		try {
 			IndexItem gaiaIndexItem = SpiritIndexItemHelper.getGaiaIndexItem(accessToken, gaiaId);
@@ -69,14 +70,14 @@ public class CreateNewOSInstanceServlet extends HttpServlet {
 				if (isGAIAOnline) {
 					String gaiaServiceUrl = (String) gaiaIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
-					EntityMetadata existingEntityMetadata = SpiritClientsUtil.GAIA.getEntityMetadataByName(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, cubeName);
+					EntityMetadata existingEntityMetadata = SpiritClientsUtil.GAIA.getEntityMetadataByName(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, name);
 					if (existingEntityMetadata != null) {
-						message = MessageHelper.INSTANCE.add(message, "OS name already exists.");
+						message = MessageHelper.INSTANCE.add(message, "Name already exists.");
 
 					} else {
 						List<AccountConfig> accountConfigs = null;
 						Map<String, Object> properties = null;
-						entityMetadata = SpiritClientsUtil.GAIA.createEntityMetadata(gaiaClientResolver, gaiaServiceUrl, accessToken, null, WebConstants.TYPE__GLASS_CUBE, cubeName, StatusImpl.STARTED, accessType, accessCode, accountConfigs, properties);
+						entityMetadata = SpiritClientsUtil.GAIA.createEntityMetadata(gaiaClientResolver, gaiaServiceUrl, accessToken, null, WebConstants.TYPE__GLASS_CUBE, name, StatusImpl.STARTED, accessType, accessCode, accountConfigs, properties);
 					}
 
 				} else {
@@ -118,11 +119,11 @@ public class CreateNewOSInstanceServlet extends HttpServlet {
 			// message = MessageHelper.INSTANCE.add(message, "Failed to create OS instance.");
 			session.setAttribute("message", message);
 			session.setAttribute("redirectURL", originContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_PAGE_PATH);
-			response.sendRedirect(originContextRoot + "/message");
+			response.sendRedirect(originContextRoot + WebConstants.ORIGIN_MESSAGE_PAGE_PATH);
 
 		} else {
-			cubeName = entityInstance.getName();
-			response.sendRedirect(originContextRoot + "/OS/" + cubeName);
+			name = entityInstance.getName();
+			response.sendRedirect(originContextRoot + "/OS/" + name);
 		}
 	}
 

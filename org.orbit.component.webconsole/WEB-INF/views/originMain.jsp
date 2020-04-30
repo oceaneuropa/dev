@@ -29,7 +29,7 @@ function createNewAccountPage() {
 }
 
 function login() {
-	document.getElementById('new_form').action="<%=mainContextRoot + "/loginHandler"%>";
+	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_LOGIN_SERVLET_PATH%>";
 	document.getElementById('new_form').submit();
 }
 

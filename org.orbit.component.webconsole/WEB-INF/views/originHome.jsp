@@ -60,7 +60,7 @@ function createNewOSPage() {
 }
 
 function logout() {
-	window.location.href = "<%=mainContextRoot + "/logoutHandler"%>";
+	window.location.href = "<%=mainContextRoot + WebConstants.ORIGIN_LOGOUT_SERVLET_PATH%>";
 }
 
 function instanceOnSelection(selectionElement) {
@@ -75,15 +75,20 @@ function instanceOnSelection(selectionElement) {
 
 	// document.getElementById("join_cubeManagerId").value = cubeManagerId;
 	// document.getElementById("join_cubeId").value = cubeId;
-	document.getElementById("join_cubeName").value = cubeName;
+	document.getElementById("_cubeName").value = cubeName;
 }
 
 function joinOS() {
-	var cubeName = document.getElementById("join_cubeName").value;
-	var password = document.getElementById("join_password").value;
+	var cubeName = document.getElementById("_cubeName").value;
+	var password = document.getElementById("_password").value;
 
 	// window.location.href = "<%=mainContextRoot%>/worldPage?cubeName=" + cubeName + "&password=" + password;
 	window.location.href = "<%=mainContextRoot%>/OS/" + cubeName;
+}
+
+function shutdownOS() {	
+	document.getElementById('form1').action="<%=mainContextRoot + WebConstants.ORIGIN_SHUTDOWN_OS_SERVLET_PATH%>";
+	document.getElementById('form1').submit();
 }
 
 </script>
@@ -115,11 +120,12 @@ function joinOS() {
 							</select>
 						</td>
 						<td width="200" valign="top" style="padding: 0px 15px;">
-							<form id="form_join" method="post" action="<%=mainContextRoot + "/join"%>">
-								OS Name: <input id="join_cubeName" type="text" name="cubeName" class="text_field_01" size="35">
-								Password: <input id="join_password" type="password" name="password" class="text_field_01">
+							<form id="form1" method="post">
+								OS Name: <input id="_cubeName" type="text" name="name" class="text_field_01" size="35">
+								Password: <input id="_password" type="password" name="password" class="text_field_01">
 							</form>
-							<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="joinOS()" value="Join OS">
+							<input type="button" class="main_button_01" style="float: right; margin-top: 15px;" onclick="shutdownOS()" value="Shutdown">
+							<input type="button" class="main_button_01" style="float: right; margin-top: 15px; margin-right: 5px;" onclick="joinOS()" value="Join">
 						</td>
 					</tr>
 					<tr>

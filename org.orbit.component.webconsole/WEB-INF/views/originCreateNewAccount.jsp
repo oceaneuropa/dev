@@ -29,7 +29,7 @@ function createNewAccountPage() {
 }
 
 function createNewAccount() {
-	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_HANDLER_PATH%>";
+	document.getElementById('new_form').action="<%=mainContextRoot + WebConstants.ORIGIN_CREATE_NEW_ACCOUNT_SERVLET_PATH%>";
 	document.getElementById('new_form').submit();
 }
 </script>

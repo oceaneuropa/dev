@@ -20,9 +20,15 @@ public class WebConstants {
 
 	// Servlet paths
 	public static String ORIGIN_HOME_PAGE_PATH = "/home";
+	public static String ORIGIN_MESSAGE_PAGE_PATH = "/message";
+	public static String ORIGIN_LOGIN_SERVLET_PATH = "/loginServlet";
+	public static String ORIGIN_LOGOUT_SERVLET_PATH = "/logoutServlet";
+
 	public static String ORIGIN_CREATE_NEW_ACCOUNT_PAGE_PATH = "/createNewAccount";
-	public static String ORIGIN_CREATE_NEW_ACCOUNT_HANDLER_PATH = "/createNewAccountHandler";
+	public static String ORIGIN_CREATE_NEW_ACCOUNT_SERVLET_PATH = "/createNewAccountServlet";
+
 	public static String ORIGIN_CREATE_NEW_OS_PAGE_PATH = "/createNewOS";
-	public static String ORIGIN_CREATE_NEW_OS_HANDLER_PATH = "/createNewOSHandler";
+	public static String ORIGIN_CREATE_NEW_OS_SERVLET_PATH = "/createNewOSServlet";
+	public static String ORIGIN_SHUTDOWN_OS_SERVLET_PATH = "/shutdownOSServlet";
 
 }
