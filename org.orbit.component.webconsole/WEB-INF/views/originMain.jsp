@@ -19,6 +19,7 @@ body {
 }
 </style>
 
+<script type="text/javascript" src="<%=mainContextRoot + "/views/js/origin_common.js"%>" ></script>
 <script type="text/javascript">
 function loginPage() {
 	window.location.href = "<%=mainContextRoot%>";
@@ -36,7 +37,7 @@ function login() {
 </script>
 
 </head>
-<body>
+<body ondblclick="toggleFullScreen()">
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div>
 		<div class="title1" style="width: 50%; margin: auto; padding: 50px; text-align: center; user-select: none;">
