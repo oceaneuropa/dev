@@ -30,5 +30,6 @@ public class WebConstants {
 	public static String ORIGIN_CREATE_NEW_OS_PAGE_PATH = "/createNewOS";
 	public static String ORIGIN_CREATE_NEW_OS_SERVLET_PATH = "/createNewOSServlet";
 	public static String ORIGIN_SHUTDOWN_OS_SERVLET_PATH = "/shutdownOSServlet";
+	public static String ORIGIN_EXIT_OS_SERVLET_PATH = "/exitOSServlet";
 
 }

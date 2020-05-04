@@ -29,7 +29,7 @@ import org.origin.common.util.ServletUtil;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class ShutdownOSServlet extends HttpServlet {
+public class OSShutdownServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -5693425709887720168L;
 

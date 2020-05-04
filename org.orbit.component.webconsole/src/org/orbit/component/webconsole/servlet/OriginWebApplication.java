@@ -14,8 +14,9 @@ import org.orbit.component.webconsole.servlet.origin.LoginServlet;
 import org.orbit.component.webconsole.servlet.origin.LogoutServlet;
 import org.orbit.component.webconsole.servlet.origin.MainPage;
 import org.orbit.component.webconsole.servlet.origin.MessagePage;
+import org.orbit.component.webconsole.servlet.origin.OSExitServlet;
 import org.orbit.component.webconsole.servlet.origin.OSPage;
-import org.orbit.component.webconsole.servlet.origin.ShutdownOSServlet;
+import org.orbit.component.webconsole.servlet.origin.OSShutdownServlet;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -84,7 +85,8 @@ public class OriginWebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_HOME_PAGE_PATH, new HomePage(), dicts));
 		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_OS_PAGE_PATH, new CreateNewOSPage(), dicts));
 		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_CREATE_NEW_OS_SERVLET_PATH, new CreateNewOSServlet(), dicts));
-		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_SHUTDOWN_OS_SERVLET_PATH, new ShutdownOSServlet(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_SHUTDOWN_OS_SERVLET_PATH, new OSShutdownServlet(), dicts));
+		addServlet(new ServletMetadataImpl(WebConstants.ORIGIN_EXIT_OS_SERVLET_PATH, new OSExitServlet(), dicts));
 
 		// https://stackoverflow.com/questions/8715474/servlet-and-path-parameters-like-xyz-value-test-how-to-map-in-web-xml
 		addServlet(new ServletMetadataImpl("/OS/*", new OSPage(), dicts));
