@@ -50,8 +50,6 @@ public class OSExitServlet extends HttpServlet {
 				if (isCubeManagerOnline) {
 					String cubeManagerWebServiceUrl = (String) cubeManagerIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					boolean succeed = CubeClientsUtil.CUBE_MANAGER.leave(clientResolver, cubeManagerWebServiceUrl, accessToken, cubeId);
-					System.out.println();
-					System.out.println();
 				}
 			}
 		} catch (Exception e) {
