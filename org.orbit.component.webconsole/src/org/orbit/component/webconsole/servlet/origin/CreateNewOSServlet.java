@@ -67,21 +67,21 @@ public class CreateNewOSServlet extends HttpServlet {
 			if (gaiaIndexItem != null) {
 				boolean isGAIAOnline = IndexItemHelper.INSTANCE.isOnline(gaiaIndexItem);
 
-				if (isGAIAOnline) {
+				if (!isGAIAOnline) {
+					message = MessageHelper.INSTANCE.add(message, "GAIA '" + gaiaId + "' is offline.");
+
+				} else {
 					String gaiaServiceUrl = (String) gaiaIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
-					EntityMetadata existingEntityMetadata = SpiritClientsUtil.GAIA.getEntityMetadataByName(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, name);
-					if (existingEntityMetadata != null) {
-						message = MessageHelper.INSTANCE.add(message, "Name already exists.");
+					EntityMetadata existingEntity = SpiritClientsUtil.GAIA.getEntityMetadataByName(gaiaClientResolver, gaiaServiceUrl, accessToken, WebConstants.TYPE__GLASS_CUBE, name);
+					if (existingEntity != null) {
+						message = MessageHelper.INSTANCE.add(message, "Entity '" + name + "' already exists.");
 
 					} else {
 						List<AccountConfig> accountConfigs = null;
 						Map<String, Object> properties = null;
 						entityMetadata = SpiritClientsUtil.GAIA.createEntityMetadata(gaiaClientResolver, gaiaServiceUrl, accessToken, null, WebConstants.TYPE__GLASS_CUBE, name, StatusImpl.STARTED, accessType, accessCode, accountConfigs, properties);
 					}
-
-				} else {
-					message = MessageHelper.INSTANCE.add(message, "GAIA is offline.");
 				}
 			}
 		} catch (Exception e) {
@@ -115,8 +115,7 @@ public class CreateNewOSServlet extends HttpServlet {
 		}
 
 		if (entityInstance == null) {
-			// Failed to create OS instance
-			// message = MessageHelper.INSTANCE.add(message, "Failed to create OS instance.");
+			// Failed to create entity (with cube type) instance
 			session.setAttribute("message", message);
 			session.setAttribute("redirectURL", originContextRoot + WebConstants.ORIGIN_CREATE_NEW_OS_PAGE_PATH);
 			response.sendRedirect(originContextRoot + WebConstants.ORIGIN_MESSAGE_PAGE_PATH);
