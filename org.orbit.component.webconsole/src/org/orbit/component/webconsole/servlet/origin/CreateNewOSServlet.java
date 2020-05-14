@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.datatube.api.datacast.ChannelMetadata;
-import org.orbit.datatube.api.datacast.ChannelStatus;
-import org.orbit.datatube.api.datacast.DataCastClient;
-import org.orbit.datatube.api.datacast.DataCastClientResolver;
-import org.orbit.datatube.api.datatube.DataTubeClientResolver;
-import org.orbit.datatube.api.datatube.RuntimeChannel;
-import org.orbit.datatube.api.util.DataTubeClientsUtil;
-import org.orbit.datatube.io.util.DataTubeIndexItemHelper;
-import org.orbit.datatube.io.util.DefaultDataCastClientResolver;
-import org.orbit.datatube.io.util.DefaultDataTubeClientResolver;
+import org.orbit.datatube.api.hermes.ChannelMetadata;
+import org.orbit.datatube.api.hermes.ChannelStatus;
+import org.orbit.datatube.api.hermes.HermesClientResolver;
+import org.orbit.datatube.api.hermes.HermesClient;
+import org.orbit.datatube.api.util.HermesClientsUtil;
+import org.orbit.datatube.api.wing.RuntimeChannel;
+import org.orbit.datatube.api.wing.WingClientResolver;
+import org.orbit.datatube.io.util.HermesIndexItemHelper;
+import org.orbit.datatube.io.util.DefaultHermesClientResolver;
+import org.orbit.datatube.io.util.DefaultWingClientResolver;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
@@ -74,8 +74,8 @@ public class CreateNewOSServlet extends HttpServlet {
 
 		GaiaClientResolver gaiaClientResolver = new DefaultGaiaClientResolver();
 		EarthClientResolver earthClientResolver = new DefaultEarthClientResolver();
-		DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
-		DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver();
+		HermesClientResolver dataCastClientResolver = new DefaultHermesClientResolver();
+		WingClientResolver dataTubeClientResolver = new DefaultWingClientResolver();
 
 		boolean isGAIAOnline = false;
 		boolean isEarthOnline = false;
@@ -108,7 +108,7 @@ public class CreateNewOSServlet extends HttpServlet {
 			}
 
 			// (2) Get DataCast
-			IndexItem dataCastIndexItem = DataTubeIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
+			IndexItem dataCastIndexItem = HermesIndexItemHelper.getHermesIndexItem(accessToken, dataCastId);
 			if (dataCastIndexItem != null) {
 				isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 				if (!isDataCastOnline) {
@@ -141,7 +141,7 @@ public class CreateNewOSServlet extends HttpServlet {
 				String ownerAccountId = null;
 
 				// Note: Allocating DataTube is internal to Hermes (DataCast)
-				newChannel = DataTubeClientsUtil.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, null, name, ChannelStatus.STARTED, accessType, accessCode, ownerAccountId, accountConfigs, channelProperties);
+				newChannel = HermesClientsUtil.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, null, name, ChannelStatus.STARTED, accessType, accessCode, ownerAccountId, accountConfigs, channelProperties);
 				if (newChannel == null) {
 					message = MessageHelper.INSTANCE.add(message, "DataTube cannot be allocated.");
 				} else {
@@ -151,7 +151,7 @@ public class CreateNewOSServlet extends HttpServlet {
 
 				// (2) Create/start channel runtime
 				if (newChannel != null && dataTubeId != null) {
-					IndexItem dataTubeIndexItem = DataTubeIndexItemHelper.getDataTubeIndexItem(accessToken, dataCastId, dataTubeId);
+					IndexItem dataTubeIndexItem = HermesIndexItemHelper.getWingIndexItem(accessToken, dataCastId, dataTubeId);
 					if (dataTubeIndexItem != null) {
 						isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 						if (!isDataTubeOnline) {
@@ -160,11 +160,11 @@ public class CreateNewOSServlet extends HttpServlet {
 							dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 							// DataTubeClientsUtil.DATA_TUBE.getRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, createIfNotExist);
-							isChannelRuntimeStarted = DataTubeClientsUtil.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+							isChannelRuntimeStarted = HermesClientsUtil.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 							if (!isChannelRuntimeStarted) {
 								message = MessageHelper.INSTANCE.add(message, "Channel runtime '" + channelId + "' is not started.");
 							}
-							channelRuntime = DataTubeClientsUtil.DATA_TUBE.getRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, false);
+							channelRuntime = HermesClientsUtil.DATA_TUBE.getRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, false);
 						}
 					}
 				}
@@ -235,14 +235,14 @@ public class CreateNewOSServlet extends HttpServlet {
 		String dataTubeId = null;
 
 		try {
-			IndexItem dataCastIndexItem = DataTubeIndexItemHelper.getDataCastIndexItem(accessToken, dataCastId);
+			IndexItem dataCastIndexItem = HermesIndexItemHelper.getHermesIndexItem(accessToken, dataCastId);
 			if (dataCastIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 				if (isOnline) {
 					String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					if (dataCastServiceUrl != null) {
-						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver();
-						DataCastClient dataCastClient = dataCastClientResolver.resolve(dataCastServiceUrl, accessToken);
+						HermesClientResolver dataCastClientResolver = new DefaultHermesClientResolver();
+						HermesClient dataCastClient = dataCastClientResolver.resolve(dataCastServiceUrl, accessToken);
 
 						if (dataCastClient != null) {
 							dataTubeId = dataCastClient.allocateDataTube();

@@ -23,7 +23,7 @@ import org.origin.common.jdbc.ResultSetSingleHandler;
  * 
  * Table name examples:
  * 		ConfigRegistry_GisZB_FqQOCmYW7_a8ABIg (e.g. for gaia/earth nodes configurations)
- *      ConfigRegistry_gT3qr3jIRXGVD0APfnAL5g (e.g. for datacast/datatube nodes configurations)
+ *      ConfigRegistry_gT3qr3jIRXGVD0APfnAL5g (e.g. for hermes/wing nodes configurations)
  * 
  */
 public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
