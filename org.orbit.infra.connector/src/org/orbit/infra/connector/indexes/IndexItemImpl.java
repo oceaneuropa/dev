@@ -75,44 +75,44 @@ public class IndexItemImpl implements IndexItem {
 	}
 
 	@Override
-	public Date getCreateTime() {
+	public Date getDateCreated() {
 		return this.createTime;
 	}
 
 	@Override
-	public Date getUpdateTime() {
+	public Date getDateModified() {
 		return this.updateTime;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((indexItemId == null) ? 0 : indexItemId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		IndexItemImpl other = (IndexItemImpl) obj;
-		if (indexItemId == null) {
-			if (other.indexItemId != null) {
-				return false;
-			}
-		} else if (!indexItemId.equals(other.indexItemId)) {
-			return false;
-		}
-		return true;
-	}
+	// @Override
+	// public int hashCode() {
+	// final int prime = 31;
+	// int result = 1;
+	// result = prime * result + ((indexItemId == null) ? 0 : indexItemId.hashCode());
+	// return result;
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (this == obj) {
+	// return true;
+	// }
+	// if (obj == null) {
+	// return false;
+	// }
+	// if (getClass() != obj.getClass()) {
+	// return false;
+	// }
+	// IndexItemImpl other = (IndexItemImpl) obj;
+	// if (indexItemId == null) {
+	// if (other.indexItemId != null) {
+	// return false;
+	// }
+	// } else if (!indexItemId.equals(other.indexItemId)) {
+	// return false;
+	// }
+	// return true;
+	// }
 
 	@Override
 	public String toString() {

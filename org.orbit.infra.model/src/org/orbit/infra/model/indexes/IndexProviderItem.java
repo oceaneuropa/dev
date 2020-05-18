@@ -1,7 +1,9 @@
 package org.orbit.infra.model.indexes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Index provider item model.
@@ -10,6 +12,26 @@ import java.util.List;
  *
  */
 public class IndexProviderItem {
+
+	public static Map<String, String> ID_TO_NAME_MAP = new HashMap<String, String>();
+	{
+		ID_TO_NAME_MAP.put("component.app_store.indexer", "App Store");
+		ID_TO_NAME_MAP.put("component.domain_management.indexer", "Domain Management");
+		ID_TO_NAME_MAP.put("component.extension_registry.indexer", "Extension Registry");
+		ID_TO_NAME_MAP.put("component.identity.indexer", "Identity");
+		ID_TO_NAME_MAP.put("component.index_service.indexer", "Index Service");
+		ID_TO_NAME_MAP.put("component.node_control.indexer", "Node Control");
+		ID_TO_NAME_MAP.put("component.user_registry.indexer", "User Registry");
+		ID_TO_NAME_MAP.put("cube_manager.indexer", "Cube Management");
+		ID_TO_NAME_MAP.put("infra.config_registry.indexer", "Config Registry");
+		ID_TO_NAME_MAP.put("infra.data_cast.indexer", "Hermes");
+		ID_TO_NAME_MAP.put("infra.data_tube.indexer", "Wing");
+		ID_TO_NAME_MAP.put("platform.indexer", "Platform");
+		ID_TO_NAME_MAP.put("spirit.earth.indexer", "Earth");
+		ID_TO_NAME_MAP.put("spirit.gaia.indexer", "GAIA");
+		ID_TO_NAME_MAP.put("substance.dfs.indexer", "DFS");
+		ID_TO_NAME_MAP.put("substance.dfs_volume.indexer", "DFS Volume");
+	}
 
 	protected String id;
 	protected String name;
@@ -69,6 +91,12 @@ public class IndexProviderItem {
 	}
 
 	public String getName() {
+		if (this.name == null || this.name.isEmpty()) {
+			String name = ID_TO_NAME_MAP.get(this.id);
+			if (name != null && !name.isEmpty()) {
+				return name;
+			}
+		}
 		return this.name;
 	}
 

@@ -23,8 +23,8 @@ public interface IndexItem extends TransientPropertyAware, IAdaptable {
 
 	Map<String, Object> getProperties();
 
-	Date getCreateTime();
+	Date getDateCreated();
 
-	Date getUpdateTime();
+	Date getDateModified();
 
 }
