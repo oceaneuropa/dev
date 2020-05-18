@@ -9,6 +9,11 @@ import javax.xml.XMLConstants;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexItem {
 
 	public static final String DEFAULT_TYPE = XMLConstants.DEFAULT_NS_PREFIX;
@@ -23,12 +28,6 @@ public class IndexItem {
 	protected Date dateModified;
 
 	public IndexItem() {
-	}
-
-	public IndexItem clone() {
-		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.type, this.name, this.properties, this.dateCreated, this.dateModified);
-		clone.setRuntimeProperties(this.runtimeProperties);
-		return clone;
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class IndexItem {
 	}
 
 	public Integer getIndexItemId() {
-		return indexItemId;
+		return this.indexItemId;
 	}
 
 	public void setIndexItemId(Integer indexItemId) {
@@ -66,7 +65,7 @@ public class IndexItem {
 	}
 
 	public String getIndexProviderId() {
-		return indexProviderId;
+		return this.indexProviderId;
 	}
 
 	public void setIndexProviderId(String indexProviderId) {
@@ -74,7 +73,7 @@ public class IndexItem {
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setType(String type) {
@@ -82,7 +81,7 @@ public class IndexItem {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -187,6 +186,12 @@ public class IndexItem {
 			return true;
 		}
 		return false;
+	}
+
+	public IndexItem clone() {
+		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.type, this.name, this.properties, this.dateCreated, this.dateModified);
+		clone.setRuntimeProperties(this.runtimeProperties);
+		return clone;
 	}
 
 }

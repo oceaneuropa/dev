@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.orbit.infra.model.indexes.IndexItem;
+import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
@@ -17,140 +20,24 @@ import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class IndexServiceIMImpl implements IndexService, LifecycleAware {
-
-	public static class IndexProviderItem {
-		protected String indexProviderId;
-		protected List<IndexItem> indexItems = new ArrayList<IndexItem>();
-
-		public IndexProviderItem(String indexProviderId) {
-			this.indexProviderId = indexProviderId;
-		}
-
-		public String getIndexProviderId() {
-			return this.indexProviderId;
-		}
-
-		public void setIndexProviderId(String indexProviderId) {
-			this.indexProviderId = indexProviderId;
-		}
-
-		public List<IndexItem> getIndexItems() {
-			return this.indexItems;
-		}
-
-		public List<IndexItem> getIndexItems(String type) {
-			List<IndexItem> theIndexItem = new ArrayList<IndexItem>();
-			if (type != null) {
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (type.equals(currIndexItem.getType())) {
-						theIndexItem.add(currIndexItem);
-					}
-				}
-			}
-			return theIndexItem;
-		}
-
-		public void setIndexItems(List<IndexItem> indexItems) {
-			this.indexItems = indexItems;
-		}
-
-		public synchronized Integer getNextIndexItemId() {
-			Integer nextIndexItemId = new Integer(getMaxIndexItemId().intValue() + 1);
-			this.maxIndexItemid = nextIndexItemId;
-			return nextIndexItemId;
-		}
-
-		protected Integer maxIndexItemid = null;
-
-		protected synchronized Integer getMaxIndexItemId() {
-			if (this.maxIndexItemid == null) {
-				this.maxIndexItemid = new Integer(1);
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (currIndexItem.getIndexItemId() > this.maxIndexItemid) {
-						this.maxIndexItemid = currIndexItem.getIndexItemId();
-					}
-				}
-			}
-			return this.maxIndexItemid;
-		}
-
-		public synchronized IndexItem getIndexItem(Integer indexItemId) {
-			IndexItem indexItem = null;
-			if (indexItemId != null) {
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (indexItemId.equals(currIndexItem.getIndexItemId())) {
-						indexItem = currIndexItem;
-						break;
-					}
-				}
-			}
-			return indexItem;
-		}
-
-		public synchronized IndexItem getIndexItem(String name) {
-			IndexItem indexItem = null;
-			if (name != null) {
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (name.equals(currIndexItem.getName())) {
-						indexItem = currIndexItem;
-						break;
-					}
-				}
-			}
-			return indexItem;
-		}
-
-		public synchronized IndexItem getIndexItem(String type, String name) {
-			IndexItem indexItem = null;
-			if (type != null && name != null) {
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (type.equals(currIndexItem.getType()) && name.equals(currIndexItem.getName())) {
-						indexItem = currIndexItem;
-						break;
-					}
-				}
-			}
-			return indexItem;
-		}
-
-		public synchronized boolean addIndexItem(IndexItem indexItem) {
-			if (indexItem != null && !this.indexItems.contains(indexItem)) {
-				return this.indexItems.add(indexItem);
-			}
-			return false;
-		}
-
-		public synchronized boolean removeIndexItem(IndexItem indexItem) {
-			if (indexItem != null) {
-				return this.indexItems.remove(indexItem);
-			}
-			return false;
-		}
-
-		public synchronized boolean removeIndexItem(Integer indexItemId) {
-			if (indexItemId != null) {
-				for (IndexItem currIndexItem : this.indexItems) {
-					if (indexItemId.equals(currIndexItem.getIndexItemId())) {
-						return this.indexItems.remove(currIndexItem);
-					}
-				}
-			}
-			return false;
-		}
-	}
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected AccessTokenSupport accessTokenSupport;
-	protected Map<String, IndexProviderItem> indexProviderMap = new HashMap<String, IndexProviderItem>();
+	protected Map<String, IndexProviderItem> indexProviderMap = new TreeMap<String, IndexProviderItem>();
 
 	/**
 	 * 
 	 * @param initProperties
 	 */
-	public IndexServiceIMImpl(Map<Object, Object> initProperties) {
+	public IndexServiceInMemoryImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
@@ -235,6 +122,9 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		return null;
 	}
 
+	// ---------------------------------------------------------------------------------------------------
+	// Service metadata
+	// ---------------------------------------------------------------------------------------------------
 	@Override
 	public String getName() {
 		String name = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
@@ -263,11 +153,84 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		return contextRoot;
 	}
 
-	protected synchronized IndexProviderItem getIndexProvider(String indexProviderId) {
-		IndexProviderItem indexProvider = this.indexProviderMap.get(indexProviderId);
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+	@Override
+	public List<IndexProviderItem> getIndexProviders() throws ServerException {
+		List<IndexProviderItem> items = new ArrayList<IndexProviderItem>();
+		for (Iterator<String> itor = this.indexProviderMap.keySet().iterator(); itor.hasNext();) {
+			String indexProviderId = itor.next();
+			IndexProviderItem item = this.indexProviderMap.get(indexProviderId);
+			if (item != null) {
+				items.add(item);
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public IndexProviderItem getIndexProvider(String id) throws ServerException {
+		IndexProviderItem item = this.indexProviderMap.get(id);
+		return item;
+	}
+
+	@Override
+	public synchronized IndexProviderItem addIndexProvider(String id, String name, String description) throws ServerException {
+		IndexProviderItem item = this.indexProviderMap.get(id);
+		if (item != null) {
+			item.setName(name);
+			item.setDescription(description);
+		} else {
+			item = new IndexProviderItem(id, name, description);
+			this.indexProviderMap.put(id, item);
+		}
+		return item;
+	}
+
+	@Override
+	public boolean updateIndexProviderName(String id, String name) throws ServerException {
+		IndexProviderItem indexProviderIM = this.indexProviderMap.get(id);
+		if (indexProviderIM != null) {
+			indexProviderIM.setName(name);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateIndexProviderDescription(String id, String description) throws ServerException {
+		IndexProviderItem indexProviderIM = this.indexProviderMap.get(id);
+		if (indexProviderIM != null) {
+			indexProviderIM.setDescription(description);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteIndexProvider(String id) throws ServerException {
+		IndexProviderItem indexProviderIM = this.indexProviderMap.remove(id);
+		if (indexProviderIM != null) {
+			return true;
+		}
+		return false;
+	}
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	protected synchronized IndexProviderItem doGetIndexProvider(String id) {
+		IndexProviderItem indexProvider = this.indexProviderMap.get(id);
 		if (indexProvider == null) {
-			indexProvider = new IndexProviderItem(indexProviderId);
-			this.indexProviderMap.put(indexProviderId, indexProvider);
+			indexProvider = new IndexProviderItem(id);
+			indexProvider.setId(id);
+			this.indexProviderMap.put(id, indexProvider);
 		}
 		return indexProvider;
 	}
@@ -276,7 +239,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 	public List<IndexItem> getIndexItems(String indexProviderId) throws ServerException {
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 
-		IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+		IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 		List<IndexItem> theIndexItems = indexProvider.getIndexItems();
 		indexItems.addAll(theIndexItems);
 
@@ -288,7 +251,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		List<IndexItem> indexItems = null;
 
 		if (indexProviderId != null && type != null) {
-			IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+			IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 			indexItems = indexProvider.getIndexItems(type);
 		}
 
@@ -303,7 +266,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		IndexItem indexItem = null;
 
 		if (indexProviderId != null && type != null) {
-			IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+			IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 			indexItem = indexProvider.getIndexItem(type, name);
 		}
 
@@ -315,7 +278,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		IndexItem indexItem = null;
 
 		if (indexProviderId != null && indexItemId != null) {
-			IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+			IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 			indexItem = indexProvider.getIndexItem(indexItemId);
 		}
 
@@ -334,7 +297,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 			return indexItem;
 		}
 
-		IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+		IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 
 		Date createTime = new Date();
 		Date lastUpdateTime = createTime;
@@ -360,7 +323,7 @@ public class IndexServiceIMImpl implements IndexService, LifecycleAware {
 		boolean isRemoved = false;
 
 		if (indexProviderId != null && indexItemId != null) {
-			IndexProviderItem indexProvider = getIndexProvider(indexProviderId);
+			IndexProviderItem indexProvider = doGetIndexProvider(indexProviderId);
 			isRemoved = indexProvider.removeIndexItem(indexItemId);
 		}
 

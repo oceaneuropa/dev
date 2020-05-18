@@ -13,33 +13,66 @@ import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.indexes.IndexItemImpl;
+import org.orbit.infra.connector.indexes.IndexProviderItemImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
+import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ClientModelConverter {
 
-	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
-	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
-	public static COMMON COMMON = new COMMON();
-
 	public static class INDEX_SERVICE {
+
+		/**
+		 * 
+		 * @param DTO
+		 * @return
+		 */
+		public static IndexProviderItem toIndexProvider(IndexProviderItemDTO DTO) {
+			if (DTO == null) {
+				return null;
+			}
+			IndexProviderItemImpl item = new IndexProviderItemImpl();
+
+			String id = DTO.getId();
+			String name = DTO.getName();
+			String description = DTO.getDescription();
+			long dateCreated = DTO.getDateCreated();
+			long dateModified = DTO.getDateModified();
+			Date dateCreatedObj = new Date(dateCreated);
+			Date dateModifiedObj = new Date(dateModified);
+
+			item.setId(id);
+			item.setName(name);
+			item.setDescription(description);
+			item.setDateCreated(dateCreatedObj);
+			item.setDateModified(dateModifiedObj);
+
+			return item;
+		}
+
 		/**
 		 * 
 		 * @param client
 		 * @param indexItemDTO
 		 * @return
 		 */
-		public IndexItem toIndexItem(IndexServiceClient client, IndexItemDTO indexItemDTO) {
+		public static IndexItem toIndexItem(IndexServiceClient client, IndexItemDTO indexItemDTO) {
 			if (indexItemDTO == null) {
 				return null;
 			}
@@ -65,7 +98,7 @@ public class ClientModelConverter {
 		 * @param configRegistryDTO
 		 * @return
 		 */
-		public ConfigRegistry toConfigRegistry(ConfigRegistryClient configRegistryClient, ConfigRegistryDTO configRegistryDTO) {
+		public static ConfigRegistry toConfigRegistry(ConfigRegistryClient configRegistryClient, ConfigRegistryDTO configRegistryDTO) {
 			if (configRegistryDTO == null) {
 				return null;
 			}
@@ -100,7 +133,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+		public static ConfigRegistry[] getConfigRegistries(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
@@ -124,7 +157,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigRegistry getConfigRegistry(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+		public static ConfigRegistry getConfigRegistry(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
@@ -143,7 +176,7 @@ public class ClientModelConverter {
 		 * @param configElementDTO
 		 * @return
 		 */
-		public ConfigElement toConfigElement(ConfigRegistryClient configRegistryClient, ConfigElementDTO configElementDTO) {
+		public static ConfigElement toConfigElement(ConfigRegistryClient configRegistryClient, ConfigElementDTO configElementDTO) {
 			if (configElementDTO == null) {
 				return null;
 			}
@@ -185,7 +218,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement[] getConfigElements(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+		public static ConfigElement[] getConfigElements(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
@@ -209,7 +242,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ConfigElement getConfigElement(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+		public static ConfigElement getConfigElement(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
@@ -229,7 +262,7 @@ public class ClientModelConverter {
 		 * @param pathDTO
 		 * @return
 		 */
-		public Path toPath(PathDTO pathDTO) {
+		public static Path toPath(PathDTO pathDTO) {
 			if (pathDTO == null) {
 				return null;
 			}
@@ -248,7 +281,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public Path getPath(Response response) throws ClientException {
+		public static Path getPath(Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
@@ -267,7 +300,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean isUpdated(Response response) throws ClientException {
+		public static boolean isUpdated(Response response) throws ClientException {
 			return ResponseUtil.isSucceed(response);
 		}
 
@@ -277,7 +310,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean isDeleted(Response response) throws ClientException {
+		public static boolean isDeleted(Response response) throws ClientException {
 			return ResponseUtil.isSucceed(response);
 		}
 
@@ -287,7 +320,7 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean isUploaded(Response response) throws ClientException {
+		public static boolean isUploaded(Response response) throws ClientException {
 			return ResponseUtil.isSucceed(response);
 		}
 
@@ -296,7 +329,7 @@ public class ClientModelConverter {
 		 * @param properties
 		 * @return
 		 */
-		public String toPropertiesString(Map<String, Object> properties) {
+		public static String toPropertiesString(Map<String, Object> properties) {
 			String propertiesString = JSONUtil.toJsonString(properties);
 			return propertiesString;
 		}
@@ -306,7 +339,7 @@ public class ClientModelConverter {
 		 * @param propertiesString
 		 * @return
 		 */
-		public Map<String, Object> toProperties(String propertiesString) {
+		public static Map<String, Object> toProperties(String propertiesString) {
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 			return properties;
 		}
@@ -316,7 +349,7 @@ public class ClientModelConverter {
 		 * @param propertiesString
 		 * @return
 		 */
-		public Map<String, Object> toMap(String mapString) {
+		public static Map<String, Object> toMap(String mapString) {
 			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
 			return map;
 		}
@@ -326,7 +359,7 @@ public class ClientModelConverter {
 		 * @param map
 		 * @return
 		 */
-		public String toMapString(Map<String, Object> map) {
+		public static String toMapString(Map<String, Object> map) {
 			String mapString = JSONUtil.toJsonString(map);
 			return mapString;
 		}

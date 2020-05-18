@@ -9,6 +9,11 @@ import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.service.WebServiceAware;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 
 	/**
@@ -29,6 +34,11 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(rootWSResource, "request", POST, JSON, createClient(), switcher);
 		new WSMethodInflector(rootWSResource, "commandrequest", POST, JSON, createClient(), switcher);
 
+		Resource.Builder indexProvidersWSResource = Resource.builder("/indexproviders");
+		new WSMethodInflector(indexProvidersWSResource, "", GET, JSON, createClient(), switcher);
+		new WSMethodInflector(indexProvidersWSResource, "", POST, JSON, createClient(), switcher);
+		new WSMethodInflector(indexProvidersWSResource, "", DELETE, JSON, createClient(), switcher);
+
 		Resource.Builder indexItemsWSResource = Resource.builder("/indexitems/{indexproviderid}");
 		new WSMethodInflector(indexItemsWSResource, "", GET, JSON, createClient(), switcher);
 		new WSMethodInflector(indexItemsWSResource, "", POST, JSON, createClient(), switcher);
@@ -43,6 +53,7 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(indexItemWSResource, "properties", DELETE, JSON, createClient(), switcher);
 
 		registerResources(rootWSResource.build());
+		registerResources(indexProvidersWSResource.build());
 		registerResources(indexItemsWSResource.build());
 		registerResources(indexItemWSResource.build());
 	}

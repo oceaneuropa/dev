@@ -21,7 +21,7 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 
 	/**
 	 * 
-	 * @param indexProviderId
+	 * @param id
 	 * @param qName
 	 */
 	public DeleteIndexItemCommand() {

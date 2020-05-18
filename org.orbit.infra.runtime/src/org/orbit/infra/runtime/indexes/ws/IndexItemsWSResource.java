@@ -31,27 +31,20 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.Printer;
 
-/*
- * Index items resource
+/*-
+ * Index items web service resource
  *
- * {contextRoot} example:
- * /orbit/v1/indexservice/
+ * {contextRoot}: /orbit/v1/indexservice/
  *
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&name={name}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid} (Body parameter: IndexItemDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}
- * 
- *     Not being used:
- *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/exists?type={type}&name={name}
- *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/indexitem?type={type}&name={name}
  * 
  */
 @Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.INDEX_ADMIN })
 @Path("/indexitems/{indexproviderid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemsWSResource extends AbstractWSApplicationResource {
-
-	// protected static Logger LOG = LoggerFactory.getLogger(IndexItemsWSResource.class);
 
 	@Inject
 	public IndexService service;
@@ -236,6 +229,14 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 	}
 
 }
+
+/*-
+ *     Not being used:
+ *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/exists?type={type}&name={name}
+ *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/indexitem?type={type}&name={name}
+ */
+
+// protected static Logger LOG = LoggerFactory.getLogger(IndexItemsWSResource.class);
 
 // /**
 // * Check whether an index item exists.

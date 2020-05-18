@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemUpdater;
 import org.orbit.infra.api.indexes.IndexProviderClient;
+import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
@@ -60,6 +61,21 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProviderClient>
 		@Override
 		public String echo(String message) throws ClientException {
 			return next().echo(message);
+		}
+
+		@Override
+		public List<IndexProviderItem> getIndexProviders() throws IOException {
+			return next().getIndexProviders();
+		}
+
+		@Override
+		public IndexProviderItem addIndexProvider(String id, String name, String description) throws IOException {
+			return next().addIndexProvider(id, name, description);
+		}
+
+		@Override
+		public boolean deleteIndexProvider(String id) throws IOException {
+			return next().deleteIndexProvider(id);
 		}
 
 		// @Override
@@ -203,6 +219,21 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProviderClient>
 
 		@Override
 		public String echo(String message) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public List<IndexProviderItem> getIndexProviders() throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public IndexProviderItem addIndexProvider(String id, String name, String description) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean deleteIndexProvider(String id) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 

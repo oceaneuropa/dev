@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
+import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
@@ -70,6 +71,107 @@ public class IndexServiceWSClient extends WSClient {
 		super(config);
 	}
 
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+	/**
+	 * Get index providers.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexproviders
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<IndexProviderItemDTO> getIndexProviders() throws ClientException {
+		List<IndexProviderItemDTO> DTOs = null;
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path("indexproviders");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).get();
+			checkResponse(target, response);
+
+			DTOs = response.readEntity(new GenericType<List<IndexProviderItemDTO>>() {
+			});
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (DTOs == null) {
+			DTOs = Collections.emptyList();
+		}
+		return DTOs;
+	}
+
+	/**
+	 * Add an index provider.
+	 * 
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexproviders (Body parameter: IndexProviderDTO)
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public IndexProviderItemDTO addIndexProvider(String id, String name, String description) throws ClientException {
+		IndexProviderItemDTO newDTO = null;
+
+		IndexProviderItemDTO newRequest = new IndexProviderItemDTO();
+		newRequest.setId(id);
+		newRequest.setName(name);
+		newRequest.setDescription(description);
+
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path("indexproviders");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexProviderItemDTO>(newRequest) {
+			}));
+			checkResponse(target, response);
+
+			newDTO = response.readEntity(IndexProviderItemDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return newDTO;
+	}
+
+	/**
+	 * Delete an index provider.
+	 * 
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexproviders?id={id}
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO deleteIndexProvider(String id) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path("indexproviders").queryParam("id", id);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).delete();
+			checkResponse(target, response);
+
+			status = response.readEntity(StatusDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
 	/**
 	 * Get index items.
 	 * 
@@ -304,8 +406,7 @@ public class IndexServiceWSClient extends WSClient {
 	/**
 	 * Set properties.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties (Body parameter:
-	 * IndexItemSetPropertiesRequestDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties (Body parameter: IndexItemSetPropertiesRequestDTO)
 	 * 
 	 * @param indexProviderId
 	 * @param indexItemId

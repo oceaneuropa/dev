@@ -8,9 +8,11 @@ import java.util.Map;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemUpdater;
 import org.orbit.infra.api.indexes.IndexItemUpdaterSupport;
+import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.indexes.IndexItemDTO;
+import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
@@ -20,8 +22,12 @@ import org.origin.common.rest.model.StatusDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient, IndexServiceWSClient>
-		implements IndexServiceClient /* , InternalProxyService */ {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient, IndexServiceWSClient> implements IndexServiceClient /* , InternalProxyService */ {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceClientImpl.class);
 
@@ -45,6 +51,58 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		return new IndexServiceWSClient(config);
 	}
 
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+	@Override
+	public List<IndexProviderItem> getIndexProviders() throws IOException {
+		List<IndexProviderItem> items = new ArrayList<IndexProviderItem>();
+		try {
+			List<IndexProviderItemDTO> DTOs = getWSClient().getIndexProviders();
+			if (DTOs != null) {
+				for (IndexProviderItemDTO DTO : DTOs) {
+					IndexProviderItem item = ClientModelConverter.INDEX_SERVICE.toIndexProvider(DTO);
+					if (item != null) {
+						items.add(item);
+					}
+				}
+			}
+		} catch (ClientException e) {
+			throw new IOException(e);
+		}
+		return items;
+	}
+
+	@Override
+	public IndexProviderItem addIndexProvider(String id, String name, String description) throws IOException {
+		IndexProviderItem item = null;
+		try {
+			IndexProviderItemDTO DTO = getWSClient().addIndexProvider(id, name, description);
+			if (DTO != null) {
+				item = ClientModelConverter.INDEX_SERVICE.toIndexProvider(DTO);
+			}
+		} catch (ClientException e) {
+			throw new IOException(e);
+		}
+		return item;
+	}
+
+	@Override
+	public boolean deleteIndexProvider(String id) throws IOException {
+		try {
+			StatusDTO status = getWSClient().deleteIndexProvider(id);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw new IOException(e);
+		}
+		return false;
+	}
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
 		return doGetIndexItems(indexProviderId, null);

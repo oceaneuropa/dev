@@ -5,9 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
@@ -16,9 +14,12 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexItemsTableHandler implements DatabaseTableAware {
-
-	public static Map<String, IndexItemsTableHandler> tableHandlerMap = new HashMap<String, IndexItemsTableHandler>();
 
 	/**
 	 * 
@@ -28,21 +29,14 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public static synchronized IndexItemsTableHandler getInstance(Connection conn, String indexProviderId) throws SQLException {
-		IndexItemsTableHandler tableHandler = tableHandlerMap.get(indexProviderId);
-		if (tableHandler == null) {
-			IndexItemsTableHandler newTableHandler = new IndexItemsTableHandler(indexProviderId);
-
-			String tableName = newTableHandler.getTableName();
-			if (!DatabaseUtil.tableExist(conn, tableName)) {
-				boolean initialized = DatabaseUtil.initialize(conn, newTableHandler);
-				if (!initialized) {
-					System.err.println("Table '" + tableName + "' cannot be initialized.");
-					throw new SQLException("Table '" + tableName + "' cannot be initialized.");
-				}
+		IndexItemsTableHandler tableHandler = new IndexItemsTableHandler(indexProviderId);
+		String tableName = tableHandler.getTableName();
+		if (!DatabaseUtil.tableExist(conn, tableName)) {
+			boolean initialized = DatabaseUtil.initialize(conn, tableHandler);
+			if (!initialized) {
+				System.err.println("Table '" + tableName + "' cannot be initialized.");
+				throw new SQLException("Table '" + tableName + "' cannot be initialized.");
 			}
-
-			tableHandlerMap.put(indexProviderId, newTableHandler);
-			tableHandler = newTableHandler;
 		}
 		return tableHandler;
 	}
@@ -55,19 +49,15 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public static synchronized boolean dispose(Connection conn, String indexProviderId) throws SQLException {
-		IndexItemsTableHandler tableHandler = tableHandlerMap.get(indexProviderId);
-		if (tableHandler != null) {
-			String tableName = tableHandler.getTableName();
-			if (DatabaseUtil.tableExist(conn, tableHandler)) {
-				boolean disposed = DatabaseUtil.dispose(conn, tableHandler);
-				if (disposed) {
-					tableHandlerMap.remove(indexProviderId);
-				} else {
-					System.err.println("Table '" + tableName + "' cannot be disposed.");
-					throw new SQLException("Table '" + tableName + "' cannot be disposed.");
-				}
-				return disposed;
+		IndexItemsTableHandler tableHandler = new IndexItemsTableHandler(indexProviderId);
+		String tableName = tableHandler.getTableName();
+		if (DatabaseUtil.tableExist(conn, tableHandler)) {
+			boolean disposed = DatabaseUtil.dispose(conn, tableHandler);
+			if (!disposed) {
+				System.err.println("Table '" + tableName + "' cannot be disposed.");
+				throw new SQLException("Table '" + tableName + "' cannot be disposed.");
 			}
+			return disposed;
 		}
 		return false;
 	}
@@ -89,7 +79,6 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 
 	protected String indexProviderId;
 	protected String tableName;
-
 	protected ResultSetListHandler<IndexItemVO> rsListHandler;
 	protected AbstractResultSetHandler<IndexItemVO> rsSingleHandler;
 

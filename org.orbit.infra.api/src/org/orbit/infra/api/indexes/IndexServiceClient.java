@@ -7,11 +7,44 @@ import java.util.Map;
 import org.origin.common.rest.client.ServiceClient;
 
 /**
- * Used by client to query index items.
+ * IndexService client API.
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public interface IndexServiceClient extends ServiceClient {
 
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	List<IndexProviderItem> getIndexProviders() throws IOException;
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws IOException
+	 */
+	IndexProviderItem addIndexProvider(String id, String name, String description) throws IOException;
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	boolean deleteIndexProvider(String id) throws IOException;
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
 	/**
 	 * Get all index items created by specified indexer provider.
 	 * 

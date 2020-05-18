@@ -7,6 +7,8 @@ import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
+import org.orbit.infra.model.indexes.IndexProviderItem;
+import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
@@ -23,7 +25,26 @@ public class RuntimeModelConverter {
 
 	public static class INDEX_SERVICE {
 		/**
-		 * Convert IndexItem runtime model to IndexItem DTO.
+		 * 
+		 * @param indexProviderItem
+		 * @return
+		 */
+		public IndexProviderItemDTO toDTO(IndexProviderItem indexProviderItem) {
+			if (indexProviderItem == null) {
+				return null;
+			}
+
+			IndexProviderItemDTO dto = new IndexProviderItemDTO();
+			dto.setId(indexProviderItem.getId());
+			dto.setName(indexProviderItem.getName());
+			dto.setDescription(indexProviderItem.getDescription());
+			dto.setDateCreated(indexProviderItem.getDateCreated());
+			dto.setDateModified(indexProviderItem.getDateModified());
+
+			return dto;
+		}
+
+		/**
 		 * 
 		 * @param indexItem
 		 * @return
@@ -33,16 +54,16 @@ public class RuntimeModelConverter {
 				return null;
 			}
 
-			IndexItemDTO indexItemDTO = new IndexItemDTO();
-			indexItemDTO.setIndexItemId(indexItem.getIndexItemId());
-			indexItemDTO.setIndexProviderId(indexItem.getIndexProviderId());
-			indexItemDTO.setType(indexItem.getType());
-			indexItemDTO.setName(indexItem.getName());
-			indexItemDTO.setProperties(indexItem.getProperties());
-			indexItemDTO.setCreateTime(indexItem.getDateCreated());
-			indexItemDTO.setUpdateTime(indexItem.getDateModified());
+			IndexItemDTO dto = new IndexItemDTO();
+			dto.setIndexItemId(indexItem.getIndexItemId());
+			dto.setIndexProviderId(indexItem.getIndexProviderId());
+			dto.setType(indexItem.getType());
+			dto.setName(indexItem.getName());
+			dto.setProperties(indexItem.getProperties());
+			dto.setCreateTime(indexItem.getDateCreated());
+			dto.setUpdateTime(indexItem.getDateModified());
 
-			return indexItemDTO;
+			return dto;
 		}
 	}
 

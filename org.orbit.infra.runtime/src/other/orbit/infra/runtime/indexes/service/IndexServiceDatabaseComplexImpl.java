@@ -22,6 +22,7 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.orbit.infra.model.indexes.IndexItemVO;
+import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceDatabaseHelper;
@@ -42,6 +43,11 @@ import org.origin.common.util.DateUtil;
 import org.origin.common.util.IntegerComparator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, CommandRequestHandler {
 
 	// index item attribute names
@@ -847,6 +853,36 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		} finally {
 			isValidating = false;
 		}
+	}
+
+	@Override
+	public List<IndexProviderItem> getIndexProviders() throws ServerException {
+		return null;
+	}
+
+	@Override
+	public IndexProviderItem getIndexProvider(String id) throws ServerException {
+		return null;
+	}
+
+	@Override
+	public IndexProviderItem addIndexProvider(String id, String name, String description) throws ServerException {
+		return null;
+	}
+
+	@Override
+	public boolean updateIndexProviderName(String id, String name) throws ServerException {
+		return false;
+	}
+
+	@Override
+	public boolean updateIndexProviderDescription(String id, String description) throws ServerException {
+		return false;
+	}
+
+	@Override
+	public boolean deleteIndexProvider(String id) throws ServerException {
+		return false;
 	}
 
 	protected List<IndexItem> getIndexItems() throws ServerException {

@@ -10,6 +10,11 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexServiceUtil {
 
 	/**
@@ -23,6 +28,24 @@ public class IndexServiceUtil {
 		return indexService;
 	}
 
+	/**
+	 * 
+	 * @param indexServiceUrl
+	 * @param accessToken
+	 * @return
+	 */
+	public static IndexServiceClient getClient(String indexServiceUrl, String accessToken) {
+		IndexServiceClient indexService = InfraClients.getInstance().getIndexService(indexServiceUrl, accessToken);
+		return indexService;
+	}
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
 	/**
 	 * Get all index items of a indexer.
 	 * 

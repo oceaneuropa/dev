@@ -4,18 +4,85 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
+import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.AccessTokenAware;
 import org.origin.common.service.WebServiceAware;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public interface IndexService extends WebServiceAware, AccessTokenAware {
 
+	// ---------------------------------------------------------------------------------------------------
+	// Service metadata
+	// ---------------------------------------------------------------------------------------------------
 	String getName();
 
 	String getHostURL();
 
 	String getContextRoot();
 
+	// ---------------------------------------------------------------------------------------------------
+	// Index Providers
+	// ---------------------------------------------------------------------------------------------------
+	/**
+	 * Get index providers.
+	 * 
+	 * @return
+	 * @throws ServerException
+	 */
+	List<IndexProviderItem> getIndexProviders() throws ServerException;
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ServerException
+	 */
+	IndexProviderItem getIndexProvider(String id) throws ServerException;
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ServerException
+	 */
+	IndexProviderItem addIndexProvider(String id, String name, String description) throws ServerException;
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @return
+	 * @throws ServerException
+	 */
+	boolean updateIndexProviderName(String id, String name) throws ServerException;
+
+	/**
+	 * 
+	 * @param id
+	 * @param description
+	 * @return
+	 * @throws ServerException
+	 */
+	boolean updateIndexProviderDescription(String id, String description) throws ServerException;
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ServerException
+	 */
+	boolean deleteIndexProvider(String id) throws ServerException;
+
+	// ---------------------------------------------------------------------------------------------------
+	// Index Items
+	// ---------------------------------------------------------------------------------------------------
 	/**
 	 * Get index items with specified indexProviderId.
 	 * 

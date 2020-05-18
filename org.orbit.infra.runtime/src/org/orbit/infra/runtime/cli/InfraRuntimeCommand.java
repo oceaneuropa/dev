@@ -12,7 +12,7 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.runtime.InfraServices;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
+import org.orbit.infra.runtime.indexes.service.IndexServiceDatabaseImpl;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.util.DateUtil;
@@ -35,7 +35,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 	public static final String CHANNEL = "channel";
 
 	protected BundleContext bundleContext;
-	protected IndexServiceImpl indexService;
+	protected IndexServiceDatabaseImpl indexService;
 	protected ExtensionRegistryServiceImpl extensionRegistryService;
 	// protected DataTubeServiceImpl channelService;
 
@@ -156,7 +156,7 @@ public class InfraRuntimeCommand implements CommandActivator {
 	}
 
 	public void startIndexService(BundleContext bundleContext) throws Exception {
-		IndexServiceImpl indexService = new IndexServiceImpl(null);
+		IndexServiceDatabaseImpl indexService = new IndexServiceDatabaseImpl(null);
 		indexService.start(bundleContext);
 		this.indexService = indexService;
 	}

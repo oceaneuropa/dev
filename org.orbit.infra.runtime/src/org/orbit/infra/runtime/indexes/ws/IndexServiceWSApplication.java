@@ -21,6 +21,7 @@ public class IndexServiceWSApplication extends AbstractJerseyWSApplication {
 		};
 		register(serviceBinder);
 		register(IndexServiceWSResource.class);
+		register(IndexProvidersWSResource.class);
 		register(IndexItemsWSResource.class);
 		register(IndexItemWSResource.class);
 		register(TestRequestFilter.class);

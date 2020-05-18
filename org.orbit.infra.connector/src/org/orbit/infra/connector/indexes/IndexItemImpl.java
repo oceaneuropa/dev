@@ -8,6 +8,11 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.model.TransientPropertySupport;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class IndexItemImpl implements IndexItem {
 
 	protected Integer indexItemId;

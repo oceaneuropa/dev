@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
+import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.platform.sdk.http.AccessTokenSupport;
 import org.orbit.platform.sdk.http.OrbitRoles;
@@ -27,9 +28,14 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceImpl implements IndexService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 
-	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceImpl.class);
+	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceDatabaseImpl.class);
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -37,11 +43,13 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	protected ServiceRegistration<?> serviceRegistry;
 	protected AccessTokenSupport accessTokenSupport;
 
+	protected IndexProvidersTableHandler indexProvidersTableHandler;
+
 	/**
 	 * 
 	 * @param initProperties
 	 */
-	public IndexServiceImpl(Map<Object, Object> initProperties) {
+	public IndexServiceDatabaseImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
@@ -77,8 +85,36 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 		update(properties);
 
+		String database = null;
+		try {
+			database = DatabaseUtil.getDatabase(this.databaseProperties);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		assert (database != null) : "database name cannot be retrieved.";
+
+		this.indexProvidersTableHandler = new IndexProvidersTableHandler(database);
+
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(IndexService.class, this, props);
+	}
+
+	/**
+	 * Initialize database tables.
+	 */
+	public void initialize() {
+		Connection conn = null;
+		try {
+			conn = DatabaseUtil.getConnection(this.databaseProperties);
+
+			if (this.indexProvidersTableHandler != null) {
+				DatabaseUtil.initialize(conn, this.indexProvidersTableHandler);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
 	}
 
 	/**
@@ -194,6 +230,142 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	protected void handleSQLException(SQLException e) throws ServerException {
 		e.printStackTrace();
 		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
+	}
+
+	@Override
+	public List<IndexProviderItem> getIndexProviders() throws ServerException {
+		List<IndexProviderItem> indexProviders = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			indexProviders = this.indexProvidersTableHandler.getIndexProviders(conn);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		if (indexProviders == null) {
+			indexProviders = new ArrayList<IndexProviderItem>();
+		}
+		return indexProviders;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ServerException
+	 */
+	@Override
+	public IndexProviderItem getIndexProvider(String id) throws ServerException {
+		IndexProviderItem indexProvider = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			indexProvider = this.indexProvidersTableHandler.getIndexProvider(conn, id);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return indexProvider;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ServerException
+	 */
+	@Override
+	public IndexProviderItem addIndexProvider(String id, String name, String description) throws ServerException {
+		IndexProviderItem indexProvider = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			long dateCreated = System.currentTimeMillis();
+			long dateModified = dateCreated;
+			indexProvider = this.indexProvidersTableHandler.insert(conn, id, name, description, dateCreated, dateModified);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return indexProvider;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @return
+	 * @throws ServerException
+	 */
+	@Override
+	public boolean updateIndexProviderName(String id, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.indexProvidersTableHandler.updateName(conn, id, name);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param description
+	 * @return
+	 * @throws ServerException
+	 */
+	@Override
+	public boolean updateIndexProviderDescription(String id, String description) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.indexProvidersTableHandler.updateDescription(conn, id, description);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ServerException
+	 */
+	@Override
+	public boolean deleteIndexProvider(String id) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.indexProvidersTableHandler.delete(conn, id);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
 	}
 
 	@Override
