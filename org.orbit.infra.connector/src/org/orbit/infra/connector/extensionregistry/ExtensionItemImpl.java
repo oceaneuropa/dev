@@ -5,6 +5,11 @@ import java.util.Map;
 
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ExtensionItemImpl implements ExtensionItem {
 
 	// protected Integer id;
@@ -72,42 +77,42 @@ public class ExtensionItemImpl implements ExtensionItem {
 		return this.properties;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((extensionId == null) ? 0 : extensionId.hashCode());
-		result = prime * result + ((platformId == null) ? 0 : platformId.hashCode());
-		result = prime * result + ((typeId == null) ? 0 : typeId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ExtensionItemImpl other = (ExtensionItemImpl) obj;
-		if (extensionId == null) {
-			if (other.extensionId != null)
-				return false;
-		} else if (!extensionId.equals(other.extensionId))
-			return false;
-		if (platformId == null) {
-			if (other.platformId != null)
-				return false;
-		} else if (!platformId.equals(other.platformId))
-			return false;
-		if (typeId == null) {
-			if (other.typeId != null)
-				return false;
-		} else if (!typeId.equals(other.typeId))
-			return false;
-		return true;
-	}
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + ((extensionId == null) ? 0 : extensionId.hashCode());
+//		result = prime * result + ((platformId == null) ? 0 : platformId.hashCode());
+//		result = prime * result + ((typeId == null) ? 0 : typeId.hashCode());
+//		return result;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		ExtensionItemImpl other = (ExtensionItemImpl) obj;
+//		if (extensionId == null) {
+//			if (other.extensionId != null)
+//				return false;
+//		} else if (!extensionId.equals(other.extensionId))
+//			return false;
+//		if (platformId == null) {
+//			if (other.platformId != null)
+//				return false;
+//		} else if (!platformId.equals(other.platformId))
+//			return false;
+//		if (typeId == null) {
+//			if (other.typeId != null)
+//				return false;
+//		} else if (!typeId.equals(other.typeId))
+//			return false;
+//		return true;
+//	}
 
 	@Override
 	public String toString() {
