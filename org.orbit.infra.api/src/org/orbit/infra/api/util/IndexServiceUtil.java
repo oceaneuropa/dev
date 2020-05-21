@@ -134,9 +134,34 @@ public class IndexServiceUtil {
 	 * @throws IOException
 	 */
 	public static Map<String, IndexItem> getPlatformIdToIndexItem(String accessToken, String parentPlatformId, String... platformTypes) throws IOException {
+		IndexServiceClient indexService = getClient(accessToken);
+		return getPlatformIdToIndexItem(indexService, parentPlatformId, platformTypes);
+	}
+
+	/**
+	 * 
+	 * @param accessToken
+	 * @param parentPlatformId
+	 * @param platformTypes
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, IndexItem> getPlatformIdToIndexItemV2(String indexServiceUrl, String accessToken, String parentPlatformId, String... platformTypes) throws IOException {
+		IndexServiceClient indexService = getClient(indexServiceUrl, accessToken);
+		return getPlatformIdToIndexItem(indexService, parentPlatformId, platformTypes);
+	}
+
+	/**
+	 * 
+	 * @param accessToken
+	 * @param parentPlatformId
+	 * @param platformTypes
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, IndexItem> getPlatformIdToIndexItem(IndexServiceClient indexService, String parentPlatformId, String... platformTypes) throws IOException {
 		Map<String, IndexItem> platformIdToIndexItem = new HashMap<String, IndexItem>();
 
-		IndexServiceClient indexService = getClient(accessToken);
 		if (indexService != null) {
 			List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 			if (indexItems != null) {
