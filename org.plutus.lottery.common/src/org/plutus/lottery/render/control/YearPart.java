@@ -6,7 +6,7 @@ import java.util.List;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.wwt.widgets.Composite;
 import org.origin.wwt.widgets.Display;
-import org.origin.wwt.widgets.layout.WWT;
+import org.origin.wwt.widgets.layout.WW;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.PBConstants;
 
@@ -22,7 +22,7 @@ public class YearPart extends Composite {
 	 * @param draw
 	 */
 	public YearPart(Display display, Integer year, List<Draw> draws) {
-		super(display, WWT.NONE);
+		super(display, WW.NONE);
 		this.year = year;
 		this.draws = (draws != null) ? draws : new ArrayList<Draw>();
 	}
@@ -34,7 +34,7 @@ public class YearPart extends Composite {
 	 * @param draws
 	 */
 	public YearPart(Composite parent, Integer year, List<Draw> draws) {
-		super(parent, WWT.NONE);
+		super(parent, WW.NONE);
 		this.year = year;
 		this.draws = (draws != null) ? draws : new ArrayList<Draw>();
 	}
