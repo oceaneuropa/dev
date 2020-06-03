@@ -20,7 +20,7 @@ import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
-import org.origin.wwt.render.widget.util.WidgetFigureHandler;
+import org.origin.wwt.render.widget.WidgetFigureHandler;
 import org.origin.wwt.widgets.Display;
 import org.origin.wwt.widgets.render.FigureHandlerRegistry;
 import org.plutus.lottery.common.Draw;
