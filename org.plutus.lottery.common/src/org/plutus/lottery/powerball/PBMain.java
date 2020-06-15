@@ -21,6 +21,7 @@ import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.wwt.render.widget.WidgetFigureHandler;
 import org.origin.wwt.widgets.Display;
+import org.origin.wwt.widgets.WW;
 import org.origin.wwt.widgets.render.FigureHandlerRegistry;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.render.control.DrawPart;
@@ -160,7 +161,7 @@ public class PBMain {
 
 		int display_width = (draws.size() + 1) * draw_width + 100;
 		Size size = new Size(display_width, draw_h + pb_h + 100);
-		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null, null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, null, null, WW.MAIN_DISPLAY);
 
 		Date last = null;
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
@@ -418,7 +419,7 @@ public class PBMain {
 		int total_h = ((draws.size() + 1) / 10) * (72 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null, null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, null, null, WW.MAIN_DISPLAY);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
@@ -468,7 +469,7 @@ public class PBMain {
 		int total_h = ((draws.size() + 1) / 8) * (52 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
-		Display display = new Display("display", size.getWidth(), size.getHeight(), null, false, null, null);
+		Display display = new Display(null, "display", size.getWidth(), size.getHeight(), null, null, null, WW.MAIN_DISPLAY);
 
 		// Last dummy draw
 		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();

@@ -6,7 +6,7 @@ import java.util.List;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.wwt.widgets.Composite;
 import org.origin.wwt.widgets.Display;
-import org.origin.wwt.widgets.layout.WW;
+import org.origin.wwt.widgets.WW;
 import org.plutus.lottery.common.Draw;
 import org.plutus.lottery.powerball.PBConstants;
 

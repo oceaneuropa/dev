@@ -1,7 +1,7 @@
 package org.plutus.lottery.render.control;
 
+import org.origin.wwt.widgets.WW;
 import org.origin.wwt.widgets.WebWidget;
-import org.origin.wwt.widgets.layout.WW;
 
 public class LinkPart extends WebWidget {
 

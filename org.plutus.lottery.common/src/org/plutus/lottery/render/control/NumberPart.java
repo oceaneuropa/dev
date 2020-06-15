@@ -2,8 +2,8 @@ package org.plutus.lottery.render.control;
 
 import org.origin.svg.graphics.Point;
 import org.origin.wwt.widgets.Composite;
+import org.origin.wwt.widgets.WW;
 import org.origin.wwt.widgets.WebWidget;
-import org.origin.wwt.widgets.layout.WW;
 
 public class NumberPart extends WebWidget {
 
