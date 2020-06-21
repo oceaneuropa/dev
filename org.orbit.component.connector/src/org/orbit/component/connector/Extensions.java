@@ -31,9 +31,9 @@ public class Extensions extends ProgramExtensions {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
 
-	public Extensions() {
-		setBundleId("org.orbit.component.connector");
-	}
+	// public Extensions() {
+	// setBundleId("org.orbit.component.connector");
+	// }
 
 	@Override
 	public void createExtensions() {

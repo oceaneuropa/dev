@@ -74,9 +74,9 @@ public class Extensions extends ProgramExtensions {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
 
-	public Extensions() {
-		setBundleId("org.orbit.component.runtime");
-	}
+	// public Extensions() {
+	// setBundleId("org.orbit.component.runtime");
+	// }
 
 	@Override
 	public void createExtensions() {

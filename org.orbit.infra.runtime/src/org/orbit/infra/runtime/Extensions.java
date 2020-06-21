@@ -58,9 +58,9 @@ public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
 
-	public Extensions() {
-		setBundleId("org.orbit.infra.runtime");
-	}
+	// public Extensions() {
+	// setBundleId("org.orbit.infra.runtime");
+	// }
 
 	@Override
 	public void createExtensions() {
