@@ -300,7 +300,7 @@ public class LaunchServiceHelper {
 		/*
 		<?xml version="1.0" encoding="UTF-8" ?>
 		<configuration>
-			<property name="platform.home" value="/Users/yayang/origin/ta1/nodespace/node1" />
+			<property name="platform.home" value="/Users/user1/origin/ta1/nodespace/node1" />
 
 			<appender name="STDOUT1" class="ch.qos.logback.core.ConsoleAppender">
 				<!-- encoders are assigned by default the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
