@@ -5,7 +5,12 @@ Bundle-SymbolicName: org.orbit.component.api;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.ws.rs.core;version="2.0.0",
+Import-Package: com.fasterxml.jackson.databind,
+ javax.ws.rs.client;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
+ org.glassfish.jersey.client,
+ org.glassfish.jersey.jackson,
+ org.glassfish.jersey.media.multipart;version="2.22.2",
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
@@ -28,5 +33,6 @@ Export-Package: org.orbit.component.api;version="1.0.0",
  other.orbit.component.api.tier3.domainmanagement;version="1.0.0",
  other.orbit.component.api.tier3.nodecontrol;version="1.0.0"
 Require-Bundle: org.origin.common;bundle-version="1.0.0",
- org.orbit.component.model;bundle-version="1.0.0"
+ org.orbit.component.model;bundle-version="1.0.0",
+ org.orbit.platform.model;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

@@ -9,6 +9,7 @@ public interface ComponentConstants {
 	// public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
 	// public static String ORBIT_CONFIG_REGISTRY_URL = "orbit.config_registry.url";
 	public static String ORBIT_DATACAST_URL = "orbit.data_cast.url";
+	public static String ORBIT_WEB_CONSOLE_URL = "orbit.web_console.url";
 
 	// ----------------------------------------------------------------------------------------
 	// orbit service config properties

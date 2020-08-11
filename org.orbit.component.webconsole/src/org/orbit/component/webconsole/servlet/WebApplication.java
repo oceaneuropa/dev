@@ -80,6 +80,7 @@ public class WebApplication extends PlatformWebApplication {
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
+				WebConstants.PUBLIC_WEB_CONSOLE_APPS_FOLDER, //
 				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
 				ComponentConstants.ORBIT_AUTH_URL, //
