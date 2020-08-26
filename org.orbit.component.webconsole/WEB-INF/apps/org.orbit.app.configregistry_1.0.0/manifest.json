@@ -1,0 +1,25 @@
+{
+	"id" : "org.orbit.app.configregistry",
+	"version" : "1.0.0",
+	"name" : "Config Registry",
+	"type" : "system app",
+	"description" : "Config Registry app",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.app.configregistry.ui", "Bundle-Version" : "1.0.0"}
+	],
+	"classpath" : [
+		"plugins/org.orbit.app.configregistry.ui_1.0.0.jar"
+	],
+	"WEB-INF" : [
+		{ "name" : "icon_s", "type" : "image", "value" : "WEB-INF/images/icon_s.png"},
+		{ "name" : "icon_m", "type" : "image", "value" : "WEB-INF/images/icon_m.png"},
+		{ "name" : "icon_l", "type" : "image", "value" : "WEB-INF/images/icon_l.png"}
+	],
+	"properties" : [
+		{ "name" : "config_reg_prop1", "value" : "config_reg_value1"},
+		{ "name" : "config_reg_prop2", "value" : "config_reg_value2"}
+	],
+	"preferences" : [
+		{ "name" : "defaultTitle", "value" : "Config Registry", "type" : "string",  "edit" : "text"}
+	]
+}

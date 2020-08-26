@@ -1,0 +1,25 @@
+{
+	"id" : "org.orbit.app.jvm",
+	"version" : "1.0.0",
+	"name" : "JVM Viewer",
+	"type" : "viewer",
+	"description" : "JVM Viewer to show JVM status",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.app.jvm.ui", "Bundle-Version" : "1.0.0"}
+	],
+	"classpath" : [
+		"plugins/org.orbit.app.jvm.ui_1.0.0.jar"
+	],
+	"WEB-INF" : [
+		{ "name" : "icon_s", "type" : "image", "value" : "images/jvm_s.png"},
+		{ "name" : "icon_m", "type" : "image", "value" : "images/jvm_m.png"},
+		{ "name" : "icon_l", "type" : "image", "value" : "images/jvm_l.png"}
+	],
+	"properties" : [
+		{ "name" : "jvm_prop1", "value" : "jvm_value1"},
+		{ "name" : "jvm_prop2", "value" : "jvm_value2"}
+	],
+	"preferences" : [
+		{ "name" : "defaultTitle", "value" : "JVM Viewer", "type" : "string",  "edit" : "text"}
+	]
+}

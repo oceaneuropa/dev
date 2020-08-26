@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JVM Viewer App
+Bundle-SymbolicName: org.orbit.app.jvm
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.app.jvm
+

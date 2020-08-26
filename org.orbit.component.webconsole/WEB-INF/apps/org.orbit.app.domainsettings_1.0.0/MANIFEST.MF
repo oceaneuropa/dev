@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Orbit Domain Settings
+Bundle-SymbolicName: org.orbit.app.domainsettings
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.app.domainsettings
+

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Calculator App
+Bundle-SymbolicName: org.orbit.app.calculator
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.app.calculator
+
