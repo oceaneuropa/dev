@@ -1,7 +1,7 @@
 package other.orbit.component.runtime.tier3.nodecontrol.editpolicy;
 
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.origin.common.command.ICommand;
+import org.origin.common.command.Command;
 import org.origin.common.rest.editpolicy.other.AbstractWSEditPolicyV1;
 import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.Request;
@@ -13,7 +13,7 @@ import org.origin.common.rest.model.Request;
 public class TransferAgentEditPolicyV1 extends AbstractWSEditPolicyV1 {
 
 	@Override
-	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
+	public Command getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		// TransferAgentService service = super.getService(TransferAgentService.class);
 		// if (service == null) {
 		// return null;

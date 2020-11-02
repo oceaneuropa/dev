@@ -2,7 +2,7 @@ package other.orbit.component.runtime.tier3.domainmanagement.editpolicy;
 
 import org.orbit.component.model.RequestConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.origin.common.command.ICommand;
+import org.origin.common.command.Command;
 import org.origin.common.rest.editpolicy.other.AbstractWSEditPolicyV1;
 import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.Request;
@@ -16,7 +16,7 @@ import other.orbit.component.runtime.tier3.domainmanagement.command.PlatformConf
 public class TransferAgentConfigEditPolicy extends AbstractWSEditPolicyV1 {
 
 	@Override
-	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
+	public Command getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		DomainManagementService service = resource.getService(DomainManagementService.class);
 
 		String requestName = request.getRequestName();

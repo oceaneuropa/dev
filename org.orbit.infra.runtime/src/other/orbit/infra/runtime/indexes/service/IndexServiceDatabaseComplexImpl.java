@@ -28,9 +28,9 @@ import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceDatabaseHelper;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.command.ICommand;
-import org.origin.common.command.ICommandStack;
-import org.origin.common.command.IEditingDomain;
+import org.origin.common.command.Command;
+import org.origin.common.command.CommandStack;
+import org.origin.common.command.EditingDomain;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
@@ -95,7 +95,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	protected List<IndexItem> cachedIndexItems = new ArrayList<IndexItem>();
 	protected Integer cachedRevisionId = 0;
 
-	protected ICommandStack revisionCommandStack;
+	protected CommandStack revisionCommandStack;
 	protected boolean debug = true;
 
 	/**
@@ -195,7 +195,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 
 		// Initialize the command stack
-		this.revisionCommandStack = IEditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).getCommandStack(this);
+		this.revisionCommandStack = EditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).getCommandStack(this);
 
 		// Synchronize once when the index service is started, so that the cachedIndexItems and cachedRevisionId can be initialized.
 		try {
@@ -264,7 +264,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 
 		// dispose the command stack
-		IEditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).disposeCommandStack(this);
+		EditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).disposeCommandStack(this);
 		this.revisionCommandStack = null;
 	}
 
@@ -620,7 +620,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 					break;
 				}
 
-				ICommand command = this.revisionCommandStack.peekUndoCommand();
+				Command command = this.revisionCommandStack.peekUndoCommand();
 
 				if (!(command instanceof RevisionCommand)) {
 					throw new ServerException(StatusDTO.RESP_500, "Cannot revert a non-revision command '" + command.getClass().getName() + "'. A non-revision command is not expected in the command stack.");

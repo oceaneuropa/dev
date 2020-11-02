@@ -6,7 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.origin.common.command.IEditingDomain;
+import org.origin.common.command.EditingDomain;
 import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 
 import other.orbit.component.runtime.tier3.nodecontrol.editpolicy.NodeEditPolicyV1;
@@ -38,7 +38,7 @@ public class TransferAgentServiceResourceV1 extends EditpolicyWSApplicationResou
 	}
 
 	@Override
-	protected IEditingDomain getEditingDomain() {
+	protected EditingDomain getEditingDomain() {
 		NodeControlService service = getService();
 		// return service.getEditingDomain();
 		return null;

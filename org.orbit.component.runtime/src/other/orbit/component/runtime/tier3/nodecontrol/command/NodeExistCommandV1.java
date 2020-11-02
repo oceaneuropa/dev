@@ -3,8 +3,8 @@ package other.orbit.component.runtime.tier3.nodecontrol.command;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.command.ICommandResult;
-import org.origin.common.command.impl.CommandResult;
+import org.origin.common.command.CommandResult;
+import org.origin.common.command.impl.CommandResultImpl;
 import org.origin.common.resources.node.INode;
 import org.origin.common.resources.node.INodespace;
 import org.origin.common.rest.model.Request;
@@ -23,7 +23,7 @@ public class NodeExistCommandV1 extends AbstractTransferAgentCommandV1 {
 	}
 
 	@Override
-	public ICommandResult execute(CommandContext context) throws CommandException {
+	public CommandResult execute(CommandContext context) throws CommandException {
 		System.out.println(getClass().getSimpleName() + ".execute()");
 		String nodespaceName = (String) this.request.getParameter("nodespace");
 		String nodeName = (String) this.request.getParameter("node");
@@ -37,7 +37,7 @@ public class NodeExistCommandV1 extends AbstractTransferAgentCommandV1 {
 				// nodespace doesn't exists
 				Response response = new Response(Response.FAILURE, "Nodespace \"" + nodespaceName + "\" doesn't exist.");
 				responses.setResponse(response);
-				return new CommandResult(response);
+				return new CommandResultImpl(response);
 			}
 
 			boolean exist = false;
@@ -48,12 +48,12 @@ public class NodeExistCommandV1 extends AbstractTransferAgentCommandV1 {
 
 			Response response = exist ? new Response(Response.SUCCESS, "Node exists.") : new Response(Response.FAILURE, "Node does not exist.");
 			responses.setResponse(response);
-			return new CommandResult(response);
+			return new CommandResultImpl(response);
 
 		} catch (Exception e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
 			responses.setResponse(response);
-			return new CommandResult(response);
+			return new CommandResultImpl(response);
 		}
 	}
 

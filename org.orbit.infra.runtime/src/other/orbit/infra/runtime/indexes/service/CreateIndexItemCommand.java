@@ -18,7 +18,7 @@ import org.orbit.infra.model.indexes.IndexItemVO;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.command.impl.CommandResult;
+import org.origin.common.command.impl.CommandResultImpl;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.runtime.Status;
@@ -102,7 +102,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public CommandResult execute(CommandContext context) throws CommandException {
+	public CommandResultImpl execute(CommandContext context) throws CommandException {
 		final ScheduledFuture<?>[] requestUpdaterHandle = new ScheduledFuture<?>[1];
 
 		final Connection conn = context.getAdapter(Connection.class);
@@ -250,7 +250,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		return new CommandResult(Status.OK_STATUS);
+		return new CommandResultImpl(Status.OK_STATUS);
 	}
 
 	/**
@@ -270,8 +270,8 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public CommandResult undo(CommandContext context) throws CommandException {
-		return new CommandResult(Status.OK_STATUS);
+	public CommandResultImpl undo(CommandContext context) throws CommandException {
+		return new CommandResultImpl(Status.OK_STATUS);
 	}
 
 }
