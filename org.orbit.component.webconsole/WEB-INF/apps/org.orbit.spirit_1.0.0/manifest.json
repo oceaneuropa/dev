@@ -1,0 +1,35 @@
+{
+	"id" : "org.orbit.spirit",
+	"version" : "1.0.0",
+	"name" : "GAIA",
+	"type" : "system component",
+	"description" : "System component for spirit (GAIA and Earth)",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.spirit.api", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.connector", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.io", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.model", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.resource", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.runtime", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.sdk", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.spirit.webconsole", "Bundle-Version" : "1.0.0", "optional" : "true"}
+	],
+	"classpath" : [
+		"plugins"
+	],
+	"properties" : [
+		{"name" : "spirit.gaia.id", "value" : "gaia1"},
+		{"name" : "spirit.gaia.name", "value" : "GAIA1"},
+		{"name" : "spirit.gaia.context_root", "value" : "/orbit/v1/gaia"},
+		{"name" : "spirit.gaia.jdbc.driver", "value" : "org.postgresql.Driver"},
+		{"name" : "spirit.gaia.jdbc.url", "value" : "jdbc:postgresql://127.0.0.1:5432/gaia1"},
+		{"name" : "spirit.gaia.jdbc.username", "value" : "postgres"},
+		{"name" : "spirit.earth.gaia_id", "value" : "gaia1"},
+		{"name" : "spirit.earth.id", "value" : "earth1"},
+		{"name" : "spirit.earth.name", "value" : "Earth1"},
+		{"name" : "spirit.earth.context_root", "value" : "/orbit/v1/earth"},
+		{"name" : "spirit.earth.jdbc.driver", "value" : "org.postgresql.Driver"},
+		{"name" : "spirit.earth.jdbc.url", "value" : "jdbc:postgresql://127.0.0.1:5432/gaia1_earth1"},
+		{"name" : "spirit.earth.jdbc.username", "value" : "postgres"}
+	]
+}

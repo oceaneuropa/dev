@@ -229,6 +229,13 @@ public class IConfigElementImpl implements IConfigElement {
 		return isUpdated;
 	}
 
+	@Override
+	public boolean delete() throws IOException {
+		String elementId = getElementId();
+		boolean isDeleted = this.registry.deleteElement(elementId);
+		return isDeleted;
+	}
+
 	// -----------------------------------------------------------------------------------
 	// Member Config Elements
 	// -----------------------------------------------------------------------------------
@@ -286,6 +293,18 @@ public class IConfigElementImpl implements IConfigElement {
 	public IConfigElement createChildElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		String parentElementId = getElementId();
 		return this.registry.createElement(parentElementId, path, attributes, generateUniqueName);
+	}
+
+	@Override
+	public boolean deleteChildElement(Path path) throws IOException {
+		boolean isDeleted = false;
+		String parentElementId = getElementId();
+		IConfigElement child = this.registry.getElement(parentElementId, path);
+		if (child != null) {
+			String elementId = child.getElementId();
+			isDeleted = this.registry.deleteElement(elementId);
+		}
+		return isDeleted;
 	}
 
 	/** DateRecordAware */

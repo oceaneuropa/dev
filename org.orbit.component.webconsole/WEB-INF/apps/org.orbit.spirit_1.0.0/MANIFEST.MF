@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GAIA
+Bundle-SymbolicName: org.orbit.spirit
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.spirit
+

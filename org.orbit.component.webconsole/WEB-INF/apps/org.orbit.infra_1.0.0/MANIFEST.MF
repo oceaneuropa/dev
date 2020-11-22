@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Infra
+Bundle-SymbolicName: org.orbit.infra
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.infra
+

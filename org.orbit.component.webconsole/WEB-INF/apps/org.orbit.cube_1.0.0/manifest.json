@@ -1,0 +1,24 @@
+{
+	"id" : "org.orbit.cube",
+	"version" : "1.0.0",
+	"name" : "GlassCube",
+	"type" : "system component",
+	"description" : "System component for Cube",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.cube.api", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.cube.connector", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.cube.io", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.cube.model", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.cube.runtime", "Bundle-Version" : "1.0.0"}
+	],
+	"classpath" : [
+		"plugins"
+	],
+	"properties" : [
+		{"name" : "orbit.cube_manager.id", "value" : "cubeManager1"},
+		{"name" : "orbit.cube_manager.name", "value" : "CubeManager1"},
+		{"name" : "orbit.cube_manager.context_root", "value" : "/orbit/v1/cubemanager"},
+		{"name" : "orbit.cube_manager.gaia_id", "value" : "gaia1"},
+		{"name" : "orbit.cube_manager.earth_id", "value" : "earth1"}
+	]
+}

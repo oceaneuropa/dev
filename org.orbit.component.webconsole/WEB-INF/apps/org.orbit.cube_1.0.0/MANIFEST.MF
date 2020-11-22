@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GlassCube
+Bundle-SymbolicName: org.orbit.cube
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.cube
+

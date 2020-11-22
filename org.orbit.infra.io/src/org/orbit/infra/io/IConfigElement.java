@@ -58,6 +58,14 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 
 	boolean removeAttributes(List<String> attributeNames) throws IOException;
 
+	/**
+	 * Delete the config element itself.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	boolean delete() throws IOException;
+
 	// -----------------------------------------------------------------------------------
 	// Children Config Elements
 	// -----------------------------------------------------------------------------------
@@ -72,5 +80,14 @@ public interface IConfigElement extends DateRecordAware<Long>, TransientProperty
 	IConfigElement createChildElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	IConfigElement createChildElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+
+	/**
+	 * Delete child element by child element path.
+	 * 
+	 * @param path
+	 * @return
+	 * @throws IOException
+	 */
+	boolean deleteChildElement(Path path) throws IOException;
 
 }

@@ -1,0 +1,34 @@
+{
+	"id" : "org.orbit.infra",
+	"version" : "1.0.0",
+	"name" : "Infra",
+	"type" : "system component",
+	"description" : "System component for infra (DataCast and DataTube)",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.infra.api", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.infra.connector", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.infra.io", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.infra.model", "Bundle-Version" : "1.0.0"},
+		{"Bundle-SymbolicName" : "org.orbit.infra.runtime", "Bundle-Version" : "1.0.0"}
+	],
+	"Require-Program" : [
+		{"id" : "org.orbit.substance", "version" : "[1.0.0,2.0.0)", "optional" : "false"}
+	],
+	"classpath" : [
+		"plugins"
+	],
+	"properties" : [
+		{"name" : "infra.data_cast.id", "value" : "cast1"},
+		{"name" : "infra.data_cast.name", "value" : "Cast1"},
+		{"name" : "infra.data_cast.context_root", "value" : "/orbit/v1/datacast"},
+		{"name" : "infra.data_cast.jdbc.driver", "value" : "org.postgresql.Driver"},
+		{"name" : "infra.data_cast.jdbc.url", "value" : "jdbc:postgresql://127.0.0.1:5432/cast1"},
+		{"name" : "infra.data_cast.jdbc.username", "value" : "postgres"},
+		{"name" : "infra.data_cast.jdbc.password", "value" : ""},
+		{"name" : "infra.data_tube.datacast_id", "value" : "cast1"},
+		{"name" : "infra.data_tube.id", "value" : "tube1"},
+		{"name" : "infra.data_tube.name", "value" : "Tube1"},
+		{"name" : "infra.data_tube.context_root", "value" : "/orbit/v1/datatube"},
+		{"name" : "infra.data_tube.http_port", "value" : "8201"}
+	]
+}
