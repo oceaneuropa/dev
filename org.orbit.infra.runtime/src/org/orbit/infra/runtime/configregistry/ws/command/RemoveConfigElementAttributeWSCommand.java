@@ -68,7 +68,7 @@ public class RemoveConfigElementAttributeWSCommand extends AbstractInfraCommand<
 		Map<String, Object> existingAttributes = configElement.getAttributes();
 		if (existingAttributes.containsKey(attributeName)) {
 			existingAttributes.remove(attributeName);
-			succeed = configRegistry.updateAttributes(attributeName, existingAttributes);
+			succeed = configRegistry.updateAttributes(elementId, existingAttributes);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
