@@ -20,6 +20,7 @@
 		{ "name" : "jvm_prop2", "value" : "jvm_value2"}
 	],
 	"preferences" : [
-		{ "name" : "defaultTitle", "value" : "JVM Viewer", "type" : "string",  "edit" : "text"}
+		{ "name" : "defaultTitle", "value" : "JVM Viewer", "type" : "string",  "edit" : "text"},
+		{ "name" : "defaultName", "value" : "JVM", "type" : "string",  "edit" : "text"}
 	]
 }
