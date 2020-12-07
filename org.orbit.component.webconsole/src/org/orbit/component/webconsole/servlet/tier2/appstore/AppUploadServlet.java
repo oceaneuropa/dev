@@ -2,13 +2,8 @@ package org.orbit.component.webconsole.servlet.tier2.appstore;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,9 +16,17 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.orbit.component.api.util.AppStoreUtil;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.platform.runtime.api.PlatformRuntimeAPIActivator;
+import org.orbit.platform.runtime.api.platform.Platform;
+import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.io.FileUtil;
+import org.origin.common.profile.InstructionHandlerRegistry;
+import org.origin.common.profile.Profile;
+import org.origin.common.profile.ProfileContext;
+import org.origin.common.profile.ProfileHelper;
+import org.origin.common.profile.impl.ProfileContextImpl;
 import org.origin.common.servlet.MessageHelper;
 
 /**
@@ -45,9 +48,8 @@ public class AppUploadServlet extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		// String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
-		String appsFolderPath = getServletConfig().getInitParameter(WebConstants.PUBLIC_WEB_CONSOLE_APPS_FOLDER);
+		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
 		String message = "";
 
@@ -123,14 +125,14 @@ public class AppUploadServlet extends HttpServlet {
 					}
 
 					// 7. Upload file to local folder (of the web server)
-					List<File> localFiles = new ArrayList<File>();
+					List<File> archiveFiles = new ArrayList<File>();
 					for (FileItem fileItem : fileItems) {
 						if (!fileItem.isFormField()) {
 							String fileName = fileItem.getName();
 							try {
 								File localFile = new File(appUploadDir, fileName);
 								fileItem.write(localFile);
-								localFiles.add(localFile);
+								archiveFiles.add(localFile);
 
 								// message = MessageHelper.INSTANCE.add(message, "File '" + fileName + "' is uploaded to web server.");
 
@@ -141,16 +143,11 @@ public class AppUploadServlet extends HttpServlet {
 					}
 
 					// 8. Unzip the app jar file. Copy files in the <app_jar>/WEB-INF folder to /WEB-INF/apps/<appId>_<appVersion>/
-					if (appsFolderPath != null && !localFiles.isEmpty()) {
-						File appsFolder = new File(appsFolderPath);
-						if (appsFolder.isDirectory()) {
-							provisionAppsFolder(appId, appVersion, appsFolder, localFiles, false);
-						}
-					}
+					handleProgramsMetadata(appId, appVersion, archiveFiles);
 
 					// 9. Upload file to app store
 					String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-					boolean succeed = AppStoreUtil.uploadAppFile(accessToken, id, appId, appVersion, localFiles);
+					boolean succeed = AppStoreUtil.uploadAppFile(accessToken, id, appId, appVersion, archiveFiles);
 					if (succeed) {
 						message = MessageHelper.INSTANCE.add(message, "App file is uploaded to app store.");
 					} else {
@@ -181,10 +178,76 @@ public class AppUploadServlet extends HttpServlet {
 	}
 
 	/**
+	 * 
+	 * @param appsFolder
+	 * @param programId
+	 * @param programVersion
+	 * @param archiveFiles
+	 * @see SystemProgramsManagerImpl.handleInstalledPrograms()
+	 */
+	protected void handleProgramsMetadata(String programId, String programVersion, List<File> archiveFiles) {
+		// "web_console.appstore.apps_folder" must be set
+		String appsFolderLocation = getServletConfig().getInitParameter(PlatformConstants.WEB_CONSOLE__APPSTORE__APPS_FOLDER);
+		System.out.println(getClass().getSimpleName() + ".handleProgramsMetadata() appsFolderLocation = " + appsFolderLocation);
+		if (appsFolderLocation == null || appsFolderLocation.isEmpty()) {
+			throw new IllegalStateException("Property '" + PlatformConstants.WEB_CONSOLE__PLATFORM__APPS_FOLDER + "' is not set.");
+		}
+
+		File appsFolder = new File(appsFolderLocation);
+
+		File targetProgramDir = new File(appsFolder, programId + "_" + programVersion);
+		try {
+			FileUtil.deleteDirectory(targetProgramDir);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (!targetProgramDir.exists()) {
+			targetProgramDir.mkdirs();
+		}
+
+		Platform platform = PlatformRuntimeAPIActivator.getPlatform();
+		if (platform != null) {
+			InstructionHandlerRegistry instructionHandlerRegistry = platform.getAdapter(InstructionHandlerRegistry.class);
+			if (instructionHandlerRegistry == null) {
+				instructionHandlerRegistry = InstructionHandlerRegistry.INSTANCE;
+			}
+
+			System.out.println();
+			System.out.println(getClass().getSimpleName() + ".handleProgramsMetadata() " + programId + " - " + programVersion);
+			System.out.println("Uploaded program archive files:");
+			System.out.println("--------------------------------------------------------------------------------");
+			for (File archiveFile : archiveFiles) {
+				System.out.println(archiveFile);
+
+				if (archiveFile != null && archiveFile.exists()) {
+					try {
+						Profile metadata = ProfileHelper.INSTANCE.extractProfile(archiveFile, "Metadata");
+						if (metadata != null) {
+							ProfileContext context = new ProfileContextImpl();
+							context.setData(ProfileContext.PROGRAM_ID, programId);
+							context.setData(ProfileContext.PROGRAM_VERSION, programVersion);
+							context.setData(ProfileContext.SOURCE_PROGRAM_FILE, archiveFile);
+							context.setData(ProfileContext.TARGET_PROGRAM_DIR, targetProgramDir);
+
+							try {
+								ProfileHelper.INSTANCE.runProfile(instructionHandlerRegistry, context, metadata);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			System.out.println("--------------------------------------------------------------------------------");
+			System.out.println();
+		}
+	}
+
+	/*-
 	 * e.g. http://localhost:8080/orbit/webconsole/public/apps/org.orbit.app.browser_1.0.0/images/browser_01_48x48.png
-	 * 
 	 * e.g. http://localhost:8080/orbit/webconsole/public/apps/org.orbit.app.browser_1.0.0/images/browser_01_64x64.png
-	 * 
 	 * e.g. http://localhost:8080/orbit/webconsole/public/apps/org.orbit.app.browser_1.0.0/images/browser_01_128x128.png
 	 * 
 	 * 
@@ -199,15 +262,15 @@ public class AppUploadServlet extends HttpServlet {
 	 * @see https://stackoverflow.com/questions/36890005/zipentry-to-file
 	 * @see https://www.tutorialspoint.com/how-to-delete-folder-and-sub-folders-using-java
 	 * 
-	 */
+	 *
 	protected void provisionAppsFolder(String appId, String appVersion, File appsFolder, List<File> localFiles, boolean clean) throws IOException {
 		System.out.println(getClass().getSimpleName() + ".provisionAppsFolder()");
 		System.out.println("    appId = " + appId);
 		System.out.println("    appVersion = " + appVersion);
 		System.out.println("    appsFolder = " + appsFolder.getAbsolutePath());
-
+	
 		File appFolder = new File(appsFolder, appId + "_" + appVersion);
-
+	
 		if (clean) {
 			try {
 				FileUtil.deleteDirectory(appFolder);
@@ -215,11 +278,11 @@ public class AppUploadServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
+	
 		if (!appFolder.exists()) {
 			appFolder.mkdirs();
 		}
-
+	
 		for (File localFile : localFiles) {
 			ZipFile zipFile = null;
 			try {
@@ -227,31 +290,31 @@ public class AppUploadServlet extends HttpServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+	
 			if (zipFile != null) {
 				Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
 				while (zipEntries.hasMoreElements()) {
 					ZipEntry zipEntry = zipEntries.nextElement();
-
+	
 					String entryName = zipEntry.getName();
 					System.out.println("        ZipEntry: " + entryName);
-
+	
 					if (!entryName.equals("WEB-INF/") && entryName.startsWith("WEB-INF/")) {
 						String filePath = entryName.substring("WEB-INF/".length());
-
+	
 						File currFile = new File(appFolder, filePath);
-
+	
 						if (zipEntry.isDirectory()) {
 							if (!currFile.exists()) {
 								currFile.mkdirs();
 							}
 							System.out.println("            unzip to folder: " + currFile.getAbsolutePath());
-
+	
 						} else {
 							if (currFile.exists()) {
 								currFile.delete();
 							}
-
+	
 							InputStream inputStream = null;
 							try {
 								inputStream = zipFile.getInputStream(zipEntry);
@@ -265,15 +328,15 @@ public class AppUploadServlet extends HttpServlet {
 								}
 							}
 						}
-
+	
 					} else if ("META-INF/manifest.json".equals(entryName) || "META-INF/MANIFEST.MF".equals(entryName)) {
 						String filePath = entryName.substring("META-INF/".length());
-
+	
 						File file = new File(appFolder, filePath);
 						if (file.exists()) {
 							file.delete();
 						}
-
+	
 						InputStream inputStream = null;
 						try {
 							inputStream = zipFile.getInputStream(zipEntry);
@@ -291,5 +354,6 @@ public class AppUploadServlet extends HttpServlet {
 			}
 		}
 	}
+	*/
 
 }

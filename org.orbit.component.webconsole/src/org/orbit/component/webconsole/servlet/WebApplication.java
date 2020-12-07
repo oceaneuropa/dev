@@ -57,6 +57,7 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatc
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallProviderServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.ProgramsProviderServlet;
+import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -80,7 +81,7 @@ public class WebApplication extends PlatformWebApplication {
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
-				WebConstants.PUBLIC_WEB_CONSOLE_APPS_FOLDER, //
+				PlatformConstants.WEB_CONSOLE__APPSTORE__APPS_FOLDER, //
 				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
 				ComponentConstants.ORBIT_AUTH_URL, //

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PDF Viewer
+Bundle-SymbolicName: org.orbit.app.pdfviewer.application
+Bundle-Version: 1.0.0
+Automatic-Module-Name: org.orbit.app.pdfviewer
+

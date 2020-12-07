@@ -35,17 +35,16 @@
 				<th class="th1" width="12">
 					<input type="checkbox" onClick="toggleSelection(this, 'appId_appVersion')" />
 				</th>
-				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Type</th>
-				<th class="th1" width="150">Id and Version</th>
-				<th class="th1" width="200">File Name</th>
-				<th class="th1" width="280">Actions</th>
+				<th class="th1" width="100">Name</th>
+				<th class="th1" width="200">File</th>
+				<th class="th1" width="500">Actions</th>
 			</tr>
 			<%
 				if (appManifests.length == 0) {
 			%>
 			<tr>
-				<td colspan="6">(n/a)</td>
+				<td colspan="5">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -75,9 +74,8 @@
 				<td class="td1">
 					<input type="checkbox" name="appId_appVersion" value="<%=appId + "|" + appVersion%>">
 				</td>
-				<td class="td2"><%=name%></td>
 				<td class="td1"><%=type%></td>
-				<td class="td2"><%=appId%> - <%=appVersion%></td>
+				<td class="td1"><%=name%></td>
 				<td class="td2">
 					<% if (fileLength > 0) { %>
 						<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank"><%=fileName%></a>
@@ -93,6 +91,7 @@
 					<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank">Download</a>
 					<a class="action01" target="_blank" href="/orbit/webconsole/public/apps/<%=appId%>_<%=appVersion%>/MANIFEST.MF">MANIFEST.MF</a>
 					-->
+					<a class="action01" target="_blank" href="/orbit/webconsole/public/apps/<%=appId%>_<%=appVersion%>/MANIFEST.MF">MANIFEST.MF</a>
 					<a class="action01" target="_blank" href="/orbit/webconsole/public/apps/<%=appId%>_<%=appVersion%>/manifest.json">manifest.json</a>
 				</td>
 			</tr>
