@@ -2,7 +2,7 @@ package org.orbit.component.api.util;
 
 import java.util.Map;
 
-import org.orbit.platform.model.program.ManifestReader;
+import org.orbit.platform.model.program.ProgramManifestReader;
 import org.orbit.platform.model.program.ProgramManifest;
 
 public class ProgramManifestClientConverter {
@@ -29,8 +29,9 @@ public class ProgramManifestClientConverter {
 		if (stringContent == null || stringContent.isEmpty()) {
 			return null;
 		}
-		ManifestReader reader = new ManifestReader();
-		ProgramManifest programManifest = reader.read(stringContent);
+		ProgramManifestReader reader = new ProgramManifestReader();
+		reader.read(stringContent);
+		ProgramManifest programManifest = reader.getProgramManifest();
 		return programManifest;
 	}
 
