@@ -26,12 +26,12 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
+import org.origin.common.util.IOUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

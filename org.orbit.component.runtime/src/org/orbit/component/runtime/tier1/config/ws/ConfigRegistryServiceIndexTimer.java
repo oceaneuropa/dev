@@ -12,8 +12,8 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.util.MapHelper;
 
 /**
  * ConfigRegistry service timer to update index item for the service.

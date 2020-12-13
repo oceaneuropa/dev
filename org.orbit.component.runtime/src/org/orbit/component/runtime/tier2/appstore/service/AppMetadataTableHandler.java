@@ -15,12 +15,12 @@ import java.util.Map;
 
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
-import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
+import org.origin.common.util.IOUtil;
 import org.origin.common.util.StringUtil;
 
 /*

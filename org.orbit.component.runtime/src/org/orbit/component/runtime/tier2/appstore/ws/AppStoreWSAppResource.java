@@ -21,12 +21,12 @@ import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.util.RuntimeModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.util.IOUtil;
 
 /*
  * App web service resource.

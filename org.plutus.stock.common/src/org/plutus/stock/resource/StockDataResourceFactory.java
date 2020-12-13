@@ -3,9 +3,9 @@ package org.plutus.stock.resource;
 import java.io.File;
 import java.net.URI;
 
-import org.origin.common.io.FileUtil;
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
+import org.origin.common.util.FileUtil;
 import org.origin.common.workingcopy.AbstractWorkingCopyFactory;
 import org.origin.common.workingcopy.WorkingCopy;
 import org.plutus.stock.common.StockConstants;

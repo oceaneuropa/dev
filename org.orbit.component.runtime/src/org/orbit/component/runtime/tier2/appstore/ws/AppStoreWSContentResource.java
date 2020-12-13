@@ -20,10 +20,10 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.platform.runtime.util.ProgramUtil;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.origin.common.io.FileUtil;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.util.FileUtil;
+import org.origin.common.util.IOUtil;
 
 /*-
  * 

@@ -12,11 +12,11 @@ import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
-import org.origin.common.lang.MapHelper;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAwareHelper;
 import org.origin.common.thread.IndexTimer;
 import org.origin.common.thread.IndexTimerImpl;
+import org.origin.common.util.MapHelper;
 
 public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexService, IndexItem> implements IndexTimer<IndexService, IndexService, IndexItem> {
 

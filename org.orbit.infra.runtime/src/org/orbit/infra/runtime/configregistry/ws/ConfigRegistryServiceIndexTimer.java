@@ -11,8 +11,8 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
-import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.util.MapHelper;
 
 public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryService> {
 

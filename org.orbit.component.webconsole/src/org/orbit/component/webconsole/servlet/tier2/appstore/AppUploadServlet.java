@@ -21,13 +21,13 @@ import org.orbit.platform.runtime.api.platform.Platform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
-import org.origin.common.io.FileUtil;
 import org.origin.common.profile.InstructionHandlerRegistry;
 import org.origin.common.profile.Profile;
 import org.origin.common.profile.ProfileContext;
 import org.origin.common.profile.ProfileHelper;
 import org.origin.common.profile.impl.ProfileContextImpl;
 import org.origin.common.servlet.MessageHelper;
+import org.origin.common.util.FileUtil;
 
 /**
  * Upon receiving file upload submission, parses the request to read upload data and saves the file on disk.

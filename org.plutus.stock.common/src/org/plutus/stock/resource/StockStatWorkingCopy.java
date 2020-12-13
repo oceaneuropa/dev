@@ -2,9 +2,9 @@ package org.plutus.stock.resource;
 
 import java.net.URI;
 
-import org.origin.common.workingcopy.AbstractWorkingCopy;
+import org.origin.common.workingcopy.WorkingCopyImpl;
 
-public class StockStatWorkingCopy extends AbstractWorkingCopy<StockStatResource> {
+public class StockStatWorkingCopy extends WorkingCopyImpl<StockStatResource> {
 
 	/**
 	 * 
