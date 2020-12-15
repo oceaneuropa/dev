@@ -5,33 +5,39 @@ import java.util.Map;
 
 import org.orbit.infra.model.repo.RepoConfig;
 import org.orbit.infra.model.repo.Repos;
+import org.origin.common.rest.editpolicy.EditPoliciesAware;
+import org.origin.common.service.WebServiceAware;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public interface RepoService {
+public interface RepoClientService extends WebServiceAware, EditPoliciesAware {
 
-	void start() throws IOException;
-
-	void stop() throws IOException;
-
+	/**
+	 * Get Repos object.
+	 * 
+	 * @return
+	 */
 	Repos getRepos();
 
+	/**
+	 * Get a RepoConfig by id.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	RepoConfig getRepoConfig(String id);
 
 	/**
 	 * Create a new repository instance. Add repository configuration to {repo_home}/repos.json file.
 	 * 
 	 * @param type
-	 * @param clientUrl
-	 * @param serverUrl
-	 * @param username
 	 * @param properties
 	 * @return
 	 */
-	RepoConfig create(String type, String serverUrl, String clientUrl, String username, Map<String, String> properties) throws IOException;
+	RepoConfig create(String type, Map<String, String> properties) throws IOException;
 
 	/**
 	 * Checkout repo elements. Get elements metadata from remote server and store it to {repo_home}/{repoId}/repo.json file.

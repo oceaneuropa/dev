@@ -115,23 +115,25 @@ public class ReposWriter extends WriterImpl {
 			repoJSON.put(RepoConstants.REPO__TYPE, type);
 		}
 
+		/*-
 		// server.url
 		String serverUrl = repo.getServerUrl();
 		if (serverUrl != null) {
 			repoJSON.put(RepoConstants.REPO__SERVER_URL, serverUrl);
 		}
-
+		
 		// client.url
 		String clientUrl = repo.getClientUrl();
 		if (clientUrl != null) {
 			repoJSON.put(RepoConstants.REPO__CLIENT_URL, clientUrl);
 		}
-
+		
 		// username
 		String username = repo.getUsername();
 		if (username != null) {
 			repoJSON.put(RepoConstants.REPO__USERNAME, username);
 		}
+		*/
 
 		// properties
 		Map<String, String> properties = repo.getProperties();
@@ -141,12 +143,7 @@ public class ReposWriter extends WriterImpl {
 				String propName = itor.next();
 				String propValue = properties.get(propName);
 
-				if (RepoConstants.REPO__ID.equals(propName) //
-						|| RepoConstants.REPO__TYPE.equals(propName) //
-						|| RepoConstants.REPO__SERVER_URL.equals(propName) //
-						|| RepoConstants.REPO__CLIENT_URL.equals(propName) //
-						|| RepoConstants.REPO__USERNAME.equals(propName) //
-				) {
+				if (RepoConstants.REPO__ID.equals(propName) || RepoConstants.REPO__TYPE.equals(propName)) {
 					continue;
 				}
 

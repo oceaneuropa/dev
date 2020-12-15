@@ -26,18 +26,6 @@ public interface RepoConfig {
 
 	String getType();
 
-	void setServerUrl(String serverUrl);
-
-	String getServerUrl();
-
-	void setClientUrl(String clientUrl);
-
-	String getClientUrl();
-
-	void setUsername(String username);
-
-	String getUsername();
-
 	Map<String, String> getProperties();
 
 	void setRepo(Repo repo);

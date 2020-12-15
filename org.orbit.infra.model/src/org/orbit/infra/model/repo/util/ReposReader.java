@@ -107,35 +107,32 @@ public class ReposReader extends ReaderImpl {
 			repo.setType(type);
 		}
 
+		/*-
 		// server.url
 		if (repoJSONObject.has(RepoConstants.REPO__SERVER_URL)) {
 			String serverUrl = repoJSONObject.getString(RepoConstants.REPO__SERVER_URL);
 			repo.setServerUrl(serverUrl);
 		}
-
+		
 		// client.url
 		if (repoJSONObject.has(RepoConstants.REPO__CLIENT_URL)) {
 			String clientUrl = repoJSONObject.getString(RepoConstants.REPO__CLIENT_URL);
 			repo.setClientUrl(clientUrl);
 		}
-
+		
 		// username
 		if (repoJSONObject.has(RepoConstants.REPO__USERNAME)) {
 			String username = repoJSONObject.getString(RepoConstants.REPO__USERNAME);
 			repo.setUsername(username);
 		}
+		*/
 
 		// properties
 		Map<String, String> properties = new HashMap<String, String>();
 		String[] propNames = JSONObject.getNames(repoJSONObject);
 		if (propNames != null) {
 			for (String propName : propNames) {
-				if (RepoConstants.REPO__ID.equals(propName) //
-						|| RepoConstants.REPO__TYPE.equals(propName) //
-						|| RepoConstants.REPO__SERVER_URL.equals(propName) //
-						|| RepoConstants.REPO__CLIENT_URL.equals(propName) //
-						|| RepoConstants.REPO__USERNAME.equals(propName) //
-				) {
+				if (RepoConstants.REPO__ID.equals(propName) || RepoConstants.REPO__TYPE.equals(propName)) {
 					continue;
 				}
 				String currPropValue = repoJSONObject.getString(propName);

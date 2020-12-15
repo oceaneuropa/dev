@@ -2,6 +2,7 @@ package org.orbit.infra.runtime.repo.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -14,27 +15,37 @@ import org.orbit.infra.model.repo.impl.ReposImpl;
 import org.orbit.infra.model.repo.util.RepoReader;
 import org.orbit.infra.model.repo.util.RepoWriter;
 import org.orbit.infra.model.repo.util.ReposReader;
+import org.orbit.infra.runtime.repo.RepoClientService;
 import org.orbit.infra.runtime.repo.RepoHandler;
 import org.orbit.infra.runtime.repo.RepoHandlerRegistry;
-import org.orbit.infra.runtime.repo.RepoService;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.util.FileUtil;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class RepoServiceImpl implements RepoService {
+public class RepoClientServiceImpl implements RepoClientService {
+
+	protected String name;
+	protected String hostURL;
+	protected String contextRoot;
 
 	protected File reposFolder;
 	protected File reposFile;
 	protected Repos reposObj;
+	protected ServiceRegistration<?> serviceRegistry;
+	protected ServiceEditPolicies wsEditPolicies;
 
 	/**
 	 * 
 	 * @param folderLocation
 	 */
-	public RepoServiceImpl(String folderLocation) {
+	public RepoClientServiceImpl(String folderLocation) {
 		this.reposFolder = new File(folderLocation);
 		this.reposFile = new File(this.reposFolder, RepoConstants.REPOS_FILE_NAME);
 	}
@@ -45,8 +56,43 @@ public class RepoServiceImpl implements RepoService {
 		}
 	}
 
+	/** WebServiceAware interface */
 	@Override
-	public synchronized void start() throws IOException {
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getHostURL() {
+		return hostURL;
+	}
+
+	public void setHostURL(String hostURL) {
+		this.hostURL = hostURL;
+	}
+
+	@Override
+	public String getContextRoot() {
+		return this.contextRoot;
+	}
+
+	public void setContextRoot(String contextRoot) {
+		this.contextRoot = contextRoot;
+	}
+
+	/** EditPoliciesAwareService interface */
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.wsEditPolicies;
+	}
+
+	/** LifecycleAware interface */
+	@Override
+	public void start(BundleContext bundleContext) throws Exception {
 		// 1. Load repos metadata from {repos_home}/repos.json file
 		this.reposObj = null;
 		try {
@@ -75,6 +121,13 @@ public class RepoServiceImpl implements RepoService {
 		if (exception != null) {
 			throw exception;
 		}
+
+		// 3. Create EditPolicies
+		this.wsEditPolicies = new ServiceEditPoliciesImpl(RepoClientService.class, this);
+
+		// 4. Register RepoClientService
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		this.serviceRegistry = bundleContext.registerService(RepoClientService.class, this, props);
 	}
 
 	/**
@@ -106,7 +159,17 @@ public class RepoServiceImpl implements RepoService {
 	}
 
 	@Override
-	public synchronized void stop() throws IOException {
+	public void stop(BundleContext bundleContext) throws Exception {
+		// Unregister RepoClientService
+		if (this.serviceRegistry != null) {
+			this.serviceRegistry.unregister();
+			this.serviceRegistry = null;
+		}
+
+		// Dispose EditPolicies
+		this.wsEditPolicies = null;
+
+		// Dispose data
 		if (this.reposObj != null) {
 			this.reposObj.clear();
 		}
@@ -136,14 +199,12 @@ public class RepoServiceImpl implements RepoService {
 	}
 
 	@Override
-	public synchronized RepoConfig create(String type, String serverUrl, String clientUrl, String username, Map<String, String> properties) throws IOException {
+	public synchronized RepoConfig create(String type, Map<String, String> properties) throws IOException {
 		checkRepos();
 
 		// Create new Repo config
 		RepoConfig repoConfig = new RepoConfigImpl();
 		repoConfig.setType(type);
-		repoConfig.setServerUrl(serverUrl);
-		repoConfig.setUsername(username);
 		if (properties != null) {
 			repoConfig.getProperties().putAll(properties);
 		}

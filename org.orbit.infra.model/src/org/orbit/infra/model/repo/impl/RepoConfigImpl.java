@@ -30,9 +30,9 @@ public class RepoConfigImpl implements RepoConfig {
 	protected File repoFile;
 	protected String id;
 	protected String type;
-	protected String serverUrl;
-	protected String clientUrl;
-	protected String username;
+	// protected String serverUrl;
+	// protected String clientUrl;
+	// protected String username;
 	protected Map<String, String> properties = new LinkedHashMap<String, String>();
 	protected Repo repo;
 
@@ -79,35 +79,37 @@ public class RepoConfigImpl implements RepoConfig {
 		this.type = type;
 	}
 
+	/*-
 	@Override
 	public String getServerUrl() {
 		return this.serverUrl;
 	}
-
+	
 	@Override
 	public void setServerUrl(String serverUrl) {
 		this.serverUrl = serverUrl;
 	}
-
+	
 	@Override
 	public String getClientUrl() {
 		return this.clientUrl;
 	}
-
+	
 	@Override
 	public void setClientUrl(String clientUrl) {
 		this.clientUrl = clientUrl;
 	}
-
+	
 	@Override
 	public String getUsername() {
 		return this.username;
 	}
-
+	
 	@Override
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	*/
 
 	@Override
 	public Map<String, String> getProperties() {
