@@ -18,11 +18,6 @@ public class SubsSourceImpl implements SubsSource {
 	protected String name;
 	protected String type;
 	protected String typeId;
-
-	protected String clientId;
-	protected String clientURL;
-	protected Date clientHeartbeatTime;
-
 	protected Map<String, String> properties = new LinkedHashMap<String, String>();
 	protected Date createdTime;
 	protected Date modifiedTime;
@@ -89,36 +84,6 @@ public class SubsSourceImpl implements SubsSource {
 	}
 
 	@Override
-	public String getClientId() {
-		return this.clientId;
-	}
-
-	@Override
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	@Override
-	public String getClientURL() {
-		return this.clientURL;
-	}
-
-	@Override
-	public void setClientURL(String clientURL) {
-		this.clientURL = clientURL;
-	}
-
-	@Override
-	public Date getClientHeartbeatTime() {
-		return this.clientHeartbeatTime;
-	}
-
-	@Override
-	public void setClientHeartbeatTime(Date heartbeatTime) {
-		this.clientHeartbeatTime = heartbeatTime;
-	}
-
-	@Override
 	public Map<String, String> getProperties() {
 		return this.properties;
 	}
@@ -145,11 +110,10 @@ public class SubsSourceImpl implements SubsSource {
 
 	@Override
 	public String toString() {
-		String clientHeartbeatTimeStr = (this.clientHeartbeatTime != null) ? DateUtil.toString(this.clientHeartbeatTime, DateUtil.getJdbcDateFormat()) : null;
 		String createdTimeStr = (this.createdTime != null) ? DateUtil.toString(this.createdTime, DateUtil.getJdbcDateFormat()) : null;
 		String modifiedTimeStr = (this.modifiedTime != null) ? DateUtil.toString(this.modifiedTime, DateUtil.getJdbcDateFormat()) : null;
 
-		return "SubsSourceImpl [id=" + id + ", name=" + name + ", type=" + type + ", typeId=" + typeId + ", clientId=" + clientId + ", clientURL=" + clientURL + ", clientHeartbeatTime=" + clientHeartbeatTimeStr + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
+		return "SubsSourceImpl [id=" + id + ", name=" + name + ", type=" + type + ", typeId=" + typeId + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
 	}
 
 }

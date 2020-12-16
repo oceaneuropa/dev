@@ -34,18 +34,6 @@ public interface SubsMapping {
 
 	void setClientHeartbeatTime(Date heartbeatTime);
 
-	String getServerId();
-
-	void setServerId(String serverId);
-
-	String getServerURL();
-
-	void setServerURL(String serverURL);
-
-	Date getServerHeartbeatTime();
-
-	void setServerHeartbeatTime(Date heartbeatTime);
-
 	Map<String, String> getProperties();
 
 	Date getCreatedTime();

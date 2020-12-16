@@ -22,10 +22,6 @@ public class SubsMappingImpl implements SubsMapping {
 	protected String clientURL;
 	protected Date clientHeartbeatTime;
 
-	protected String serverId;
-	protected String serverURL;
-	protected Date serverHeartbeatTime;
-
 	protected Map<String, String> properties = new LinkedHashMap<String, String>();
 
 	protected Date createdTime;
@@ -115,36 +111,6 @@ public class SubsMappingImpl implements SubsMapping {
 	}
 
 	@Override
-	public String getServerId() {
-		return this.serverId;
-	}
-
-	@Override
-	public void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
-
-	@Override
-	public String getServerURL() {
-		return this.serverURL;
-	}
-
-	@Override
-	public void setServerURL(String serverURL) {
-		this.serverURL = serverURL;
-	}
-
-	@Override
-	public Date getServerHeartbeatTime() {
-		return this.serverHeartbeatTime;
-	}
-
-	@Override
-	public void setServerHeartbeatTime(Date serverHeartbeatTime) {
-		this.serverHeartbeatTime = serverHeartbeatTime;
-	}
-
-	@Override
 	public Map<String, String> getProperties() {
 		return this.properties;
 	}
@@ -172,11 +138,10 @@ public class SubsMappingImpl implements SubsMapping {
 	@Override
 	public String toString() {
 		String clientHeartbeatTimeStr = (this.clientHeartbeatTime != null) ? DateUtil.toString(this.clientHeartbeatTime, DateUtil.getJdbcDateFormat()) : null;
-		String serverHeartbeatTimeStr = (this.serverHeartbeatTime != null) ? DateUtil.toString(this.serverHeartbeatTime, DateUtil.getJdbcDateFormat()) : null;
 		String createdTimeStr = (this.createdTime != null) ? DateUtil.toString(this.createdTime, DateUtil.getJdbcDateFormat()) : null;
 		String modifiedTimeStr = (this.modifiedTime != null) ? DateUtil.toString(this.modifiedTime, DateUtil.getJdbcDateFormat()) : null;
 
-		return "SubsMappingImpl [id=" + id + ", sourceId=" + sourceId + ", targetId=" + targetId + ", clientId=" + clientId + ", clientURL=" + clientURL + ", clientHeartbeatTime=" + clientHeartbeatTimeStr + ", serverId=" + serverId + ", serverURL=" + serverURL + ", serverHeartbeatTime=" + serverHeartbeatTimeStr + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
+		return "SubsMappingImpl [id=" + id + ", sourceId=" + sourceId + ", targetId=" + targetId + ", clientId=" + clientId + ", clientURL=" + clientURL + ", clientHeartbeatTime=" + clientHeartbeatTimeStr + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
 	}
 
 }

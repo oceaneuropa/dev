@@ -26,18 +26,6 @@ public interface SubsSource {
 
 	void setTypeId(String typeId);
 
-	String getClientId();
-
-	void setClientId(String clientId);
-
-	String getClientURL();
-
-	void setClientURL(String clientURL);
-
-	Date getClientHeartbeatTime();
-
-	void setClientHeartbeatTime(Date heartbeatTime);
-
 	Map<String, String> getProperties();
 
 	Date getCreatedTime();
