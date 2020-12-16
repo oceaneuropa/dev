@@ -1,5 +1,7 @@
 package org.orbit.infra.runtime.repo;
 
+import java.io.IOException;
+
 import org.orbit.infra.model.repo.RepoConfig;
 import org.orbit.infra.model.repo.Repos;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
@@ -13,18 +15,22 @@ import org.origin.common.service.WebServiceAware;
 public interface RepoServerService extends WebServiceAware, EditPoliciesAware {
 
 	/**
-	 * Get Repos object.
+	 * Get user's Repos.
 	 * 
+	 * @param username
 	 * @return
+	 * @throws IOException
 	 */
-	Repos getRepos();
+	Repos getRepos(String username) throws IOException;
 
 	/**
-	 * Get a RepoConfig by id.
+	 * Get a user's RepoConfig by id.
 	 * 
-	 * @param id
+	 * @param username
+	 * @param repoConfigId
 	 * @return
+	 * @throws IOException
 	 */
-	RepoConfig getRepoConfig(String id);
+	RepoConfig getRepoConfig(String username, String repoConfigId) throws IOException;
 
 }
