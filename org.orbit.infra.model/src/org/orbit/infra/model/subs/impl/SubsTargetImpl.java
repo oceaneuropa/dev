@@ -1,10 +1,10 @@
 package org.orbit.infra.model.subs.impl;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.orbit.infra.model.subs.SubsTarget;
+import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
 
 /**
@@ -15,17 +15,17 @@ import org.origin.common.util.DateUtil;
 public class SubsTargetImpl implements SubsTarget {
 
 	protected Integer id;
-	protected String name;
 	protected String type;
 	protected String typeId;
+	protected String name;
 
 	protected String serverId;
 	protected String serverURL;
-	protected Date serverHeartbeatTime;
+	protected long serverHeartbeatTime;
 
-	protected Map<String, String> properties = new LinkedHashMap<String, String>();
-	protected Date createdTime;
-	protected Date modifiedTime;
+	protected Map<String, Object> properties = new LinkedHashMap<String, Object>();
+	protected long dateCreated;
+	protected long dateModified;
 
 	public SubsTargetImpl() {
 	}
@@ -33,19 +33,27 @@ public class SubsTargetImpl implements SubsTarget {
 	/**
 	 * 
 	 * @param id
-	 * @param name
 	 * @param type
 	 * @param typeId
-	 * @param createdTime
-	 * @param modifiedTime
+	 * @param name
+	 * @param serverId
+	 * @param serverURL
+	 * @param serverHeartbeatTime
+	 * @param properties
+	 * @param dateCreated
+	 * @param dateModified
 	 */
-	public SubsTargetImpl(Integer id, String name, String type, String typeId, Date createdTime, Date modifiedTime) {
+	public SubsTargetImpl(Integer id, String type, String typeId, String name, String serverId, String serverURL, long serverHeartbeatTime, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.id = id;
-		this.name = name;
 		this.type = type;
 		this.typeId = typeId;
-		this.createdTime = createdTime;
-		this.modifiedTime = modifiedTime;
+		this.name = name;
+		this.serverId = serverId;
+		this.serverURL = serverURL;
+		this.serverHeartbeatTime = serverHeartbeatTime;
+		this.properties = properties;
+		this.dateCreated = dateCreated;
+		this.dateModified = dateModified;
 	}
 
 	@Override
@@ -56,16 +64,6 @@ public class SubsTargetImpl implements SubsTarget {
 	@Override
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Override
@@ -89,6 +87,16 @@ public class SubsTargetImpl implements SubsTarget {
 	}
 
 	@Override
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
 	public String getServerId() {
 		return this.serverId;
 	}
@@ -109,47 +117,48 @@ public class SubsTargetImpl implements SubsTarget {
 	}
 
 	@Override
-	public Date getServerHeartbeatTime() {
+	public long getServerHeartbeatTime() {
 		return this.serverHeartbeatTime;
 	}
 
 	@Override
-	public void setServerHeartbeatTime(Date serverHeartbeatTime) {
+	public void setServerHeartbeatTime(long serverHeartbeatTime) {
 		this.serverHeartbeatTime = serverHeartbeatTime;
 	}
 
 	@Override
-	public Map<String, String> getProperties() {
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
 	@Override
-	public Date getCreatedTime() {
-		return this.createdTime;
+	public long getDateCreated() {
+		return this.dateCreated;
 	}
 
 	@Override
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
+	public void setDateCreated(long dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 	@Override
-	public Date getModifiedTime() {
-		return this.modifiedTime;
+	public long getDateModified() {
+		return this.dateModified;
 	}
 
 	@Override
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
+	public void setDateModified(long dateModified) {
+		this.dateModified = dateModified;
 	}
 
 	@Override
 	public String toString() {
-		String serverHeartbeatTimeStr = (this.serverHeartbeatTime != null) ? DateUtil.toString(this.serverHeartbeatTime, DateUtil.getJdbcDateFormat()) : null;
-		String createdTimeStr = (this.createdTime != null) ? DateUtil.toString(this.createdTime, DateUtil.getJdbcDateFormat()) : null;
-		String modifiedTimeStr = (this.modifiedTime != null) ? DateUtil.toString(this.modifiedTime, DateUtil.getJdbcDateFormat()) : null;
+		String serverHeartbeatTimeStr = DateUtil.toString(this.serverHeartbeatTime, DateUtil.getJdbcDateFormat());
+		String propertiesString = JSONUtil.toJsonString(this.properties);
+		String dateCreatedStr = DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat());
+		String dateModifiedStr = DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat());
 
-		return "SubsTargetImpl [id=" + id + ", name=" + name + ", type=" + type + ", typeId=" + typeId + ", serverId=" + serverId + ", serverURL=" + serverURL + ", serverHeartbeatTime=" + serverHeartbeatTimeStr + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
+		return "SubsTargetImpl [id=" + id + ", type=" + type + ", typeId=" + typeId + ", name=" + name + ", serverId=" + serverId + ", serverURL=" + serverURL + ", serverHeartbeatTime=" + serverHeartbeatTimeStr + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
 	}
 
 }

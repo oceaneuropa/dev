@@ -17,7 +17,7 @@ import org.orbit.component.runtime.common.token.TokenUtil;
 import org.orbit.component.runtime.common.token.UserToken;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.Activator;
 import org.origin.common.rest.server.ServerException;
@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	protected TokenManager tokenManager;
 	protected String tokenSecret;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 */
 	public AuthServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.AUTH_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.AUTH_ADMIN);
 	}
 
 	@Override

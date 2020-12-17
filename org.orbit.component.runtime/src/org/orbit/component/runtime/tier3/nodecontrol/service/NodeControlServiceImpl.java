@@ -22,7 +22,7 @@ import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.launch.LaunchConfig;
@@ -63,7 +63,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected ServiceEditPolicies wsEditPolicies;
 
 	protected boolean useScriptLaunch = false;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -73,7 +73,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new ServiceEditPoliciesImpl();
 		this.wsEditPolicies.setService(NodeControlService.class, this);
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.NODE_CONTROL_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.NODE_CONTROL_ADMIN);
 	}
 
 	@Override

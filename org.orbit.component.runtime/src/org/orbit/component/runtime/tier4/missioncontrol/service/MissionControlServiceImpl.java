@@ -11,7 +11,7 @@ import java.util.Properties;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.missioncontrol.Mission;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -36,13 +36,13 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected MissionPersistenceHandler persistenceHandler;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	public MissionControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new ServiceEditPoliciesImpl();
 		this.wsEditPolicies.setService(MissionControlService.class, this);
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.MISSION_CONTROL_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.MISSION_CONTROL_ADMIN);
 	}
 
 	@Override

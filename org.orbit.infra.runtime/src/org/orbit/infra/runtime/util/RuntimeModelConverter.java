@@ -171,35 +171,22 @@ public class RuntimeModelConverter {
 			return pathDTO;
 		}
 
-		/**
-		 * 
-		 * @param propertiesString
-		 * @return
-		 */
+		/*-
 		public Map<String, Object> toProperties(String propertiesString) {
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 			return properties;
 		}
-
-		/**
-		 * 
-		 * @param properties
-		 * @return
-		 */
+		
 		public String toPropertiesString(Map<String, Object> properties) {
 			String propertiesString = JSONUtil.toJsonString(properties);
 			return propertiesString;
 		}
-
-		/**
-		 * 
-		 * @param propertiesString
-		 * @return
-		 */
+		
 		public Map<String, Object> toMap(String mapString) {
 			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
 			return map;
 		}
+		*/
 
 		/**
 		 * 

@@ -15,7 +15,7 @@ import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
@@ -39,7 +39,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	protected ServiceEditPolicies wsEditPolicies;
 
 	// protected Map<String, ConfigRegistry> configRegistryMap = new HashMap<String, ConfigRegistry>();
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	public ConfigRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(ConfigRegistryService.class, this);
-		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
 	}
 
 	/** AccessTokenAware */

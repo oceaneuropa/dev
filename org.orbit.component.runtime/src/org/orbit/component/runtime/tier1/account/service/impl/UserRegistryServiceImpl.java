@@ -12,7 +12,7 @@ import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -33,7 +33,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected UserAccountPersistence userAccountPersistence;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -41,7 +41,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 */
 	public UserRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.USER_ACCOUNTS_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.USER_ACCOUNTS_ADMIN);
 	}
 
 	@Override

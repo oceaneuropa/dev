@@ -1,10 +1,10 @@
 package org.orbit.infra.model.subs.impl;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.orbit.infra.model.subs.SubsSource;
+import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
 
 /**
@@ -15,12 +15,12 @@ import org.origin.common.util.DateUtil;
 public class SubsSourceImpl implements SubsSource {
 
 	protected Integer id;
-	protected String name;
 	protected String type;
 	protected String typeId;
-	protected Map<String, String> properties = new LinkedHashMap<String, String>();
-	protected Date createdTime;
-	protected Date modifiedTime;
+	protected String name;
+	protected Map<String, Object> properties = new LinkedHashMap<String, Object>();
+	protected long dateCreated;
+	protected long dateModified;
 
 	public SubsSourceImpl() {
 	}
@@ -28,19 +28,23 @@ public class SubsSourceImpl implements SubsSource {
 	/**
 	 * 
 	 * @param id
-	 * @param name
 	 * @param type
 	 * @param typeId
-	 * @param createdTime
-	 * @param modifiedTime
+	 * @param name
+	 * @param properties
+	 * @param dateCreated
+	 * @param dateModified
 	 */
-	public SubsSourceImpl(Integer id, String name, String type, String typeId, Date createdTime, Date modifiedTime) {
+	public SubsSourceImpl(Integer id, String type, String typeId, String name, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.id = id;
-		this.name = name;
 		this.type = type;
 		this.typeId = typeId;
-		this.createdTime = createdTime;
-		this.modifiedTime = modifiedTime;
+		this.name = name;
+		this.dateCreated = dateCreated;
+		this.dateModified = dateModified;
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
 	}
 
 	@Override
@@ -51,16 +55,6 @@ public class SubsSourceImpl implements SubsSource {
 	@Override
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	@Override
@@ -84,36 +78,47 @@ public class SubsSourceImpl implements SubsSource {
 	}
 
 	@Override
-	public Map<String, String> getProperties() {
+	public String getName() {
+		return this.name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
 	@Override
-	public Date getCreatedTime() {
-		return this.createdTime;
+	public long getDateCreated() {
+		return this.dateCreated;
 	}
 
 	@Override
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
+	public void setDateCreated(long dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 	@Override
-	public Date getModifiedTime() {
-		return this.modifiedTime;
+	public long getDateModified() {
+		return this.dateModified;
 	}
 
 	@Override
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
+	public void setDateModified(long dateModified) {
+		this.dateModified = dateModified;
 	}
 
 	@Override
 	public String toString() {
-		String createdTimeStr = (this.createdTime != null) ? DateUtil.toString(this.createdTime, DateUtil.getJdbcDateFormat()) : null;
-		String modifiedTimeStr = (this.modifiedTime != null) ? DateUtil.toString(this.modifiedTime, DateUtil.getJdbcDateFormat()) : null;
+		String propertiesString = JSONUtil.toJsonString(this.properties);
+		String dateCreatedStr = DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat());
+		String dateModifiedStr = DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat());
 
-		return "SubsSourceImpl [id=" + id + ", name=" + name + ", type=" + type + ", typeId=" + typeId + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
+		return "SubsSourceImpl [id=" + id + ", type=" + type + ", typeId=" + typeId + ", name=" + name + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
 	}
 
 }

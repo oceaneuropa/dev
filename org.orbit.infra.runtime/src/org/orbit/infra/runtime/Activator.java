@@ -1,6 +1,7 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
+import org.orbit.infra.runtime.util.SubsServiceConfigPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class Activator implements BundleActivator {
 
 		// Load config properties
 		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
+		SubsServiceConfigPropertiesHandler.getInstance().start(bundleContext);
 
 		// Start tracking infra services
 		InfraServices.getInstance().start(bundleContext);
@@ -50,6 +52,7 @@ public class Activator implements BundleActivator {
 
 		// Dispose config properties
 		ConfigRegistryConfigPropertiesHandler.getInstance().stop(bundleContext);
+		SubsServiceConfigPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.bundleContext = null;

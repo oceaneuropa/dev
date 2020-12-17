@@ -15,7 +15,7 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.resources.IWorkspaceService;
@@ -41,11 +41,11 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	protected NodeConfigTableHandler nodeConfigTableHandler = NodeConfigTableHandler.INSTANCE;
 	protected IWorkspaceService workspaceService;
 
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	public DomainManagementServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN);
 	}
 
 	@Override

@@ -1,10 +1,10 @@
 package org.orbit.infra.model.subs.impl;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.orbit.infra.model.subs.SubsMapping;
+import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
 
 /**
@@ -20,12 +20,11 @@ public class SubsMappingImpl implements SubsMapping {
 
 	protected String clientId;
 	protected String clientURL;
-	protected Date clientHeartbeatTime;
+	protected long clientHeartbeatTime;
 
-	protected Map<String, String> properties = new LinkedHashMap<String, String>();
-
-	protected Date createdTime;
-	protected Date modifiedTime;
+	protected Map<String, Object> properties = new LinkedHashMap<String, Object>();
+	protected long dateCreated;
+	protected long dateModified;
 
 	public SubsMappingImpl() {
 	}
@@ -37,17 +36,23 @@ public class SubsMappingImpl implements SubsMapping {
 	 * @param targetId
 	 * @param clientId
 	 * @param clientUrl
-	 * @param createdTime
-	 * @param modifiedTime
+	 * @param clientHeartbeatTime
+	 * @param properties
+	 * @param dateCreated
+	 * @param dateModified
 	 */
-	public SubsMappingImpl(Integer id, Integer sourceId, Integer targetId, String clientId, String clientUrl, Date createdTime, Date modifiedTime) {
+	public SubsMappingImpl(Integer id, Integer sourceId, Integer targetId, String clientId, String clientUrl, long clientHeartbeatTime, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.id = id;
 		this.sourceId = sourceId;
 		this.targetId = targetId;
+
 		this.clientId = clientId;
 		this.clientURL = clientUrl;
-		this.createdTime = createdTime;
-		this.modifiedTime = modifiedTime;
+		this.clientHeartbeatTime = clientHeartbeatTime;
+
+		this.properties = properties;
+		this.dateCreated = dateCreated;
+		this.dateModified = dateModified;
 	}
 
 	@Override
@@ -101,47 +106,48 @@ public class SubsMappingImpl implements SubsMapping {
 	}
 
 	@Override
-	public Date getClientHeartbeatTime() {
+	public long getClientHeartbeatTime() {
 		return this.clientHeartbeatTime;
 	}
 
 	@Override
-	public void setClientHeartbeatTime(Date heartbeatTime) {
+	public void setClientHeartbeatTime(long heartbeatTime) {
 		this.clientHeartbeatTime = heartbeatTime;
 	}
 
 	@Override
-	public Map<String, String> getProperties() {
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
 	@Override
-	public Date getCreatedTime() {
-		return this.createdTime;
+	public long getDateCreated() {
+		return this.dateCreated;
 	}
 
 	@Override
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
+	public void setDateCreated(long dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 	@Override
-	public Date getModifiedTime() {
-		return this.modifiedTime;
+	public long getDateModified() {
+		return this.dateModified;
 	}
 
 	@Override
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
+	public void setDateModified(long dateModified) {
+		this.dateModified = dateModified;
 	}
 
 	@Override
 	public String toString() {
-		String clientHeartbeatTimeStr = (this.clientHeartbeatTime != null) ? DateUtil.toString(this.clientHeartbeatTime, DateUtil.getJdbcDateFormat()) : null;
-		String createdTimeStr = (this.createdTime != null) ? DateUtil.toString(this.createdTime, DateUtil.getJdbcDateFormat()) : null;
-		String modifiedTimeStr = (this.modifiedTime != null) ? DateUtil.toString(this.modifiedTime, DateUtil.getJdbcDateFormat()) : null;
+		String clientHeartbeatTimeStr = DateUtil.toString(this.clientHeartbeatTime, DateUtil.getJdbcDateFormat());
+		String propertiesString = JSONUtil.toJsonString(this.properties);
+		String dateCreatedStr = DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat());
+		String dateModifiedStr = DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat());
 
-		return "SubsMappingImpl [id=" + id + ", sourceId=" + sourceId + ", targetId=" + targetId + ", clientId=" + clientId + ", clientURL=" + clientURL + ", clientHeartbeatTime=" + clientHeartbeatTimeStr + ", properties=" + properties + ", createdTime=" + createdTimeStr + ", modifiedTime=" + modifiedTimeStr + "]";
+		return "SubsMappingImpl [id=" + id + ", sourceId=" + sourceId + ", targetId=" + targetId + ", clientId=" + clientId + ", clientURL=" + clientURL + ", clientHeartbeatTime=" + clientHeartbeatTimeStr + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
 	}
 
 }

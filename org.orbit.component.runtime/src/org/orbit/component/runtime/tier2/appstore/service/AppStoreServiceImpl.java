@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -32,7 +32,7 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	protected AppCategoryTableHandler categoryTableHandler;
 	protected AppMetadataTableHandler appTableHandler;
 
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -40,7 +40,7 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	 */
 	public AppStoreServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.APP_STORE_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.APP_STORE_ADMIN);
 	}
 
 	@Override

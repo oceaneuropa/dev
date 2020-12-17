@@ -1,6 +1,5 @@
 package org.orbit.infra.model.subs;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -14,10 +13,6 @@ public interface SubsSource {
 
 	void setId(Integer id);
 
-	String getName();
-
-	void setName(String name);
-
 	String getType();
 
 	void setType(String type);
@@ -26,14 +21,18 @@ public interface SubsSource {
 
 	void setTypeId(String typeId);
 
-	Map<String, String> getProperties();
+	String getName();
 
-	Date getCreatedTime();
+	void setName(String name);
 
-	void setCreatedTime(Date createdTime);
+	Map<String, Object> getProperties();
 
-	Date getModifiedTime();
+	long getDateCreated();
 
-	void setModifiedTime(Date createdTime);
+	void setDateCreated(long dateCreated);
+
+	long getDateModified();
+
+	void setDateModified(long dateModified);
 
 }

@@ -15,7 +15,7 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
@@ -41,7 +41,7 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	protected IndexProvidersTableHandler indexProvidersTableHandler;
 
@@ -51,7 +51,7 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 	 */
 	public IndexServiceDatabaseImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
 
 	/** AccessTokenAware */

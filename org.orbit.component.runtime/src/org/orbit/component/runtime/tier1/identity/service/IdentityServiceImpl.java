@@ -19,7 +19,7 @@ import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
 import org.orbit.platform.sdk.PlatformConstants;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.JWTTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.util.ExtensionHelper;
@@ -44,7 +44,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected UserAccountPersistence userAccountPersistence;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -52,7 +52,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	 */
 	public IdentityServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.IDENTITY_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.IDENTITY_ADMIN);
 	}
 
 	@Override

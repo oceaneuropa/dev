@@ -12,7 +12,7 @@ import java.util.TreeMap;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
@@ -30,7 +30,7 @@ public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 	protected Map<String, IndexProviderItem> indexProviderMap = new TreeMap<String, IndexProviderItem>();
 
 	/**
@@ -39,7 +39,7 @@ public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 	 */
 	public IndexServiceInMemoryImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenSupport(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
 
 	/** AccessTokenAware */

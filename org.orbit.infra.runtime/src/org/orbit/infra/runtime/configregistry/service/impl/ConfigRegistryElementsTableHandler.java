@@ -16,6 +16,7 @@ import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
+import org.origin.common.json.JSONUtil;
 
 /*
  * Table name:
@@ -163,7 +164,8 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			parentElementId = "-1";
 		}
 
-		Map<String, Object> attributes = RuntimeModelConverter.COMMON.toMap(attributesString);
+		// Map<String, Object> attributes = RuntimeModelConverter.COMMON.toMap(attributesString);
+		Map<String, Object> attributes = JSONUtil.toProperties(attributesString, true);
 
 		return new ConfigElementImpl(this.configRegistryId, id, elementId, parentElementId, null, name, attributes, dateCreated, dateModified);
 	}

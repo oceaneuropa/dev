@@ -87,4 +87,25 @@ public class InfraConstants {
 	public static String CONFIG_REGISTRY__EDITPOLICY_ID = "infra.config_registry.editpolicy";
 	public static String CONFIG_REGISTRY__SERVICE_NAME = "infra.config_registry.service";
 
+	// ----------------------------------------------------------------------------------------
+	// Subscription Server
+	// ----------------------------------------------------------------------------------------
+	public static String SUBS_SERVER__NAME = "infra.subs_server.name";
+	public static String SUBS_SERVER__HOST_URL = "infra.subs_server.host.url";
+	public static String SUBS_SERVER__CONTEXT_ROOT = "infra.subs_server.context_root";
+	public static String SUBS_SERVER__JDBC_DRIVER = "infra.subs_server.jdbc.driver";
+	public static String SUBS_SERVER__JDBC_URL = "infra.subs_server.jdbc.url";
+	public static String SUBS_SERVER__JDBC_USERNAME = "infra.subs_server.jdbc.username";
+	public static String SUBS_SERVER__JDBC_PASSWORD = "infra.subs_server.jdbc.password";
+
+	public static String SUBS_SERVER__RELAY_AUTOSTART = "infra.subs_server.relay.autostart";
+	public static String SUBS_SERVER__RELAY_NAME = "infra.subs_server.relay.name";
+	public static String SUBS_SERVER__RELAY_CONTEXT_ROOT = "infra.subs_server.relay.context_root";
+	public static String SUBS_SERVER__RELAY_HOSTS = "infra.subs_server.relay.hosts";
+	public static String SUBS_SERVER__RELAY_URLS = "infra.subs_server.relay.urls";
+
+	// index item values
+	public static String SUBS_SERVER__INDEXER_ID = "infra.subs_server.indexer";
+	public static String SUBS_SERVER__TYPE = "SubscriptionServer";
+
 }

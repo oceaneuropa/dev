@@ -20,7 +20,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
-import org.orbit.platform.sdk.http.AccessTokenSupport;
+import org.orbit.platform.sdk.http.AccessTokenProvider;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
@@ -76,10 +76,10 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 	@Dependency
 	protected DomainServiceConnectorV1 domainServiceConnector;
 
-	protected AccessTokenSupport accessTokenSupport;
+	protected AccessTokenProvider accessTokenSupport;
 
 	public ServicesClientCommand() {
-		this.accessTokenSupport = new AccessTokenSupport("orbit", OrbitRoles.DFS_ADMIN);
+		this.accessTokenSupport = new AccessTokenProvider("orbit", OrbitRoles.DFS_ADMIN);
 	}
 
 	protected String getScheme() {
