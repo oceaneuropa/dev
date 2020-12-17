@@ -1,6 +1,6 @@
-package org.orbit.infra.runtime.repo.ws;
+package org.orbit.infra.runtime.subs.ws;
 
-import org.orbit.infra.runtime.repo.RepoServerService;
+import org.orbit.infra.runtime.subs.SubsServerService;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.ServiceMetadataImpl;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
@@ -10,25 +10,25 @@ import org.origin.common.rest.server.AbstractJerseyWSApplication;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class RepoServerWSApplication extends AbstractJerseyWSApplication {
+public class SubsServerWSApplication extends AbstractJerseyWSApplication {
 
 	/**
 	 * 
 	 * @param service
 	 * @param feature
 	 */
-	public RepoServerWSApplication(RepoServerService service, int feature) {
+	public SubsServerWSApplication(SubsServerService service, int feature) {
 		super(service, feature);
-		adapt(RepoServerService.class, service);
+		adapt(SubsServerService.class, service);
 
-		registerService(RepoServerService.class, service);
-		registerResources(RepoServerWSResource.class);
+		registerService(SubsServerService.class, service);
+		registerResources(SubServerWSResource.class);
 	}
 
 	@Override
 	public ServiceMetadata getMetadata() {
 		ServiceMetadata metadata = super.getMetadata();
-		RepoServerService service = getAdapter(RepoServerService.class);
+		SubsServerService service = getAdapter(SubsServerService.class);
 		if (metadata instanceof ServiceMetadataImpl && service != null) {
 			// put more properties to the metadata here
 		}

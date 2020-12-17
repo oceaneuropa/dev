@@ -40,7 +40,9 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties) throws ServerException;
 
-	boolean deleteSource(Integer... sourceIds) throws ServerException;
+	boolean deleteSource(Integer sourceId) throws ServerException;
+
+	boolean deleteSource(Integer[] sourceIds) throws ServerException;
 
 	// ------------------------------------------------------
 	// Target
@@ -67,7 +69,9 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean updateServerHeartbeat(Integer targetId) throws ServerException;
 
-	boolean deleteTarget(Integer... targetIds) throws ServerException;
+	boolean deleteTarget(Integer targetId) throws ServerException;
+
+	boolean deleteTarget(Integer[] targetIds) throws ServerException;
 
 	// ------------------------------------------------------
 	// Mapping
@@ -96,6 +100,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean updateClientHeartbeat(Integer mappingId) throws ServerException;
 
-	boolean deleteMapping(Integer... mappingIds) throws ServerException;
+	boolean deleteMapping(Integer mappingId) throws ServerException;
+
+	boolean deleteMapping(Integer[] mappingIds) throws ServerException;
 
 }

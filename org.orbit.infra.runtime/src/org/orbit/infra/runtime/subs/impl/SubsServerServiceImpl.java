@@ -321,7 +321,23 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteSource(Integer... sourceIds) throws ServerException {
+	public boolean deleteSource(Integer sourceId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourcesTableHandler.deleteSource(conn, sourceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteSource(Integer[] sourceIds) throws ServerException {
 		if (sourceIds == null || sourceIds.length == 0) {
 			return false;
 		}
@@ -537,7 +553,23 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteTarget(Integer... targetIds) throws ServerException {
+	public boolean deleteTarget(Integer targetId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.deleteTarget(conn, targetId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteTarget(Integer[] targetIds) throws ServerException {
 		if (targetIds == null || targetIds.length == 0) {
 			return false;
 		}
@@ -776,7 +808,23 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteMapping(Integer... mappingIds) throws ServerException {
+	public boolean deleteMapping(Integer mappingId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.mappingsTableHandler.deleteMapping(conn, mappingId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteMapping(Integer[] mappingIds) throws ServerException {
 		if (mappingIds == null || mappingIds.length == 0) {
 			return false;
 		}
