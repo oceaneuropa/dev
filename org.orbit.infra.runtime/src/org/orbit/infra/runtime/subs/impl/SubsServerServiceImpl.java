@@ -225,12 +225,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsSource getSource(String type, String typeId) throws ServerException {
+	public SubsSource getSource(String type, String instanceId) throws ServerException {
 		SubsSource source = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			source = this.sourcesTableHandler.getSource(conn, type, typeId);
+			source = this.sourcesTableHandler.getSource(conn, type, instanceId);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -257,12 +257,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean sourceExists(String type, String typeId) throws ServerException {
+	public boolean sourceExists(String type, String instanceId) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			exists = this.sourcesTableHandler.sourceExists(conn, type, typeId);
+			exists = this.sourcesTableHandler.sourceExists(conn, type, instanceId);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -273,12 +273,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsSource createSource(String type, String typeId, String name, Map<String, Object> properties) throws ServerException {
+	public SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ServerException {
 		SubsSource source = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			source = this.sourcesTableHandler.createSource(conn, type, typeId, name, properties);
+			source = this.sourcesTableHandler.createSource(conn, type, instanceId, name, properties);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -289,12 +289,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateSourceName(Integer sourceId, String name) throws ServerException {
+	public boolean updateSourceType(Integer sourceId, String type) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.sourcesTableHandler.updateName(conn, sourceId, name);
+			succeed = this.sourcesTableHandler.updateType(conn, sourceId, type);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -305,12 +305,28 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateSourceType(Integer sourceId, String type, String typeId) throws ServerException {
+	public boolean updateSourceInstanceId(Integer sourceId, String instanceId) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.sourcesTableHandler.updateType(conn, sourceId, type, typeId);
+			succeed = this.sourcesTableHandler.updateInstanceId(conn, sourceId, instanceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateSourceName(Integer sourceId, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourcesTableHandler.updateName(conn, sourceId, name);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -353,7 +369,7 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteSource(Integer[] sourceIds) throws ServerException {
+	public boolean deleteSources(Integer[] sourceIds) throws ServerException {
 		if (sourceIds == null || sourceIds.length == 0) {
 			return false;
 		}
@@ -441,12 +457,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsTarget getTarget(String type, String typeId) throws ServerException {
+	public SubsTarget getTarget(String type, String instanceId) throws ServerException {
 		SubsTarget target = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			target = this.targetsTableHandler.getTarget(conn, type, typeId);
+			target = this.targetsTableHandler.getTarget(conn, type, instanceId);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -473,12 +489,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean targetExists(String type, String typeId) throws ServerException {
+	public boolean targetExists(String type, String instanceId) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			exists = this.targetsTableHandler.targetExists(conn, type, typeId);
+			exists = this.targetsTableHandler.targetExists(conn, type, instanceId);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -489,12 +505,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsTarget createTarget(String type, String typeId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException {
+	public SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException {
 		SubsTarget target = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			target = this.targetsTableHandler.createTarget(conn, type, typeId, name, serverId, serverURL, properties);
+			target = this.targetsTableHandler.createTarget(conn, type, instanceId, name, serverId, serverURL, properties);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -505,60 +521,44 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
+	public boolean updateTargetType(Integer targetId, String type) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateType(conn, targetId, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateTargetInstanceId(Integer targetId, String instanceId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateInstanceId(conn, targetId, instanceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
 	public boolean updateTargetName(Integer targetId, String name) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			succeed = this.targetsTableHandler.updateName(conn, targetId, name);
-
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean updateTargetType(Integer targetId, String type, String typeId) throws ServerException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			succeed = this.targetsTableHandler.updateType(conn, targetId, type, typeId);
-
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean updateServerURL(Integer targetId, String serverId, String serverURL) throws ServerException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			succeed = this.targetsTableHandler.updateServerURL(conn, targetId, serverId, serverURL);
-
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean updateServerHeartbeat(Integer targetId) throws ServerException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			succeed = this.targetsTableHandler.updateServerHeartbeatTime(conn, targetId);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -585,6 +585,54 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
+	public boolean updateServerId(Integer targetId, String serverId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateServerId(conn, targetId, serverId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateServerURL(Integer targetId, String serverURL) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateServerURL(conn, targetId, serverURL);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateServerHeartbeat(Integer targetId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateServerHeartbeatTime(conn, targetId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
 	public boolean deleteTarget(Integer targetId) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
@@ -601,7 +649,7 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteTarget(Integer[] targetIds) throws ServerException {
+	public boolean deleteTargets(Integer[] targetIds) throws ServerException {
 		if (targetIds == null || targetIds.length == 0) {
 			return false;
 		}
@@ -824,12 +872,12 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateClientURL(Integer mappingId, String clientId, String clientURL) throws ServerException {
+	public boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.mappingsTableHandler.updateClientURL(conn, mappingId, clientId, clientURL);
+			succeed = this.mappingsTableHandler.updateProperties(conn, mappingId, properties);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -840,7 +888,39 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateClientHeartbeat(Integer mappingId) throws ServerException {
+	public boolean updateMappingClientId(Integer mappingId, String clientId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.mappingsTableHandler.updateClientId(conn, mappingId, clientId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateMappingClientURL(Integer mappingId, String clientURL) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.mappingsTableHandler.updateClientURL(conn, mappingId, clientURL);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateMappingClientHeartbeat(Integer mappingId) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
@@ -872,7 +952,7 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean deleteMapping(Integer[] mappingIds) throws ServerException {
+	public boolean deleteMappings(Integer[] mappingIds) throws ServerException {
 		if (mappingIds == null || mappingIds.length == 0) {
 			return false;
 		}

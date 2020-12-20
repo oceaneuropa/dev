@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsSourceExistsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class DeleteSubsMappingWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.SubsSourceExistsWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.DeleteSubsMappingWSCommand";
 
-	public SubsSourceExistsWSCommand() {
+	public DeleteSubsMappingWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__SOURCE_EXISTS.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__DELETE_MAPPING.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -37,31 +37,30 @@ public class SubsSourceExistsWSCommand extends AbstractInfraCommand<SubsServerSe
 
 	@Override
 	public Response execute(Request request) throws Exception {
-		boolean hasIdParam = request.hasParameter("id");
-		boolean hasTypeParam = request.hasParameter("type");
-		boolean hasInstanceIdParam = request.hasParameter("instanceId");
-		boolean hasTypeParams = hasTypeParam && hasInstanceIdParam;
+		boolean hasId = request.hasParameter("id");
+		boolean hasIds = request.hasParameter("ids");
 
-		if (!hasIdParam && !hasTypeParams) {
-			ErrorDTO error = new ErrorDTO("'id' parameter OR 'type' and 'instanceId' parameters are not set.");
+		if (!hasId && !hasIds) {
+			ErrorDTO error = new ErrorDTO("'id' parameter or 'ids' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
 		SubsServerService service = getService();
 
-		boolean exists = false;
-		if (hasIdParam) {
+		boolean succeed = false;
+		if (hasId) {
 			Integer id = request.getIntegerParameter("id");
-			exists = service.sourceExists(id);
+			succeed = service.deleteMapping(id);
 
-		} else if (hasTypeParams) {
-			String type = request.getStringParameter("type");
-			String instanceId = request.getStringParameter("instanceId");
-			exists = service.sourceExists(type, instanceId);
+		} else if (hasIds) {
+			Integer[] ids = request.getIntegerArrayParameter("ids");
+			if (ids != null && ids.length > 0) {
+				succeed = service.deleteMappings(ids);
+			}
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		result.put("exists", exists);
+		result.put("succeed", succeed);
 		return Response.status(Status.OK).entity(result).build();
 	}
 

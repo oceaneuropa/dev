@@ -36,7 +36,7 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id serial NOT NULL,"); // unique id
 			sb.append("    type varchar(250),");
-			sb.append("    typeId varchar(250),");
+			sb.append("    instanceId varchar(250),");
 			sb.append("    name varchar(250),");
 			sb.append("    serverId varchar(250),");
 			sb.append("    serverURL varchar(250),");
@@ -68,7 +68,7 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	protected SubsTarget toObject(ResultSet rs) throws SQLException {
 		int id = rs.getInt("id");
 		String type = rs.getString("type");
-		String typeId = rs.getString("typeId");
+		String instanceId = rs.getString("instanceId");
 		String name = rs.getString("name");
 		String serverId = rs.getString("serverId");
 		String serverURL = rs.getString("serverURL");
@@ -77,10 +77,9 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
 
-		// Map<String, Object> properties = RuntimeModelConverter.COMMON.toProperties(propertiesString);
 		Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
-		return new SubsTargetImpl(Integer.valueOf(id), type, typeId, name, serverId, serverURL, serverHeartbeatTime, properties, dateCreated, dateModified);
+		return new SubsTargetImpl(Integer.valueOf(id), type, instanceId, name, serverId, serverURL, serverHeartbeatTime, properties, dateCreated, dateModified);
 	}
 
 	/**
@@ -140,23 +139,23 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Get a target with type and typeId.
+	 * Get a target with type and instanceId.
 	 * 
 	 * @param conn
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @return
 	 * @throws SQLException
 	 */
-	public SubsTarget getTarget(Connection conn, String type, String typeId) throws SQLException {
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE type=? AND typeId=?";
+	public SubsTarget getTarget(Connection conn, String type, String instanceId) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE type=? AND instanceId=?";
 		ResultSetSingleHandler<SubsTarget> handler = new ResultSetSingleHandler<SubsTarget>() {
 			@Override
 			protected SubsTarget handleRow(ResultSet rs) throws SQLException {
 				return toObject(rs);
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { type, typeId }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { type, instanceId }, handler);
 	}
 
 	/**
@@ -179,23 +178,23 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Check whether a target with type and typeId exists.
+	 * Check whether a target with type and instanceId exists.
 	 * 
 	 * @param conn
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean targetExists(Connection conn, String type, String typeId) throws SQLException {
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE type=? AND typeId=?";
+	public boolean targetExists(Connection conn, String type, String instanceId) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE type=? AND instanceId=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
 			public Boolean handle(ResultSet rs) throws SQLException {
 				return rs.next() ? true : false;
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { type, typeId }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { type, instanceId }, handler);
 	}
 
 	/**
@@ -203,7 +202,7 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @param name
 	 * @param serverId
 	 * @param serverURL
@@ -211,21 +210,20 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public SubsTarget createTarget(Connection conn, String type, String typeId, String name, String serverId, String serverURL, Map<String, Object> properties) throws SQLException {
-		if (targetExists(conn, type, typeId)) {
-			throw new SQLException("SubsTarget with same type and typeId already exists.");
+	public SubsTarget createTarget(Connection conn, String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws SQLException {
+		if (targetExists(conn, type, instanceId)) {
+			throw new SQLException("SubsTarget with same type and instanceId already exists.");
 		}
 
-		// String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 		String propertiesString = JSONUtil.toJsonString(properties);
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
 
-		String insertSQL = "INSERT INTO " + getTableName() + " (type, typeId, name, serverId, serverURL, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?)";
+		String insertSQL = "INSERT INTO " + getTableName() + " (type, instanceId, name, serverId, serverURL, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?)";
 
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { type, typeId, name, serverId, serverURL, propertiesString, dateCreated, dateModified }, 1);
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { type, instanceId, name, serverId, serverURL, propertiesString, dateCreated, dateModified }, 1);
 		if (succeed) {
-			return getTarget(conn, type, typeId);
+			return getTarget(conn, type, instanceId);
 		}
 		return null;
 	}
@@ -245,33 +243,60 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Update target type and typeId.
+	 * Update target type.
 	 * 
 	 * @param conn
 	 * @param id
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateType(Connection conn, Integer id, String type, String typeId) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET type=?, typeId=?, dateModified=? WHERE id=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { type, typeId, getCurrentTime(), id }, 1);
+	public boolean updateType(Connection conn, Integer id, String type) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET type=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { type, getCurrentTime(), id }, 1);
 	}
 
 	/**
-	 * Update target serverId and serverURL.
+	 * Update target instanceId.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @param instanceId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateInstanceId(Connection conn, Integer id, String instanceId) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET instanceId=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { instanceId, getCurrentTime(), id }, 1);
+	}
+
+	/**
+	 * Update target serverId.
 	 * 
 	 * @param conn
 	 * @param id
 	 * @param serverId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateServerId(Connection conn, Integer id, String serverId) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET serverId=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { serverId, getCurrentTime(), id }, 1);
+	}
+
+	/**
+	 * Update target serverURL.
+	 * 
+	 * @param conn
+	 * @param id
 	 * @param serverURL
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateServerURL(Connection conn, Integer id, String serverId, String serverURL) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET serverId=?, serverURL=?, dateModified=? WHERE id=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { serverId, serverURL, getCurrentTime(), id }, 1);
+	public boolean updateServerURL(Connection conn, Integer id, String serverURL) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET serverURL=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { serverURL, getCurrentTime(), id }, 1);
 	}
 
 	/**
@@ -297,7 +322,6 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, Integer id, Map<String, Object> properties) throws SQLException {
-		// String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);
 		String propertiesString = JSONUtil.toJsonString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE id=?";

@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class UpdateSubsMappingWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateSubsSourceWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateSubsMappingWSCommand";
 
-	public UpdateSubsSourceWSCommand() {
+	public UpdateSubsMappingWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__UPDATE_SOURCE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__UPDATE_MAPPING.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -43,14 +43,13 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean hasTypeParam = request.hasParameter("type");
-		boolean hasInstanceIdParam = request.hasParameter("instanceId");
-
-		boolean hasNameParam = request.hasParameter("name");
 		boolean hasPropertiesParam = request.hasParameter("properties");
+		boolean hasClientIdParam = request.hasParameter("clientId");
+		boolean hasClientURLParam = request.hasParameter("clientURL");
+		boolean hasClientHeartbeatParam = request.hasParameter("clientHeartbeat");
 
-		if (!hasTypeParam && !hasInstanceIdParam && !hasNameParam && !hasPropertiesParam) {
-			ErrorDTO error = new ErrorDTO("'type' or 'instanceId' or 'name' or 'properties' parameter is not set.");
+		if (!hasPropertiesParam && !hasClientIdParam && !hasClientURLParam && !hasClientHeartbeatParam) {
+			ErrorDTO error = new ErrorDTO("'properties' or 'clientId' or 'clientURL' or 'clientHeartbeat' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -59,53 +58,55 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 
 		SubsServerService service = getService();
 
-		boolean sourceExists = service.sourceExists(id);
-		if (!sourceExists) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source is not found.");
+		boolean mappingExists = service.mappingExists(id);
+		if (!mappingExists) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Mapping is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
-		}
-
-		// Update type
-		if (hasTypeParam) {
-			String type = request.getStringParameter("type");
-			boolean currSucceed = service.updateSourceType(id, type);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-		}
-
-		// Update instanceId
-		if (hasInstanceIdParam) {
-			String instanceId = request.getStringParameter("instanceId");
-			boolean currSucceed = service.updateSourceInstanceId(id, instanceId);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-		}
-
-		// Update name
-		if (hasNameParam) {
-			String name = request.getStringParameter("name");
-			boolean currSucceed = service.updateSourceName(id, name);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
 		}
 
 		// Update properties
 		if (hasPropertiesParam) {
 			Map<String, Object> properties = (Map<String, Object>) request.getMapParameter("properties");
-			boolean currSucceed = service.updateSourceProperties(id, properties);
+			boolean currSucceed = service.updateMappingProperties(id, properties);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
 				hasFailed = true;
+			}
+		}
+
+		// Update clientId
+		if (hasClientIdParam) {
+			String clientId = request.getStringParameter("clientId");
+			boolean currSucceed = service.updateMappingClientId(id, clientId);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update clientURL
+		if (hasClientURLParam) {
+			String clientURL = request.getStringParameter("clientURL");
+			boolean currSucceed = service.updateMappingClientURL(id, clientURL);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update clientHeartbeatTime
+		if (hasClientHeartbeatParam) {
+			boolean isClientHeartbeat = request.getBooleanParameter("clientHeartbeat");
+			if (isClientHeartbeat) {
+				boolean currSucceed = service.updateMappingClientHeartbeat(id);
+				if (currSucceed) {
+					hasSucceed = true;
+				} else {
+					hasFailed = true;
+				}
 			}
 		}
 

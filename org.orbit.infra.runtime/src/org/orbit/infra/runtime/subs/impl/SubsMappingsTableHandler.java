@@ -311,18 +311,47 @@ public class SubsMappingsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Update mapping clientId and clientURL.
+	 * Update target properties.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @param properties
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateProperties(Connection conn, Integer id, Map<String, Object> properties) throws SQLException {
+		String propertiesString = JSONUtil.toJsonString(properties);
+
+		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), id }, 1);
+	}
+
+	/**
+	 * Update mapping clientId.
 	 * 
 	 * @param conn
 	 * @param id
 	 * @param clientId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateClientId(Connection conn, Integer id, String clientId) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET clientId=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { clientId, getCurrentTime(), id }, 1);
+	}
+
+	/**
+	 * Update mapping clientURL.
+	 * 
+	 * @param conn
+	 * @param id
 	 * @param clientURL
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateClientURL(Connection conn, Integer id, String clientId, String clientURL) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET clientId=?, clientURL=?, dateModified=? WHERE id=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { clientId, clientURL, getCurrentTime(), id }, 1);
+	public boolean updateClientURL(Connection conn, Integer id, String clientURL) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET clientURL=?, dateModified=? WHERE id=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { clientURL, getCurrentTime(), id }, 1);
 	}
 
 	/**

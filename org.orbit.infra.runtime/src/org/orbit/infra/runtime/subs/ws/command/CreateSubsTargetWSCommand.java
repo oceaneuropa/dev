@@ -40,8 +40,8 @@ public class CreateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 	@Override
 	public Response execute(Request request) throws Exception {
 		String type = request.getStringParameter("type"); // required
-		String typeId = request.getStringParameter("typeId"); // required
-		String name = request.getStringParameter("name"); // optional. if empty, use typeId
+		String instanceId = request.getStringParameter("instanceId"); // required
+		String name = request.getStringParameter("name"); // optional. if empty, use instanceId
 		String serverId = request.getStringParameter("serverId"); // optional
 		String serverURL = request.getStringParameter("serverURL"); // optional
 		Map<String, Object> properties = null; // optional
@@ -53,22 +53,22 @@ public class CreateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			ErrorDTO error = new ErrorDTO("'type' parameter is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-		if (typeId == null || typeId.isEmpty()) {
-			ErrorDTO error = new ErrorDTO("'typeId' parameter is empty.");
+		if (instanceId == null || instanceId.isEmpty()) {
+			ErrorDTO error = new ErrorDTO("'instanceId' parameter is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 		if (name == null || name.isEmpty()) {
-			name = typeId;
+			name = instanceId;
 		}
 
 		SubsServerService service = getService();
 
-		if (service.targetExists(type, typeId)) {
-			ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and typeId '" + typeId + "' already exists.");
+		if (service.targetExists(type, instanceId)) {
+			ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsTarget target = service.createTarget(type, typeId, name, serverId, serverURL, properties);
+		SubsTarget target = service.createTarget(type, instanceId, name, serverId, serverURL, properties);
 		if (target == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

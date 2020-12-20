@@ -17,9 +17,9 @@ public interface SubsSource {
 
 	void setType(String type);
 
-	String getTypeId();
+	String getInstanceId();
 
-	void setTypeId(String typeId);
+	void setInstanceId(String instanceId);
 
 	String getName();
 

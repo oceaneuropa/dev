@@ -55,7 +55,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		} else if (hasIds) {
 			Integer[] ids = request.getIntegerArrayParameter("ids");
 			if (ids != null && ids.length > 0) {
-				succeed = service.deleteSource(ids);
+				succeed = service.deleteSources(ids);
 			}
 		}
 

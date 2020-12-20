@@ -15,7 +15,7 @@ public class SubsTargetDTO {
 	@XmlElement
 	protected String type;
 	@XmlElement
-	protected String typeId;
+	protected String instanceId;
 	@XmlElement
 	protected String name;
 
@@ -55,12 +55,12 @@ public class SubsTargetDTO {
 	}
 
 	@XmlElement
-	public String getTypeId() {
-		return this.typeId;
+	public String getInstanceId() {
+		return this.instanceId;
 	}
 
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	@XmlElement

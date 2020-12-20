@@ -16,7 +16,7 @@ public class SubsSourceImpl implements SubsSource {
 
 	protected Integer id;
 	protected String type;
-	protected String typeId;
+	protected String instanceId;
 	protected String name;
 	protected Map<String, Object> properties = new LinkedHashMap<String, Object>();
 	protected long dateCreated;
@@ -29,16 +29,16 @@ public class SubsSourceImpl implements SubsSource {
 	 * 
 	 * @param id
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @param name
 	 * @param properties
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public SubsSourceImpl(Integer id, String type, String typeId, String name, Map<String, Object> properties, long dateCreated, long dateModified) {
+	public SubsSourceImpl(Integer id, String type, String instanceId, String name, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.id = id;
 		this.type = type;
-		this.typeId = typeId;
+		this.instanceId = instanceId;
 		this.name = name;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
@@ -68,13 +68,13 @@ public class SubsSourceImpl implements SubsSource {
 	}
 
 	@Override
-	public String getTypeId() {
-		return this.typeId;
+	public String getInstanceId() {
+		return this.instanceId;
 	}
 
 	@Override
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class SubsSourceImpl implements SubsSource {
 		String dateCreatedStr = DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat());
 		String dateModifiedStr = DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat());
 
-		return "SubsSourceImpl [id=" + id + ", type=" + type + ", typeId=" + typeId + ", name=" + name + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
+		return "SubsSourceImpl [id=" + id + ", type=" + type + ", instanceId=" + instanceId + ", name=" + name + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
 	}
 
 }

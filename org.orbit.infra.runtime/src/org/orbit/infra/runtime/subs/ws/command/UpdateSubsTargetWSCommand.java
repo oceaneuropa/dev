@@ -44,17 +44,17 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 		}
 
 		boolean hasTypeParam = request.hasParameter("type");
-		boolean hasTypeIdParam = request.hasParameter("typeId");
-		boolean hasTypeParams = hasTypeParam && hasTypeIdParam;
+		boolean hasInstanceIdParam = request.hasParameter("instanceId");
+
 		boolean hasNameParam = request.hasParameter("name");
 		boolean hasPropertiesParam = request.hasParameter("properties");
 
 		boolean hasServerIdParam = request.hasParameter("serverId");
 		boolean hasServerURLParam = request.hasParameter("serverURL");
-		boolean hasServerParams = hasServerIdParam && hasServerURLParam;
+		boolean hasServerHeartbeatParam = request.hasParameter("serverHeartbeat");
 
-		if (!hasTypeParams && !hasNameParam && !hasPropertiesParam && !hasServerParams) {
-			ErrorDTO error = new ErrorDTO("'type' and 'typeId' parameters OR 'name' parameter OR 'properties' parameter OR 'serverId' and 'serverURL' parameters are not set.");
+		if (!hasTypeParam && !hasInstanceIdParam && !hasNameParam && !hasPropertiesParam) {
+			ErrorDTO error = new ErrorDTO("'type' or 'instanceId' or 'name' or 'properties' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -69,11 +69,21 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		// Update type and typeId
-		if (hasTypeParams) {
+		// Update type
+		if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			String typeId = request.getStringParameter("typeId");
-			boolean currSucceed = service.updateTargetType(id, type, typeId);
+			boolean currSucceed = service.updateTargetType(id, type);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update instanceId
+		if (hasInstanceIdParam) {
+			String instanceId = request.getStringParameter("instanceId");
+			boolean currSucceed = service.updateTargetInstanceId(id, instanceId);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
@@ -103,15 +113,38 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			}
 		}
 
-		// Update serverId and serverURL
-		if (hasServerParams) {
+		// Update serverId
+		if (hasServerIdParam) {
 			String serverId = request.getStringParameter("serverId");
-			String serverURL = request.getStringParameter("serverURL");
-			boolean currSucceed = service.updateServerURL(id, serverId, serverURL);
+			boolean currSucceed = service.updateServerId(id, serverId);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
 				hasFailed = true;
+			}
+		}
+
+		// Update serverURL
+		if (hasServerURLParam) {
+			String serverURL = request.getStringParameter("serverURL");
+			boolean currSucceed = service.updateServerURL(id, serverURL);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update serverHeartbeatTime
+		if (hasServerHeartbeatParam) {
+			boolean isClientHeartbeat = request.getBooleanParameter("serverHeartbeat");
+			if (isClientHeartbeat) {
+				boolean currSucceed = service.updateServerHeartbeat(id);
+				if (currSucceed) {
+					hasSucceed = true;
+				} else {
+					hasFailed = true;
+				}
 			}
 		}
 

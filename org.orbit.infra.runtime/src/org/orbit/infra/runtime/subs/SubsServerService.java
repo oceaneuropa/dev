@@ -28,23 +28,25 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	SubsSource getSource(Integer sourceId) throws ServerException;
 
-	SubsSource getSource(String type, String typeId) throws ServerException;
+	SubsSource getSource(String type, String instanceId) throws ServerException;
 
 	boolean sourceExists(Integer sourceId) throws ServerException;
 
-	boolean sourceExists(String type, String typeId) throws ServerException;
+	boolean sourceExists(String type, String instanceId) throws ServerException;
 
-	SubsSource createSource(String type, String typeId, String name, Map<String, Object> properties) throws ServerException;
+	SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ServerException;
+
+	boolean updateSourceType(Integer sourceId, String type) throws ServerException;
+
+	boolean updateSourceInstanceId(Integer sourceId, String instanceId) throws ServerException;
 
 	boolean updateSourceName(Integer sourceId, String name) throws ServerException;
-
-	boolean updateSourceType(Integer sourceId, String type, String typeId) throws ServerException;
 
 	boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties) throws ServerException;
 
 	boolean deleteSource(Integer sourceId) throws ServerException;
 
-	boolean deleteSource(Integer[] sourceIds) throws ServerException;
+	boolean deleteSources(Integer[] sourceIds) throws ServerException;
 
 	// ------------------------------------------------------
 	// Targets
@@ -55,27 +57,31 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	SubsTarget getTarget(Integer targetId) throws ServerException;
 
-	SubsTarget getTarget(String type, String typeId) throws ServerException;
+	SubsTarget getTarget(String type, String instanceId) throws ServerException;
 
 	boolean targetExists(Integer targetId) throws ServerException;
 
-	boolean targetExists(String type, String typeId) throws ServerException;
+	boolean targetExists(String type, String instanceId) throws ServerException;
 
-	SubsTarget createTarget(String type, String typeId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException;
+	SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException;
+
+	boolean updateTargetType(Integer targetId, String type) throws ServerException;
+
+	boolean updateTargetInstanceId(Integer targetId, String instanceId) throws ServerException;
 
 	boolean updateTargetName(Integer targetId, String name) throws ServerException;
 
-	boolean updateTargetType(Integer targetId, String type, String typeId) throws ServerException;
-
 	boolean updateTargetProperties(Integer targetId, Map<String, Object> properties) throws ServerException;
 
-	boolean updateServerURL(Integer targetId, String serverId, String serverURL) throws ServerException;
+	boolean updateServerId(Integer targetId, String serverId) throws ServerException;
+
+	boolean updateServerURL(Integer targetId, String serverURL) throws ServerException;
 
 	boolean updateServerHeartbeat(Integer targetId) throws ServerException;
 
 	boolean deleteTarget(Integer targetId) throws ServerException;
 
-	boolean deleteTarget(Integer[] targetIds) throws ServerException;
+	boolean deleteTargets(Integer[] targetIds) throws ServerException;
 
 	// ------------------------------------------------------
 	// Mappings
@@ -102,12 +108,16 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	SubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ServerException;
 
-	boolean updateClientURL(Integer mappingId, String clientId, String clientURL) throws ServerException;
+	boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties) throws ServerException;
 
-	boolean updateClientHeartbeat(Integer mappingId) throws ServerException;
+	boolean updateMappingClientId(Integer mappingId, String clientId) throws ServerException;
+
+	boolean updateMappingClientURL(Integer mappingId, String clientURL) throws ServerException;
+
+	boolean updateMappingClientHeartbeat(Integer mappingId) throws ServerException;
 
 	boolean deleteMapping(Integer mappingId) throws ServerException;
 
-	boolean deleteMapping(Integer[] mappingIds) throws ServerException;
+	boolean deleteMappings(Integer[] mappingIds) throws ServerException;
 
 }

@@ -38,12 +38,12 @@ public class SubsTargetExistsWSCommand extends AbstractInfraCommand<SubsServerSe
 	@Override
 	public Response execute(Request request) throws Exception {
 		boolean hasIdParam = request.hasParameter("id");
-		boolean hasTypeParam1 = request.hasParameter("type");
-		boolean hasTypeIdParam2 = request.hasParameter("typeId");
-		boolean hasTypeParams = hasTypeParam1 && hasTypeIdParam2;
+		boolean hasTypeParam = request.hasParameter("type");
+		boolean hasInstanceIdParam = request.hasParameter("instanceId");
+		boolean hasTypeParams = hasTypeParam && hasInstanceIdParam;
 
 		if (!hasIdParam && !hasTypeParams) {
-			ErrorDTO error = new ErrorDTO("'id' parameter OR 'type' and 'typeId' parameters are not set.");
+			ErrorDTO error = new ErrorDTO("'id' parameter OR 'type' and 'instanceId' parameters are not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -56,8 +56,8 @@ public class SubsTargetExistsWSCommand extends AbstractInfraCommand<SubsServerSe
 
 		} else if (hasTypeParams) {
 			String type = request.getStringParameter("type");
-			String typeId = request.getStringParameter("typeId");
-			exists = service.targetExists(type, typeId);
+			String instanceId = request.getStringParameter("instanceId");
+			exists = service.targetExists(type, instanceId);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

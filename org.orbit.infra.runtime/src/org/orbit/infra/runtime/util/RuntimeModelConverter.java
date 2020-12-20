@@ -9,8 +9,10 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.model.indexes.IndexProviderItemDTO;
+import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
 import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.dto.SubsMappingDTO;
 import org.orbit.infra.model.subs.dto.SubsSourceDTO;
 import org.orbit.infra.model.subs.dto.SubsTargetDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
@@ -170,7 +172,7 @@ public class RuntimeModelConverter {
 
 			Integer id = source.getId();
 			String type = source.getType();
-			String typeId = source.getTypeId();
+			String typeId = source.getInstanceId();
 			String name = source.getName();
 			Map<String, Object> properties = source.getProperties();
 			long dateCreated = source.getDateCreated();
@@ -179,7 +181,7 @@ public class RuntimeModelConverter {
 			SubsSourceDTO sourceDTO = new SubsSourceDTO();
 			sourceDTO.setId(id);
 			sourceDTO.setType(type);
-			sourceDTO.setTypeId(typeId);
+			sourceDTO.setInstanceId(typeId);
 			sourceDTO.setName(name);
 			sourceDTO.setProperties(properties);
 			sourceDTO.setDateCreated(dateCreated);
@@ -200,7 +202,7 @@ public class RuntimeModelConverter {
 
 			Integer id = target.getId();
 			String type = target.getType();
-			String typeId = target.getTypeId();
+			String typeId = target.getInstanceId();
 			String name = target.getName();
 			String serverId = target.getServerId();
 			String serverURL = target.getServerURL();
@@ -212,7 +214,7 @@ public class RuntimeModelConverter {
 			SubsTargetDTO targetDTO = new SubsTargetDTO();
 			targetDTO.setId(id);
 			targetDTO.setType(type);
-			targetDTO.setTypeId(typeId);
+			targetDTO.setInstanceId(typeId);
 			targetDTO.setName(name);
 			targetDTO.setServerId(serverId);
 			targetDTO.setServerURL(serverURL);
@@ -222,6 +224,40 @@ public class RuntimeModelConverter {
 			targetDTO.setDateModified(dateModified);
 
 			return targetDTO;
+		}
+
+		/**
+		 * 
+		 * @param mapping
+		 * @return
+		 */
+		public SubsMappingDTO toDTO(SubsMapping mapping) {
+			if (mapping == null) {
+				return null;
+			}
+
+			Integer id = mapping.getId();
+			Integer sourceId = mapping.getSourceId();
+			Integer targetId = mapping.getTargetId();
+			String clientId = mapping.getClientId();
+			String clientURL = mapping.getClientURL();
+			long clientHeartbeatTime = mapping.getClientHeartbeatTime();
+			Map<String, Object> properties = mapping.getProperties();
+			long dateCreated = mapping.getDateCreated();
+			long dateModified = mapping.getDateModified();
+
+			SubsMappingDTO mappingDTO = new SubsMappingDTO();
+			mappingDTO.setId(id);
+			mappingDTO.setSourceId(sourceId);
+			mappingDTO.setTargetId(targetId);
+			mappingDTO.setClientId(clientId);
+			mappingDTO.setClientURL(clientURL);
+			mappingDTO.setClientHeartbeatTime(clientHeartbeatTime);
+			mappingDTO.setProperties(properties);
+			mappingDTO.setDateCreated(dateCreated);
+			mappingDTO.setDateModified(dateModified);
+
+			return mappingDTO;
 		}
 	}
 

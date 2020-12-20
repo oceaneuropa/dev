@@ -16,7 +16,7 @@ public class SubsTargetImpl implements SubsTarget {
 
 	protected Integer id;
 	protected String type;
-	protected String typeId;
+	protected String instanceId;
 	protected String name;
 
 	protected String serverId;
@@ -34,7 +34,7 @@ public class SubsTargetImpl implements SubsTarget {
 	 * 
 	 * @param id
 	 * @param type
-	 * @param typeId
+	 * @param instanceId
 	 * @param name
 	 * @param serverId
 	 * @param serverURL
@@ -43,10 +43,10 @@ public class SubsTargetImpl implements SubsTarget {
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public SubsTargetImpl(Integer id, String type, String typeId, String name, String serverId, String serverURL, long serverHeartbeatTime, Map<String, Object> properties, long dateCreated, long dateModified) {
+	public SubsTargetImpl(Integer id, String type, String instanceId, String name, String serverId, String serverURL, long serverHeartbeatTime, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.id = id;
 		this.type = type;
-		this.typeId = typeId;
+		this.instanceId = instanceId;
 		this.name = name;
 		this.serverId = serverId;
 		this.serverURL = serverURL;
@@ -77,13 +77,13 @@ public class SubsTargetImpl implements SubsTarget {
 	}
 
 	@Override
-	public String getTypeId() {
-		return this.typeId;
+	public String getInstanceId() {
+		return this.instanceId;
 	}
 
 	@Override
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class SubsTargetImpl implements SubsTarget {
 		String dateCreatedStr = DateUtil.toString(this.dateCreated, DateUtil.getJdbcDateFormat());
 		String dateModifiedStr = DateUtil.toString(this.dateModified, DateUtil.getJdbcDateFormat());
 
-		return "SubsTargetImpl [id=" + id + ", type=" + type + ", typeId=" + typeId + ", name=" + name + ", serverId=" + serverId + ", serverURL=" + serverURL + ", serverHeartbeatTime=" + serverHeartbeatTimeStr + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
+		return "SubsTargetImpl [id=" + id + ", type=" + type + ", instanceId=" + instanceId + ", name=" + name + ", serverId=" + serverId + ", serverURL=" + serverURL + ", serverHeartbeatTime=" + serverHeartbeatTimeStr + ", properties=" + propertiesString + ", dateCreated=" + dateCreatedStr + ", dateModified=" + dateModifiedStr + "]";
 	}
 
 }

@@ -8,16 +8,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.origin.common.json.JSONUtil;
 
 @XmlRootElement
-public class SubsSourceDTO {
+public class SubsMappingDTO {
 
 	@XmlElement
 	protected Integer id;
 	@XmlElement
-	protected String type;
+	protected Integer sourceId;
 	@XmlElement
-	protected String instanceId;
+	protected Integer targetId;
 	@XmlElement
-	protected String name;
+	protected String clientId;
+	@XmlElement
+	protected String clientURL;
+	@XmlElement
+	protected long clientHeartbeatTime;
 	@XmlElement
 	protected String properties;
 	@XmlElement
@@ -25,7 +29,7 @@ public class SubsSourceDTO {
 	@XmlElement
 	protected long dateModified;
 
-	public SubsSourceDTO() {
+	public SubsMappingDTO() {
 	}
 
 	@XmlElement
@@ -38,30 +42,48 @@ public class SubsSourceDTO {
 	}
 
 	@XmlElement
-	public String getType() {
-		return this.type;
+	public Integer getSourceId() {
+		return this.sourceId;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	@XmlElement
-	public String getInstanceId() {
-		return this.instanceId;
-	}
-
-	public void setInstanceId(String instanceId) {
-		this.instanceId = instanceId;
+	public void setSourceId(Integer sourceId) {
+		this.sourceId = sourceId;
 	}
 
 	@XmlElement
-	public String getName() {
-		return this.name;
+	public Integer getTargetId() {
+		return this.targetId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setTargetId(Integer targetId) {
+		this.targetId = targetId;
+	}
+
+	@XmlElement
+	public String getClientId() {
+		return this.clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	@XmlElement
+	public String getClientURL() {
+		return this.clientURL;
+	}
+
+	public void setClientURL(String clientURL) {
+		this.clientURL = clientURL;
+	}
+
+	@XmlElement
+	public long getClientHeartbeatTime() {
+		return this.clientHeartbeatTime;
+	}
+
+	public void setClientHeartbeatTime(long clientHeartbeatTime) {
+		this.clientHeartbeatTime = clientHeartbeatTime;
 	}
 
 	@XmlElement
@@ -88,7 +110,7 @@ public class SubsSourceDTO {
 
 	@XmlElement
 	public long getDateModified() {
-		return this.dateModified;
+		return dateModified;
 	}
 
 	public void setDateModified(long dateModified) {

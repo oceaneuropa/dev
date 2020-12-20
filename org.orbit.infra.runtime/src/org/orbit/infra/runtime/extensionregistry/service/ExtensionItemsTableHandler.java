@@ -292,7 +292,7 @@ public class ExtensionItemsTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param id
-	 * @param typeId
+	 * @param instanceId
 	 * @param lastUpdateTime
 	 * @return
 	 * @throws SQLException
