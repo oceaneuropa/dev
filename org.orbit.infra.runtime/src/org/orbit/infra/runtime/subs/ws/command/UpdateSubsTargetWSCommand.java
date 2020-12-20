@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
+import org.orbit.infra.model.subs.SubsTarget;
 import org.orbit.infra.runtime.subs.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -63,14 +64,48 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 
 		SubsServerService service = getService();
 
-		boolean targetExists = service.targetExists(id);
-		if (!targetExists) {
+		SubsTarget target = service.getTarget(id);
+		if (target == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		// Update type
-		if (hasTypeParam) {
+		if (hasTypeParam || hasInstanceIdParam) {
+			String type = null;
+			String instanceId = null;
+			if (hasTypeParam && hasInstanceIdParam) {
+				type = request.getStringParameter("type");
+				instanceId = request.getStringParameter("instanceId");
+
+			} else if (hasTypeParam) {
+				type = request.getStringParameter("type");
+				instanceId = target.getInstanceId();
+
+			} else if (hasInstanceIdParam) {
+				type = target.getType();
+				instanceId = request.getStringParameter("instanceId");
+			}
+
+			SubsTarget anotherTarget = service.getTarget(type, instanceId);
+			if (anotherTarget != null && id.equals(anotherTarget.getId())) {
+				ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
+				return Response.status(Status.BAD_REQUEST).entity(error).build();
+			}
+		}
+
+		if (hasTypeParam && hasInstanceIdParam) {
+			// Update type and instanceId
+			String type = request.getStringParameter("type");
+			String instanceId = request.getStringParameter("instanceId");
+			boolean currSucceed = service.updateTargetTypeAndInstanceId(id, type, instanceId);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+
+		} else if (hasTypeParam) {
+			// Update type
 			String type = request.getStringParameter("type");
 			boolean currSucceed = service.updateTargetType(id, type);
 			if (currSucceed) {
@@ -78,10 +113,9 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			} else {
 				hasFailed = true;
 			}
-		}
 
-		// Update instanceId
-		if (hasInstanceIdParam) {
+		} else if (hasInstanceIdParam) {
+			// Update instanceId
 			String instanceId = request.getStringParameter("instanceId");
 			boolean currSucceed = service.updateTargetInstanceId(id, instanceId);
 			if (currSucceed) {

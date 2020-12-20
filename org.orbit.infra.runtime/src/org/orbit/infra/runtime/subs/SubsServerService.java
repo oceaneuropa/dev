@@ -36,6 +36,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ServerException;
 
+	boolean updateSourceTypeAndInstanceId(Integer sourceId, String type, String instanceId) throws ServerException;
+
 	boolean updateSourceType(Integer sourceId, String type) throws ServerException;
 
 	boolean updateSourceInstanceId(Integer sourceId, String instanceId) throws ServerException;
@@ -64,6 +66,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	boolean targetExists(String type, String instanceId) throws ServerException;
 
 	SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException;
+
+	boolean updateTargetTypeAndInstanceId(Integer targetId, String type, String instanceId) throws ServerException;
 
 	boolean updateTargetType(Integer targetId, String type) throws ServerException;
 

@@ -292,6 +292,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
+	public boolean updateSourceTypeAndInstanceId(Integer sourceId, String type, String instanceId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourcesTableHandler.updateTypeAndInstanceId(conn, sourceId, type, instanceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
 	public boolean updateSourceType(Integer sourceId, String type) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
@@ -534,6 +550,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return target;
+	}
+
+	@Override
+	public boolean updateTargetTypeAndInstanceId(Integer targetId, String type, String instanceId) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetsTableHandler.updateTypeAndInstanceId(conn, targetId, type, instanceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
 	}
 
 	@Override
