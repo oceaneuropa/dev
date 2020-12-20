@@ -390,6 +390,19 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		Connection conn = null;
 		try {
 			conn = getConnection();
+
+			// Delete the source's mappings, if any.
+			List<Integer> mappingIds = new ArrayList<Integer>();
+			List<SubsMapping> mappings = getMappingsOfSource(sourceId);
+			for (SubsMapping mapping : mappings) {
+				mappingIds.add(mapping.getId());
+			}
+			if (!mappingIds.isEmpty()) {
+				Integer[] mappingIdsArray = mappingIds.toArray(new Integer[mappingIds.size()]);
+				deleteMappings(mappingIdsArray);
+			}
+
+			// Delete the source
 			succeed = this.sourcesTableHandler.deleteSource(conn, sourceId);
 
 		} catch (SQLException e) {
@@ -411,6 +424,20 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		try {
 			conn = getConnection();
 
+			// Delete the sources' mappings, if any.
+			List<Integer> mappingIds = new ArrayList<Integer>();
+			for (Integer currSourceId : sourceIds) {
+				List<SubsMapping> mappings = getMappingsOfSource(currSourceId);
+				for (SubsMapping mapping : mappings) {
+					mappingIds.add(mapping.getId());
+				}
+			}
+			if (!mappingIds.isEmpty()) {
+				Integer[] mappingIdsArray = mappingIds.toArray(new Integer[mappingIds.size()]);
+				deleteMappings(mappingIdsArray);
+			}
+
+			// Delete the sources
 			for (Integer currSourceId : sourceIds) {
 				boolean currSucceed = this.sourcesTableHandler.deleteSource(conn, currSourceId);
 				if (currSucceed) {
@@ -699,6 +726,19 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		Connection conn = null;
 		try {
 			conn = getConnection();
+
+			// Delete the target's mappings, if any.
+			List<Integer> mappingIds = new ArrayList<Integer>();
+			List<SubsMapping> mappings = getMappingsOfTarget(targetId);
+			for (SubsMapping mapping : mappings) {
+				mappingIds.add(mapping.getId());
+			}
+			if (!mappingIds.isEmpty()) {
+				Integer[] mappingIdsArray = mappingIds.toArray(new Integer[mappingIds.size()]);
+				deleteMappings(mappingIdsArray);
+			}
+
+			// Delete the target
 			succeed = this.targetsTableHandler.deleteTarget(conn, targetId);
 
 		} catch (SQLException e) {
@@ -720,6 +760,20 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		try {
 			conn = getConnection();
 
+			// Delete the targets' mappings, if any.
+			List<Integer> mappingIds = new ArrayList<Integer>();
+			for (Integer currTargetId : targetIds) {
+				List<SubsMapping> mappings = getMappingsOfTarget(currTargetId);
+				for (SubsMapping mapping : mappings) {
+					mappingIds.add(mapping.getId());
+				}
+			}
+			if (!mappingIds.isEmpty()) {
+				Integer[] mappingIdsArray = mappingIds.toArray(new Integer[mappingIds.size()]);
+				deleteMappings(mappingIdsArray);
+			}
+
+			// Delete the targets
 			for (Integer currTargetId : targetIds) {
 				boolean currSucceed = this.targetsTableHandler.deleteTarget(conn, currTargetId);
 				if (currSucceed) {

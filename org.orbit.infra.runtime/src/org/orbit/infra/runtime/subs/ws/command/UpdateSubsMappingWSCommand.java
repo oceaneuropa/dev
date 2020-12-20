@@ -1,12 +1,14 @@
 package org.orbit.infra.runtime.subs.ws.command;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
+import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.runtime.subs.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -58,8 +60,8 @@ public class UpdateSubsMappingWSCommand extends AbstractInfraCommand<SubsServerS
 
 		SubsServerService service = getService();
 
-		boolean mappingExists = service.mappingExists(id);
-		if (!mappingExists) {
+		SubsMapping mapping = service.getMapping(id);
+		if (mapping == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Mapping is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
@@ -80,6 +82,25 @@ public class UpdateSubsMappingWSCommand extends AbstractInfraCommand<SubsServerS
 		// Update clientId
 		if (hasClientIdParam) {
 			String clientId = request.getStringParameter("clientId");
+
+			// Between a source and a target, a clientId (to represent a hardware such as a node or an equipment) should be unique.
+			boolean clientIdExists = false;
+			Integer sourceId = mapping.getSourceId();
+			Integer targetId = mapping.getTargetId();
+			List<SubsMapping> mappings = service.getMappings(sourceId, targetId);
+			for (SubsMapping currMapping : mappings) {
+				Integer currId = currMapping.getId();
+				String currClientId = currMapping.getClientId();
+				if (!id.equals(currId) && clientId.equals(currClientId)) {
+					clientIdExists = true;
+					break;
+				}
+			}
+			if (clientIdExists) {
+				ErrorDTO error = new ErrorDTO("Mapping between source '" + sourceId + "' and target '" + targetId + "' with clientId '" + clientId + "' already exists.");
+				return Response.status(Status.BAD_REQUEST).entity(error).build();
+			}
+
 			boolean currSucceed = service.updateMappingClientId(id, clientId);
 			if (currSucceed) {
 				hasSucceed = true;
