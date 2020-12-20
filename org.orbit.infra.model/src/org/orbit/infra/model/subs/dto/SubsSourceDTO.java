@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.origin.common.json.JSONUtil;
 
 @XmlRootElement
-public class SubsTargetDTO {
+public class SubsSourceDTO {
 
 	@XmlElement
 	protected Integer id;
@@ -18,14 +18,6 @@ public class SubsTargetDTO {
 	protected String typeId;
 	@XmlElement
 	protected String name;
-
-	@XmlElement
-	protected String serverId;
-	@XmlElement
-	protected String serverURL;
-	@XmlElement
-	protected long serverHeartbeatTime;
-
 	@XmlElement
 	protected String properties;
 	@XmlElement
@@ -33,7 +25,7 @@ public class SubsTargetDTO {
 	@XmlElement
 	protected long dateModified;
 
-	public SubsTargetDTO() {
+	public SubsSourceDTO() {
 	}
 
 	@XmlElement
@@ -73,33 +65,6 @@ public class SubsTargetDTO {
 	}
 
 	@XmlElement
-	public String getServerId() {
-		return this.serverId;
-	}
-
-	public void setServerId(String serverId) {
-		this.serverId = serverId;
-	}
-
-	@XmlElement
-	public String getServerURL() {
-		return this.serverURL;
-	}
-
-	public void setServerURL(String serverURL) {
-		this.serverURL = serverURL;
-	}
-
-	@XmlElement
-	public long getServerHeartbeatTime() {
-		return this.serverHeartbeatTime;
-	}
-
-	public void setServerHeartbeatTime(long serverHeartbeatTime) {
-		this.serverHeartbeatTime = serverHeartbeatTime;
-	}
-
-	@XmlElement
 	public String getPropertiesString() {
 		return this.properties;
 	}
@@ -123,7 +88,7 @@ public class SubsTargetDTO {
 
 	@XmlElement
 	public long getDateModified() {
-		return this.dateModified;
+		return dateModified;
 	}
 
 	public void setDateModified(long dateModified) {

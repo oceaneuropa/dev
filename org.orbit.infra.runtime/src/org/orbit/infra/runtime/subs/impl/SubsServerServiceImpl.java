@@ -209,7 +209,7 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsSource getSource(String sourceId) throws ServerException {
+	public SubsSource getSource(Integer sourceId) throws ServerException {
 		SubsSource source = null;
 		Connection conn = null;
 		try {
@@ -238,6 +238,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return source;
+	}
+
+	@Override
+	public boolean sourceExists(Integer sourceId) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.sourcesTableHandler.sourceExists(conn, sourceId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
 	}
 
 	@Override
@@ -409,7 +425,7 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsTarget getTarget(String targetId) throws ServerException {
+	public SubsTarget getTarget(Integer targetId) throws ServerException {
 		SubsTarget target = null;
 		Connection conn = null;
 		try {
@@ -438,6 +454,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return target;
+	}
+
+	@Override
+	public boolean targetExists(Integer targetId) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.targetsTableHandler.targetExists(conn, targetId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
 	}
 
 	@Override
@@ -725,6 +757,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return mapping;
+	}
+
+	@Override
+	public boolean mappingExists(Integer mappingId) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.mappingsTableHandler.mappingExists(conn, mappingId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
 	}
 
 	@Override

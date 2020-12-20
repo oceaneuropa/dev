@@ -128,7 +128,7 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public SubsTarget getTarget(Connection conn, String id) throws SQLException {
+	public SubsTarget getTarget(Connection conn, Integer id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
 		ResultSetSingleHandler<SubsTarget> handler = new ResultSetSingleHandler<SubsTarget>() {
 			@Override
@@ -157,6 +157,25 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { type, typeId }, handler);
+	}
+
+	/**
+	 * Check whether a target with id exists.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean targetExists(Connection conn, Integer id) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
+		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+			@Override
+			public Boolean handle(ResultSet rs) throws SQLException {
+				return rs.next() ? true : false;
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { id }, handler);
 	}
 
 	/**

@@ -217,6 +217,24 @@ public class SubsMappingsTableHandler implements DatabaseTableAware {
 	/**
 	 * 
 	 * @param conn
+	 * @param mappingId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean mappingExists(Connection conn, Integer mappingId) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
+		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+			@Override
+			public Boolean handle(ResultSet rs) throws SQLException {
+				return rs.next() ? true : false;
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { mappingId }, handler);
+	}
+
+	/**
+	 * 
+	 * @param conn
 	 * @param sourceId
 	 * @param targetId
 	 * @param clientId

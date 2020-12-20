@@ -108,4 +108,8 @@ public class InfraConstants {
 	public static String SUBS_SERVER__INDEXER_ID = "infra.subs_server.indexer";
 	public static String SUBS_SERVER__TYPE = "SubscriptionServer";
 
+	// EditPolicy values
+	public static String SUBS_SERVER__EDITPOLICY_ID = "infra.subs_server.editpolicy";
+	public static String SUBS_SERVER__SERVICE_NAME = "infra.subs_server.service";
+
 }

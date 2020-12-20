@@ -20,15 +20,17 @@ import org.origin.common.service.WebServiceAware;
 public interface SubsServerService extends WebServiceAware, ConnectionAware, EditPoliciesAware, AccessTokenAware {
 
 	// ------------------------------------------------------
-	// Source
+	// Sources
 	// ------------------------------------------------------
 	List<SubsSource> getSources() throws ServerException;
 
 	List<SubsSource> getSources(String type) throws ServerException;
 
-	SubsSource getSource(String sourceId) throws ServerException;
+	SubsSource getSource(Integer sourceId) throws ServerException;
 
 	SubsSource getSource(String type, String typeId) throws ServerException;
+
+	boolean sourceExists(Integer sourceId) throws ServerException;
 
 	boolean sourceExists(String type, String typeId) throws ServerException;
 
@@ -45,15 +47,17 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	boolean deleteSource(Integer[] sourceIds) throws ServerException;
 
 	// ------------------------------------------------------
-	// Target
+	// Targets
 	// ------------------------------------------------------
 	List<SubsTarget> getTargets() throws ServerException;
 
 	List<SubsTarget> getTargets(String type) throws ServerException;
 
-	SubsTarget getTarget(String targetId) throws ServerException;
+	SubsTarget getTarget(Integer targetId) throws ServerException;
 
 	SubsTarget getTarget(String type, String typeId) throws ServerException;
+
+	boolean targetExists(Integer targetId) throws ServerException;
 
 	boolean targetExists(String type, String typeId) throws ServerException;
 
@@ -74,7 +78,7 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	boolean deleteTarget(Integer[] targetIds) throws ServerException;
 
 	// ------------------------------------------------------
-	// Mapping
+	// Mappings
 	// ------------------------------------------------------
 	List<SubsMapping> getMappings() throws ServerException;
 
@@ -89,6 +93,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	SubsMapping getMappingByClientId(Integer sourceId, Integer targetId, String clientId) throws ServerException;
 
 	SubsMapping getMappingByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ServerException;
+
+	boolean mappingExists(Integer mappingId) throws ServerException;
 
 	boolean mappingExistsByClientId(Integer sourceId, Integer targetId, String clientId) throws ServerException;
 

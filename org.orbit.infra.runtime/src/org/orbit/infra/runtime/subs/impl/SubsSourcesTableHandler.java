@@ -64,9 +64,9 @@ public class SubsSourcesTableHandler implements DatabaseTableAware {
 	 */
 	protected SubsSource toObject(ResultSet rs) throws SQLException {
 		int id = rs.getInt("id");
-		String name = rs.getString("name");
 		String type = rs.getString("type");
 		String typeId = rs.getString("typeId");
+		String name = rs.getString("name");
 		String propertiesString = rs.getString("properties");
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
@@ -74,7 +74,7 @@ public class SubsSourcesTableHandler implements DatabaseTableAware {
 		// Map<String, Object> properties = RuntimeModelConverter.COMMON.toProperties(propertiesString);
 		Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
-		return new SubsSourceImpl(Integer.valueOf(id), name, type, typeId, properties, dateCreated, dateModified);
+		return new SubsSourceImpl(Integer.valueOf(id), type, typeId, name, properties, dateCreated, dateModified);
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class SubsSourcesTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public SubsSource getSource(Connection conn, String id) throws SQLException {
+	public SubsSource getSource(Connection conn, Integer id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
 		ResultSetSingleHandler<SubsSource> handler = new ResultSetSingleHandler<SubsSource>() {
 			@Override
@@ -151,6 +151,25 @@ public class SubsSourcesTableHandler implements DatabaseTableAware {
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { type, typeId }, handler);
+	}
+
+	/**
+	 * Check whether a source with id exists.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean sourceExists(Connection conn, Integer id) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
+		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+			@Override
+			public Boolean handle(ResultSet rs) throws SQLException {
+				return rs.next() ? true : false;
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { id }, handler);
 	}
 
 	/**
@@ -186,7 +205,7 @@ public class SubsSourcesTableHandler implements DatabaseTableAware {
 	 */
 	public SubsSource createSource(Connection conn, String type, String typeId, String name, Map<String, Object> properties) throws SQLException {
 		if (sourceExists(conn, type, typeId)) {
-			throw new SQLException("SubsSource with same type and typeId already exists.");
+			throw new SQLException("Source with same type and typeId already exists.");
 		}
 
 		// String propertiesString = RuntimeModelConverter.COMMON.toPropertiesString(properties);

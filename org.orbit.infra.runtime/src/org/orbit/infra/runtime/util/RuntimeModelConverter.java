@@ -9,6 +9,10 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.model.indexes.IndexProviderItemDTO;
+import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.dto.SubsSourceDTO;
+import org.orbit.infra.model.subs.dto.SubsTargetDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
@@ -21,6 +25,7 @@ public class RuntimeModelConverter {
 	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
 	public static EXTENSION_REGISTRY EXTENSION_REGISTRY = new EXTENSION_REGISTRY();
 	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
+	public static SUBS_SERVER SUBS_SERVER = new SUBS_SERVER();
 	public static COMMON COMMON = new COMMON();
 
 	public static class INDEX_SERVICE {
@@ -152,6 +157,74 @@ public class RuntimeModelConverter {
 		}
 	}
 
+	public static class SUBS_SERVER {
+		/**
+		 * 
+		 * @param source
+		 * @return
+		 */
+		public SubsSourceDTO toDTO(SubsSource source) {
+			if (source == null) {
+				return null;
+			}
+
+			Integer id = source.getId();
+			String type = source.getType();
+			String typeId = source.getTypeId();
+			String name = source.getName();
+			Map<String, Object> properties = source.getProperties();
+			long dateCreated = source.getDateCreated();
+			long dateModified = source.getDateModified();
+
+			SubsSourceDTO sourceDTO = new SubsSourceDTO();
+			sourceDTO.setId(id);
+			sourceDTO.setType(type);
+			sourceDTO.setTypeId(typeId);
+			sourceDTO.setName(name);
+			sourceDTO.setProperties(properties);
+			sourceDTO.setDateCreated(dateCreated);
+			sourceDTO.setDateModified(dateModified);
+
+			return sourceDTO;
+		}
+
+		/**
+		 * 
+		 * @param target
+		 * @return
+		 */
+		public SubsTargetDTO toDTO(SubsTarget target) {
+			if (target == null) {
+				return null;
+			}
+
+			Integer id = target.getId();
+			String type = target.getType();
+			String typeId = target.getTypeId();
+			String name = target.getName();
+			String serverId = target.getServerId();
+			String serverURL = target.getServerURL();
+			long serverHeartbeatTime = target.getServerHeartbeatTime();
+			Map<String, Object> properties = target.getProperties();
+			long dateCreated = target.getDateCreated();
+			long dateModified = target.getDateModified();
+
+			SubsTargetDTO targetDTO = new SubsTargetDTO();
+			targetDTO.setId(id);
+			targetDTO.setType(type);
+			targetDTO.setTypeId(typeId);
+			targetDTO.setName(name);
+			targetDTO.setServerId(serverId);
+			targetDTO.setServerURL(serverURL);
+			targetDTO.setServerHeartbeatTime(serverHeartbeatTime);
+			targetDTO.setProperties(properties);
+			targetDTO.setDateCreated(dateCreated);
+			targetDTO.setDateModified(dateModified);
+
+			return targetDTO;
+		}
+	}
+
 	public static class COMMON {
 		/**
 		 * 
@@ -171,23 +244,6 @@ public class RuntimeModelConverter {
 			return pathDTO;
 		}
 
-		/*-
-		public Map<String, Object> toProperties(String propertiesString) {
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
-			return properties;
-		}
-		
-		public String toPropertiesString(Map<String, Object> properties) {
-			String propertiesString = JSONUtil.toJsonString(properties);
-			return propertiesString;
-		}
-		
-		public Map<String, Object> toMap(String mapString) {
-			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
-			return map;
-		}
-		*/
-
 		/**
 		 * 
 		 * @param map
@@ -200,6 +256,23 @@ public class RuntimeModelConverter {
 	}
 
 }
+
+/*-
+public Map<String, Object> toProperties(String propertiesString) {
+	Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+	return properties;
+}
+
+public String toPropertiesString(Map<String, Object> properties) {
+	String propertiesString = JSONUtil.toJsonString(properties);
+	return propertiesString;
+}
+
+public Map<String, Object> toMap(String mapString) {
+	Map<String, Object> map = JSONUtil.toProperties(mapString, true);
+	return map;
+}
+*/
 
 /// **
 // * Convert ManagementException object to Error DTO.
