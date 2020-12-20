@@ -42,7 +42,7 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean updateSourceName(Integer sourceId, String name) throws ServerException;
 
-	boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties) throws ServerException;
+	boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties, boolean clearProperties) throws ServerException;
 
 	boolean deleteSource(Integer sourceId) throws ServerException;
 
@@ -71,7 +71,7 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean updateTargetName(Integer targetId, String name) throws ServerException;
 
-	boolean updateTargetProperties(Integer targetId, Map<String, Object> properties) throws ServerException;
+	boolean updateTargetProperties(Integer targetId, Map<String, Object> properties, boolean clearProperties) throws ServerException;
 
 	boolean updateServerId(Integer targetId, String serverId) throws ServerException;
 
@@ -108,7 +108,7 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	SubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ServerException;
 
-	boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties) throws ServerException;
+	boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties, boolean clearProperties) throws ServerException;
 
 	boolean updateMappingClientId(Integer mappingId, String clientId) throws ServerException;
 

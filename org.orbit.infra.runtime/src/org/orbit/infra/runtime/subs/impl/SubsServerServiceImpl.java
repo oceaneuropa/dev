@@ -340,12 +340,25 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties) throws ServerException {
+	public boolean updateSourceProperties(Integer sourceId, Map<String, Object> properties, boolean clearProperties) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.sourcesTableHandler.updateProperties(conn, sourceId, properties);
+
+			if (clearProperties) {
+				succeed = this.sourcesTableHandler.updateProperties(conn, sourceId, properties);
+
+			} else {
+				if (properties != null) {
+					SubsSource source = this.sourcesTableHandler.getSource(conn, sourceId);
+					if (source != null) {
+						Map<String, Object> allProperties = source.getProperties();
+						allProperties.putAll(properties);
+						succeed = this.sourcesTableHandler.updateProperties(conn, sourceId, allProperties);
+					}
+				}
+			}
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -572,12 +585,25 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateTargetProperties(Integer targetId, Map<String, Object> properties) throws ServerException {
+	public boolean updateTargetProperties(Integer targetId, Map<String, Object> properties, boolean clearProperties) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.targetsTableHandler.updateProperties(conn, targetId, properties);
+
+			if (clearProperties) {
+				succeed = this.targetsTableHandler.updateProperties(conn, targetId, properties);
+
+			} else {
+				if (properties != null) {
+					SubsTarget target = this.targetsTableHandler.getTarget(conn, targetId);
+					if (target != null) {
+						Map<String, Object> allProperties = target.getProperties();
+						allProperties.putAll(properties);
+						succeed = this.targetsTableHandler.updateProperties(conn, targetId, allProperties);
+					}
+				}
+			}
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -875,12 +901,25 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties) throws ServerException {
+	public boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties, boolean clearProperties) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.mappingsTableHandler.updateProperties(conn, mappingId, properties);
+
+			if (clearProperties) {
+				succeed = this.mappingsTableHandler.updateProperties(conn, mappingId, properties);
+
+			} else {
+				if (properties != null) {
+					SubsMapping mapping = this.mappingsTableHandler.getMapping(conn, mappingId);
+					if (mapping != null) {
+						Map<String, Object> allProperties = mapping.getProperties();
+						allProperties.putAll(properties);
+						succeed = this.mappingsTableHandler.updateProperties(conn, mappingId, allProperties);
+					}
+				}
+			}
 
 		} catch (SQLException e) {
 			handleException(e);

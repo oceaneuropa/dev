@@ -67,7 +67,9 @@ public class UpdateSubsMappingWSCommand extends AbstractInfraCommand<SubsServerS
 		// Update properties
 		if (hasPropertiesParam) {
 			Map<String, Object> properties = (Map<String, Object>) request.getMapParameter("properties");
-			boolean currSucceed = service.updateMappingProperties(id, properties);
+			boolean clearProperties = request.getBooleanParameter("clearProperties");
+
+			boolean currSucceed = service.updateMappingProperties(id, properties, clearProperties);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
