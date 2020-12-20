@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subs.impl;
+package org.orbit.infra.runtime.subs.util;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
