@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.CFGFactory;
 import org.origin.common.osgi.OSGiVersionUtil;
 import org.origin.common.resource.Path;
 
@@ -38,7 +39,7 @@ public class ConfigRegistryHelper {
 	 */
 	public static synchronized IConfigRegistry getPlatformsRegistry(String accessToken, boolean createIfNotExist) throws IOException {
 		IConfigRegistry registry = null;
-		CFG cfg = CFG.getDefault(accessToken);
+		CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
 		if (cfg != null && cfg.isOnline()) {
 			registry = cfg.getConfigRegistryByName(REGISTRY__PLATFORMS);
 			if (registry == null) {
@@ -304,7 +305,7 @@ public class ConfigRegistryHelper {
 	 */
 	public synchronized static IConfigRegistry getUsersConfigRegistry(String accessToken) throws IOException {
 		IConfigRegistry usersConfigReg = null;
-		CFG cfg = CFG.getDefault(accessToken);
+		CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
 		if (cfg != null) {
 			usersConfigReg = cfg.getConfigRegistryByName(REGISTRY__USERS);
 			if (usersConfigReg == null) {

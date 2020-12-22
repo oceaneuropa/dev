@@ -6,7 +6,6 @@ import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.WSClientConstants;
 
 public class MissionControlClientImpl extends ServiceClientImpl<MissionControlClient, MissionControlWSClient> implements MissionControlClient {
 
@@ -27,8 +26,9 @@ public class MissionControlClientImpl extends ServiceClientImpl<MissionControlCl
 
 	@Override
 	public String getURL() {
-		String url = (String) this.properties.get(WSClientConstants.URL);
-		return url;
+		// String url = (String) this.properties.get(WSClientConstants.URL);
+		// return url;
+		return super.getURL();
 	}
 
 }

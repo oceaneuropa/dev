@@ -2,7 +2,7 @@ package org.orbit.infra.api;
 
 import org.orbit.infra.api.util.ExtensionsRegister;
 import org.orbit.infra.api.util.InfraClients;
-import org.orbit.infra.api.util.InfraServicesPropertiesHandler;
+import org.orbit.infra.api.util.InfraConfigPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -26,10 +26,8 @@ public class Activator implements BundleActivator {
 		Activator.plugin = this;
 		Activator.context = bundleContext;
 
-		// Load config properties
-		InfraServicesPropertiesHandler.getInstance().start(bundleContext);
+		InfraConfigPropertiesHandler.getInstance().start(bundleContext);
 
-		// Start tracking client connectors
 		InfraClients.getInstance().start(bundleContext);
 
 		this.extensionsRegister = new ExtensionsRegister();
@@ -42,57 +40,12 @@ public class Activator implements BundleActivator {
 			this.extensionsRegister.stop(bundleContext);
 		}
 
-		// Stop tracking client connectors
 		InfraClients.getInstance().stop(bundleContext);
 
-		// Dispose config properties
-		InfraServicesPropertiesHandler.getInstance().stop(bundleContext);
+		InfraConfigPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 		Activator.plugin = null;
 	}
 
 }
-
-// ClassLoader loader1 = this.getClass().getClassLoader();
-// ClassLoader loader2 = infraClients.getClass().getClassLoader();
-
-// protected IndexServiceConnectorAdapter indexServiceConnectorAdapter;
-// protected IndexProviderConnectorAdapter indexProviderConnectorAdapter;
-// protected ChannelsConnectorAdapter channelsConnectorAdapter;
-
-// this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapter();
-// this.indexServiceConnectorAdapter.start(bundleContext);
-//
-// this.indexProviderConnectorAdapter = new IndexProviderConnectorAdapter();
-// this.indexProviderConnectorAdapter.start(bundleContext);
-//
-// this.channelsConnectorAdapter = new ChannelsConnectorAdapter();
-// this.channelsConnectorAdapter.start(bundleContext);
-
-// if (this.indexProviderConnectorAdapter != null) {
-// this.indexProviderConnectorAdapter.stop(bundleContext);
-// this.indexProviderConnectorAdapter = null;
-// }
-//
-// if (this.indexServiceConnectorAdapter != null) {
-// this.indexServiceConnectorAdapter.stop(bundleContext);
-// this.indexServiceConnectorAdapter = null;
-// }
-//
-// if (this.channelsConnectorAdapter != null) {
-// this.channelsConnectorAdapter.stop(bundleContext);
-// this.channelsConnectorAdapter = null;
-// }
-
-// public IndexServiceConnector getIndexServiceConnector() {
-// return this.indexServiceConnectorAdapter != null ? this.indexServiceConnectorAdapter.getConnector() : null;
-// }
-//
-// public IndexProviderConnector getIndexProviderConnector() {
-// return this.indexProviderConnectorAdapter != null ? this.indexProviderConnectorAdapter.getConnector() : null;
-// }
-//
-// public ChannelsConnector getChannelConnector() {
-// return this.channelsConnectorAdapter != null ? this.channelsConnectorAdapter.getConnector() : null;
-// }

@@ -26,7 +26,7 @@ public class ExtensionRegistryClientImpl extends ServiceClientImpl<ExtensionRegi
 
 	@Override
 	protected ExtensionRegistryWSClient createWSClient(Map<String, Object> properties) {
-		WSClientConfiguration clientConfig = WSClientConfiguration.create(this.properties);
+		WSClientConfiguration clientConfig = WSClientConfiguration.create(properties);
 		return new ExtensionRegistryWSClient(clientConfig);
 	}
 

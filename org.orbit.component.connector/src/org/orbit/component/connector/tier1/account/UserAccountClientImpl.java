@@ -29,7 +29,7 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 
 	@Override
 	protected UserAccountWSClient createWSClient(Map<String, Object> properties) {
-		WSClientConfiguration config = WSClientConfiguration.create(this.properties);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
 		return new UserAccountWSClient(config);
 	}
 

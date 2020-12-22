@@ -4,137 +4,54 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
-import org.orbit.infra.io.impl.CFGImpl;
-import org.orbit.infra.io.util.ConfigRegistryClientResolverImpl;
+import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.model.ServiceMetadata;
 
-public abstract class CFG {
+/**
+ * Config Registries client API
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface CFG {
 
-	// protected static Map<String, CFG> CFG_MAP = new HashMap<String, CFG>();
+	String getAccessToken();
 
-	/**
-	 * 
-	 * @param accessToken
-	 * @return
-	 */
-	public synchronized static CFG getDefault(String accessToken) {
-		// String indexServiceUrl = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
-		// String configRegistryServiceUrl = InfraConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);
-		CFG cfg = get(accessToken);
-		return cfg;
-	}
+	ConfigRegistryClientResolver getClientResolver();
 
-	/**
-	 * 
-	 * @param accessToken
-	 * @return
-	 */
-	public synchronized static CFG get(String accessToken) {
-		// String key = configRegistryServiceUrl + "|" + indexServiceUrl + "|" + accessToken;
-		// String key = accessToken;
-		// CFG cfg = CFG_MAP.get(key);
-		// if (cfg == null) {
-		// cfg = new CFGImpl(accessToken);
-		// CFG_MAP.put(key, cfg);
-		// }
-		// return cfg;
-		CFG cfg = new CFGImpl(accessToken);
-		return cfg;
-	}
+	ServiceClient getServiceClient();
 
-	// public synchronized static void clear() {
-	// CFG_MAP.clear();
-	// }
+	boolean isOnline();
 
-	// protected String configRegistryServiceUrl;
-	// protected String indexServiceUrl;
-	protected String accessToken;
-	protected ConfigRegistryClientResolver clientResolver;
+	ServiceMetadata getServiceMetadata() throws IOException;
 
-	/**
-	 * 
-	 * @param accessToken
-	 */
-	public CFG(String accessToken) {
-		// if (configRegistryServiceUrl == null) {
-		// throw new IllegalArgumentException("configRegistryServiceUrl is null.");
-		// }
-		// if (indexServiceUrl == null) {
-		// throw new IllegalArgumentException("indexServiceUrl is null.");
-		// }
+	IConfigRegistry[] getConfigRegistries() throws IOException;
 
-		// this.configRegistryServiceUrl = configRegistryServiceUrl;
-		// this.indexServiceUrl = indexServiceUrl;
-		this.accessToken = accessToken;
+	IConfigRegistry[] getConfigRegistries(String type) throws IOException;
 
-		this.clientResolver = new ConfigRegistryClientResolverImpl();
-	}
+	IConfigRegistry getConfigRegistryById(String id) throws IOException;
 
-	// public String getConfigRegistryServiceUrl() {
-	// return this.configRegistryServiceUrl;
-	// }
+	IConfigRegistry getConfigRegistryByName(String name) throws IOException;
 
-	// public String getIndexServiceUrl() {
-	// return this.indexServiceUrl;
-	// }
+	boolean configRegistryExistsById(String id) throws IOException;
 
-	public String getAccessToken() {
-		return this.accessToken;
-	}
+	boolean configRegistryExistsByName(String name) throws IOException;
 
-	public ConfigRegistryClientResolver getClientResolver() {
-		return this.clientResolver;
-	}
+	IConfigRegistry createConfigRegistry(String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws IOException;
 
-	public boolean isOnline() {
-		boolean isOnline = false;
-		ConfigRegistryClientResolver resolver = getClientResolver();
-		if (resolver != null) {
-			String accessToken = getAccessToken();
-			ConfigRegistryClient client = resolver.resolve(accessToken);
-			if (client != null && client.ping()) {
-				isOnline = true;
-			}
-		}
-		return isOnline;
-	}
+	boolean updateConfigRegistryType(String id, String type) throws IOException;
 
-	// -----------------------------------------------------------------------------------
-	// Config Registries
-	// -----------------------------------------------------------------------------------
-	public abstract ServiceMetadata getServiceMetadata() throws IOException;
+	boolean updateConfigRegistryName(String id, String name) throws IOException;
 
-	public abstract IConfigRegistry[] getConfigRegistries() throws IOException;
+	boolean setConfigRegistryProperty(String id, String oldName, String name, Object value) throws IOException;
 
-	public abstract IConfigRegistry[] getConfigRegistries(String type) throws IOException;
+	boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws IOException;
 
-	public abstract IConfigRegistry getConfigRegistryById(String id) throws IOException;
+	boolean removeConfigRegistryProperties(String id, List<String> propertyNames) throws IOException;
 
-	public abstract IConfigRegistry getConfigRegistryByName(String name) throws IOException;
+	boolean deleteConfigRegistryById(String id) throws IOException;
 
-	public abstract boolean configRegistryExistsById(String id) throws IOException;
-
-	public abstract boolean configRegistryExistsByName(String name) throws IOException;
-
-	public abstract IConfigRegistry createConfigRegistry(String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws IOException;
-
-	public abstract boolean updateConfigRegistryType(String id, String type) throws IOException;
-
-	public abstract boolean updateConfigRegistryName(String id, String name) throws IOException;
-
-	public abstract boolean setConfigRegistryProperty(String id, String oldName, String name, Object value) throws IOException;
-
-	public abstract boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws IOException;
-
-	public abstract boolean removeConfigRegistryProperties(String id, List<String> propertyNames) throws IOException;
-
-	public abstract boolean deleteConfigRegistryById(String id) throws IOException;
-
-	public abstract boolean deleteConfigRegistryByName(String name) throws IOException;
+	boolean deleteConfigRegistryByName(String name) throws IOException;
 
 }
-
-// String indexServiceUrl = Activator.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-// String configRegistryServiceUrl = Activator.getInstance().getProperty(InfraConstants.ORBIT_CONFIG_REGISTRY_URL);

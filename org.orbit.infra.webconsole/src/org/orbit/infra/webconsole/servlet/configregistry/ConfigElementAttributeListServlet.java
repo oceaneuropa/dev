@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.CFGFactory;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -63,7 +64,7 @@ public class ConfigElementAttributeListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				CFG cfg = CFG.getDefault(accessToken);
+				CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
 				if (!cfg.isOnline()) {
 					message = MessageHelper.INSTANCE.add(message, "Config registry service is not online.");
 

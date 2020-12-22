@@ -1,4 +1,4 @@
-package org.orbit.infra.io.impl;
+package org.orbit.infra.io.configregistry.impl;
 
 import java.io.IOException;
 import java.util.Date;

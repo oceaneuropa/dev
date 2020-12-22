@@ -120,7 +120,7 @@ public class UpdateSubsMappingWSCommand extends AbstractInfraCommand<SubsServerS
 			}
 		}
 
-		// Update clientHeartbeatTime
+		// Update clientHeartbeat
 		if (hasClientHeartbeatParam) {
 			boolean isClientHeartbeat = request.getBooleanParameter("clientHeartbeat");
 			if (isClientHeartbeat) {

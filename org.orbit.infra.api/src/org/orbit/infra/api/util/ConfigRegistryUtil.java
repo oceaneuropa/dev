@@ -11,48 +11,48 @@ import org.origin.common.resource.Path;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.ServiceMetadata;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ConfigRegistryUtil {
-
-	protected static ConfigRegistry[] EMPTY_CONFIG_REGISTRIES = new ConfigRegistry[0];
-	protected static ConfigElement[] EMPTY_CONFIG_ELEMENTS = new ConfigElement[0];
 
 	/**
 	 * 
-	 * @param configRegistryServiceUrl
 	 * @param accessToken
 	 * @return
 	 */
 	public static ConfigRegistryClient getClient(String accessToken) {
-		String configRegistryServiceUrl = InfraServicesPropertiesHandler.getInstance().getConfigRegistryURL();
-		ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryServiceUrl, accessToken);
+		String url = InfraConfigPropertiesHandler.getInstance().getConfigRegistryURL();
+		ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(url, accessToken);
 		return configRegistryClient;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
-	 * @param configRegistryServiceUrl
+	 * @param resolver
 	 * @param accessToken
 	 * @return
 	 */
-	public static ConfigRegistryClient getClient(ConfigRegistryClientResolver clientResolver, String accessToken) {
-		ConfigRegistryClient configRegistryClient = null;
-		if (clientResolver != null) {
-			configRegistryClient = clientResolver.resolve(accessToken);
+	public static ConfigRegistryClient getClient(ConfigRegistryClientResolver resolver, String accessToken) {
+		ConfigRegistryClient client = null;
+		if (resolver != null) {
+			client = resolver.resolve(accessToken);
 		}
-		return configRegistryClient;
+		return client;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver clientResolver, String accessToken) throws ClientException {
+	public static ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver resolver, String accessToken) throws ClientException {
 		ServiceMetadata metadata = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			metadata = client.getMetadata();
 		}
@@ -64,54 +64,54 @@ public class ConfigRegistryUtil {
 	// -----------------------------------------------------------------------------------
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String accessToken) throws ClientException {
+	public static ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver resolver, String accessToken) throws ClientException {
 		ConfigRegistry[] configRegistries = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configRegistries = client.getConfigRegistries();
 		}
 		if (configRegistries == null) {
-			configRegistries = EMPTY_CONFIG_REGISTRIES;
+			configRegistries = new ConfigRegistry[0];
 		}
 		return configRegistries;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param type
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String accessToken, String type) throws ClientException {
+	public static ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver resolver, String accessToken, String type) throws ClientException {
 		ConfigRegistry[] configRegistries = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configRegistries = client.getConfigRegistries(type);
 		}
 		if (configRegistries == null) {
-			configRegistries = EMPTY_CONFIG_REGISTRIES;
+			configRegistries = new ConfigRegistry[0];
 		}
 		return configRegistries;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
+	public static ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver resolver, String accessToken, String id) throws ClientException {
 		ConfigRegistry configRegistry = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configRegistry = client.getConfigRegistryById(id);
 		}
@@ -120,15 +120,15 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
+	public static ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver resolver, String accessToken, String name) throws ClientException {
 		ConfigRegistry configRegistry = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configRegistry = client.getConfigRegistryByName(name);
 		}
@@ -137,15 +137,15 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean configRegistryExistsById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
+	public static boolean configRegistryExistsById(ConfigRegistryClientResolver resolver, String accessToken, String id) throws ClientException {
 		boolean exists = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			exists = client.configRegistryExistsById(id);
 		}
@@ -154,15 +154,15 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean configRegistryExistsByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
+	public static boolean configRegistryExistsByName(ConfigRegistryClientResolver resolver, String accessToken, String name) throws ClientException {
 		boolean exists = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			exists = client.configRegistryExistsByName(name);
 		}
@@ -171,7 +171,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param type
 	 * @param name
@@ -180,9 +180,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver clientResolver, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
+	public static ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver resolver, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
 		ConfigRegistry configRegistry = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configRegistry = client.createConfigRegistry(type, name, properties, generateUniqueName);
 		}
@@ -191,16 +191,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @param type
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean updateConfigRegistryType(ConfigRegistryClientResolver clientResolver, String accessToken, String id, String type) throws ClientException {
+	public static boolean updateConfigRegistryType(ConfigRegistryClientResolver resolver, String accessToken, String id, String type) throws ClientException {
 		boolean isUpdated = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isUpdated = client.updateConfigRegistryType(id, type);
 		}
@@ -209,16 +209,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean updateConfigRegistryName(ConfigRegistryClientResolver clientResolver, String accessToken, String id, String name) throws ClientException {
+	public static boolean updateConfigRegistryName(ConfigRegistryClientResolver resolver, String accessToken, String id, String name) throws ClientException {
 		boolean isUpdated = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isUpdated = client.updateConfigRegistryName(id, name);
 		}
@@ -227,7 +227,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param oldName
@@ -236,9 +236,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean setConfigRegistryProperty(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String oldName, String name, Object value) throws ClientException {
+	public static boolean setConfigRegistryProperty(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String oldName, String name, Object value) throws ClientException {
 		boolean succeed = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			succeed = client.setConfigRegistryProperty(configRegistryId, oldName, name, value);
 		}
@@ -247,16 +247,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @param properties
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean setConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String accessToken, String id, Map<String, Object> properties) throws ClientException {
+	public static boolean setConfigRegistryProperties(ConfigRegistryClientResolver resolver, String accessToken, String id, Map<String, Object> properties) throws ClientException {
 		boolean isUpdated = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isUpdated = client.setConfigRegistryProperties(id, properties);
 		}
@@ -265,16 +265,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @param propertyNames
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean removeConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String accessToken, String id, List<String> propertyNames) throws ClientException {
+	public static boolean removeConfigRegistryProperties(ConfigRegistryClientResolver resolver, String accessToken, String id, List<String> propertyNames) throws ClientException {
 		boolean isUpdated = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isUpdated = client.removeConfigRegistryProperties(id, propertyNames);
 		}
@@ -283,15 +283,15 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param id
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean deleteConfigRegistryById(ConfigRegistryClientResolver clientResolver, String accessToken, String id) throws ClientException {
+	public static boolean deleteConfigRegistryById(ConfigRegistryClientResolver resolver, String accessToken, String id) throws ClientException {
 		boolean isDeleted = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isDeleted = client.deleteConfigRegistryById(id);
 		}
@@ -300,15 +300,15 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean deleteConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String accessToken, String name) throws ClientException {
+	public static boolean deleteConfigRegistryByName(ConfigRegistryClientResolver resolver, String accessToken, String name) throws ClientException {
 		boolean isDeleted = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isDeleted = client.deleteConfigRegistryByName(name);
 		}
@@ -320,78 +320,78 @@ public class ConfigRegistryUtil {
 	// -----------------------------------------------------------------------------------
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement[] listRootElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId) throws ClientException {
+	public static ConfigElement[] listRootElements(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId) throws ClientException {
 		ConfigElement[] configElements = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElements = client.listRootElements(configRegistryId);
 		}
 		if (configElements == null) {
-			configElements = EMPTY_CONFIG_ELEMENTS;
+			configElements = new ConfigElement[0];
 		}
 		return configElements;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement[] listElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
+	public static ConfigElement[] listElements(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
 		ConfigElement[] configElements = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElements = client.listElements(configRegistryId, parentElementId);
 		}
 		if (configElements == null) {
-			configElements = EMPTY_CONFIG_ELEMENTS;
+			configElements = new ConfigElement[0];
 		}
 		return configElements;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentPath
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement[] listElements(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
+	public static ConfigElement[] listElements(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
 		ConfigElement[] configElements = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElements = client.listElements(configRegistryId, parentPath);
 		}
 		if (configElements == null) {
-			configElements = EMPTY_CONFIG_ELEMENTS;
+			configElements = new ConfigElement[0];
 		}
 		return configElements;
 	}
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement getElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
+	public static ConfigElement getElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.getElement(configRegistryId, elementId);
 		}
@@ -400,16 +400,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param path
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement getElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
+	public static ConfigElement getElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.getElement(configRegistryId, path);
 		}
@@ -418,7 +418,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
@@ -426,9 +426,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement getElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+	public static ConfigElement getElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.getElement(configRegistryId, parentElementId, name);
 		}
@@ -437,7 +437,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
@@ -445,9 +445,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement getElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, Path path) throws ClientException {
+	public static ConfigElement getElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId, Path path) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.getElement(configRegistryId, parentElementId, path);
 		}
@@ -456,16 +456,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static Path getElementPath(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
+	public static Path getElementPath(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 		Path path = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			path = client.getElementPath(configRegistryId, elementId);
 		}
@@ -474,16 +474,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean elementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
+	public static boolean elementExists(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 		boolean exists = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			exists = client.elementExists(configRegistryId, elementId);
 		}
@@ -492,16 +492,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param path
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean elementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
+	public static boolean elementExists(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 		boolean exists = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			exists = client.elementExists(configRegistryId, path);
 		}
@@ -510,7 +510,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
@@ -518,9 +518,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean elementExists(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+	public static boolean elementExists(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 		boolean exists = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			exists = client.elementExists(configRegistryId, parentElementId, name);
 		}
@@ -529,7 +529,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param path
@@ -538,9 +538,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement createElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+	public static ConfigElement createElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.createElement(configRegistryId, path, attributes, generateUniqueName);
 		}
@@ -549,7 +549,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
@@ -559,9 +559,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement createElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+	public static ConfigElement createElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.createElement(configRegistryId, parentElementId, name, attributes, generateUniqueName);
 		}
@@ -570,7 +570,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param parentElementId
@@ -580,9 +580,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static ConfigElement createElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+	public static ConfigElement createElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String parentElementId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 		ConfigElement configElement = null;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			configElement = client.createElement(configRegistryId, parentElementId, path, attributes, generateUniqueName);
 		}
@@ -591,7 +591,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
@@ -599,9 +599,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean updateElementName(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
+	public static boolean updateElementName(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
 		boolean isUpdated = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isUpdated = client.updateElementName(configRegistryId, elementId, newName);
 		}
@@ -610,7 +610,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
@@ -620,9 +620,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean setElementAttribute(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException {
+	public static boolean setElementAttribute(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId, String oldAttributeName, String attributeName, Object attributeValue) throws ClientException {
 		boolean succeed = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			succeed = client.setElementAttribute(configRegistryId, elementId, oldAttributeName, attributeName, attributeValue);
 		}
@@ -631,7 +631,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
@@ -639,9 +639,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean setElementAttributes(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
+	public static boolean setElementAttributes(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
 		boolean succeed = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			succeed = client.setElementAttributes(configRegistryId, elementId, attributes);
 		}
@@ -650,7 +650,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
@@ -658,9 +658,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean removeElementAttribute(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, String attributeName) throws ClientException {
+	public static boolean removeElementAttribute(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId, String attributeName) throws ClientException {
 		boolean succeed = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			succeed = client.removeElementAttribute(configRegistryId, elementId, attributeName);
 		}
@@ -669,7 +669,7 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
@@ -677,9 +677,9 @@ public class ConfigRegistryUtil {
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean removeElementAttributes(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId, List<String> attributeNames) throws ClientException {
+	public static boolean removeElementAttributes(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId, List<String> attributeNames) throws ClientException {
 		boolean succeed = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			succeed = client.removeElementAttributes(configRegistryId, elementId, attributeNames);
 		}
@@ -688,16 +688,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param elementId
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean deleteElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
+	public static boolean deleteElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, String elementId) throws ClientException {
 		boolean isDeleted = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isDeleted = client.deleteElement(configRegistryId, elementId);
 		}
@@ -706,16 +706,16 @@ public class ConfigRegistryUtil {
 
 	/**
 	 * 
-	 * @param clientResolver
+	 * @param resolver
 	 * @param accessToken
 	 * @param configRegistryId
 	 * @param path
 	 * @return
 	 * @throws ClientException
 	 */
-	public static boolean deleteElement(ConfigRegistryClientResolver clientResolver, String accessToken, String configRegistryId, Path path) throws ClientException {
+	public static boolean deleteElement(ConfigRegistryClientResolver resolver, String accessToken, String configRegistryId, Path path) throws ClientException {
 		boolean isDeleted = false;
-		ConfigRegistryClient client = getClient(clientResolver, accessToken);
+		ConfigRegistryClient client = getClient(resolver, accessToken);
 		if (client != null) {
 			isDeleted = client.deleteElement(configRegistryId, path);
 		}
@@ -723,14 +723,3 @@ public class ConfigRegistryUtil {
 	}
 
 }
-
-// /**
-// *
-// * @param configRegistryServiceUrl
-// * @param accessToken
-// * @return
-// */
-// protected ConfigRegistryClient getConfigRegistryClient(String configRegistryServiceUrl, String accessToken) {
-// ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryServiceUrl, accessToken);
-// return configRegistryClient;
-// }

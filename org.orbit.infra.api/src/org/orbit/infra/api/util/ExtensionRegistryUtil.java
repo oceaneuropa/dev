@@ -17,7 +17,7 @@ public class ExtensionRegistryUtil {
 	 * @return
 	 */
 	public static ExtensionRegistryClient getClient(String accessToken) {
-		String extensionRegistryUrl = InfraServicesPropertiesHandler.getInstance().getExtensionRegistryURL();
+		String extensionRegistryUrl = InfraConfigPropertiesHandler.getInstance().getExtensionRegistryURL();
 		ExtensionRegistryClient extensionRegistry = InfraClients.getInstance().getExtensionRegistryClient(extensionRegistryUrl, accessToken);
 		return extensionRegistry;
 	}

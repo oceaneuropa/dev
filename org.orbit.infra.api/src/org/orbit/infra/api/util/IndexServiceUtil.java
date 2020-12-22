@@ -23,7 +23,7 @@ public class IndexServiceUtil {
 	 * @return
 	 */
 	public static IndexServiceClient getClient(String accessToken) {
-		String indexServiceUrl = InfraServicesPropertiesHandler.getInstance().getIndexServiceURL();
+		String indexServiceUrl = InfraConfigPropertiesHandler.getInstance().getIndexServiceURL();
 		IndexServiceClient indexService = InfraClients.getInstance().getIndexService(indexServiceUrl, accessToken);
 		return indexService;
 	}

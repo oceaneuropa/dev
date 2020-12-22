@@ -5,6 +5,7 @@ import org.orbit.infra.connector.configregistry.ConfigRegistryConnector;
 import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
+import org.orbit.infra.connector.subs.SubsServerConnector;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.Extension;
@@ -19,14 +20,8 @@ public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
 
-	// public Extensions() {
-	// setBundleId("org.orbit.infra.connector");
-	// }
-
 	@Override
 	public void createExtensions() {
-		LOG.debug("createExtensions()");
-
 		createConnectorExtensions();
 		createCommandExtensions();
 	}
@@ -57,6 +52,12 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ConfigRegistryConnector.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
+
+		// SubsServer connector
+		Extension extension5 = new Extension(typeId, SubsServerConnector.ID, "Subs Server Connector");
+		InterfaceDescription desc5 = new InterfaceDescription(ConnectorActivator.class, SubsServerConnector.class);
+		extension5.addInterface(desc5);
+		addExtension(extension5);
 	}
 
 	protected void createCommandExtensions() {

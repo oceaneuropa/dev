@@ -171,10 +171,10 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			}
 		}
 
-		// Update serverHeartbeatTime
+		// Update serverHeartbeat
 		if (hasServerHeartbeatParam) {
-			boolean isClientHeartbeat = request.getBooleanParameter("serverHeartbeat");
-			if (isClientHeartbeat) {
+			boolean isServerHeartbeat = request.getBooleanParameter("serverHeartbeat");
+			if (isServerHeartbeat) {
 				boolean currSucceed = service.updateServerHeartbeat(id);
 				if (currSucceed) {
 					hasSucceed = true;

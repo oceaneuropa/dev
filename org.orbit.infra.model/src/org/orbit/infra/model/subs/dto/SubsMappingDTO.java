@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.origin.common.json.JSONUtil;
-
 @XmlRootElement
 public class SubsMappingDTO {
 
@@ -23,7 +21,7 @@ public class SubsMappingDTO {
 	@XmlElement
 	protected long clientHeartbeatTime;
 	@XmlElement
-	protected String properties;
+	protected Map<String, Object> properties;
 	@XmlElement
 	protected long dateCreated;
 	@XmlElement
@@ -87,16 +85,12 @@ public class SubsMappingDTO {
 	}
 
 	@XmlElement
-	public String getPropertiesString() {
-		return this.properties;
-	}
-
-	public void setProperties(String propertiesString) {
-		this.properties = propertiesString;
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
 	public void setProperties(Map<String, Object> properties) {
-		this.properties = JSONUtil.toJsonString(properties);
+		this.properties = properties;
 	}
 
 	@XmlElement

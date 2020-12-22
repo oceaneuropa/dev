@@ -1,15 +1,7 @@
 package other.orbit.component.connector;
 
-import org.orbit.component.connector.tier1.account.UserAccountConnector;
-import org.orbit.component.connector.tier1.auth.AuthConnector;
-import org.orbit.component.connector.tier1.configregistry.ConfigRegistryConnector;
-import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
-import org.orbit.component.connector.tier3.domain.DomainManagementConnector;
-import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import other.orbit.component.connector.tier1.account.UserRegistryManager;
 
 public class ActivatorV1 implements BundleActivator {
 
@@ -29,41 +21,41 @@ public class ActivatorV1 implements BundleActivator {
 	// protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
 	// ManagedServiceFactory
-	protected UserRegistryManager userRegistryManager;
+	// protected UserRegistryManager userRegistryManager;
 
 	// Connectors
-	protected ConfigRegistryConnector configRegistryConnector;
-	protected UserAccountConnector userRegistryConnector;
-	protected AuthConnector authConnector;
-	protected AppStoreConnector appStoreConnector;
-	protected DomainManagementConnector domainMgmtConnector;
-	protected NodeControlConnector transferAgentConnector;
+	// protected ConfigRegistryConnector configRegistryConnector;
+	// protected UserAccountConnector userRegistryConnector;
+	// protected AuthConnector authConnector;
+	// protected AppStoreConnector appStoreConnector;
+	// protected DomainManagementConnector domainMgmtConnector;
+	// protected NodeControlConnector transferAgentConnector;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
 		ActivatorV1.context = bundleContext;
 		ActivatorV1.instance = this;
 
-//		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
-//			@Override
-//			public void connectorAdded(IndexServiceConnectorV1 connector) {
-//				doStart(ActivatorV1.context, connector);
-//			}
-//
-//			@Override
-//			public void connectorRemoved(IndexServiceConnectorV1 connector) {
-//				doStop(ActivatorV1.context);
-//			}
-//		};
-//		this.indexServiceConnectorAdapter.start(bundleContext);
+		// this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
+		// @Override
+		// public void connectorAdded(IndexServiceConnectorV1 connector) {
+		// doStart(ActivatorV1.context, connector);
+		// }
+		//
+		// @Override
+		// public void connectorRemoved(IndexServiceConnectorV1 connector) {
+		// doStop(ActivatorV1.context);
+		// }
+		// };
+		// this.indexServiceConnectorAdapter.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-//		if (this.indexServiceConnectorAdapter != null) {
-//			this.indexServiceConnectorAdapter.stop(bundleContext);
-//			this.indexServiceConnectorAdapter = null;
-//		}
+		// if (this.indexServiceConnectorAdapter != null) {
+		// this.indexServiceConnectorAdapter.stop(bundleContext);
+		// this.indexServiceConnectorAdapter = null;
+		// }
 
 		ActivatorV1.instance = null;
 		ActivatorV1.context = null;
@@ -75,64 +67,68 @@ public class ActivatorV1 implements BundleActivator {
 		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		// IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
 
+		/*-
 		// Register ManagedServiceFactories and connector services
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
-
+		
 		this.userRegistryConnector = new UserAccountConnector();
 		this.userRegistryConnector.start(bundleContext);
-
+		
 		this.authConnector = new AuthConnector();
 		this.authConnector.start(bundleContext);
-
+		
 		// tier2
 		this.appStoreConnector = new AppStoreConnector();
 		this.appStoreConnector.start(bundleContext);
-
+		
 		// tier3
 		// this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector = new DomainManagementConnector();
 		this.domainMgmtConnector.start(bundleContext);
-
+		
 		this.transferAgentConnector = new NodeControlConnector();
 		this.transferAgentConnector.start(bundleContext);
+		*/
 	}
 
 	protected void doStop(BundleContext bundleContext) {
+		/*-
 		// Unregister ManagedServiceFactories and connector services
 		// tier3
 		if (this.domainMgmtConnector != null) {
 			this.domainMgmtConnector.stop(bundleContext);
 			this.domainMgmtConnector = null;
 		}
-
+		
 		if (this.transferAgentConnector != null) {
 			this.transferAgentConnector.stop(bundleContext);
 			this.transferAgentConnector = null;
 		}
-
+		
 		// tier2
 		if (this.appStoreConnector != null) {
 			this.appStoreConnector.stop(bundleContext);
 			this.appStoreConnector = null;
 		}
-
+		
 		// tier1
 		if (this.userRegistryConnector != null) {
 			this.userRegistryConnector.stop(bundleContext);
 			this.userRegistryConnector = null;
 		}
-
+		
 		if (this.authConnector != null) {
 			this.authConnector.stop(bundleContext);
 			this.authConnector = null;
 		}
-
+		
 		if (this.userRegistryManager != null) {
 			this.userRegistryManager.stop(bundleContext);
 			this.userRegistryManager = null;
 		}
+		*/
 	}
 
 }

@@ -15,14 +15,24 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
+import org.orbit.infra.api.subs.SubsMapping;
+import org.orbit.infra.api.subs.SubsServerAPI;
+import org.orbit.infra.api.subs.SubsSource;
+import org.orbit.infra.api.subs.SubsTarget;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.indexes.IndexItemImpl;
 import org.orbit.infra.connector.indexes.IndexProviderItemImpl;
+import org.orbit.infra.connector.subs.SubsMappingImpl;
+import org.orbit.infra.connector.subs.SubsSourceImpl;
+import org.orbit.infra.connector.subs.SubsTargetImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexProviderItemDTO;
+import org.orbit.infra.model.subs.dto.SubsMappingDTO;
+import org.orbit.infra.model.subs.dto.SubsSourceDTO;
+import org.orbit.infra.model.subs.dto.SubsTargetDTO;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
@@ -253,6 +263,263 @@ public class ClientModelConverter {
 				configElement = toConfigElement(configRegistryClient, configElementDTO);
 			}
 			return configElement;
+		}
+	}
+
+	public static class SUBS_SERVER {
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static List<SubsSource> toSources(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<SubsSource> sources = new ArrayList<SubsSource>();
+			List<SubsSourceDTO> sourceDTOs = response.readEntity(new GenericType<List<SubsSourceDTO>>() {
+			});
+			for (SubsSourceDTO sourceDTO : sourceDTOs) {
+				SubsSource source = toSource(api, sourceDTO);
+				if (source != null) {
+					sources.add(source);
+				}
+			}
+			return sources;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static SubsSource toSource(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			SubsSource source = null;
+			SubsSourceDTO sourceDTO = response.readEntity(SubsSourceDTO.class);
+			if (sourceDTO != null) {
+				source = toSource(api, sourceDTO);
+			}
+			return source;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param sourceDTO
+		 * @return
+		 */
+		public static SubsSource toSource(SubsServerAPI api, SubsSourceDTO sourceDTO) {
+			if (sourceDTO == null) {
+				return null;
+			}
+
+			Integer id = sourceDTO.getId();
+			String type = sourceDTO.getType();
+			String instanceId = sourceDTO.getInstanceId();
+			String name = sourceDTO.getName();
+			Map<String, Object> properties = sourceDTO.getProperties();
+			long dateCreated = sourceDTO.getDateCreated();
+			long dateModified = sourceDTO.getDateModified();
+
+			Map<String, Object> properties2 = new TreeMap<String, Object>();
+			if (properties != null && !properties.isEmpty()) {
+				properties2.putAll(properties);
+			}
+
+			SubsSourceImpl source = new SubsSourceImpl();
+			source.setAPI(api);
+			source.setId(id);
+			source.setType(type);
+			source.setInstanceId(instanceId);
+			source.setName(name);
+			source.setProperties(properties2);
+			source.setDateCreated(dateCreated);
+			source.setDateModified(dateModified);
+
+			return source;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static List<SubsTarget> toTargets(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<SubsTarget> targets = new ArrayList<SubsTarget>();
+			List<SubsTargetDTO> targetDTOs = response.readEntity(new GenericType<List<SubsTargetDTO>>() {
+			});
+			for (SubsTargetDTO targetDTO : targetDTOs) {
+				SubsTarget target = toTarget(api, targetDTO);
+				if (target != null) {
+					targets.add(target);
+				}
+			}
+			return targets;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static SubsTarget toTarget(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			SubsTarget target = null;
+			SubsTargetDTO targetDTO = response.readEntity(SubsTargetDTO.class);
+			if (targetDTO != null) {
+				target = toTarget(api, targetDTO);
+			}
+			return target;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param targetDTO
+		 * @return
+		 */
+		public static SubsTarget toTarget(SubsServerAPI api, SubsTargetDTO targetDTO) {
+			if (targetDTO == null) {
+				return null;
+			}
+
+			Integer id = targetDTO.getId();
+			String type = targetDTO.getType();
+			String instanceId = targetDTO.getInstanceId();
+			String name = targetDTO.getName();
+			String serverId = targetDTO.getServerId();
+			String serverURL = targetDTO.getServerURL();
+			long serverHeartbeatTime = targetDTO.getServerHeartbeatTime();
+			Map<String, Object> properties = targetDTO.getProperties();
+			long dateCreated = targetDTO.getDateCreated();
+			long dateModified = targetDTO.getDateModified();
+
+			Map<String, Object> properties2 = new TreeMap<String, Object>();
+			if (properties != null && !properties.isEmpty()) {
+				properties2.putAll(properties);
+			}
+
+			SubsTargetImpl target = new SubsTargetImpl();
+			target.setAPI(api);
+			target.setId(id);
+			target.setType(type);
+			target.setInstanceId(instanceId);
+			target.setName(name);
+			target.setServerId(serverId);
+			target.setServerURL(serverURL);
+			target.setServerHeartbeatTime(serverHeartbeatTime);
+			target.setProperties(properties2);
+			target.setDateCreated(dateCreated);
+			target.setDateModified(dateModified);
+
+			return target;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static List<SubsMapping> toMappings(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+			List<SubsMappingDTO> mappingDTOs = response.readEntity(new GenericType<List<SubsMappingDTO>>() {
+			});
+			for (SubsMappingDTO mappingDTO : mappingDTOs) {
+				SubsMapping mapping = toMapping(api, mappingDTO);
+				if (mapping != null) {
+					mappings.add(mapping);
+				}
+			}
+			return mappings;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static SubsMapping toMapping(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			SubsMapping mapping = null;
+			SubsMappingDTO mappingDTO = response.readEntity(SubsMappingDTO.class);
+			if (mappingDTO != null) {
+				mapping = toMapping(api, mappingDTO);
+			}
+			return mapping;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param mappingDTO
+		 * @return
+		 */
+		public static SubsMapping toMapping(SubsServerAPI api, SubsMappingDTO mappingDTO) {
+			if (mappingDTO == null) {
+				return null;
+			}
+
+			Integer id = mappingDTO.getId();
+			Integer sourceId = mappingDTO.getSourceId();
+			Integer targetId = mappingDTO.getTargetId();
+
+			String clientId = mappingDTO.getClientId();
+			String clientURL = mappingDTO.getClientURL();
+			long clientHeartbeatTime = mappingDTO.getClientHeartbeatTime();
+
+			Map<String, Object> properties = mappingDTO.getProperties();
+			long dateCreated = mappingDTO.getDateCreated();
+			long dateModified = mappingDTO.getDateModified();
+
+			Map<String, Object> properties2 = new TreeMap<String, Object>();
+			if (properties != null && !properties.isEmpty()) {
+				properties2.putAll(properties);
+			}
+
+			SubsMappingImpl mapping = new SubsMappingImpl();
+			mapping.setAPI(api);
+			mapping.setId(id);
+			mapping.setSourceId(sourceId);
+			mapping.setTargetId(targetId);
+			mapping.setClientId(clientId);
+			mapping.setClientURL(clientURL);
+			mapping.setClientHeartbeatTime(clientHeartbeatTime);
+			mapping.setProperties(properties2);
+			mapping.setDateCreated(dateCreated);
+			mapping.setDateModified(dateModified);
+
+			return mapping;
 		}
 	}
 

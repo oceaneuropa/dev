@@ -1,16 +1,8 @@
 package org.orbit.infra.io.util;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
-import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.ConfigRegistryUtil;
-import org.orbit.infra.api.util.IndexServiceUtil;
-import org.origin.common.service.WebServiceAwareHelper;
 
 public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientResolver {
 
@@ -20,12 +12,13 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		return configRegistryClient;
 	}
 
+	/*-
 	@Override
 	public String getURL(String configRegistryName, String accessToken) throws IOException {
 		if (configRegistryName == null || configRegistryName.isEmpty()) {
 			throw new IllegalArgumentException("configRegistryName is empty.");
 		}
-
+	
 		IndexItem cfgIndexItem = null;
 		IndexServiceClient indexService = IndexServiceUtil.getClient(accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.CONFIG_REGISTRY__INDEXER_ID, InfraConstants.CONFIG_REGISTRY__TYPE);
@@ -36,7 +29,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 				break;
 			}
 		}
-
+	
 		String serviceURL = null;
 		if (cfgIndexItem != null) {
 			String hostURL = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
@@ -50,5 +43,6 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		}
 		return serviceURL;
 	}
+	*/
 
 }

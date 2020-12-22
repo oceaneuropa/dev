@@ -5,7 +5,7 @@ import java.util.Map;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.util.ComponentsConfigPropertiesHandler;
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.util.InfraServicesPropertiesHandler;
+import org.orbit.infra.api.util.InfraConfigPropertiesHandler;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
 import org.origin.common.resources.node.INode;
 
@@ -35,7 +35,7 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 
 			// Add "orbit.index_service.url" property if not exist
 			if (!properties.containsKey(InfraConstants.ORBIT_INDEX_SERVICE_URL)) {
-				String indexServiceUrl = InfraServicesPropertiesHandler.getInstance().getIndexServiceURL();
+				String indexServiceUrl = InfraConfigPropertiesHandler.getInstance().getIndexServiceURL();
 				if (indexServiceUrl != null && !indexServiceUrl.isEmpty()) {
 					properties.put(InfraConstants.ORBIT_INDEX_SERVICE_URL, indexServiceUrl);
 				}
@@ -43,7 +43,7 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 
 			// Add "orbit.extension_registry.url" property if not exist
 			if (!properties.containsKey(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL)) {
-				String extensionRegistryUrl = InfraServicesPropertiesHandler.getInstance().getExtensionRegistryURL();
+				String extensionRegistryUrl = InfraConfigPropertiesHandler.getInstance().getExtensionRegistryURL();
 				if (extensionRegistryUrl != null && !extensionRegistryUrl.isEmpty()) {
 					properties.put(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, extensionRegistryUrl);
 				}
@@ -51,7 +51,7 @@ public class NodeConfigIniPropertiesRegulator implements PropertiesRegulator {
 
 			// Add "orbit.config_registry.url" property if not exist
 			if (!properties.containsKey(InfraConstants.ORBIT_CONFIG_REGISTRY_URL)) {
-				String configRegistryUrl = InfraServicesPropertiesHandler.getInstance().getConfigRegistryURL();
+				String configRegistryUrl = InfraConfigPropertiesHandler.getInstance().getConfigRegistryURL();
 				if (configRegistryUrl != null && !configRegistryUrl.isEmpty()) {
 					properties.put(InfraConstants.ORBIT_CONFIG_REGISTRY_URL, configRegistryUrl);
 				}
