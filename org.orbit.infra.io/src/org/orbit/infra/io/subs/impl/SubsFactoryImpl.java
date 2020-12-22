@@ -1,9 +1,9 @@
 package org.orbit.infra.io.subs.impl;
 
 import org.orbit.infra.io.subs.ISubscriptionService;
-import org.orbit.infra.io.subs.SubscriptionFactory;
+import org.orbit.infra.io.subs.SubsFactory;
 
-public class SubscriptionFactoryImpl extends SubscriptionFactory {
+public class SubsFactoryImpl extends SubsFactory {
 
 	@Override
 	public ISubscriptionService createSubscription(String accessToken) {

@@ -4,18 +4,18 @@ import org.orbit.infra.io.configregistry.impl.CFGFactoryImpl;
 
 public abstract class CFGFactory {
 
-	public static CFGFactory INSTANCE = init();
+	protected static CFGFactory INSTANCE = init();
 
-	public static CFGFactory init() {
+	protected static CFGFactory init() {
 		CFGFactory factory = new CFGFactoryImpl();
 		return factory;
 	}
 
-	public synchronized static void setFactory(CFGFactory factory) {
+	public synchronized static void setInstance(CFGFactory factory) {
 		INSTANCE = factory;
 	}
 
-	public synchronized static CFGFactory getFactory() {
+	public synchronized static CFGFactory getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = init();
 		}

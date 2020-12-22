@@ -39,7 +39,7 @@ public class ConfigRegistryHelper {
 	 */
 	public static synchronized IConfigRegistry getPlatformsRegistry(String accessToken, boolean createIfNotExist) throws IOException {
 		IConfigRegistry registry = null;
-		CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
+		CFG cfg = CFGFactory.getInstance().createCFG(accessToken);
 		if (cfg != null && cfg.isOnline()) {
 			registry = cfg.getConfigRegistryByName(REGISTRY__PLATFORMS);
 			if (registry == null) {
@@ -305,7 +305,7 @@ public class ConfigRegistryHelper {
 	 */
 	public synchronized static IConfigRegistry getUsersConfigRegistry(String accessToken) throws IOException {
 		IConfigRegistry usersConfigReg = null;
-		CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
+		CFG cfg = CFGFactory.getInstance().createCFG(accessToken);
 		if (cfg != null) {
 			usersConfigReg = cfg.getConfigRegistryByName(REGISTRY__USERS);
 			if (usersConfigReg == null) {

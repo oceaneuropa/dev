@@ -46,7 +46,7 @@ public class ConfigRegistryListServlet extends HttpServlet {
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			CFG cfg = CFGFactory.INSTANCE.createCFG(accessToken);
+			CFG cfg = CFGFactory.getInstance().createCFG(accessToken);
 			if (!cfg.isOnline()) {
 				message = MessageHelper.INSTANCE.add(message, "Config registry is not online.");
 			} else {
