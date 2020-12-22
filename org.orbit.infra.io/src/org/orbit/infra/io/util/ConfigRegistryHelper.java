@@ -5,10 +5,10 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.io.CFG;
-import org.orbit.infra.io.IConfigElement;
-import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.CFG;
 import org.orbit.infra.io.configregistry.CFGFactory;
+import org.orbit.infra.io.configregistry.IConfigElement;
+import org.orbit.infra.io.configregistry.IConfigRegistry;
 import org.origin.common.osgi.OSGiVersionUtil;
 import org.origin.common.resource.Path;
 

@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.infra.io.CFG;
-import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.CFG;
 import org.orbit.infra.io.configregistry.CFGFactory;
+import org.orbit.infra.io.configregistry.IConfigRegistry;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;

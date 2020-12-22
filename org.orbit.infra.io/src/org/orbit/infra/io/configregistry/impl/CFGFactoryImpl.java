@@ -1,6 +1,6 @@
 package org.orbit.infra.io.configregistry.impl;
 
-import org.orbit.infra.io.CFG;
+import org.orbit.infra.io.configregistry.CFG;
 import org.orbit.infra.io.configregistry.CFGFactory;
 
 /**

@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigElement;
-import org.orbit.infra.io.CFG;
-import org.orbit.infra.io.IConfigElement;
-import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.CFG;
+import org.orbit.infra.io.configregistry.IConfigElement;
+import org.orbit.infra.io.configregistry.IConfigRegistry;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.model.DateRecordSupport;
 import org.origin.common.model.TransientPropertySupport;

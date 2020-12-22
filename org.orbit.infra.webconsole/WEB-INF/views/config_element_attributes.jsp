@@ -7,6 +7,7 @@
 <%@ page import="org.orbit.infra.api.*"%>
 <%@ page import="org.orbit.infra.api.datacast.*"%>
 <%@ page import="org.orbit.infra.io.*"%>
+<%@ page import="org.orbit.infra.io.configregistry.*"%>
 <%@ page import="org.orbit.infra.webconsole.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);

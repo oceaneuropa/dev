@@ -1,6 +1,5 @@
 package org.orbit.infra.io.configregistry;
 
-import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.configregistry.impl.CFGFactoryImpl;
 
 public abstract class CFGFactory {

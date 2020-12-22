@@ -1,7 +1,7 @@
 package org.orbit.infra.io.util;
 
-import org.orbit.infra.io.IConfigElement;
-import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.configregistry.IConfigElement;
+import org.orbit.infra.io.configregistry.IConfigRegistry;
 import org.origin.common.util.BaseComparator;
 import org.origin.common.util.NameUtil;
 
