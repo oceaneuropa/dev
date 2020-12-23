@@ -26,6 +26,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	// ------------------------------------------------------
 	List<SubsSourceType> getSourceTypes() throws ServerException;
 
+	SubsSourceType getSourceType(Integer id) throws ServerException;
+
 	SubsSourceType getSourceType(String type) throws ServerException;
 
 	boolean sourceTypeExists(String type) throws ServerException;
@@ -46,6 +48,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	// Target Types
 	// ------------------------------------------------------
 	List<SubsTargetType> getTargetTypes() throws ServerException;
+
+	SubsTargetType getTargetType(Integer id) throws ServerException;
 
 	SubsTargetType getTargetType(String type) throws ServerException;
 
@@ -73,6 +77,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	SubsSource getSource(Integer sourceId) throws ServerException;
 
 	SubsSource getSource(String type, String instanceId) throws ServerException;
+
+	boolean sourceExists(String type) throws ServerException;
 
 	boolean sourceExists(Integer sourceId) throws ServerException;
 
@@ -104,6 +110,8 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 	SubsTarget getTarget(Integer targetId) throws ServerException;
 
 	SubsTarget getTarget(String type, String instanceId) throws ServerException;
+
+	boolean targetExists(String type) throws ServerException;
 
 	boolean targetExists(Integer targetId) throws ServerException;
 

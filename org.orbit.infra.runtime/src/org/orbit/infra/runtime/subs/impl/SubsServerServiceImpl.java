@@ -205,6 +205,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
+	public SubsSourceType getSourceType(Integer id) throws ServerException {
+		SubsSourceType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.sourceTypesTableHandler.getType(conn, id);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
+	}
+
+	@Override
 	public SubsSourceType getSourceType(String type) throws ServerException {
 		SubsSourceType typeObj = null;
 		Connection conn = null;
@@ -352,6 +368,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			types = new ArrayList<SubsTargetType>();
 		}
 		return types;
+	}
+
+	@Override
+	public SubsTargetType getTargetType(Integer id) throws ServerException {
+		SubsTargetType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.targetTypesTableHandler.getType(conn, id);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
 	}
 
 	@Override
@@ -553,6 +585,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return source;
+	}
+
+	@Override
+	public boolean sourceExists(String type) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.sourcesTableHandler.sourceExists(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
 	}
 
 	@Override
@@ -841,6 +889,22 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return target;
+	}
+
+	@Override
+	public boolean targetExists(String type) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.targetsTableHandler.targetExists(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
 	}
 
 	@Override

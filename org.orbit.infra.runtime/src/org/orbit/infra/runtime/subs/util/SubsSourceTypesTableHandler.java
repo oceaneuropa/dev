@@ -90,7 +90,26 @@ public class SubsSourceTypesTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Get a source type.
+	 * Get a source type by id.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	public SubsSourceType getType(Connection conn, Integer id) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
+		ResultSetSingleHandler<SubsSourceType> handler = new ResultSetSingleHandler<SubsSourceType>() {
+			@Override
+			protected SubsSourceType handleRow(ResultSet rs) throws SQLException {
+				return toObject(rs);
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { id, }, handler);
+	}
+
+	/**
+	 * Get a source type by type.
 	 * 
 	 * @param conn
 	 * @param type

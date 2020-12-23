@@ -166,54 +166,54 @@ public class RuntimeModelConverter {
 	public static class SUBS_SERVER {
 		/**
 		 * 
-		 * @param sourceType
+		 * @param typeObj
 		 * @return
 		 */
-		public SubsSourceTypeDTO toDTO(SubsSourceType sourceType) {
-			if (sourceType == null) {
+		public SubsSourceTypeDTO toDTO(SubsSourceType typeObj) {
+			if (typeObj == null) {
 				return null;
 			}
 
-			Integer id = sourceType.getId();
-			String type = sourceType.getType();
-			String name = sourceType.getName();
-			long dateCreated = sourceType.getDateCreated();
-			long dateModified = sourceType.getDateModified();
+			Integer id = typeObj.getId();
+			String type = typeObj.getType();
+			String name = typeObj.getName();
+			long dateCreated = typeObj.getDateCreated();
+			long dateModified = typeObj.getDateModified();
 
-			SubsSourceTypeDTO sourceTypeDTO = new SubsSourceTypeDTO();
-			sourceTypeDTO.setId(id);
-			sourceTypeDTO.setType(type);
-			sourceTypeDTO.setName(name);
-			sourceTypeDTO.setDateCreated(dateCreated);
-			sourceTypeDTO.setDateModified(dateModified);
+			SubsSourceTypeDTO typeDTO = new SubsSourceTypeDTO();
+			typeDTO.setId(id);
+			typeDTO.setType(type);
+			typeDTO.setName(name);
+			typeDTO.setDateCreated(dateCreated);
+			typeDTO.setDateModified(dateModified);
 
-			return sourceTypeDTO;
+			return typeDTO;
 		}
 
 		/**
 		 * 
-		 * @param targetType
+		 * @param typeObj
 		 * @return
 		 */
-		public SubsTargetTypeDTO toDTO(SubsTargetType targetType) {
-			if (targetType == null) {
+		public SubsTargetTypeDTO toDTO(SubsTargetType typeObj) {
+			if (typeObj == null) {
 				return null;
 			}
 
-			Integer id = targetType.getId();
-			String type = targetType.getType();
-			String name = targetType.getName();
-			long dateCreated = targetType.getDateCreated();
-			long dateModified = targetType.getDateModified();
+			Integer id = typeObj.getId();
+			String type = typeObj.getType();
+			String name = typeObj.getName();
+			long dateCreated = typeObj.getDateCreated();
+			long dateModified = typeObj.getDateModified();
 
-			SubsTargetTypeDTO targetDTO = new SubsTargetTypeDTO();
-			targetDTO.setId(id);
-			targetDTO.setType(type);
-			targetDTO.setName(name);
-			targetDTO.setDateCreated(dateCreated);
-			targetDTO.setDateModified(dateModified);
+			SubsTargetTypeDTO typeDTO = new SubsTargetTypeDTO();
+			typeDTO.setId(id);
+			typeDTO.setType(type);
+			typeDTO.setName(name);
+			typeDTO.setDateCreated(dateCreated);
+			typeDTO.setDateModified(dateModified);
 
-			return targetDTO;
+			return typeDTO;
 		}
 
 		/**

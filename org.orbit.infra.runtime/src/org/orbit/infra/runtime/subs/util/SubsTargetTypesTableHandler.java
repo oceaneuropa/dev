@@ -90,7 +90,26 @@ public class SubsTargetTypesTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Get a target type.
+	 * Get a target type by id.
+	 * 
+	 * @param conn
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	public SubsTargetType getType(Connection conn, Integer id) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
+		ResultSetSingleHandler<SubsTargetType> handler = new ResultSetSingleHandler<SubsTargetType>() {
+			@Override
+			protected SubsTargetType handleRow(ResultSet rs) throws SQLException {
+				return toObject(rs);
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { id, }, handler);
+	}
+
+	/**
+	 * Get a target type by type.
 	 * 
 	 * @param conn
 	 * @param type

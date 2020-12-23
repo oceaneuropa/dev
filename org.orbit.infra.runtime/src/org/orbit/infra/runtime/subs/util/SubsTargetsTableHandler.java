@@ -159,6 +159,25 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
+	 * Check whether targets with type exists.
+	 * 
+	 * @param conn
+	 * @param type
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean targetExists(Connection conn, String type) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE type=?";
+		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+			@Override
+			public Boolean handle(ResultSet rs) throws SQLException {
+				return rs.next() ? true : false;
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { type }, handler);
+	}
+
+	/**
 	 * Check whether a target with id exists.
 	 * 
 	 * @param conn
