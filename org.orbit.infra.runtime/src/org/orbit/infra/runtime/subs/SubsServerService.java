@@ -84,11 +84,9 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean sourceExists(String type, String instanceId) throws ServerException;
 
-	SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ServerException;
+	SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties, boolean createType) throws ServerException;
 
-	boolean updateSourceTypeAndInstanceId(Integer sourceId, String type, String instanceId) throws ServerException;
-
-	boolean updateSourceType(Integer sourceId, String type) throws ServerException;
+	boolean updateSourceType(Integer sourceId, String type, boolean createType) throws ServerException;
 
 	boolean updateSourceInstanceId(Integer sourceId, String instanceId) throws ServerException;
 
@@ -117,11 +115,9 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	boolean targetExists(String type, String instanceId) throws ServerException;
 
-	SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException;
+	SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties, boolean createType) throws ServerException;
 
-	boolean updateTargetTypeAndInstanceId(Integer targetId, String type, String instanceId) throws ServerException;
-
-	boolean updateTargetType(Integer targetId, String type) throws ServerException;
+	boolean updateTargetType(Integer targetId, String type, boolean createType) throws ServerException;
 
 	boolean updateTargetInstanceId(Integer targetId, String instanceId) throws ServerException;
 

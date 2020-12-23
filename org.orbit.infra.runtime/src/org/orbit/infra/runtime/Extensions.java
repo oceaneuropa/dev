@@ -88,14 +88,8 @@ public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
 
-	// public Extensions() {
-	// setBundleId("org.orbit.infra.runtime");
-	// }
-
 	@Override
 	public void createExtensions() {
-		LOG.debug("createExtensions()");
-
 		createServiceActivatorExtensions();
 		createPropertyTesterExtensions();
 		createIndexProviderExtensions();
@@ -474,7 +468,7 @@ public class Extensions extends ProgramExtensions {
 		desc54.setSingleton(false);
 		extension54.addInterface(desc54);
 		addExtension(extension54);
- 
+
 		Extension extension55 = new Extension(extensionTypeId, UpdateSubsTargetTypeNameWSCommand.ID);
 		extension55.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
 		InterfaceDescription desc55 = new InterfaceDescription(WSCommand.class, UpdateSubsTargetTypeNameWSCommand.class);

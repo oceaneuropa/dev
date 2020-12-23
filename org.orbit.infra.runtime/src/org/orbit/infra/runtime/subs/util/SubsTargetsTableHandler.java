@@ -262,21 +262,6 @@ public class SubsTargetsTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Update target type and instanceId.
-	 * 
-	 * @param conn
-	 * @param id
-	 * @param type
-	 * @param instanceId
-	 * @return
-	 * @throws SQLException
-	 */
-	public boolean updateTypeAndInstanceId(Connection conn, Integer id, String type, String instanceId) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET type=?, instanceId=?, dateModified=? WHERE id=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { type, instanceId, getCurrentTime(), id }, 1);
-	}
-
-	/**
 	 * Update target type.
 	 * 
 	 * @param conn

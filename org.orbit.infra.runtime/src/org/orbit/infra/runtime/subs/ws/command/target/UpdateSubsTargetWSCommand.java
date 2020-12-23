@@ -87,35 +87,26 @@ public class UpdateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			}
 
 			SubsTarget anotherTarget = service.getTarget(type, instanceId);
+
 			if (anotherTarget != null && id.equals(anotherTarget.getId())) {
 				ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}
 
-		if (hasTypeParam && hasInstanceIdParam) {
-			// Update type and instanceId
+		// Update type
+		if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			String instanceId = request.getStringParameter("instanceId");
-			boolean currSucceed = service.updateTargetTypeAndInstanceId(id, type, instanceId);
+			boolean currSucceed = service.updateTargetType(id, type, true);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
 				hasFailed = true;
 			}
+		}
 
-		} else if (hasTypeParam) {
-			// Update type
-			String type = request.getStringParameter("type");
-			boolean currSucceed = service.updateTargetType(id, type);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-
-		} else if (hasInstanceIdParam) {
-			// Update instanceId
+		// Update instanceId
+		if (hasInstanceIdParam) {
 			String instanceId = request.getStringParameter("instanceId");
 			boolean currSucceed = service.updateTargetInstanceId(id, instanceId);
 			if (currSucceed) {

@@ -636,10 +636,16 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ServerException {
+	public SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties, boolean createType) throws ServerException {
 		SubsSource source = null;
 		Connection conn = null;
 		try {
+			if (createType) {
+				if (!sourceTypeExists(type)) {
+					createSourceType(type, null);
+				}
+			}
+
 			conn = getConnection();
 			source = this.sourcesTableHandler.createSource(conn, type, instanceId, name, properties);
 
@@ -652,26 +658,16 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateSourceTypeAndInstanceId(Integer sourceId, String type, String instanceId) throws ServerException {
+	public boolean updateSourceType(Integer sourceId, String type, boolean createType) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
-			conn = getConnection();
-			succeed = this.sourcesTableHandler.updateTypeAndInstanceId(conn, sourceId, type, instanceId);
+			if (createType) {
+				if (!sourceTypeExists(type)) {
+					createSourceType(type, null);
+				}
+			}
 
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean updateSourceType(Integer sourceId, String type) throws ServerException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
 			conn = getConnection();
 			succeed = this.sourcesTableHandler.updateType(conn, sourceId, type);
 
@@ -940,10 +936,16 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ServerException {
+	public SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties, boolean createType) throws ServerException {
 		SubsTarget target = null;
 		Connection conn = null;
 		try {
+			if (createType) {
+				if (!targetTypeExists(type)) {
+					createTargetType(type, null);
+				}
+			}
+
 			conn = getConnection();
 			target = this.targetsTableHandler.createTarget(conn, type, instanceId, name, serverId, serverURL, properties);
 
@@ -956,26 +958,16 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
-	public boolean updateTargetTypeAndInstanceId(Integer targetId, String type, String instanceId) throws ServerException {
+	public boolean updateTargetType(Integer targetId, String type, boolean createType) throws ServerException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
-			conn = getConnection();
-			succeed = this.targetsTableHandler.updateTypeAndInstanceId(conn, targetId, type, instanceId);
+			if (createType) {
+				if (!targetTypeExists(type)) {
+					createTargetType(type, null);
+				}
+			}
 
-		} catch (SQLException e) {
-			handleException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean updateTargetType(Integer targetId, String type) throws ServerException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
 			conn = getConnection();
 			succeed = this.targetsTableHandler.updateType(conn, targetId, type);
 

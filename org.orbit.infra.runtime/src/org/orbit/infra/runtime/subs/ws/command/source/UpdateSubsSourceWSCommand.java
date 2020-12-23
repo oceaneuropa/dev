@@ -83,35 +83,26 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			}
 
 			SubsSource anotherSource = service.getSource(type, instanceId);
+
 			if (anotherSource != null && id.equals(anotherSource.getId())) {
 				ErrorDTO error = new ErrorDTO("Source with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}
 
-		if (hasTypeParam && hasInstanceIdParam) {
-			// Update type and instanceId
+		// Update type
+		if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			String instanceId = request.getStringParameter("instanceId");
-			boolean currSucceed = service.updateSourceTypeAndInstanceId(id, type, instanceId);
+			boolean currSucceed = service.updateSourceType(id, type, true);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
 				hasFailed = true;
 			}
+		}
 
-		} else if (hasTypeParam) {
-			// Update type
-			String type = request.getStringParameter("type");
-			boolean currSucceed = service.updateSourceType(id, type);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-
-		} else if (hasInstanceIdParam) {
-			// Update instanceId
+		// Update instanceId
+		if (hasInstanceIdParam) {
 			String instanceId = request.getStringParameter("instanceId");
 			boolean currSucceed = service.updateSourceInstanceId(id, instanceId);
 			if (currSucceed) {

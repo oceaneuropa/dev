@@ -66,7 +66,7 @@ public class CreateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsSource source = service.createSource(type, instanceId, name, properties);
+		SubsSource source = service.createSource(type, instanceId, name, properties, true);
 		if (source == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

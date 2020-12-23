@@ -68,7 +68,7 @@ public class CreateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsTarget target = service.createTarget(type, instanceId, name, serverId, serverURL, properties);
+		SubsTarget target = service.createTarget(type, instanceId, name, serverId, serverURL, properties, true);
 		if (target == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
