@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subs.ws.command;
+package org.orbit.infra.runtime.subs.ws.command.target;
 
 import java.util.Map;
 
@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.subs.SubsSource;
-import org.orbit.infra.model.subs.dto.SubsSourceDTO;
+import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.dto.SubsTargetDTO;
 import org.orbit.infra.runtime.subs.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.orbit.infra.runtime.util.RuntimeModelConverter;
@@ -20,18 +20,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class CreateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class CreateSubsTargetWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.CreateSubsSourceWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.CreateSubsTargetWSCommand";
 
-	public CreateSubsSourceWSCommand() {
+	public CreateSubsTargetWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__CREATE_SOURCE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__CREATE_TARGET.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -42,6 +42,8 @@ public class CreateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		String type = request.getStringParameter("type"); // required
 		String instanceId = request.getStringParameter("instanceId"); // required
 		String name = request.getStringParameter("name"); // optional. if empty, use instanceId
+		String serverId = request.getStringParameter("serverId"); // optional
+		String serverURL = request.getStringParameter("serverURL"); // optional
 		Map<String, Object> properties = null; // optional
 		if (request.hasParameter("properties")) {
 			properties = (Map<String, Object>) request.getMapParameter("properties");
@@ -61,19 +63,19 @@ public class CreateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 
 		SubsServerService service = getService();
 
-		if (service.sourceExists(type, instanceId)) {
-			ErrorDTO error = new ErrorDTO("Source with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
+		if (service.targetExists(type, instanceId)) {
+			ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsSource source = service.createSource(type, instanceId, name, properties);
-		if (source == null) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source cannot be created.");
+		SubsTarget target = service.createTarget(type, instanceId, name, serverId, serverURL, properties);
+		if (target == null) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsSourceDTO sourceDTO = RuntimeModelConverter.SUBS_SERVER.toDTO(source);
-		return Response.ok().entity(sourceDTO).build();
+		SubsTargetDTO targetDTO = RuntimeModelConverter.SUBS_SERVER.toDTO(target);
+		return Response.ok().entity(targetDTO).build();
 	}
 
 }

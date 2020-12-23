@@ -11,10 +11,14 @@ import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsSourceType;
 import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.SubsTargetType;
 import org.orbit.infra.model.subs.dto.SubsMappingDTO;
 import org.orbit.infra.model.subs.dto.SubsSourceDTO;
+import org.orbit.infra.model.subs.dto.SubsSourceTypeDTO;
 import org.orbit.infra.model.subs.dto.SubsTargetDTO;
+import org.orbit.infra.model.subs.dto.SubsTargetTypeDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
@@ -160,6 +164,58 @@ public class RuntimeModelConverter {
 	}
 
 	public static class SUBS_SERVER {
+		/**
+		 * 
+		 * @param sourceType
+		 * @return
+		 */
+		public SubsSourceTypeDTO toDTO(SubsSourceType sourceType) {
+			if (sourceType == null) {
+				return null;
+			}
+
+			Integer id = sourceType.getId();
+			String type = sourceType.getType();
+			String name = sourceType.getName();
+			long dateCreated = sourceType.getDateCreated();
+			long dateModified = sourceType.getDateModified();
+
+			SubsSourceTypeDTO sourceTypeDTO = new SubsSourceTypeDTO();
+			sourceTypeDTO.setId(id);
+			sourceTypeDTO.setType(type);
+			sourceTypeDTO.setName(name);
+			sourceTypeDTO.setDateCreated(dateCreated);
+			sourceTypeDTO.setDateModified(dateModified);
+
+			return sourceTypeDTO;
+		}
+
+		/**
+		 * 
+		 * @param targetType
+		 * @return
+		 */
+		public SubsTargetTypeDTO toDTO(SubsTargetType targetType) {
+			if (targetType == null) {
+				return null;
+			}
+
+			Integer id = targetType.getId();
+			String type = targetType.getType();
+			String name = targetType.getName();
+			long dateCreated = targetType.getDateCreated();
+			long dateModified = targetType.getDateModified();
+
+			SubsTargetTypeDTO targetDTO = new SubsTargetTypeDTO();
+			targetDTO.setId(id);
+			targetDTO.setType(type);
+			targetDTO.setName(name);
+			targetDTO.setDateCreated(dateCreated);
+			targetDTO.setDateModified(dateModified);
+
+			return targetDTO;
+		}
+
 		/**
 		 * 
 		 * @param source

@@ -43,7 +43,6 @@ Export-Package: org.orbit.infra.runtime;version="1.0.0",
  org.orbit.infra.runtime.subs.impl;version="1.0.0",
  org.orbit.infra.runtime.subs.util;version="1.0.0",
  org.orbit.infra.runtime.subs.ws;version="1.0.0",
- org.orbit.infra.runtime.subs.ws.command;version="1.0.0",
  org.orbit.infra.runtime.util;version="1.0.0"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="[1.0.0,2.0.0)",

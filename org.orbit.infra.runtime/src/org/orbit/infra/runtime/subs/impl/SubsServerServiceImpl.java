@@ -10,11 +10,15 @@ import java.util.Properties;
 
 import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsSourceType;
 import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.SubsTargetType;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.subs.SubsServerService;
 import org.orbit.infra.runtime.subs.util.SubsMappingsTableHandler;
+import org.orbit.infra.runtime.subs.util.SubsSourceTypesTableHandler;
 import org.orbit.infra.runtime.subs.util.SubsSourcesTableHandler;
+import org.orbit.infra.runtime.subs.util.SubsTargetTypesTableHandler;
 import org.orbit.infra.runtime.subs.util.SubsTargetsTableHandler;
 import org.orbit.infra.runtime.util.SubsServiceConfigPropertiesHandler;
 import org.orbit.platform.sdk.http.AccessTokenProvider;
@@ -42,6 +46,9 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
 	protected AccessTokenProvider accessTokenProvider;
+
+	protected SubsSourceTypesTableHandler sourceTypesTableHandler;
+	protected SubsTargetTypesTableHandler targetTypesTableHandler;
 
 	protected SubsSourcesTableHandler sourcesTableHandler;
 	protected SubsTargetsTableHandler targetsTableHandler;
@@ -74,10 +81,15 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		Connection conn = null;
 		try {
 			conn = getConnection();
+
+			this.sourceTypesTableHandler = new SubsSourceTypesTableHandler();
+			this.targetTypesTableHandler = new SubsTargetTypesTableHandler();
 			this.sourcesTableHandler = new SubsSourcesTableHandler();
 			this.targetsTableHandler = new SubsTargetsTableHandler();
 			this.mappingsTableHandler = new SubsMappingsTableHandler();
 
+			DatabaseUtil.initialize(conn, this.sourceTypesTableHandler);
+			DatabaseUtil.initialize(conn, this.targetTypesTableHandler);
 			DatabaseUtil.initialize(conn, this.sourcesTableHandler);
 			DatabaseUtil.initialize(conn, this.targetsTableHandler);
 			DatabaseUtil.initialize(conn, this.mappingsTableHandler);
@@ -168,6 +180,306 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	 */
 	protected void handleException(Exception e) throws ServerException {
 		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
+	}
+
+	// ------------------------------------------------------
+	// Source Types
+	// ------------------------------------------------------
+	@Override
+	public List<SubsSourceType> getSourceTypes() throws ServerException {
+		List<SubsSourceType> types = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			types = this.sourceTypesTableHandler.getTypes(conn);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (types == null) {
+			types = new ArrayList<SubsSourceType>();
+		}
+		return types;
+	}
+
+	@Override
+	public SubsSourceType getSourceType(String type) throws ServerException {
+		SubsSourceType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.sourceTypesTableHandler.getType(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
+	}
+
+	@Override
+	public boolean sourceTypeExists(String type) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.sourceTypesTableHandler.typeExists(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public SubsSourceType createSourceType(String type, String name) throws ServerException {
+		SubsSourceType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.sourceTypesTableHandler.createType(conn, type, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
+	}
+
+	@Override
+	public boolean updateSourceTypeType(Integer id, String type) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourceTypesTableHandler.updateType(conn, id, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateSourceTypeName(Integer id, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourceTypesTableHandler.updateName(conn, id, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateSourceTypeName(String type, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourceTypesTableHandler.updateName(conn, type, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteSourceType(Integer id) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourceTypesTableHandler.deleteType(conn, id);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteSourceType(String type) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.sourceTypesTableHandler.deleteType(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	// ------------------------------------------------------
+	// Target Types
+	// ------------------------------------------------------
+	@Override
+	public List<SubsTargetType> getTargetTypes() throws ServerException {
+		List<SubsTargetType> types = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			types = this.targetTypesTableHandler.getTypes(conn);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (types == null) {
+			types = new ArrayList<SubsTargetType>();
+		}
+		return types;
+	}
+
+	@Override
+	public SubsTargetType getTargetType(String type) throws ServerException {
+		SubsTargetType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.targetTypesTableHandler.getType(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
+	}
+
+	@Override
+	public boolean targetTypeExists(String type) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.targetTypesTableHandler.typeExists(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public SubsTargetType createTargetType(String type, String name) throws ServerException {
+		SubsTargetType typeObj = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			typeObj = this.targetTypesTableHandler.createType(conn, type, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return typeObj;
+	}
+
+	@Override
+	public boolean updateTargetTypeType(Integer id, String type) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetTypesTableHandler.updateType(conn, id, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateTargetTypeName(Integer id, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetTypesTableHandler.updateName(conn, id, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateTargetTypeName(String type, String name) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetTypesTableHandler.updateName(conn, type, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteTargetType(Integer id) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetTypesTableHandler.deleteType(conn, id);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteTargetType(String type) throws ServerException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.targetTypesTableHandler.deleteType(conn, type);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
 	}
 
 	// ------------------------------------------------------

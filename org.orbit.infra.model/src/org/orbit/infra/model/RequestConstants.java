@@ -25,6 +25,22 @@ public class RequestConstants {
 	public static String CONFIG_ELEMENT__DELETE_CONFIG_ELEMENT = "delete_config_element";
 
 	// Subs Server
+	public static String SUBS_SERVER__LIST_SOURCE_TYPES = "list_subs_source_types";
+	public static String SUBS_SERVER__GET_SOURCE_TYPE = "get_subs_source_type";
+	public static String SUBS_SERVER__SOURCE_TYPE_EXISTS = "subs_source_type_exists";
+	public static String SUBS_SERVER__CREATE_SOURCE_TYPE = "create_subs_source_type";
+	public static String SUBS_SERVER__UPDATE_SOURCE_TYPE_TYPE = "update_subs_source_type_type";
+	public static String SUBS_SERVER__UPDATE_SOURCE_TYPE_NAME = "update_subs_source_type_name";
+	public static String SUBS_SERVER__DELETE_SOURCE_TYPE = "delete_subs_source_type";
+
+	public static String SUBS_SERVER__LIST_TARGET_TYPES = "list_subs_target_types";
+	public static String SUBS_SERVER__GET_TARGET_TYPE = "get_subs_target_type";
+	public static String SUBS_SERVER__TARGET_TYPE_EXISTS = "subs_target_type_exists";
+	public static String SUBS_SERVER__CREATE_TARGET_TYPE = "create_subs_target_type";
+	public static String SUBS_SERVER__UPDATE_TARGET_TYPE_TYPE = "update_subs_target_type_type";
+	public static String SUBS_SERVER__UPDATE_TARGET_TYPE_NAME = "update_subs_target_type_name";
+	public static String SUBS_SERVER__DELETE_TARGET_TYPE = "delete_subs_target_type";
+
 	public static String SUBS_SERVER__LIST_SOURCES = "list_subs_sources";
 	public static String SUBS_SERVER__GET_SOURCE = "get_subs_source";
 	public static String SUBS_SERVER__SOURCE_EXISTS = "subs_source_exists";

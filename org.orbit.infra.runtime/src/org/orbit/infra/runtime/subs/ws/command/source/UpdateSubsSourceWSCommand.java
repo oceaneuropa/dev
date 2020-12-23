@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subs.ws.command;
+package org.orbit.infra.runtime.subs.ws.command.source;
 
 import java.util.HashMap;
 import java.util.Map;

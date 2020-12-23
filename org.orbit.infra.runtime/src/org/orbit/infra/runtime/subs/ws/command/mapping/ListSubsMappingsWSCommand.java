@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subs.ws.command;
+package org.orbit.infra.runtime.subs.ws.command.mapping;
 
 import java.util.ArrayList;
 import java.util.List;

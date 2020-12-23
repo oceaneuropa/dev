@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsSourceType;
 import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.SubsTargetType;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
@@ -18,6 +20,48 @@ import org.origin.common.service.WebServiceAware;
  *
  */
 public interface SubsServerService extends WebServiceAware, ConnectionAware, EditPoliciesAware, AccessTokenAware {
+
+	// ------------------------------------------------------
+	// Source Types
+	// ------------------------------------------------------
+	List<SubsSourceType> getSourceTypes() throws ServerException;
+
+	SubsSourceType getSourceType(String type) throws ServerException;
+
+	boolean sourceTypeExists(String type) throws ServerException;
+
+	SubsSourceType createSourceType(String type, String name) throws ServerException;
+
+	boolean updateSourceTypeType(Integer id, String type) throws ServerException;
+
+	boolean updateSourceTypeName(Integer id, String name) throws ServerException;
+
+	boolean updateSourceTypeName(String type, String name) throws ServerException;
+
+	boolean deleteSourceType(Integer id) throws ServerException;
+
+	boolean deleteSourceType(String type) throws ServerException;
+
+	// ------------------------------------------------------
+	// Target Types
+	// ------------------------------------------------------
+	List<SubsTargetType> getTargetTypes() throws ServerException;
+
+	SubsTargetType getTargetType(String type) throws ServerException;
+
+	boolean targetTypeExists(String type) throws ServerException;
+
+	SubsTargetType createTargetType(String type, String name) throws ServerException;
+
+	boolean updateTargetTypeType(Integer id, String type) throws ServerException;
+
+	boolean updateTargetTypeName(Integer id, String name) throws ServerException;
+
+	boolean updateTargetTypeName(String type, String name) throws ServerException;
+
+	boolean deleteTargetType(Integer id) throws ServerException;
+
+	boolean deleteTargetType(String type) throws ServerException;
 
 	// ------------------------------------------------------
 	// Sources

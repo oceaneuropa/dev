@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subs.ws.command;
+package org.orbit.infra.runtime.subs.ws.command.mapping;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

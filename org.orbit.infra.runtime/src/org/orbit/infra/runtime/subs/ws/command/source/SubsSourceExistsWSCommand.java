@@ -1,14 +1,14 @@
-package org.orbit.infra.runtime.subs.ws.command;
+package org.orbit.infra.runtime.subs.ws.command.source;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.subs.SubsTarget;
-import org.orbit.infra.model.subs.dto.SubsTargetDTO;
 import org.orbit.infra.runtime.subs.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class GetSubsTargetWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class SubsSourceExistsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.GetSubsTargetWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.SubsSourceExistsWSCommand";
 
-	public GetSubsTargetWSCommand() {
+	public SubsSourceExistsWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__GET_TARGET.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__SOURCE_EXISTS.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -49,25 +49,20 @@ public class GetSubsTargetWSCommand extends AbstractInfraCommand<SubsServerServi
 
 		SubsServerService service = getService();
 
-		SubsTarget target = null;
+		boolean exists = false;
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
-			target = service.getTarget(id);
+			exists = service.sourceExists(id);
 
 		} else if (hasTypeParams) {
 			String type = request.getStringParameter("type");
 			String instanceId = request.getStringParameter("instanceId");
-			target = service.getTarget(type, instanceId);
+			exists = service.sourceExists(type, instanceId);
 		}
 
-		if (target != null) {
-			SubsTargetDTO targetDTO = RuntimeModelConverter.SUBS_SERVER.toDTO(target);
-			return Response.ok().entity(targetDTO).build();
-		} else {
-			// ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Target is not found.");
-			// return Response.status(Status.NOT_FOUND).entity(error).build();
-			return Response.ok().build();
-		}
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("exists", exists);
+		return Response.status(Status.OK).entity(result).build();
 	}
 
 }
