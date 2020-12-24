@@ -5,7 +5,7 @@ import org.orbit.infra.connector.configregistry.ConfigRegistryConnector;
 import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
-import org.orbit.infra.connector.subs.SubsServerConnector;
+import org.orbit.infra.connector.subscription.SubsServerConnector;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.Extension;

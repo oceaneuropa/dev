@@ -11,5 +11,5 @@ Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)"
 Export-Package: org.orbit.infra.io;version="1.0.0",
  org.orbit.infra.io.configregistry;version="1.0.0",
- org.orbit.infra.io.subs;version="1.0.0",
+ org.orbit.infra.io.subscription;version="1.0.0",
  org.orbit.infra.io.util;version="1.0.0"

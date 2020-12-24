@@ -15,17 +15,19 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.subs.SubsMapping;
-import org.orbit.infra.api.subs.SubsServerAPI;
-import org.orbit.infra.api.subs.SubsSource;
-import org.orbit.infra.api.subs.SubsTarget;
+import org.orbit.infra.api.subscription.SubsMapping;
+import org.orbit.infra.api.subscription.SubsServerAPI;
+import org.orbit.infra.api.subscription.SubsSource;
+import org.orbit.infra.api.subscription.SubsTarget;
+import org.orbit.infra.api.subscription.SubsType;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.indexes.IndexItemImpl;
 import org.orbit.infra.connector.indexes.IndexProviderItemImpl;
-import org.orbit.infra.connector.subs.SubsMappingImpl;
-import org.orbit.infra.connector.subs.SubsSourceImpl;
-import org.orbit.infra.connector.subs.SubsTargetImpl;
+import org.orbit.infra.connector.subscription.SubsMappingImpl;
+import org.orbit.infra.connector.subscription.SubsSourceImpl;
+import org.orbit.infra.connector.subscription.SubsTargetImpl;
+import org.orbit.infra.connector.subscription.SubsTypeImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
@@ -33,6 +35,7 @@ import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.orbit.infra.model.subs.dto.SubsMappingDTO;
 import org.orbit.infra.model.subs.dto.SubsSourceDTO;
 import org.orbit.infra.model.subs.dto.SubsTargetDTO;
+import org.orbit.infra.model.subs.dto.SubsTypeDTO;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
@@ -267,6 +270,78 @@ public class ClientModelConverter {
 	}
 
 	public static class SUBS_SERVER {
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static List<SubsType> toTypes(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<SubsType> types = new ArrayList<SubsType>();
+			List<SubsTypeDTO> typeDTOs = response.readEntity(new GenericType<List<SubsTypeDTO>>() {
+			});
+			for (SubsTypeDTO typeDTO : typeDTOs) {
+				SubsType type = toType(api, typeDTO);
+				if (type != null) {
+					types.add(type);
+				}
+			}
+			return types;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public static SubsType toType(SubsServerAPI api, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			SubsType type = null;
+			SubsTypeDTO typeDTO = response.readEntity(SubsTypeDTO.class);
+			if (typeDTO != null) {
+				type = toType(api, typeDTO);
+			}
+			return type;
+		}
+
+		/**
+		 * 
+		 * @param api
+		 * @param typeDTO
+		 * @return
+		 */
+		public static SubsType toType(SubsServerAPI api, SubsTypeDTO typeDTO) {
+			if (typeDTO == null) {
+				return null;
+			}
+
+			Integer id = typeDTO.getId();
+			String type = typeDTO.getType();
+			String name = typeDTO.getName();
+			long dateCreated = typeDTO.getDateCreated();
+			long dateModified = typeDTO.getDateModified();
+
+			SubsTypeImpl source = new SubsTypeImpl();
+			source.setAPI(api);
+			source.setId(id);
+			source.setType(type);
+			source.setName(name);
+			source.setDateCreated(dateCreated);
+			source.setDateModified(dateModified);
+
+			return source;
+		}
+
 		/**
 		 * 
 		 * @param api

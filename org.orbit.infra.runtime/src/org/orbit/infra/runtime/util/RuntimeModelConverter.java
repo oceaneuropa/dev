@@ -11,14 +11,12 @@ import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.model.indexes.IndexProviderItemDTO;
 import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
-import org.orbit.infra.model.subs.SubsSourceType;
 import org.orbit.infra.model.subs.SubsTarget;
-import org.orbit.infra.model.subs.SubsTargetType;
+import org.orbit.infra.model.subs.SubsType;
 import org.orbit.infra.model.subs.dto.SubsMappingDTO;
 import org.orbit.infra.model.subs.dto.SubsSourceDTO;
-import org.orbit.infra.model.subs.dto.SubsSourceTypeDTO;
 import org.orbit.infra.model.subs.dto.SubsTargetDTO;
-import org.orbit.infra.model.subs.dto.SubsTargetTypeDTO;
+import org.orbit.infra.model.subs.dto.SubsTypeDTO;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
@@ -169,7 +167,7 @@ public class RuntimeModelConverter {
 		 * @param typeObj
 		 * @return
 		 */
-		public SubsSourceTypeDTO toDTO(SubsSourceType typeObj) {
+		public SubsTypeDTO toDTO(SubsType typeObj) {
 			if (typeObj == null) {
 				return null;
 			}
@@ -180,33 +178,7 @@ public class RuntimeModelConverter {
 			long dateCreated = typeObj.getDateCreated();
 			long dateModified = typeObj.getDateModified();
 
-			SubsSourceTypeDTO typeDTO = new SubsSourceTypeDTO();
-			typeDTO.setId(id);
-			typeDTO.setType(type);
-			typeDTO.setName(name);
-			typeDTO.setDateCreated(dateCreated);
-			typeDTO.setDateModified(dateModified);
-
-			return typeDTO;
-		}
-
-		/**
-		 * 
-		 * @param typeObj
-		 * @return
-		 */
-		public SubsTargetTypeDTO toDTO(SubsTargetType typeObj) {
-			if (typeObj == null) {
-				return null;
-			}
-
-			Integer id = typeObj.getId();
-			String type = typeObj.getType();
-			String name = typeObj.getName();
-			long dateCreated = typeObj.getDateCreated();
-			long dateModified = typeObj.getDateModified();
-
-			SubsTargetTypeDTO typeDTO = new SubsTargetTypeDTO();
+			SubsTypeDTO typeDTO = new SubsTypeDTO();
 			typeDTO.setId(id);
 			typeDTO.setType(type);
 			typeDTO.setName(name);

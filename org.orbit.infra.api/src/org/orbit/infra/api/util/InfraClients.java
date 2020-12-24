@@ -6,7 +6,7 @@ import java.util.Map;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.subs.SubsServerAPI;
+import org.orbit.infra.api.subscription.SubsServerAPI;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.util.LifecycleAware;

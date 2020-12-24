@@ -1,6 +1,6 @@
 package org.orbit.infra.api.util;
 
-import org.orbit.infra.api.subs.SubsServerAPI;
+import org.orbit.infra.api.subscription.SubsServerAPI;
 
 public class SubsServerUtil {
 
