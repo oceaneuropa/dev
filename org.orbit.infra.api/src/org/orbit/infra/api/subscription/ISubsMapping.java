@@ -2,7 +2,7 @@ package org.orbit.infra.api.subscription;
 
 import java.util.Map;
 
-public interface SubsMapping {
+public interface ISubsMapping {
 
 	Integer getId();
 

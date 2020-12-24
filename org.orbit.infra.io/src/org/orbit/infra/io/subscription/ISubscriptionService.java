@@ -23,6 +23,14 @@ public interface ISubscriptionService {
 	List<String> getSubscriberTypes() throws IOException;
 
 	/**
+	 * Get subscribables types.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	List<String> getSubscribableTypes() throws IOException;
+
+	/**
 	 * Get subscribers by type.
 	 * 
 	 * @param type
@@ -30,14 +38,6 @@ public interface ISubscriptionService {
 	 * @throws IOException
 	 */
 	List<ISubscriber> getSubscribers(String type) throws IOException;
-
-	/**
-	 * Get subscribables types.
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	List<String> getSubscribableTypes() throws IOException;
 
 	/**
 	 * Get subscribables by type.
@@ -55,7 +55,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscriber(String subscriberId) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscriber(Integer subscriberId) throws IOException;
 
 	/**
 	 * Get subscriptions that a subscriber (with specified subscribable type) subscribes.
@@ -65,7 +65,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscriber(String subscriberId, String subscribableType) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscriber(Integer subscriberId, String subscribableType) throws IOException;
 
 	/**
 	 * Get subscriptions that a subscriber (with specified subscribable type and instance id) subscribes.
@@ -76,7 +76,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscriber(String subscriberId, String subscribableType, String subscribableInstanceId) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscriber(Integer subscriberId, String subscribableType, String subscribableInstanceId) throws IOException;
 
 	/**
 	 * Get subscriptions (of subscribers) that subscribe a subscribable.
@@ -85,7 +85,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscribable(String subscribableId) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscribable(Integer subscribableId) throws IOException;
 
 	/**
 	 * Get subscriptions (with specified subscriber type) that subscribe a subscribable.
@@ -95,7 +95,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscribable(String subscribableId, String subscriberType) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscribable(Integer subscribableId, String subscriberType) throws IOException;
 
 	/**
 	 * Get subscriptions (with specified subscriber type and instance id) that subscribe a subscribable.
@@ -106,7 +106,7 @@ public interface ISubscriptionService {
 	 * @return
 	 * @throws IOException
 	 */
-	List<ISubscription> getSubscriptionsBySubscribable(String subscribableId, String subscriberType, String subscriberInstanceId) throws IOException;
+	List<ISubscription> getSubscriptionsBySubscribable(Integer subscribableId, String subscriberType, String subscriberInstanceId) throws IOException;
 
 	// ------------------------------------------------
 	// Subscriber
@@ -116,11 +116,12 @@ public interface ISubscriptionService {
 	 * 
 	 * @param type
 	 * @param instanceId
+	 * @param name
 	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	ISubscriber registerSubscriber(String type, String instanceId, Map<String, Object> properties) throws IOException;
+	ISubscriber registerSubscriber(String type, String instanceId, String name, Map<String, Object> properties) throws IOException;
 
 	/**
 	 * Check whether a subscriber with given type and instance id already exists.
@@ -145,11 +146,19 @@ public interface ISubscriptionService {
 	/**
 	 * Unregister a subscriber
 	 * 
+	 * @param subscriberId
+	 * @throws IOException
+	 */
+	boolean unregisterSubscriber(Integer subscriberId) throws IOException;
+
+	/**
+	 * Unregister a subscriber
+	 * 
 	 * @param type
 	 * @param instanceId
 	 * @throws IOException
 	 */
-	void unregisterSubscriber(String type, String instanceId) throws IOException;
+	boolean unregisterSubscriber(String type, String instanceId) throws IOException;
 
 	// ------------------------------------------------
 	// Subscribable
@@ -159,11 +168,14 @@ public interface ISubscriptionService {
 	 * 
 	 * @param type
 	 * @param instanceId
+	 * @param name
+	 * @param serverId
+	 * @param serverURL
 	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	ISubscribable registerSubscribable(String type, String instanceId, Map<String, Object> properties) throws IOException;
+	ISubscribable registerSubscribable(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws IOException;
 
 	/**
 	 * Check whether a subscribable with given type and instance id already exists.
@@ -186,12 +198,20 @@ public interface ISubscriptionService {
 	ISubscribable getSubscribable(String type, String instanceId) throws IOException;
 
 	/**
+	 * Unregister a subscribable
+	 * 
+	 * @param subscribableId
+	 * @throws IOException
+	 */
+	boolean unregisterSubscribable(Integer subscribableId) throws IOException;
+
+	/**
 	 * Unregister a subscribable.
 	 * 
 	 * @param type
 	 * @param instanceId
 	 * @throws IOException
 	 */
-	void unregisterSubscribable(String type, String instanceId) throws IOException;
+	boolean unregisterSubscribable(String type, String instanceId) throws IOException;
 
 }

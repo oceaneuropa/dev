@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.orbit.infra.api.subscription.SubsMapping;
+import org.orbit.infra.api.subscription.ISubsMapping;
 import org.orbit.infra.api.subscription.SubsServerAPI;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
@@ -14,7 +14,7 @@ import org.origin.common.util.DateUtil;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsMappingImpl implements SubsMapping {
+public class SubsMappingImpl implements ISubsMapping {
 
 	protected SubsServerAPI api;
 	protected Integer id;

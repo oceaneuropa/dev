@@ -7,11 +7,11 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.infra.api.subscription.SubsMapping;
+import org.orbit.infra.api.subscription.ISubsMapping;
 import org.orbit.infra.api.subscription.SubsServerAPI;
-import org.orbit.infra.api.subscription.SubsSource;
-import org.orbit.infra.api.subscription.SubsTarget;
-import org.orbit.infra.api.subscription.SubsType;
+import org.orbit.infra.api.subscription.ISubsSource;
+import org.orbit.infra.api.subscription.ISubsTarget;
+import org.orbit.infra.api.subscription.ISubsType;
 import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.RequestConstants;
 import org.origin.common.rest.client.ClientException;
@@ -44,8 +44,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsType> getSourceTypes() throws ClientException {
-		List<SubsType> types = null;
+	public List<ISubsType> getSourceTypes() throws ClientException {
+		List<ISubsType> types = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_SOURCE_TYPES);
@@ -84,7 +84,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsType createSourceType(String type, String name) throws ClientException {
+	public ISubsType createSourceType(String type, String name) throws ClientException {
 		checkNullParameter(type, "Type is null.");
 
 		Request request = new Request(RequestConstants.SUBS_SERVER__CREATE_SOURCE_TYPE);
@@ -93,7 +93,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			request.setParameter("name", name);
 		}
 
-		SubsType typeObj = null;
+		ISubsType typeObj = null;
 		Response response = null;
 		try {
 			response = sendRequest(request);
@@ -216,8 +216,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsType> getTargetTypes() throws ClientException {
-		List<SubsType> types = null;
+	public List<ISubsType> getTargetTypes() throws ClientException {
+		List<ISubsType> types = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_TARGET_TYPES);
@@ -256,7 +256,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsType createTargeteType(String type, String name) throws ClientException {
+	public ISubsType createTargeteType(String type, String name) throws ClientException {
 		checkNullParameter(type, "Type is null.");
 
 		Request request = new Request(RequestConstants.SUBS_SERVER__CREATE_TARGET_TYPE);
@@ -265,7 +265,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			request.setParameter("name", name);
 		}
 
-		SubsType typeObj = null;
+		ISubsType typeObj = null;
 		Response response = null;
 		try {
 			response = sendRequest(request);
@@ -387,8 +387,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsSource> getSources() throws ClientException {
-		List<SubsSource> sources = null;
+	public List<ISubsSource> getSources() throws ClientException {
+		List<ISubsSource> sources = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_SOURCES);
@@ -407,10 +407,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsSource> getSources(String type) throws ClientException {
+	public List<ISubsSource> getSources(String type) throws ClientException {
 		checkNullParameter(type, "Source type is null.");
 
-		List<SubsSource> sources = null;
+		List<ISubsSource> sources = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_SOURCES);
@@ -430,10 +430,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsSource getSource(Integer sourceId) throws ClientException {
+	public ISubsSource getSource(Integer sourceId) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 
-		SubsSource source = null;
+		ISubsSource source = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_SOURCE);
@@ -450,11 +450,11 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsSource getSource(String type, String instanceId) throws ClientException {
+	public ISubsSource getSource(String type, String instanceId) throws ClientException {
 		checkNullParameter(type, "Source type is null.");
 		checkNullParameter(instanceId, "instanceId is null.");
 
-		SubsSource source = null;
+		ISubsSource source = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_SOURCE);
@@ -514,7 +514,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ClientException {
+	public ISubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ClientException {
 		checkNullParameter(type, "Source type is null.");
 		checkNullParameter(instanceId, "Source instanceId is null.");
 
@@ -528,7 +528,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			request.setParameter("properties", properties);
 		}
 
-		SubsSource source = null;
+		ISubsSource source = null;
 		Response response = null;
 		try {
 			response = sendRequest(request);
@@ -701,8 +701,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsTarget> getTargets() throws ClientException {
-		List<SubsTarget> targets = null;
+	public List<ISubsTarget> getTargets() throws ClientException {
+		List<ISubsTarget> targets = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_TARGETS);
@@ -721,10 +721,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsTarget> getTargets(String type) throws ClientException {
+	public List<ISubsTarget> getTargets(String type) throws ClientException {
 		checkNullParameter(type, "Target type is null.");
 
-		List<SubsTarget> targets = null;
+		List<ISubsTarget> targets = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_TARGETS);
@@ -744,10 +744,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsTarget getTarget(Integer targetId) throws ClientException {
+	public ISubsTarget getTarget(Integer targetId) throws ClientException {
 		checkNullParameter(targetId, "Source Id is null.");
 
-		SubsTarget target = null;
+		ISubsTarget target = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_TARGET);
@@ -765,11 +765,11 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsTarget getTarget(String type, String instanceId) throws ClientException {
+	public ISubsTarget getTarget(String type, String instanceId) throws ClientException {
 		checkNullParameter(type, "Source type is null.");
 		checkNullParameter(instanceId, "instanceId is null.");
 
-		SubsTarget target = null;
+		ISubsTarget target = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_TARGET);
@@ -829,7 +829,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ClientException {
+	public ISubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ClientException {
 		checkNullParameter(type, "Target type is null.");
 		checkNullParameter(instanceId, "Target instanceId is null.");
 
@@ -849,7 +849,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			request.setParameter("properties", properties);
 		}
 
-		SubsTarget target = null;
+		ISubsTarget target = null;
 		Response response = null;
 		try {
 			response = sendRequest(request);
@@ -1087,8 +1087,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsMapping> getMappings() throws ClientException {
-		List<SubsMapping> mappings = null;
+	public List<ISubsMapping> getMappings() throws ClientException {
+		List<ISubsMapping> mappings = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
@@ -1107,10 +1107,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsMapping> getMappingsOfSource(Integer sourceId) throws ClientException {
+	public List<ISubsMapping> getMappingsOfSource(Integer sourceId) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 
-		List<SubsMapping> mappings = null;
+		List<ISubsMapping> mappings = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
@@ -1130,10 +1130,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsMapping> getMappingsOfTarget(Integer targetId) throws ClientException {
+	public List<ISubsMapping> getMappingsOfTarget(Integer targetId) throws ClientException {
 		checkNullParameter(targetId, "Target Id is null.");
 
-		List<SubsMapping> mappings = null;
+		List<ISubsMapping> mappings = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
@@ -1153,11 +1153,11 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public List<SubsMapping> getMappings(Integer sourceId, Integer targetId) throws ClientException {
+	public List<ISubsMapping> getMappings(Integer sourceId, Integer targetId) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 		checkNullParameter(targetId, "Target Id is null.");
 
-		List<SubsMapping> mappings = null;
+		List<ISubsMapping> mappings = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
@@ -1178,10 +1178,10 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsMapping getMapping(Integer mappingId) throws ClientException {
+	public ISubsMapping getMapping(Integer mappingId) throws ClientException {
 		checkNullParameter(mappingId, "Mapping Id is null.");
 
-		SubsMapping mapping = null;
+		ISubsMapping mapping = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_MAPPING);
@@ -1198,12 +1198,12 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsMapping getMappingByClientId(Integer sourceId, Integer targetId, String clientId) throws ClientException {
+	public ISubsMapping getMappingByClientId(Integer sourceId, Integer targetId, String clientId) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 		checkNullParameter(targetId, "Target Id is null.");
 		checkNullParameter(clientId, "Client Id is null.");
 
-		SubsMapping mapping = null;
+		ISubsMapping mapping = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_MAPPING);
@@ -1222,12 +1222,12 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsMapping getMappingByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ClientException {
+	public ISubsMapping getMappingByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 		checkNullParameter(targetId, "Target Id is null.");
 		checkNullParameter(clientURL, "Client URL is null.");
 
-		SubsMapping mapping = null;
+		ISubsMapping mapping = null;
 		Response response = null;
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__GET_MAPPING);
@@ -1314,7 +1314,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
-	public SubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ClientException {
+	public ISubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ClientException {
 		checkNullParameter(sourceId, "Source Id is null.");
 		checkNullParameter(targetId, "Target Id is null.");
 		checkNullParameter(clientId, "Client Id is null.");
@@ -1330,7 +1330,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			request.setParameter("properties", properties);
 		}
 
-		SubsMapping mapping = null;
+		ISubsMapping mapping = null;
 		Response response = null;
 		try {
 			response = sendRequest(request);

@@ -11,6 +11,16 @@ public class SubsServerUtil {
 	 */
 	public static SubsServerAPI getAPI(String accessToken) {
 		String url = InfraConfigPropertiesHandler.getInstance().getSubsServerURL();
+		return getAPI(url, accessToken);
+	}
+
+	/**
+	 * 
+	 * @param url
+	 * @param accessToken
+	 * @return
+	 */
+	public static SubsServerAPI getAPI(String url, String accessToken) {
 		SubsServerAPI api = InfraClients.getInstance().getSubsServerAPI(url, accessToken);
 		return api;
 	}
@@ -20,7 +30,7 @@ public class SubsServerUtil {
 	 * @param api
 	 * @return
 	 */
-	public boolean isOnline(SubsServerAPI api) {
+	public static boolean isOnline(SubsServerAPI api) {
 		api = checkAPI(api);
 		boolean isOnline = false;
 		if (api.ping()) {

@@ -4,14 +4,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.orbit.infra.api.subscription.SubsServerAPI;
-import org.orbit.infra.api.subscription.SubsSource;
+import org.orbit.infra.api.subscription.ISubsSource;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsSourceImpl implements SubsSource {
+public class SubsSourceImpl implements ISubsSource {
 
 	protected SubsServerAPI api;
 	protected Integer id;

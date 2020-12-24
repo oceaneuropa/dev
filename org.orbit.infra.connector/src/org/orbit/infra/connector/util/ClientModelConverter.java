@@ -15,11 +15,11 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.subscription.SubsMapping;
+import org.orbit.infra.api.subscription.ISubsMapping;
 import org.orbit.infra.api.subscription.SubsServerAPI;
-import org.orbit.infra.api.subscription.SubsSource;
-import org.orbit.infra.api.subscription.SubsTarget;
-import org.orbit.infra.api.subscription.SubsType;
+import org.orbit.infra.api.subscription.ISubsSource;
+import org.orbit.infra.api.subscription.ISubsTarget;
+import org.orbit.infra.api.subscription.ISubsType;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.indexes.IndexItemImpl;
@@ -277,16 +277,16 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static List<SubsType> toTypes(SubsServerAPI api, Response response) throws ClientException {
+		public static List<ISubsType> toTypes(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			List<SubsType> types = new ArrayList<SubsType>();
+			List<ISubsType> types = new ArrayList<ISubsType>();
 			List<SubsTypeDTO> typeDTOs = response.readEntity(new GenericType<List<SubsTypeDTO>>() {
 			});
 			for (SubsTypeDTO typeDTO : typeDTOs) {
-				SubsType type = toType(api, typeDTO);
+				ISubsType type = toType(api, typeDTO);
 				if (type != null) {
 					types.add(type);
 				}
@@ -301,12 +301,12 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static SubsType toType(SubsServerAPI api, Response response) throws ClientException {
+		public static ISubsType toType(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			SubsType type = null;
+			ISubsType type = null;
 			SubsTypeDTO typeDTO = response.readEntity(SubsTypeDTO.class);
 			if (typeDTO != null) {
 				type = toType(api, typeDTO);
@@ -320,7 +320,7 @@ public class ClientModelConverter {
 		 * @param typeDTO
 		 * @return
 		 */
-		public static SubsType toType(SubsServerAPI api, SubsTypeDTO typeDTO) {
+		public static ISubsType toType(SubsServerAPI api, SubsTypeDTO typeDTO) {
 			if (typeDTO == null) {
 				return null;
 			}
@@ -349,16 +349,16 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static List<SubsSource> toSources(SubsServerAPI api, Response response) throws ClientException {
+		public static List<ISubsSource> toSources(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			List<SubsSource> sources = new ArrayList<SubsSource>();
+			List<ISubsSource> sources = new ArrayList<ISubsSource>();
 			List<SubsSourceDTO> sourceDTOs = response.readEntity(new GenericType<List<SubsSourceDTO>>() {
 			});
 			for (SubsSourceDTO sourceDTO : sourceDTOs) {
-				SubsSource source = toSource(api, sourceDTO);
+				ISubsSource source = toSource(api, sourceDTO);
 				if (source != null) {
 					sources.add(source);
 				}
@@ -373,12 +373,12 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static SubsSource toSource(SubsServerAPI api, Response response) throws ClientException {
+		public static ISubsSource toSource(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			SubsSource source = null;
+			ISubsSource source = null;
 			SubsSourceDTO sourceDTO = response.readEntity(SubsSourceDTO.class);
 			if (sourceDTO != null) {
 				source = toSource(api, sourceDTO);
@@ -392,7 +392,7 @@ public class ClientModelConverter {
 		 * @param sourceDTO
 		 * @return
 		 */
-		public static SubsSource toSource(SubsServerAPI api, SubsSourceDTO sourceDTO) {
+		public static ISubsSource toSource(SubsServerAPI api, SubsSourceDTO sourceDTO) {
 			if (sourceDTO == null) {
 				return null;
 			}
@@ -430,16 +430,16 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static List<SubsTarget> toTargets(SubsServerAPI api, Response response) throws ClientException {
+		public static List<ISubsTarget> toTargets(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			List<SubsTarget> targets = new ArrayList<SubsTarget>();
+			List<ISubsTarget> targets = new ArrayList<ISubsTarget>();
 			List<SubsTargetDTO> targetDTOs = response.readEntity(new GenericType<List<SubsTargetDTO>>() {
 			});
 			for (SubsTargetDTO targetDTO : targetDTOs) {
-				SubsTarget target = toTarget(api, targetDTO);
+				ISubsTarget target = toTarget(api, targetDTO);
 				if (target != null) {
 					targets.add(target);
 				}
@@ -454,12 +454,12 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static SubsTarget toTarget(SubsServerAPI api, Response response) throws ClientException {
+		public static ISubsTarget toTarget(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			SubsTarget target = null;
+			ISubsTarget target = null;
 			SubsTargetDTO targetDTO = response.readEntity(SubsTargetDTO.class);
 			if (targetDTO != null) {
 				target = toTarget(api, targetDTO);
@@ -473,7 +473,7 @@ public class ClientModelConverter {
 		 * @param targetDTO
 		 * @return
 		 */
-		public static SubsTarget toTarget(SubsServerAPI api, SubsTargetDTO targetDTO) {
+		public static ISubsTarget toTarget(SubsServerAPI api, SubsTargetDTO targetDTO) {
 			if (targetDTO == null) {
 				return null;
 			}
@@ -517,16 +517,16 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static List<SubsMapping> toMappings(SubsServerAPI api, Response response) throws ClientException {
+		public static List<ISubsMapping> toMappings(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+			List<ISubsMapping> mappings = new ArrayList<ISubsMapping>();
 			List<SubsMappingDTO> mappingDTOs = response.readEntity(new GenericType<List<SubsMappingDTO>>() {
 			});
 			for (SubsMappingDTO mappingDTO : mappingDTOs) {
-				SubsMapping mapping = toMapping(api, mappingDTO);
+				ISubsMapping mapping = toMapping(api, mappingDTO);
 				if (mapping != null) {
 					mappings.add(mapping);
 				}
@@ -541,12 +541,12 @@ public class ClientModelConverter {
 		 * @return
 		 * @throws ClientException
 		 */
-		public static SubsMapping toMapping(SubsServerAPI api, Response response) throws ClientException {
+		public static ISubsMapping toMapping(SubsServerAPI api, Response response) throws ClientException {
 			if (!ResponseUtil.isSuccessful(response)) {
 				throw new ClientException(response);
 			}
 
-			SubsMapping mapping = null;
+			ISubsMapping mapping = null;
 			SubsMappingDTO mappingDTO = response.readEntity(SubsMappingDTO.class);
 			if (mappingDTO != null) {
 				mapping = toMapping(api, mappingDTO);
@@ -560,7 +560,7 @@ public class ClientModelConverter {
 		 * @param mappingDTO
 		 * @return
 		 */
-		public static SubsMapping toMapping(SubsServerAPI api, SubsMappingDTO mappingDTO) {
+		public static ISubsMapping toMapping(SubsServerAPI api, SubsMappingDTO mappingDTO) {
 			if (mappingDTO == null) {
 				return null;
 			}

@@ -29,9 +29,10 @@ public abstract class SubscriptionFactory {
 
 	/**
 	 * 
+	 * @param url
 	 * @param accessToken
 	 * @return
 	 */
-	public abstract ISubscriptionService createSubscription(String accessToken);
+	public abstract ISubscriptionService createSubscription(String url, String accessToken);
 
 }

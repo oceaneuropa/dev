@@ -1,6 +1,6 @@
 package org.orbit.infra.api.subscription;
 
-public interface SubsType {
+public interface ISubsType {
 
 	Integer getId();
 

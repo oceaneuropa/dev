@@ -7,7 +7,7 @@ import java.util.Map;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public interface SubsTarget {
+public interface ISubsSource {
 
 	SubsServerAPI getAPI();
 
@@ -28,18 +28,6 @@ public interface SubsTarget {
 	String getName();
 
 	void setName(String name);
-
-	String getServerId();
-
-	void setServerId(String serverId);
-
-	String getServerURL();
-
-	void setServerURL(String serverURL);
-
-	long getServerHeartbeatTime();
-
-	void setServerHeartbeatTime(long heartbeatTime);
 
 	Map<String, Object> getProperties();
 

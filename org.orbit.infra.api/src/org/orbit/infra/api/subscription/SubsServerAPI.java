@@ -18,11 +18,11 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 	// ------------------------------------------------------
 	// Source Types
 	// ------------------------------------------------------
-	List<SubsType> getSourceTypes() throws ClientException;
+	List<ISubsType> getSourceTypes() throws ClientException;
 
 	boolean sourceTypeExists(String type) throws ClientException;
 
-	SubsType createSourceType(String type, String name) throws ClientException;
+	ISubsType createSourceType(String type, String name) throws ClientException;
 
 	boolean updateSourceTypeType(Integer id, String type) throws ClientException;
 
@@ -37,11 +37,11 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 	// ------------------------------------------------------
 	// Target Types
 	// ------------------------------------------------------
-	List<SubsType> getTargetTypes() throws ClientException;
+	List<ISubsType> getTargetTypes() throws ClientException;
 
 	boolean targetTypeExists(String type) throws ClientException;
 
-	SubsType createTargeteType(String type, String name) throws ClientException;
+	ISubsType createTargeteType(String type, String name) throws ClientException;
 
 	boolean updateTargetTypeType(Integer id, String type) throws ClientException;
 
@@ -56,19 +56,19 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 	// ------------------------------------------------------
 	// Sources
 	// ------------------------------------------------------
-	List<SubsSource> getSources() throws ClientException;
+	List<ISubsSource> getSources() throws ClientException;
 
-	List<SubsSource> getSources(String type) throws ClientException;
+	List<ISubsSource> getSources(String type) throws ClientException;
 
-	SubsSource getSource(Integer sourceId) throws ClientException;
+	ISubsSource getSource(Integer sourceId) throws ClientException;
 
-	SubsSource getSource(String type, String instanceId) throws ClientException;
+	ISubsSource getSource(String type, String instanceId) throws ClientException;
 
 	boolean sourceExists(Integer sourceId) throws ClientException;
 
 	boolean sourceExists(String type, String instanceId) throws ClientException;
 
-	SubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ClientException;
+	ISubsSource createSource(String type, String instanceId, String name, Map<String, Object> properties) throws ClientException;
 
 	boolean updateSourceTypeAndInstanceId(Integer sourceId, String type, String instanceId) throws ClientException;
 
@@ -82,24 +82,26 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 
 	boolean deleteSource(Integer sourceId, boolean force) throws ClientException;
 
+	boolean deleteSource(String type, String instanceId, boolean force) throws ClientException;
+
 	boolean deleteSources(Integer[] sourceIds, boolean force) throws ClientException;
 
 	// ------------------------------------------------------
 	// Targets
 	// ------------------------------------------------------
-	List<SubsTarget> getTargets() throws ClientException;
+	List<ISubsTarget> getTargets() throws ClientException;
 
-	List<SubsTarget> getTargets(String type) throws ClientException;
+	List<ISubsTarget> getTargets(String type) throws ClientException;
 
-	SubsTarget getTarget(Integer targetId) throws ClientException;
+	ISubsTarget getTarget(Integer targetId) throws ClientException;
 
-	SubsTarget getTarget(String type, String instanceId) throws ClientException;
+	ISubsTarget getTarget(String type, String instanceId) throws ClientException;
 
 	boolean targetExists(Integer targetId) throws ClientException;
 
 	boolean targetExists(String type, String instanceId) throws ClientException;
 
-	SubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ClientException;
+	ISubsTarget createTarget(String type, String instanceId, String name, String serverId, String serverURL, Map<String, Object> properties) throws ClientException;
 
 	boolean updateTargetTypeAndInstanceId(Integer targetId, String type, String instanceId) throws ClientException;
 
@@ -119,24 +121,34 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 
 	boolean deleteTarget(Integer targetId, boolean force) throws ClientException;
 
+	boolean deleteTarget(String type, String instanceId, boolean force) throws ClientException;
+
 	boolean deleteTargets(Integer[] targetIds, boolean force) throws ClientException;
 
 	// ------------------------------------------------------
 	// Mappings
 	// ------------------------------------------------------
-	List<SubsMapping> getMappings() throws ClientException;
+	List<ISubsMapping> getMappings() throws ClientException;
 
-	List<SubsMapping> getMappingsOfSource(Integer sourceId) throws ClientException;
+	List<ISubsMapping> getMappingsOfSource(Integer sourceId) throws ClientException;
 
-	List<SubsMapping> getMappingsOfTarget(Integer targetId) throws ClientException;
+	List<ISubsMapping> getMappingsOfSource(Integer sourceId, String targetType) throws ClientException;
 
-	List<SubsMapping> getMappings(Integer sourceId, Integer targetId) throws ClientException;
+	List<ISubsMapping> getMappingsOfSource(Integer sourceId, String targetType, String targetInstanceId) throws ClientException;
 
-	SubsMapping getMapping(Integer mappingId) throws ClientException;
+	List<ISubsMapping> getMappingsOfTarget(Integer targetId) throws ClientException;
 
-	SubsMapping getMappingByClientId(Integer sourceId, Integer targetId, String clientId) throws ClientException;
+	List<ISubsMapping> getMappingsOfTarget(Integer targetId, String sourceType) throws ClientException;
 
-	SubsMapping getMappingByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ClientException;
+	List<ISubsMapping> getMappingsOfTarget(Integer targetId, String sourceType, String sourceInstanceId) throws ClientException;
+
+	List<ISubsMapping> getMappings(Integer sourceId, Integer targetId) throws ClientException;
+
+	ISubsMapping getMapping(Integer mappingId) throws ClientException;
+
+	ISubsMapping getMappingByClientId(Integer sourceId, Integer targetId, String clientId) throws ClientException;
+
+	ISubsMapping getMappingByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ClientException;
 
 	boolean mappingExists(Integer mappingId) throws ClientException;
 
@@ -144,7 +156,7 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 
 	boolean mappingExistsByClientURL(Integer sourceId, Integer targetId, String clientURL) throws ClientException;
 
-	SubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ClientException;
+	ISubsMapping createMapping(Integer sourceId, Integer targetId, String clientId, String clientURL, Map<String, Object> properties) throws ClientException;
 
 	boolean updateMappingProperties(Integer mappingId, Map<String, Object> properties, boolean clearProperties) throws ClientException;
 
@@ -157,5 +169,12 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 	boolean deleteMapping(Integer mappingId) throws ClientException;
 
 	boolean deleteMappings(Integer[] mappingIds) throws ClientException;
+
+	// ------------------------------------------------------
+	// Mappings 2
+	// ------------------------------------------------------
+	List<ISubsType> getMappingTargetTypesOfSource(Integer sourceId) throws ClientException;
+
+	List<ISubsType> getMappingSourceTypesOfTarget(Integer targetId) throws ClientException;
 
 }

@@ -1,14 +1,14 @@
 package org.orbit.infra.connector.subscription;
 
 import org.orbit.infra.api.subscription.SubsServerAPI;
-import org.orbit.infra.api.subscription.SubsType;
+import org.orbit.infra.api.subscription.ISubsType;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsTypeImpl implements SubsType {
+public class SubsTypeImpl implements ISubsType {
 
 	protected SubsServerAPI api;
 	protected Integer id;

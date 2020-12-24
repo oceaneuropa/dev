@@ -11,8 +11,8 @@ import org.orbit.infra.io.subscription.SubscriptionFactory;
 public class SubscriptionFactoryImpl extends SubscriptionFactory {
 
 	@Override
-	public ISubscriptionService createSubscription(String accessToken) {
-		return new ISubscriptionServiceImpl(accessToken);
+	public ISubscriptionService createSubscription(String url, String accessToken) {
+		return new SubscriptionServiceImpl(url, accessToken);
 	}
 
 }
