@@ -8,10 +8,10 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.api.subscription.ISubsMapping;
-import org.orbit.infra.api.subscription.SubsServerAPI;
 import org.orbit.infra.api.subscription.ISubsSource;
 import org.orbit.infra.api.subscription.ISubsTarget;
 import org.orbit.infra.api.subscription.ISubsType;
+import org.orbit.infra.api.subscription.SubsServerAPI;
 import org.orbit.infra.connector.util.ClientModelConverter;
 import org.orbit.infra.model.RequestConstants;
 import org.origin.common.rest.client.ClientException;
@@ -679,6 +679,29 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
+	public boolean deleteSource(String type, String instanceId, boolean force) throws ClientException {
+		checkNullParameter(type, "Source type is null.");
+		checkNullParameter(type, "Source instance Id is null.");
+
+		Request request = new Request(RequestConstants.SUBS_SERVER__DELETE_SOURCE);
+		request.setParameter("type", type);
+		request.setParameter("instanceId", instanceId);
+		request.setParameter("force", force);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
 	public boolean deleteSources(Integer[] sourceIds, boolean force) throws ClientException {
 		checkNullParameter(sourceIds, "Source Ids are null.");
 		checkEmptyArrayParameter(sourceIds, "Source ids are empty.");
@@ -1049,6 +1072,29 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 
 		Request request = new Request(RequestConstants.SUBS_SERVER__DELETE_TARGET);
 		request.setParameter("id", targetId);
+		request.setParameter("force", force);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ClientModelConverter.COMMON.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public boolean deleteTarget(String type, String instanceId, boolean force) throws ClientException {
+		checkNullParameter(type, "Target type is null.");
+		checkNullParameter(type, "Target instance Id is null.");
+
+		Request request = new Request(RequestConstants.SUBS_SERVER__DELETE_TARGET);
+		request.setParameter("type", type);
+		request.setParameter("instanceId", instanceId);
 		request.setParameter("force", force);
 
 		boolean isDeleted = false;
@@ -1456,7 +1502,7 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 
 	@Override
 	public boolean deleteMappings(Integer[] mappingIds) throws ClientException {
-		checkNullParameter(mappingIds, "Mapping Ids are null.");
+		checkNullParameter(mappingIds, "Mapping ids are null.");
 		checkEmptyArrayParameter(mappingIds, "Mapping ids are empty.");
 
 		Request request = new Request(RequestConstants.SUBS_SERVER__DELETE_MAPPING);

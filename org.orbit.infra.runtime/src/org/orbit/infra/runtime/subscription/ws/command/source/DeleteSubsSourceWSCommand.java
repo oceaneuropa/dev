@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.subs.SubsMapping;
+import org.orbit.infra.model.subs.SubsSource;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -42,10 +43,16 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean hasIdParam = request.hasParameter("id");
 		boolean hasIdsParam = request.hasParameter("ids");
 
-		if (!hasIdParam && !hasIdsParam) {
-			ErrorDTO error = new ErrorDTO("'id' or 'ids' parameter is not set.");
+		boolean hasTypeParam = request.hasParameter("type");
+		boolean hasInstanceIdParam = request.hasParameter("instanceId");
+		boolean hasTypeParams = hasTypeParam && hasInstanceIdParam;
+
+		if (!hasIdParam && !hasIdsParam && !hasTypeParams) {
+			ErrorDTO error = new ErrorDTO("'id' OR 'ids' OR 'type' and 'instanceId' parameters are not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
+
+		SubsSource source = null;
 
 		SubsServerService service = getService();
 		boolean force = request.getBooleanParameter("force");
@@ -57,6 +64,20 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 				if (!mappings.isEmpty()) {
 					mappingExists = true;
 				}
+
+			} else if (hasTypeParams) {
+				String type = request.getStringParameter("type");
+				String instanceId = request.getStringParameter("instanceId");
+				source = service.getSource(type, instanceId);
+
+				if (source != null) {
+					Integer id = source.getId();
+					List<SubsMapping> mappings = service.getMappingsOfSource(id);
+					if (!mappings.isEmpty()) {
+						mappingExists = true;
+					}
+				}
+
 			} else if (hasIdsParam) {
 				Integer[] ids = request.getIntegerArrayParameter("ids");
 				for (Integer currId : ids) {
@@ -67,6 +88,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 					}
 				}
 			}
+
 			if (mappingExists) {
 				ErrorDTO error = new ErrorDTO("Mappings of the source(s) exist. Delete the mappings first or use 'force' parameter to delete the source(s), which will also delete the mappings of the source(s).");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -76,6 +98,15 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean succeed = false;
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
+			succeed = service.deleteSource(id);
+
+		} else if (hasTypeParams) {
+			if (source == null) {
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source is not found.");
+				return Response.status(Status.BAD_REQUEST).entity(error).build();
+			}
+
+			Integer id = source.getId();
 			succeed = service.deleteSource(id);
 
 		} else if (hasIdsParam) {

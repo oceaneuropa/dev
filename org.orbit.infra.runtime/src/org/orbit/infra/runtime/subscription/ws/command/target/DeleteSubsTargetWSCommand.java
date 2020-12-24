@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.subs.SubsMapping;
+import org.orbit.infra.model.subs.SubsTarget;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -42,10 +43,16 @@ public class DeleteSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean hasIdParam = request.hasParameter("id");
 		boolean hasIdsParam = request.hasParameter("ids");
 
-		if (!hasIdParam && !hasIdsParam) {
-			ErrorDTO error = new ErrorDTO("'id' or 'ids' parameter is not set.");
+		boolean hasTypeParam = request.hasParameter("type");
+		boolean hasInstanceIdParam = request.hasParameter("instanceId");
+		boolean hasTypeParams = hasTypeParam && hasInstanceIdParam;
+
+		if (!hasIdParam && !hasIdsParam && !hasTypeParams) {
+			ErrorDTO error = new ErrorDTO("'id' OR 'ids' OR 'type' and 'instanceId' parameters are not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
+
+		SubsTarget target = null;
 
 		SubsServerService service = getService();
 		boolean force = request.getBooleanParameter("force");
@@ -57,6 +64,20 @@ public class DeleteSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 				if (!mappings.isEmpty()) {
 					mappingExists = true;
 				}
+
+			} else if (hasTypeParams) {
+				String type = request.getStringParameter("type");
+				String instanceId = request.getStringParameter("instanceId");
+				target = service.getTarget(type, instanceId);
+
+				if (target != null) {
+					Integer id = target.getId();
+					List<SubsMapping> mappings = service.getMappingsOfTarget(id);
+					if (!mappings.isEmpty()) {
+						mappingExists = true;
+					}
+				}
+
 			} else if (hasIdsParam) {
 				Integer[] ids = request.getIntegerArrayParameter("ids");
 				for (Integer currId : ids) {
@@ -67,6 +88,7 @@ public class DeleteSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 					}
 				}
 			}
+
 			if (mappingExists) {
 				ErrorDTO error = new ErrorDTO("Mappings of the target(s) exist. Delete the mappings first or use 'force' parameter to delete the target(s), which will also delete the mappings of the target(s).");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -76,6 +98,15 @@ public class DeleteSubsTargetWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean succeed = false;
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
+			succeed = service.deleteTarget(id);
+
+		} else if (hasTypeParams) {
+			if (target == null) {
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target is not found.");
+				return Response.status(Status.BAD_REQUEST).entity(error).build();
+			}
+
+			Integer id = target.getId();
 			succeed = service.deleteTarget(id);
 
 		} else if (hasIdsParam) {
