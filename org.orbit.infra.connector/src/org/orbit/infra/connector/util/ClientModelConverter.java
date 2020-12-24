@@ -331,15 +331,15 @@ public class ClientModelConverter {
 			long dateCreated = typeDTO.getDateCreated();
 			long dateModified = typeDTO.getDateModified();
 
-			SubsTypeImpl source = new SubsTypeImpl();
-			source.setAPI(api);
-			source.setId(id);
-			source.setType(type);
-			source.setName(name);
-			source.setDateCreated(dateCreated);
-			source.setDateModified(dateModified);
+			SubsTypeImpl typeObj = new SubsTypeImpl();
+			typeObj.setAPI(api);
+			typeObj.setId(id);
+			typeObj.setType(type);
+			typeObj.setName(name);
+			typeObj.setDateCreated(dateCreated);
+			typeObj.setDateModified(dateModified);
 
-			return source;
+			return typeObj;
 		}
 
 		/**

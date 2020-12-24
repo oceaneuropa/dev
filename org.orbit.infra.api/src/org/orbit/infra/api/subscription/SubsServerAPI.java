@@ -16,7 +16,7 @@ import org.origin.common.service.Proxy;
 public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 
 	// ------------------------------------------------------
-	// Source types
+	// Source Types
 	// ------------------------------------------------------
 	List<SubsType> getSourceTypes() throws ClientException;
 
@@ -35,7 +35,7 @@ public interface SubsServerAPI extends ServiceClient, Proxy, IAdaptable {
 	boolean deleteSourceType(String type, boolean force) throws ClientException;
 
 	// ------------------------------------------------------
-	// Target types
+	// Target Types
 	// ------------------------------------------------------
 	List<SubsType> getTargetTypes() throws ClientException;
 
