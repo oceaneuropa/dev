@@ -19,11 +19,11 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class ListSubsMappingsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class ListMappingsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.ListSubsMappingsWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.ListMappingsWSCommand";
 
-	public ListSubsMappingsWSCommand() {
+	public ListMappingsWSCommand() {
 		super(SubsServerService.class);
 	}
 
@@ -38,20 +38,43 @@ public class ListSubsMappingsWSCommand extends AbstractInfraCommand<SubsServerSe
 
 	@Override
 	public Response execute(Request request) throws Exception {
+		boolean hasSourceIdParam = request.hasParameter("sourceId");
+		boolean hasTargetIdParam = request.hasParameter("targetId");
+		boolean hasSourceTypeParam = request.hasParameter("sourceType");
+		boolean hasSourceInstanceIdParam = request.hasParameter("sourceInstanceId");
+		boolean hasTargetTypeParam = request.hasParameter("targetType");
+		boolean hasTargetInstanceIdParam = request.hasParameter("targetInstanceId");
+
 		Integer sourceId = request.getIntegerParameter("sourceId");
 		Integer targetId = request.getIntegerParameter("targetId");
+		String targetType = request.getStringParameter("targetType");
+		String targetInstanceId = request.getStringParameter("targetInstanceId");
+		String sourceType = request.getStringParameter("sourceType");
+		String sourceInstanceId = request.getStringParameter("sourceInstanceId");
 
 		SubsServerService service = getService();
 
 		List<SubsMapping> mappings = null;
-		if (sourceId != null && targetId != null) {
+		if (hasSourceIdParam && hasTargetIdParam) {
 			mappings = service.getMappings(sourceId, targetId);
 
-		} else if (sourceId != null) {
-			mappings = service.getMappingsOfSource(sourceId);
+		} else if (hasSourceIdParam) {
+			if (hasTargetTypeParam && hasTargetInstanceIdParam) {
+				mappings = service.getMappingsOfSource(sourceId, targetType, targetInstanceId);
+			} else if (hasTargetTypeParam) {
+				mappings = service.getMappingsOfSource(sourceId, targetType);
+			} else {
+				mappings = service.getMappingsOfSource(sourceId);
+			}
 
-		} else if (targetId != null) {
-			mappings = service.getMappingsOfTarget(targetId);
+		} else if (hasTargetIdParam) {
+			if (hasSourceTypeParam && hasSourceInstanceIdParam) {
+				mappings = service.getMappingsOfTarget(targetId, sourceType, sourceInstanceId);
+			} else if (hasSourceTypeParam) {
+				mappings = service.getMappingsOfTarget(targetId, sourceType);
+			} else {
+				mappings = service.getMappingsOfTarget(targetId);
+			}
 
 		} else {
 			mappings = service.getMappings();

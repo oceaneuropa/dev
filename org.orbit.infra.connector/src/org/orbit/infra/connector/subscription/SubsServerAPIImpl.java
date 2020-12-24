@@ -1176,6 +1176,58 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 	}
 
 	@Override
+	public List<ISubsMapping> getMappingsOfSource(Integer sourceId, String targetType) throws ClientException {
+		checkNullParameter(sourceId, "Source Id is null.");
+		checkNullParameter(targetType, "Target type is null.");
+
+		List<ISubsMapping> mappings = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
+			request.setParameter("sourceId", sourceId);
+			request.setParameter("targetType", targetType);
+
+			response = sendRequest(request);
+			if (response != null) {
+				mappings = ClientModelConverter.SUBS_SERVER.toMappings(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (mappings == null) {
+			mappings = Collections.emptyList();
+		}
+		return mappings;
+	}
+
+	@Override
+	public List<ISubsMapping> getMappingsOfSource(Integer sourceId, String targetType, String targetInstanceId) throws ClientException {
+		checkNullParameter(sourceId, "Source Id is null.");
+		checkNullParameter(targetType, "Target type is null.");
+		checkNullParameter(targetType, "Target instanceId is null.");
+
+		List<ISubsMapping> mappings = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
+			request.setParameter("sourceId", sourceId);
+			request.setParameter("targetType", targetType);
+			request.setParameter("targetInstanceId", targetInstanceId);
+
+			response = sendRequest(request);
+			if (response != null) {
+				mappings = ClientModelConverter.SUBS_SERVER.toMappings(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (mappings == null) {
+			mappings = Collections.emptyList();
+		}
+		return mappings;
+	}
+
+	@Override
 	public List<ISubsMapping> getMappingsOfTarget(Integer targetId) throws ClientException {
 		checkNullParameter(targetId, "Target Id is null.");
 
@@ -1184,6 +1236,58 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 		try {
 			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
 			request.setParameter("targetId", targetId);
+
+			response = sendRequest(request);
+			if (response != null) {
+				mappings = ClientModelConverter.SUBS_SERVER.toMappings(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (mappings == null) {
+			mappings = Collections.emptyList();
+		}
+		return mappings;
+	}
+
+	@Override
+	public List<ISubsMapping> getMappingsOfTarget(Integer targetId, String sourceType) throws ClientException {
+		checkNullParameter(targetId, "Target Id is null.");
+		checkNullParameter(sourceType, "Source type is null.");
+
+		List<ISubsMapping> mappings = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
+			request.setParameter("targetId", targetId);
+			request.setParameter("sourceType", sourceType);
+
+			response = sendRequest(request);
+			if (response != null) {
+				mappings = ClientModelConverter.SUBS_SERVER.toMappings(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (mappings == null) {
+			mappings = Collections.emptyList();
+		}
+		return mappings;
+	}
+
+	@Override
+	public List<ISubsMapping> getMappingsOfTarget(Integer targetId, String sourceType, String sourceInstanceId) throws ClientException {
+		checkNullParameter(targetId, "Target Id is null.");
+		checkNullParameter(sourceType, "Source type is null.");
+		checkNullParameter(sourceInstanceId, "Source instanceId is null.");
+
+		List<ISubsMapping> mappings = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_MAPPINGS);
+			request.setParameter("targetId", targetId);
+			request.setParameter("sourceType", sourceType);
+			request.setParameter("sourceInstanceId", sourceInstanceId);
 
 			response = sendRequest(request);
 			if (response != null) {
@@ -1502,8 +1606,8 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 
 	@Override
 	public boolean deleteMappings(Integer[] mappingIds) throws ClientException {
-		checkNullParameter(mappingIds, "Mapping ids are null.");
-		checkEmptyArrayParameter(mappingIds, "Mapping ids are empty.");
+		checkNullParameter(mappingIds, "Mapping Ids are null.");
+		checkEmptyArrayParameter(mappingIds, "Mapping Ids are empty.");
 
 		Request request = new Request(RequestConstants.SUBS_SERVER__DELETE_MAPPING);
 		request.setParameter("ids", mappingIds);
@@ -1519,6 +1623,52 @@ public class SubsServerAPIImpl extends ServiceClientImpl<SubsServerAPI, SubsServ
 			ResponseUtil.closeQuietly(response, true);
 		}
 		return isDeleted;
+	}
+
+	@Override
+	public List<ISubsType> getMappingTargetTypesOfSource(Integer sourceId) throws ClientException {
+		checkNullParameter(sourceId, "Source Id is null.");
+
+		List<ISubsType> types = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_TARGET_TYPES_MAPPING_OF_SOURCE);
+			request.setParameter("sourceId", sourceId);
+
+			response = sendRequest(request);
+			if (response != null) {
+				types = ClientModelConverter.SUBS_SERVER.toTypes(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (types == null) {
+			types = Collections.emptyList();
+		}
+		return types;
+	}
+
+	@Override
+	public List<ISubsType> getMappingSourceTypesOfTarget(Integer targetId) throws ClientException {
+		checkNullParameter(targetId, "Target Id is null.");
+
+		List<ISubsType> types = null;
+		Response response = null;
+		try {
+			Request request = new Request(RequestConstants.SUBS_SERVER__LIST_SOURCE_TYPES_MAPPING_OF_TARGET);
+			request.setParameter("targetId", targetId);
+
+			response = sendRequest(request);
+			if (response != null) {
+				types = ClientModelConverter.SUBS_SERVER.toTypes(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (types == null) {
+			types = Collections.emptyList();
+		}
+		return types;
 	}
 
 }

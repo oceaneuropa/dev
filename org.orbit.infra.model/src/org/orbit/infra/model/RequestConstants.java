@@ -62,4 +62,7 @@ public class RequestConstants {
 	public static String SUBS_SERVER__UPDATE_MAPPING = "update_subs_mapping";
 	public static String SUBS_SERVER__DELETE_MAPPING = "delete_subs_mapping";
 
+	public static String SUBS_SERVER__LIST_TARGET_TYPES_MAPPING_OF_SOURCE = "list_subs_target_types_mapping_of_source";
+	public static String SUBS_SERVER__LIST_SOURCE_TYPES_MAPPING_OF_TARGET = "list_subs_source_types_mapping_of_target";
+
 }

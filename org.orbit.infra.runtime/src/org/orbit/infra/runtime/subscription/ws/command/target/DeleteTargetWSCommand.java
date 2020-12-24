@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.source;
+package org.orbit.infra.runtime.subscription.ws.command.target;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.subs.SubsMapping;
-import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsTarget;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -21,18 +21,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class DeleteTargetWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.DeleteSubsSourceWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.DeleteTargetWSCommand";
 
-	public DeleteSubsSourceWSCommand() {
+	public DeleteTargetWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__DELETE_SOURCE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__DELETE_TARGET.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -52,7 +52,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsSource source = null;
+		SubsTarget target = null;
 
 		SubsServerService service = getService();
 		boolean force = request.getBooleanParameter("force");
@@ -60,7 +60,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			boolean mappingExists = false;
 			if (hasIdParam) {
 				Integer id = request.getIntegerParameter("id");
-				List<SubsMapping> mappings = service.getMappingsOfSource(id);
+				List<SubsMapping> mappings = service.getMappingsOfTarget(id);
 				if (!mappings.isEmpty()) {
 					mappingExists = true;
 				}
@@ -68,11 +68,11 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			} else if (hasTypeParams) {
 				String type = request.getStringParameter("type");
 				String instanceId = request.getStringParameter("instanceId");
-				source = service.getSource(type, instanceId);
+				target = service.getTarget(type, instanceId);
 
-				if (source != null) {
-					Integer id = source.getId();
-					List<SubsMapping> mappings = service.getMappingsOfSource(id);
+				if (target != null) {
+					Integer id = target.getId();
+					List<SubsMapping> mappings = service.getMappingsOfTarget(id);
 					if (!mappings.isEmpty()) {
 						mappingExists = true;
 					}
@@ -81,7 +81,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			} else if (hasIdsParam) {
 				Integer[] ids = request.getIntegerArrayParameter("ids");
 				for (Integer currId : ids) {
-					List<SubsMapping> mappings = service.getMappingsOfSource(currId);
+					List<SubsMapping> mappings = service.getMappingsOfTarget(currId);
 					if (!mappings.isEmpty()) {
 						mappingExists = true;
 						break;
@@ -90,7 +90,7 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			}
 
 			if (mappingExists) {
-				ErrorDTO error = new ErrorDTO("Mappings of the source(s) exist. Delete the mappings first or use 'force' parameter to delete the source(s), which will also delete the mappings of the source(s).");
+				ErrorDTO error = new ErrorDTO("Mappings of the target(s) exist. Delete the mappings first or use 'force' parameter to delete the target(s), which will also delete the mappings of the target(s).");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}
@@ -98,21 +98,21 @@ public class DeleteSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean succeed = false;
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
-			succeed = service.deleteSource(id);
+			succeed = service.deleteTarget(id);
 
 		} else if (hasTypeParams) {
-			if (source == null) {
-				ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source is not found.");
+			if (target == null) {
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target is not found.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 
-			Integer id = source.getId();
-			succeed = service.deleteSource(id);
+			Integer id = target.getId();
+			succeed = service.deleteTarget(id);
 
 		} else if (hasIdsParam) {
 			Integer[] ids = request.getIntegerArrayParameter("ids");
 			if (ids != null && ids.length > 0) {
-				succeed = service.deleteSources(ids);
+				succeed = service.deleteTargets(ids);
 			}
 		}
 

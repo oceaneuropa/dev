@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.targettype;
+package org.orbit.infra.runtime.subscription.ws.command.sourcetype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,18 +19,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class DeleteSubsTargetTypeWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class DeleteSourceTypeWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.DeleteSubsTargetTypeWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.DeleteSourceTypeWSCommand";
 
-	public DeleteSubsTargetTypeWSCommand() {
+	public DeleteSourceTypeWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__DELETE_TARGET_TYPE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__DELETE_SOURCE_TYPE.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -54,9 +54,9 @@ public class DeleteSubsTargetTypeWSCommand extends AbstractInfraCommand<SubsServ
 			String type = null;
 			if (hasIdParam) {
 				Integer id = request.getIntegerParameter("id");
-				SubsType typeObj = service.getTargetType(id);
+				SubsType typeObj = service.getSourceType(id);
 				if (typeObj == null) {
-					ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target type is not found.");
+					ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source type is not found.");
 					return Response.status(Status.BAD_REQUEST).entity(error).build();
 
 				} else {
@@ -66,11 +66,11 @@ public class DeleteSubsTargetTypeWSCommand extends AbstractInfraCommand<SubsServ
 				type = request.getStringParameter("type");
 			}
 			if (type != null) {
-				typeIsUsed = service.targetExists(type);
+				typeIsUsed = service.sourceExists(type);
 			}
 
 			if (typeIsUsed) {
-				ErrorDTO error = new ErrorDTO("Target with the type exist. Delete the targets first or use 'force' parameter to delete the type.");
+				ErrorDTO error = new ErrorDTO("Source with the type exist. Delete the sources first or use 'force' parameter to delete the type.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}

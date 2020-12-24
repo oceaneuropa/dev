@@ -10,8 +10,8 @@ import java.util.Properties;
 
 import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
-import org.orbit.infra.model.subs.SubsType;
 import org.orbit.infra.model.subs.SubsTarget;
+import org.orbit.infra.model.subs.SubsType;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.subscription.util.SubsMappingsTableHandler;
@@ -48,7 +48,6 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 
 	protected SubsSourceTypesTableHandler sourceTypesTableHandler;
 	protected SubsTargetTypesTableHandler targetTypesTableHandler;
-
 	protected SubsSourcesTableHandler sourcesTableHandler;
 	protected SubsTargetsTableHandler targetsTableHandler;
 	protected SubsMappingsTableHandler mappingsTableHandler;
@@ -1203,6 +1202,71 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	}
 
 	@Override
+	public List<SubsMapping> getMappingsOfSource(Integer sourceId, String targetType) throws ServerException {
+		List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List<SubsMapping> mappingsOfSource = this.mappingsTableHandler.getMappingsOfSource(conn, sourceId);
+			for (SubsMapping mapping : mappingsOfSource) {
+				Integer targetId = mapping.getTargetId();
+
+				boolean matchTargetType = false;
+				SubsTarget target = this.targetsTableHandler.getTarget(conn, targetId);
+				if (target != null) {
+					String currTargetType = target.getType();
+					if (currTargetType != null && currTargetType.equals(targetType)) {
+						matchTargetType = true;
+					}
+				}
+				if (matchTargetType) {
+					mappings.add(mapping);
+				}
+			}
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return mappings;
+	}
+
+	@Override
+	public List<SubsMapping> getMappingsOfSource(Integer sourceId, String targetType, String targetInstanceId) throws ServerException {
+		List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List<SubsMapping> mappingsOfSource = this.mappingsTableHandler.getMappingsOfSource(conn, sourceId);
+			for (SubsMapping mapping : mappingsOfSource) {
+				Integer targetId = mapping.getTargetId();
+
+				boolean matchTargetType = false;
+				boolean matchTargetInstanceId = false;
+				SubsTarget target = this.targetsTableHandler.getTarget(conn, targetId);
+				if (target != null) {
+					String currTargetType = target.getType();
+					String currTargetInstanceId = target.getInstanceId();
+					if (currTargetType != null && currTargetType.equals(targetType)) {
+						matchTargetType = true;
+					}
+					if (currTargetInstanceId != null && currTargetInstanceId.equals(targetInstanceId)) {
+						matchTargetInstanceId = true;
+					}
+				}
+				if (matchTargetType && matchTargetInstanceId) {
+					mappings.add(mapping);
+				}
+			}
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return mappings;
+	}
+
+	@Override
 	public List<SubsMapping> getMappingsOfTarget(Integer targetId) throws ServerException {
 		List<SubsMapping> mappings = null;
 		Connection conn = null;
@@ -1219,7 +1283,71 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 			mappings = new ArrayList<SubsMapping>();
 		}
 		return mappings;
+	}
 
+	@Override
+	public List<SubsMapping> getMappingsOfTarget(Integer targetId, String sourceType) throws ServerException {
+		List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List<SubsMapping> mappingsOfTarget = this.mappingsTableHandler.getMappingsOfTarget(conn, targetId);
+			for (SubsMapping mapping : mappingsOfTarget) {
+				Integer sourceId = mapping.getSourceId();
+
+				boolean matchSourceType = false;
+				SubsSource source = this.sourcesTableHandler.getSource(conn, sourceId);
+				if (source != null) {
+					String currSourceType = source.getType();
+					if (currSourceType != null && currSourceType.equals(sourceType)) {
+						matchSourceType = true;
+					}
+				}
+				if (matchSourceType) {
+					mappings.add(mapping);
+				}
+			}
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return mappings;
+	}
+
+	@Override
+	public List<SubsMapping> getMappingsOfTarget(Integer targetId, String sourceType, String sourceInstanceId) throws ServerException {
+		List<SubsMapping> mappings = new ArrayList<SubsMapping>();
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List<SubsMapping> mappingsOfTarget = this.mappingsTableHandler.getMappingsOfTarget(conn, targetId);
+			for (SubsMapping mapping : mappingsOfTarget) {
+				Integer sourceId = mapping.getSourceId();
+
+				boolean matchSourceType = false;
+				boolean matchSourceInstanceId = false;
+				SubsSource source = this.sourcesTableHandler.getSource(conn, sourceId);
+				if (source != null) {
+					String currSourceType = source.getType();
+					String currSourceInstanceId = source.getInstanceId();
+					if (currSourceType != null && currSourceType.equals(sourceType)) {
+						matchSourceType = true;
+					}
+					if (currSourceInstanceId != null && currSourceInstanceId.equals(sourceInstanceId)) {
+						matchSourceInstanceId = true;
+					}
+				}
+				if (matchSourceType && matchSourceInstanceId) {
+					mappings.add(mapping);
+				}
+			}
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return mappings;
 	}
 
 	@Override

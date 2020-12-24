@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.source;
+package org.orbit.infra.runtime.subscription.ws.command.sourcetype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsSourceExistsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class UpdateSourceTypeNameWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.SubsSourceExistsWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateSourceTypeNameWSCommand";
 
-	public SubsSourceExistsWSCommand() {
+	public UpdateSourceTypeNameWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__SOURCE_EXISTS.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__UPDATE_SOURCE_TYPE_NAME.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -39,29 +39,32 @@ public class SubsSourceExistsWSCommand extends AbstractInfraCommand<SubsServerSe
 	public Response execute(Request request) throws Exception {
 		boolean hasIdParam = request.hasParameter("id");
 		boolean hasTypeParam = request.hasParameter("type");
-		boolean hasInstanceIdParam = request.hasParameter("instanceId");
-		boolean hasTypeParams = hasTypeParam && hasInstanceIdParam;
-
-		if (!hasIdParam && !hasTypeParams) {
-			ErrorDTO error = new ErrorDTO("'id' parameter OR 'type' and 'instanceId' parameters are not set.");
+		boolean hasNameParam = request.hasParameter("name");
+		if (!hasIdParam && !hasTypeParam) {
+			ErrorDTO error = new ErrorDTO("'id' or 'type' parameter is not set.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
+		}
+		if (!hasNameParam) {
+			ErrorDTO error = new ErrorDTO("'name' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsServerService service = getService();
+		String name = request.getStringParameter("name");
 
-		boolean exists = false;
+		boolean succeed = false;
+
+		SubsServerService service = getService();
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
-			exists = service.sourceExists(id);
+			succeed = service.updateSourceTypeName(id, name);
 
-		} else if (hasTypeParams) {
+		} else if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			String instanceId = request.getStringParameter("instanceId");
-			exists = service.sourceExists(type, instanceId);
+			succeed = service.updateSourceTypeName(type, name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		result.put("exists", exists);
+		result.put("succeed", succeed);
 		return Response.status(Status.OK).entity(result).build();
 	}
 

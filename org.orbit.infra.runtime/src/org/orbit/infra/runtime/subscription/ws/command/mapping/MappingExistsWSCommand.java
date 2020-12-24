@@ -1,14 +1,14 @@
 package org.orbit.infra.runtime.subscription.ws.command.mapping;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.subs.SubsMapping;
-import org.orbit.infra.model.subs.dto.SubsMappingDTO;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
-import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class GetSubsMappingWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class MappingExistsWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.GetSubsMappingWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.MappingExistsWSCommand";
 
-	public GetSubsMappingWSCommand() {
+	public MappingExistsWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__GET_MAPPING.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__MAPPING_EXISTS.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -59,10 +59,10 @@ public class GetSubsMappingWSCommand extends AbstractInfraCommand<SubsServerServ
 
 		SubsServerService service = getService();
 
-		SubsMapping mapping = null;
+		boolean exists = false;
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
-			mapping = service.getMapping(id);
+			exists = service.mappingExists(id);
 
 		} else if (hasSourceIdAndTargetIdParams) {
 			Integer sourceId = request.getIntegerParameter("sourceId");
@@ -70,22 +70,17 @@ public class GetSubsMappingWSCommand extends AbstractInfraCommand<SubsServerServ
 
 			if (hasClientIdParam) {
 				String clientId = request.getStringParameter("clientId");
-				mapping = service.getMappingByClientId(sourceId, targetId, clientId);
+				exists = service.mappingExistsByClientId(sourceId, targetId, clientId);
 
 			} else if (hasClientURLParam) {
 				String clientURL = request.getStringParameter("clientURL");
-				mapping = service.getMappingByClientURL(sourceId, targetId, clientURL);
+				exists = service.mappingExistsByClientURL(sourceId, targetId, clientURL);
 			}
 		}
 
-		if (mapping != null) {
-			SubsMappingDTO mappingDTO = RuntimeModelConverter.SUBS_SERVER.toDTO(mapping);
-			return Response.ok().entity(mappingDTO).build();
-		} else {
-			// ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Mapping is not found.");
-			// return Response.status(Status.NOT_FOUND).entity(error).build();
-			return Response.ok().build();
-		}
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		result.put("exists", exists);
+		return Response.status(Status.OK).entity(result).build();
 	}
 
 }

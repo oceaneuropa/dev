@@ -19,11 +19,11 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class ListSubsTargetTypesWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class ListTargetTypesWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.ListSubsTargetTypesWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.ListTargetTypesWSCommand";
 
-	public ListSubsTargetTypesWSCommand() {
+	public ListTargetTypesWSCommand() {
 		super(SubsServerService.class);
 	}
 

@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.source;
+package org.orbit.infra.runtime.subscription.ws.command.target;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.subs.SubsSource;
+import org.orbit.infra.model.subs.SubsTarget;
 import org.orbit.infra.runtime.subscription.SubsServerService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -19,18 +19,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class UpdateTargetWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateSubsSourceWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateTargetWSCommand";
 
-	public UpdateSubsSourceWSCommand() {
+	public UpdateTargetWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__UPDATE_SOURCE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__UPDATE_TARGET.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -50,6 +50,10 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		boolean hasNameParam = request.hasParameter("name");
 		boolean hasPropertiesParam = request.hasParameter("properties");
 
+		boolean hasServerIdParam = request.hasParameter("serverId");
+		boolean hasServerURLParam = request.hasParameter("serverURL");
+		boolean hasServerHeartbeatParam = request.hasParameter("serverHeartbeat");
+
 		if (!hasTypeParam && !hasInstanceIdParam && !hasNameParam && !hasPropertiesParam) {
 			ErrorDTO error = new ErrorDTO("'type' or 'instanceId' or 'name' or 'properties' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -60,9 +64,9 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 
 		SubsServerService service = getService();
 
-		SubsSource source = service.getSource(id);
-		if (source == null) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source is not found.");
+		SubsTarget target = service.getTarget(id);
+		if (target == null) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -75,17 +79,17 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 
 			} else if (hasTypeParam) {
 				type = request.getStringParameter("type");
-				instanceId = source.getInstanceId();
+				instanceId = target.getInstanceId();
 
 			} else if (hasInstanceIdParam) {
-				type = source.getType();
+				type = target.getType();
 				instanceId = request.getStringParameter("instanceId");
 			}
 
-			SubsSource anotherSource = service.getSource(type, instanceId);
+			SubsTarget anotherTarget = service.getTarget(type, instanceId);
 
-			if (anotherSource != null && id.equals(anotherSource.getId())) {
-				ErrorDTO error = new ErrorDTO("Source with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
+			if (anotherTarget != null && id.equals(anotherTarget.getId())) {
+				ErrorDTO error = new ErrorDTO("Target with type '" + type + "' and instanceId '" + instanceId + "' already exists.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}
@@ -93,7 +97,7 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		// Update type
 		if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			boolean currSucceed = service.updateSourceType(id, type, true);
+			boolean currSucceed = service.updateTargetType(id, type, true);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
@@ -104,7 +108,7 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		// Update instanceId
 		if (hasInstanceIdParam) {
 			String instanceId = request.getStringParameter("instanceId");
-			boolean currSucceed = service.updateSourceInstanceId(id, instanceId);
+			boolean currSucceed = service.updateTargetInstanceId(id, instanceId);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
@@ -115,7 +119,7 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 		// Update name
 		if (hasNameParam) {
 			String name = request.getStringParameter("name");
-			boolean currSucceed = service.updateSourceName(id, name);
+			boolean currSucceed = service.updateTargetName(id, name);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
@@ -128,11 +132,46 @@ public class UpdateSubsSourceWSCommand extends AbstractInfraCommand<SubsServerSe
 			Map<String, Object> properties = (Map<String, Object>) request.getMapParameter("properties");
 			boolean clearProperties = request.getBooleanParameter("clearProperties");
 
-			boolean currSucceed = service.updateSourceProperties(id, properties, clearProperties);
+			boolean currSucceed = service.updateTargetProperties(id, properties, clearProperties);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
 				hasFailed = true;
+			}
+		}
+
+		// Update serverId
+		if (hasServerIdParam) {
+			String serverId = request.getStringParameter("serverId");
+			boolean currSucceed = service.updateServerId(id, serverId);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update serverURL
+		if (hasServerURLParam) {
+			String serverURL = request.getStringParameter("serverURL");
+			boolean currSucceed = service.updateServerURL(id, serverURL);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// Update serverHeartbeat
+		if (hasServerHeartbeatParam) {
+			boolean isServerHeartbeat = request.getBooleanParameter("serverHeartbeat");
+			if (isServerHeartbeat) {
+				boolean currSucceed = service.updateServerHeartbeat(id);
+				if (currSucceed) {
+					hasSucceed = true;
+				} else {
+					hasFailed = true;
+				}
 			}
 		}
 

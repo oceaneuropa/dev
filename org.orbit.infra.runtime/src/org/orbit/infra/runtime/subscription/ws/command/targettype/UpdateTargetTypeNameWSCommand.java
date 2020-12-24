@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.sourcetype;
+package org.orbit.infra.runtime.subscription.ws.command.targettype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class UpdateSubsSourceTypeNameWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class UpdateTargetTypeNameWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateSubsSourceTypeNameWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.UpdateTargetTypeNameWSCommand";
 
-	public UpdateSubsSourceTypeNameWSCommand() {
+	public UpdateTargetTypeNameWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__UPDATE_SOURCE_TYPE_NAME.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__UPDATE_TARGET_TYPE_NAME.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -56,11 +56,11 @@ public class UpdateSubsSourceTypeNameWSCommand extends AbstractInfraCommand<Subs
 		SubsServerService service = getService();
 		if (hasIdParam) {
 			Integer id = request.getIntegerParameter("id");
-			succeed = service.updateSourceTypeName(id, name);
+			succeed = service.updateTargetTypeName(id, name);
 
 		} else if (hasTypeParam) {
 			String type = request.getStringParameter("type");
-			succeed = service.updateSourceTypeName(type, name);
+			succeed = service.updateTargetTypeName(type, name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

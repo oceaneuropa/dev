@@ -36,36 +36,38 @@ import org.orbit.infra.runtime.extensions.indexservice.IndexServiceActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServicePropertyTester;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayPropertyTester;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.CreateSubsMappingWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.DeleteSubsMappingWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.GetSubsMappingWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.ListSubsMappingsWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.SubsMappingExistsWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.mapping.UpdateSubsMappingWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.CreateSubsSourceWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.DeleteSubsSourceWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.GetSubsSourceWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.ListSubsSourcesWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.SubsSourceExistsWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.source.UpdateSubsSourceWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.CreateSubsSourceTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.DeleteSubsSourceTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.GetSubsSourceTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.ListSubsSourceTypesWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.UpdateSubsSourceTypeNameWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.sourcetype.UpdateSubsSourceTypeTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.CreateSubsTargetWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.DeleteSubsTargetWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.GetSubsTargetWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.ListSubsTargetsWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.SubsTargetExistsWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.target.UpdateSubsTargetWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.CreateSubsTargetTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.DeleteSubsTargetTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.GetSubsTargetTypeWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.ListSubsTargetTypesWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.UpdateSubsTargetTypeNameWSCommand;
-import org.orbit.infra.runtime.subscription.ws.command.targettype.UpdateSubsTargetTypeTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.CreateMappingWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.DeleteMappingWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.GetMappingWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.ListMappingsWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.ListSourceTypesMappingOfTargetWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.ListTargetTypesMappingOfSourceWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.MappingExistsWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.mapping.UpdateMappingWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.CreateSourceWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.DeleteSourceWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.GetSourceWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.ListSourcesWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.SourceExistsWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.source.UpdateSourceWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.CreateSourceTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.DeleteSourceTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.GetSourceTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.ListSourceTypesWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.UpdateSourceTypeNameWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.sourcetype.UpdateSourceTypeTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.CreateTargetWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.DeleteTargetWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.GetTargetWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.ListTargetsWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.TargetExistsWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.target.UpdateTargetWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.CreateTargetTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.DeleteTargetTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.GetTargetTypeWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.ListTargetTypesWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.UpdateTargetTypeNameWSCommand;
+import org.orbit.infra.runtime.subscription.ws.command.targettype.UpdateTargetTypeTypeWSCommand;
 import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.extensions.Extension;
@@ -396,44 +398,44 @@ public class Extensions extends ProgramExtensions {
 		// -----------------------------------------------------------------------------------
 		// Source Types
 		// -----------------------------------------------------------------------------------
-		Extension extension41 = new Extension(extensionTypeId, ListSubsSourceTypesWSCommand.ID);
+		Extension extension41 = new Extension(extensionTypeId, ListSourceTypesWSCommand.ID);
 		extension41.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc41 = new InterfaceDescription(WSCommand.class, ListSubsSourceTypesWSCommand.class);
+		InterfaceDescription desc41 = new InterfaceDescription(WSCommand.class, ListSourceTypesWSCommand.class);
 		desc41.setSingleton(false);
 		extension41.addInterface(desc41);
 		addExtension(extension41);
 
-		Extension extension42 = new Extension(extensionTypeId, GetSubsSourceTypeWSCommand.ID);
+		Extension extension42 = new Extension(extensionTypeId, GetSourceTypeWSCommand.ID);
 		extension42.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc42 = new InterfaceDescription(WSCommand.class, GetSubsSourceTypeWSCommand.class);
+		InterfaceDescription desc42 = new InterfaceDescription(WSCommand.class, GetSourceTypeWSCommand.class);
 		desc42.setSingleton(false);
 		extension42.addInterface(desc42);
 		addExtension(extension42);
 
-		Extension extension43 = new Extension(extensionTypeId, CreateSubsSourceTypeWSCommand.ID);
+		Extension extension43 = new Extension(extensionTypeId, CreateSourceTypeWSCommand.ID);
 		extension43.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc43 = new InterfaceDescription(WSCommand.class, CreateSubsSourceTypeWSCommand.class);
+		InterfaceDescription desc43 = new InterfaceDescription(WSCommand.class, CreateSourceTypeWSCommand.class);
 		desc43.setSingleton(false);
 		extension43.addInterface(desc43);
 		addExtension(extension43);
 
-		Extension extension44 = new Extension(extensionTypeId, UpdateSubsSourceTypeTypeWSCommand.ID);
+		Extension extension44 = new Extension(extensionTypeId, UpdateSourceTypeTypeWSCommand.ID);
 		extension44.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc44 = new InterfaceDescription(WSCommand.class, UpdateSubsSourceTypeTypeWSCommand.class);
+		InterfaceDescription desc44 = new InterfaceDescription(WSCommand.class, UpdateSourceTypeTypeWSCommand.class);
 		desc44.setSingleton(false);
 		extension44.addInterface(desc44);
 		addExtension(extension44);
 
-		Extension extension45 = new Extension(extensionTypeId, UpdateSubsSourceTypeNameWSCommand.ID);
+		Extension extension45 = new Extension(extensionTypeId, UpdateSourceTypeNameWSCommand.ID);
 		extension45.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc45 = new InterfaceDescription(WSCommand.class, UpdateSubsSourceTypeNameWSCommand.class);
+		InterfaceDescription desc45 = new InterfaceDescription(WSCommand.class, UpdateSourceTypeNameWSCommand.class);
 		desc45.setSingleton(false);
 		extension45.addInterface(desc45);
 		addExtension(extension45);
 
-		Extension extension46 = new Extension(extensionTypeId, DeleteSubsSourceTypeWSCommand.ID);
+		Extension extension46 = new Extension(extensionTypeId, DeleteSourceTypeWSCommand.ID);
 		extension46.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc46 = new InterfaceDescription(WSCommand.class, DeleteSubsSourceTypeWSCommand.class);
+		InterfaceDescription desc46 = new InterfaceDescription(WSCommand.class, DeleteSourceTypeWSCommand.class);
 		desc46.setSingleton(false);
 		extension46.addInterface(desc46);
 		addExtension(extension46);
@@ -441,44 +443,44 @@ public class Extensions extends ProgramExtensions {
 		// -----------------------------------------------------------------------------------
 		// Target Types
 		// -----------------------------------------------------------------------------------
-		Extension extension51 = new Extension(extensionTypeId, ListSubsTargetTypesWSCommand.ID);
+		Extension extension51 = new Extension(extensionTypeId, ListTargetTypesWSCommand.ID);
 		extension51.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc51 = new InterfaceDescription(WSCommand.class, ListSubsTargetTypesWSCommand.class);
+		InterfaceDescription desc51 = new InterfaceDescription(WSCommand.class, ListTargetTypesWSCommand.class);
 		desc51.setSingleton(false);
 		extension51.addInterface(desc51);
 		addExtension(extension51);
 
-		Extension extension52 = new Extension(extensionTypeId, GetSubsTargetTypeWSCommand.ID);
+		Extension extension52 = new Extension(extensionTypeId, GetTargetTypeWSCommand.ID);
 		extension52.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc52 = new InterfaceDescription(WSCommand.class, GetSubsTargetTypeWSCommand.class);
+		InterfaceDescription desc52 = new InterfaceDescription(WSCommand.class, GetTargetTypeWSCommand.class);
 		desc52.setSingleton(false);
 		extension52.addInterface(desc52);
 		addExtension(extension52);
 
-		Extension extension53 = new Extension(extensionTypeId, CreateSubsTargetTypeWSCommand.ID);
+		Extension extension53 = new Extension(extensionTypeId, CreateTargetTypeWSCommand.ID);
 		extension53.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc53 = new InterfaceDescription(WSCommand.class, CreateSubsTargetTypeWSCommand.class);
+		InterfaceDescription desc53 = new InterfaceDescription(WSCommand.class, CreateTargetTypeWSCommand.class);
 		desc53.setSingleton(false);
 		extension53.addInterface(desc53);
 		addExtension(extension53);
 
-		Extension extension54 = new Extension(extensionTypeId, UpdateSubsTargetTypeTypeWSCommand.ID);
+		Extension extension54 = new Extension(extensionTypeId, UpdateTargetTypeTypeWSCommand.ID);
 		extension54.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc54 = new InterfaceDescription(WSCommand.class, UpdateSubsTargetTypeTypeWSCommand.class);
+		InterfaceDescription desc54 = new InterfaceDescription(WSCommand.class, UpdateTargetTypeTypeWSCommand.class);
 		desc54.setSingleton(false);
 		extension54.addInterface(desc54);
 		addExtension(extension54);
 
-		Extension extension55 = new Extension(extensionTypeId, UpdateSubsTargetTypeNameWSCommand.ID);
+		Extension extension55 = new Extension(extensionTypeId, UpdateTargetTypeNameWSCommand.ID);
 		extension55.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc55 = new InterfaceDescription(WSCommand.class, UpdateSubsTargetTypeNameWSCommand.class);
+		InterfaceDescription desc55 = new InterfaceDescription(WSCommand.class, UpdateTargetTypeNameWSCommand.class);
 		desc55.setSingleton(false);
 		extension55.addInterface(desc55);
 		addExtension(extension55);
 
-		Extension extension56 = new Extension(extensionTypeId, DeleteSubsTargetTypeWSCommand.ID);
+		Extension extension56 = new Extension(extensionTypeId, DeleteTargetTypeWSCommand.ID);
 		extension56.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc56 = new InterfaceDescription(WSCommand.class, DeleteSubsTargetTypeWSCommand.class);
+		InterfaceDescription desc56 = new InterfaceDescription(WSCommand.class, DeleteTargetTypeWSCommand.class);
 		desc56.setSingleton(false);
 		extension56.addInterface(desc56);
 		addExtension(extension56);
@@ -486,44 +488,44 @@ public class Extensions extends ProgramExtensions {
 		// -----------------------------------------------------------------------------------
 		// Sources
 		// -----------------------------------------------------------------------------------
-		Extension extension11 = new Extension(extensionTypeId, ListSubsSourcesWSCommand.ID);
+		Extension extension11 = new Extension(extensionTypeId, ListSourcesWSCommand.ID);
 		extension11.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc11 = new InterfaceDescription(WSCommand.class, ListSubsSourcesWSCommand.class);
+		InterfaceDescription desc11 = new InterfaceDescription(WSCommand.class, ListSourcesWSCommand.class);
 		desc11.setSingleton(false);
 		extension11.addInterface(desc11);
 		addExtension(extension11);
 
-		Extension extension12 = new Extension(extensionTypeId, GetSubsSourceWSCommand.ID);
+		Extension extension12 = new Extension(extensionTypeId, GetSourceWSCommand.ID);
 		extension12.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc12 = new InterfaceDescription(WSCommand.class, GetSubsSourceWSCommand.class);
+		InterfaceDescription desc12 = new InterfaceDescription(WSCommand.class, GetSourceWSCommand.class);
 		desc12.setSingleton(false);
 		extension12.addInterface(desc12);
 		addExtension(extension12);
 
-		Extension extension13 = new Extension(extensionTypeId, SubsSourceExistsWSCommand.ID);
+		Extension extension13 = new Extension(extensionTypeId, SourceExistsWSCommand.ID);
 		extension13.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc13 = new InterfaceDescription(WSCommand.class, SubsSourceExistsWSCommand.class);
+		InterfaceDescription desc13 = new InterfaceDescription(WSCommand.class, SourceExistsWSCommand.class);
 		desc13.setSingleton(false);
 		extension13.addInterface(desc13);
 		addExtension(extension13);
 
-		Extension extension14 = new Extension(extensionTypeId, CreateSubsSourceWSCommand.ID);
+		Extension extension14 = new Extension(extensionTypeId, CreateSourceWSCommand.ID);
 		extension14.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc14 = new InterfaceDescription(WSCommand.class, CreateSubsSourceWSCommand.class);
+		InterfaceDescription desc14 = new InterfaceDescription(WSCommand.class, CreateSourceWSCommand.class);
 		desc14.setSingleton(false);
 		extension14.addInterface(desc14);
 		addExtension(extension14);
 
-		Extension extension15 = new Extension(extensionTypeId, UpdateSubsSourceWSCommand.ID);
+		Extension extension15 = new Extension(extensionTypeId, UpdateSourceWSCommand.ID);
 		extension15.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, UpdateSubsSourceWSCommand.class);
+		InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, UpdateSourceWSCommand.class);
 		desc15.setSingleton(false);
 		extension15.addInterface(desc15);
 		addExtension(extension15);
 
-		Extension extension16 = new Extension(extensionTypeId, DeleteSubsSourceWSCommand.ID);
+		Extension extension16 = new Extension(extensionTypeId, DeleteSourceWSCommand.ID);
 		extension16.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, DeleteSubsSourceWSCommand.class);
+		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, DeleteSourceWSCommand.class);
 		desc16.setSingleton(false);
 		extension16.addInterface(desc16);
 		addExtension(extension16);
@@ -531,44 +533,44 @@ public class Extensions extends ProgramExtensions {
 		// -----------------------------------------------------------------------------------
 		// Targets
 		// -----------------------------------------------------------------------------------
-		Extension extension21 = new Extension(extensionTypeId, ListSubsTargetsWSCommand.ID);
+		Extension extension21 = new Extension(extensionTypeId, ListTargetsWSCommand.ID);
 		extension21.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc21 = new InterfaceDescription(WSCommand.class, ListSubsTargetsWSCommand.class);
+		InterfaceDescription desc21 = new InterfaceDescription(WSCommand.class, ListTargetsWSCommand.class);
 		desc21.setSingleton(false);
 		extension21.addInterface(desc21);
 		addExtension(extension21);
 
-		Extension extension22 = new Extension(extensionTypeId, GetSubsTargetWSCommand.ID);
+		Extension extension22 = new Extension(extensionTypeId, GetTargetWSCommand.ID);
 		extension22.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc22 = new InterfaceDescription(WSCommand.class, GetSubsTargetWSCommand.class);
+		InterfaceDescription desc22 = new InterfaceDescription(WSCommand.class, GetTargetWSCommand.class);
 		desc22.setSingleton(false);
 		extension22.addInterface(desc22);
 		addExtension(extension22);
 
-		Extension extension23 = new Extension(extensionTypeId, SubsTargetExistsWSCommand.ID);
+		Extension extension23 = new Extension(extensionTypeId, TargetExistsWSCommand.ID);
 		extension23.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc23 = new InterfaceDescription(WSCommand.class, SubsTargetExistsWSCommand.class);
+		InterfaceDescription desc23 = new InterfaceDescription(WSCommand.class, TargetExistsWSCommand.class);
 		desc23.setSingleton(false);
 		extension23.addInterface(desc23);
 		addExtension(extension23);
 
-		Extension extension24 = new Extension(extensionTypeId, CreateSubsTargetWSCommand.ID);
+		Extension extension24 = new Extension(extensionTypeId, CreateTargetWSCommand.ID);
 		extension24.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc24 = new InterfaceDescription(WSCommand.class, CreateSubsTargetWSCommand.class);
+		InterfaceDescription desc24 = new InterfaceDescription(WSCommand.class, CreateTargetWSCommand.class);
 		desc24.setSingleton(false);
 		extension24.addInterface(desc24);
 		addExtension(extension24);
 
-		Extension extension25 = new Extension(extensionTypeId, UpdateSubsTargetWSCommand.ID);
+		Extension extension25 = new Extension(extensionTypeId, UpdateTargetWSCommand.ID);
 		extension25.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc25 = new InterfaceDescription(WSCommand.class, UpdateSubsTargetWSCommand.class);
+		InterfaceDescription desc25 = new InterfaceDescription(WSCommand.class, UpdateTargetWSCommand.class);
 		desc25.setSingleton(false);
 		extension25.addInterface(desc25);
 		addExtension(extension25);
 
-		Extension extension26 = new Extension(extensionTypeId, DeleteSubsTargetWSCommand.ID);
+		Extension extension26 = new Extension(extensionTypeId, DeleteTargetWSCommand.ID);
 		extension26.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc26 = new InterfaceDescription(WSCommand.class, DeleteSubsTargetWSCommand.class);
+		InterfaceDescription desc26 = new InterfaceDescription(WSCommand.class, DeleteTargetWSCommand.class);
 		desc26.setSingleton(false);
 		extension26.addInterface(desc26);
 		addExtension(extension26);
@@ -576,47 +578,61 @@ public class Extensions extends ProgramExtensions {
 		// -----------------------------------------------------------------------------------
 		// Mappings
 		// -----------------------------------------------------------------------------------
-		Extension extension31 = new Extension(extensionTypeId, ListSubsMappingsWSCommand.ID);
+		Extension extension31 = new Extension(extensionTypeId, ListMappingsWSCommand.ID);
 		extension31.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc31 = new InterfaceDescription(WSCommand.class, ListSubsMappingsWSCommand.class);
+		InterfaceDescription desc31 = new InterfaceDescription(WSCommand.class, ListMappingsWSCommand.class);
 		desc31.setSingleton(false);
 		extension31.addInterface(desc31);
 		addExtension(extension31);
 
-		Extension extension32 = new Extension(extensionTypeId, GetSubsMappingWSCommand.ID);
+		Extension extension32 = new Extension(extensionTypeId, GetMappingWSCommand.ID);
 		extension32.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc32 = new InterfaceDescription(WSCommand.class, GetSubsMappingWSCommand.class);
+		InterfaceDescription desc32 = new InterfaceDescription(WSCommand.class, GetMappingWSCommand.class);
 		desc32.setSingleton(false);
 		extension32.addInterface(desc32);
 		addExtension(extension32);
 
-		Extension extension33 = new Extension(extensionTypeId, SubsMappingExistsWSCommand.ID);
+		Extension extension33 = new Extension(extensionTypeId, MappingExistsWSCommand.ID);
 		extension33.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc33 = new InterfaceDescription(WSCommand.class, SubsMappingExistsWSCommand.class);
+		InterfaceDescription desc33 = new InterfaceDescription(WSCommand.class, MappingExistsWSCommand.class);
 		desc33.setSingleton(false);
 		extension33.addInterface(desc33);
 		addExtension(extension33);
 
-		Extension extension34 = new Extension(extensionTypeId, CreateSubsMappingWSCommand.ID);
+		Extension extension34 = new Extension(extensionTypeId, CreateMappingWSCommand.ID);
 		extension34.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc34 = new InterfaceDescription(WSCommand.class, CreateSubsMappingWSCommand.class);
+		InterfaceDescription desc34 = new InterfaceDescription(WSCommand.class, CreateMappingWSCommand.class);
 		desc34.setSingleton(false);
 		extension34.addInterface(desc34);
 		addExtension(extension34);
 
-		Extension extension35 = new Extension(extensionTypeId, UpdateSubsMappingWSCommand.ID);
+		Extension extension35 = new Extension(extensionTypeId, UpdateMappingWSCommand.ID);
 		extension35.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc35 = new InterfaceDescription(WSCommand.class, UpdateSubsMappingWSCommand.class);
+		InterfaceDescription desc35 = new InterfaceDescription(WSCommand.class, UpdateMappingWSCommand.class);
 		desc35.setSingleton(false);
 		extension35.addInterface(desc35);
 		addExtension(extension35);
 
-		Extension extension36 = new Extension(extensionTypeId, DeleteSubsMappingWSCommand.ID);
+		Extension extension36 = new Extension(extensionTypeId, DeleteMappingWSCommand.ID);
 		extension36.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc36 = new InterfaceDescription(WSCommand.class, DeleteSubsMappingWSCommand.class);
+		InterfaceDescription desc36 = new InterfaceDescription(WSCommand.class, DeleteMappingWSCommand.class);
 		desc36.setSingleton(false);
 		extension36.addInterface(desc36);
 		addExtension(extension36);
+
+		Extension extension37 = new Extension(extensionTypeId, ListTargetTypesMappingOfSourceWSCommand.ID);
+		extension37.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc37 = new InterfaceDescription(WSCommand.class, ListTargetTypesMappingOfSourceWSCommand.class);
+		desc37.setSingleton(false);
+		extension37.addInterface(desc37);
+		addExtension(extension37);
+
+		Extension extension38 = new Extension(extensionTypeId, ListSourceTypesMappingOfTargetWSCommand.ID);
+		extension38.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc38 = new InterfaceDescription(WSCommand.class, ListSourceTypesMappingOfTargetWSCommand.class);
+		desc38.setSingleton(false);
+		extension38.addInterface(desc38);
+		addExtension(extension38);
 	}
 
 	protected void createCommandExtensions() {

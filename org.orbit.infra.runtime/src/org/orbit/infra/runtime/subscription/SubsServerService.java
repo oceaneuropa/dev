@@ -141,7 +141,15 @@ public interface SubsServerService extends WebServiceAware, ConnectionAware, Edi
 
 	List<SubsMapping> getMappingsOfSource(Integer sourceId) throws ServerException;
 
+	List<SubsMapping> getMappingsOfSource(Integer sourceId, String targetType) throws ServerException;
+
+	List<SubsMapping> getMappingsOfSource(Integer sourceId, String targetType, String targetInstanceId) throws ServerException;
+
 	List<SubsMapping> getMappingsOfTarget(Integer targetId) throws ServerException;
+
+	List<SubsMapping> getMappingsOfTarget(Integer targetId, String sourceType) throws ServerException;
+
+	List<SubsMapping> getMappingsOfTarget(Integer targetId, String sourceType, String sourceInstanceId) throws ServerException;
 
 	List<SubsMapping> getMappings(Integer sourceId, Integer targetId) throws ServerException;
 

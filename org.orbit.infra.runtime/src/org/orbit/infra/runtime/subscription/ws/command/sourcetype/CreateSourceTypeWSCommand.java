@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.subscription.ws.command.targettype;
+package org.orbit.infra.runtime.subscription.ws.command.sourcetype;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -18,18 +18,18 @@ import org.origin.common.rest.model.Request;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class CreateSubsTargetTypeWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
+public class CreateSourceTypeWSCommand extends AbstractInfraCommand<SubsServerService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.subsServer.CreateSubsTargetTypeWSCommand";
+	public static String ID = "org.orbit.infra.runtime.subsServer.CreateSourceTypeWSCommand";
 
-	public CreateSubsTargetTypeWSCommand() {
+	public CreateSourceTypeWSCommand() {
 		super(SubsServerService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.SUBS_SERVER__CREATE_TARGET_TYPE.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.SUBS_SERVER__CREATE_SOURCE_TYPE.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -47,14 +47,14 @@ public class CreateSubsTargetTypeWSCommand extends AbstractInfraCommand<SubsServ
 
 		SubsServerService service = getService();
 
-		if (service.targetTypeExists(type)) {
-			ErrorDTO error = new ErrorDTO("Target type already exists.");
+		if (service.sourceTypeExists(type)) {
+			ErrorDTO error = new ErrorDTO("Source type already exists.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		SubsType typeObj = service.createTargetType(type, name);
+		SubsType typeObj = service.createSourceType(type, name);
 		if (typeObj == null) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Target type cannot be created.");
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Source type cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
