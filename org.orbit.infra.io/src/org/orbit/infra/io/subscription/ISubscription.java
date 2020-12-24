@@ -1,11 +1,16 @@
 package org.orbit.infra.io.subscription;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public interface ISubscription {
 
 	String getId();
 
-	String getSubscriberId();
+	ISubscriber getSubscriberId();
 
-	String getSubscribableId();
+	ISubscribable getSubscribableId();
 
 }
