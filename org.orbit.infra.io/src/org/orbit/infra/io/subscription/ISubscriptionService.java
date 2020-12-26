@@ -12,6 +12,17 @@ import java.util.Map;
 public interface ISubscriptionService {
 
 	// ------------------------------------------------
+	// Config
+	// ------------------------------------------------
+	void setURL(String url);
+
+	String getURL();
+
+	void setAccessToken(String accessToken);
+
+	String getAccessToken();
+
+	// ------------------------------------------------
 	// Admin
 	// ------------------------------------------------
 	/**

@@ -37,10 +37,25 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 		this.accessToken = accessToken;
 	}
 
+	// ------------------------------------------------
+	// Config
+	// ------------------------------------------------
+	@Override
+	public void setURL(String url) {
+		this.url = url;
+	}
+
+	@Override
 	public String getURL() {
 		return this.url;
 	}
 
+	@Override
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	@Override
 	public String getAccessToken() {
 		return this.accessToken;
 	}
@@ -49,10 +64,6 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 		SubsServerAPI api = SubsServerUtil.getAPI(this.url, this.accessToken);
 		api = checkAPI(api);
 		return api;
-	}
-
-	protected void handleException(Exception e) throws IOException {
-		throw new IOException(e.getMessage(), e);
 	}
 
 	/**
@@ -74,6 +85,15 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
 			throw new IllegalStateException("Subscription server is not online.");
 		}
 		return api;
+	}
+
+	/**
+	 * 
+	 * @param e
+	 * @throws IOException
+	 */
+	protected void handleException(Exception e) throws IOException {
+		throw new IOException(e.getMessage(), e);
 	}
 
 	// ------------------------------------------------
