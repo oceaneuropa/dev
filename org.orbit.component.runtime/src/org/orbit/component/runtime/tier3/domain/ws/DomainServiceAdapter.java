@@ -10,7 +10,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,20 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes
- * unavailable.
+ * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes unavailable.
  * 
  */
-public class DomainServiceAdapter implements LifecycleAware {
+public class DomainServiceAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
 	protected DomainServiceWSApplication webApp;
-	// protected DomainServiceTimer indexTimer;
 	protected ServiceIndexTimer<DomainManagementService> indexTimer;
 
+	/**
+	 * 
+	 * @param properties
+	 */
 	public DomainServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
 	}
@@ -41,14 +43,7 @@ public class DomainServiceAdapter implements LifecycleAware {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	// public IndexServiceClient getIndexProvider() {
-	// return InfraClients.getInstance().getIndexService(this.properties, true);
-	// }
-
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<DomainManagementService, DomainManagementService>(bundleContext, DomainManagementService.class, new ServiceTrackerCustomizer<DomainManagementService, DomainManagementService>() {
@@ -76,10 +71,6 @@ public class DomainServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
@@ -127,6 +118,11 @@ public class DomainServiceAdapter implements LifecycleAware {
 	}
 
 }
+
+// protected DomainServiceTimer indexTimer;
+// public IndexServiceClient getIndexProvider() {
+// return InfraClients.getInstance().getIndexService(this.properties, true);
+// }
 
 // protected Extension urlProviderExtension;
 

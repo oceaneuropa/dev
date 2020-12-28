@@ -9,7 +9,7 @@ import java.util.List;
 import org.orbit.infra.model.subs.SubsType;
 import org.orbit.infra.model.subs.impl.SubsTypeImpl;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
@@ -19,7 +19,7 @@ import org.origin.common.jdbc.ResultSetSingleHandler;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class SubsTargetTypesTableHandler implements DatabaseTableAware {
+public class SubsTargetTypesTableHandler implements DatabaseTableProvider {
 
 	@Override
 	public String getTableName() {
@@ -30,7 +30,7 @@ public class SubsTargetTypesTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id serial NOT NULL,"); // unique id
 			sb.append("    type varchar(250),");

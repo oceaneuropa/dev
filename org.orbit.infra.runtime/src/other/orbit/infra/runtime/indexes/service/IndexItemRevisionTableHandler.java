@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
@@ -21,7 +21,7 @@ import org.origin.common.util.DateUtil;
  * @see http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
  * 
  */
-public class IndexItemRevisionTableHandler implements DatabaseTableAware {
+public class IndexItemRevisionTableHandler implements DatabaseTableProvider {
 
 	public static IndexItemRevisionTableHandler INSTANCE = new IndexItemRevisionTableHandler();
 
@@ -84,7 +84,7 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		String sql = "";
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	revisionId int NOT NULL AUTO_INCREMENT,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
@@ -96,7 +96,7 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 			sql += "	PRIMARY KEY (revisionId)";
 			sql += ");";
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	revisionId serial NOT NULL,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";

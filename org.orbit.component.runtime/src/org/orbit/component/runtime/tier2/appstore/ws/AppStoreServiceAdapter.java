@@ -10,7 +10,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -24,32 +24,28 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class AppStoreServiceAdapter implements LifecycleAware {
+public class AppStoreServiceAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(AppStoreServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
 	protected AppStoreWSApplication webApp;
-	// protected AppStoreServiceIndexTimer indexTimer;
 	protected ServiceIndexTimer<AppStoreService> indexTimer;
 
+	/**
+	 * 
+	 * @param properties
+	 */
 	public AppStoreServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
 	}
-
-	// public IndexServiceClient getIndexProvider() {
-	// return InfraClients.getInstance().getIndexService(this.properties, true);
-	// }
 
 	public AppStoreService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<AppStoreService, AppStoreService>(bundleContext, AppStoreService.class, new ServiceTrackerCustomizer<AppStoreService, AppStoreService>() {
@@ -72,10 +68,6 @@ public class AppStoreServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
@@ -133,6 +125,12 @@ public class AppStoreServiceAdapter implements LifecycleAware {
 	}
 
 }
+
+// protected AppStoreServiceIndexTimer indexTimer;
+
+// public IndexServiceClient getIndexProvider() {
+// return InfraClients.getInstance().getIndexService(this.properties, true);
+// }
 
 // protected Extension urlProviderExtension;
 

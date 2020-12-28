@@ -7,7 +7,7 @@ import org.orbit.component.runtime.tier1.identity.service.IdentityServiceImpl;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -39,8 +39,8 @@ public class IdentityServiceActivator implements ServiceActivator {
 
 		// Stop IdentityService
 		IdentityService identityService = process.getAdapter(IdentityService.class);
-		if (identityService instanceof LifecycleAware) {
-			((LifecycleAware) identityService).stop(bundleContext);
+		if (identityService instanceof ILifecycle) {
+			((ILifecycle) identityService).stop(bundleContext);
 		}
 	}
 

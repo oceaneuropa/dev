@@ -5,10 +5,15 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.origin.common.jdbc.ConnectionAware;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 
-public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurationV1 implements /* PropertiesAware */ ConnectionAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurationV1 implements ConnectionProvider {
 
 	protected Properties props;
 
@@ -20,11 +25,7 @@ public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurati
 		this.props = properties;
 	}
 
-	// @Override
-	// public Properties getProperties() {
-	// return this.props;
-	// }
-
+	/** ConnectionProvider */
 	@Override
 	public Connection getConnection() throws SQLException {
 		String driver = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
@@ -37,6 +38,11 @@ public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurati
 	}
 
 }
+
+// @Override
+// public Properties getProperties() {
+// return this.props;
+// }
 
 // String driver = PropertyUtil.getString(this.properties, "index.service.jdbc.driver", "org.postgresql.DriverTmp");
 // String url = PropertyUtil.getString(this.properties, "index.service.jdbc.url", "jdbc:postgresql://127.0.0.1:5432/originTmp");

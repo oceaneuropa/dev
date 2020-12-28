@@ -8,7 +8,7 @@ import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
-import org.origin.common.service.WebServiceAwareImpl;
+import org.origin.common.service.WebServiceImpl;
 
 public class DomainServiceWSApplicationRelay extends WSRelayApplication {
 
@@ -19,7 +19,7 @@ public class DomainServiceWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public DomainServiceWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
+		super(new WebServiceImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		Resource.Builder machinesWSResource = Resource.builder("/machines");
 		new WSMethodInflector(machinesWSResource, "", GET, JSON, factory.createClient(null), switcher);

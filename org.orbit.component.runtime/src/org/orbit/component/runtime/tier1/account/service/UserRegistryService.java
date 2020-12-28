@@ -4,10 +4,15 @@ import java.util.List;
 
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface UserRegistryService extends WebServiceAware, AccessTokenAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface UserRegistryService extends IWebService, AccessTokenProvider {
 
 	List<UserAccount> getUserAccounts() throws ServerException;
 

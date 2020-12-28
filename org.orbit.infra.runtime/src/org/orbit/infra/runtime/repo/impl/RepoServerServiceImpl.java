@@ -25,7 +25,7 @@ public class RepoServerServiceImpl implements RepoServerService {
 	protected String hostURL;
 	protected String contextRoot;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected ServiceEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies editPolicies;
 
 	protected File rootFolder;
 	protected Map<String, Repos> userToReposMap = new HashMap<String, Repos>();
@@ -38,7 +38,7 @@ public class RepoServerServiceImpl implements RepoServerService {
 		this.rootFolder = new File(rootFolderLocation);
 	}
 
-	/** WebServiceAware interface */
+	/** IWebService */
 	@Override
 	public String getName() {
 		return this.name;
@@ -50,7 +50,7 @@ public class RepoServerServiceImpl implements RepoServerService {
 
 	@Override
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -66,17 +66,16 @@ public class RepoServerServiceImpl implements RepoServerService {
 		this.contextRoot = contextRoot;
 	}
 
-	/** EditPoliciesAwareService interface */
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
-	/** LifecycleAware interface */
+	/** ILifecycle */
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		// Create EditPolicies
-		this.wsEditPolicies = new ServiceEditPoliciesImpl(RepoServerService.class, this);
+		this.editPolicies = new ServiceEditPoliciesImpl(RepoServerService.class, this);
 
 		// Register RepoClientService
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -121,7 +120,7 @@ public class RepoServerServiceImpl implements RepoServerService {
 		}
 
 		// Dispose EditPolicies
-		this.wsEditPolicies = null;
+		this.editPolicies = null;
 
 		// Dispose data
 		this.userToReposMap.clear();

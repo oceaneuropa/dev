@@ -6,24 +6,15 @@ import java.util.Map;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public interface IndexService extends WebServiceAware, AccessTokenAware {
-
-	// ---------------------------------------------------------------------------------------------------
-	// Service metadata
-	// ---------------------------------------------------------------------------------------------------
-	String getName();
-
-	String getHostURL();
-
-	String getContextRoot();
+public interface IndexService extends IWebService, AccessTokenProvider {
 
 	// ---------------------------------------------------------------------------------------------------
 	// Index Providers

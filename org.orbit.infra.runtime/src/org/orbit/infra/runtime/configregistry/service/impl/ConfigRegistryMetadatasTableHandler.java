@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
@@ -23,7 +23,7 @@ import org.origin.common.json.JSONUtil;
  * 		ConfigRegistries
  * 
  */
-public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
+public class ConfigRegistryMetadatasTableHandler implements DatabaseTableProvider {
 
 	protected static Map<String, ConfigRegistryMetadatasTableHandler> tableHandlerMap = new HashMap<String, ConfigRegistryMetadatasTableHandler>();
 
@@ -75,7 +75,7 @@ public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id varchar(50) NOT NULL,");
 			sb.append("    type varchar(50),");
@@ -86,7 +86,7 @@ public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (id)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id varchar(50) NOT NULL,");
 			sb.append("    type varchar(50),");

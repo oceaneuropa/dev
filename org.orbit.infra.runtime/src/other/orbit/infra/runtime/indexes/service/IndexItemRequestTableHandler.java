@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
@@ -19,7 +19,7 @@ import org.origin.common.util.DateUtil;
  * CRUD methods for the IndexItemRequest table.
  *
  */
-public class IndexItemRequestTableHandler implements DatabaseTableAware {
+public class IndexItemRequestTableHandler implements DatabaseTableProvider {
 
 	public static IndexItemRequestTableHandler INSTANCE = new IndexItemRequestTableHandler();
 
@@ -87,7 +87,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		String sql = "";
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	requestId int NOT NULL AUTO_INCREMENT,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
@@ -99,7 +99,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 			sql += "	PRIMARY KEY (requestId)";
 			sql += ");";
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	requestId serial NOT NULL,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";

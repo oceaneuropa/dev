@@ -12,10 +12,11 @@ import java.util.TreeMap;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -25,12 +26,15 @@ import org.osgi.framework.ServiceRegistration;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
+public class IndexServiceInMemoryImpl implements IndexService {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenProvider accessTokenSupport;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected Map<String, IndexProviderItem> indexProviderMap = new TreeMap<String, IndexProviderItem>();
 
 	/**
@@ -39,13 +43,14 @@ public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 	 */
 	public IndexServiceInMemoryImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(IndexService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -125,6 +130,7 @@ public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 	// ---------------------------------------------------------------------------------------------------
 	// Service metadata
 	// ---------------------------------------------------------------------------------------------------
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
@@ -151,6 +157,11 @@ public class IndexServiceInMemoryImpl implements IndexService, LifecycleAware {
 	public String getContextRoot() {
 		String contextRoot = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, String.class);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	// ---------------------------------------------------------------------------------------------------

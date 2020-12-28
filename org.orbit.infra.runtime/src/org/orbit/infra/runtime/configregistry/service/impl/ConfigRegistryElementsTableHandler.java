@@ -12,7 +12,7 @@ import java.util.Map;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.util.RuntimeModelConverter;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
@@ -27,7 +27,7 @@ import org.origin.common.json.JSONUtil;
  *      ConfigRegistry_gT3qr3jIRXGVD0APfnAL5g (e.g. for hermes/wing nodes configurations)
  * 
  */
-public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
+public class ConfigRegistryElementsTableHandler implements DatabaseTableProvider {
 
 	public static Map<String, ConfigRegistryElementsTableHandler> tableHandlerMap = new HashMap<String, ConfigRegistryElementsTableHandler>();
 
@@ -116,7 +116,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id int NOT NULL AUTO_INCREMENT,");
 			sb.append("    elementId varchar(250) NOT NULL,");
@@ -128,7 +128,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (id)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id serial NOT NULL,");
 			sb.append("    elementId varchar(250) NOT NULL,");

@@ -15,7 +15,7 @@ import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
@@ -24,22 +24,26 @@ import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ConfigRegistryServiceImpl implements ConfigRegistryService, LifecycleAware, PropertyChangeListener {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ConfigRegistryServiceImpl implements ConfigRegistryService, PropertyChangeListener {
 
 	public static ConfigRegistry[] EMPTY_CONFIG_REGISTRIES = new ConfigRegistry[0];
 
 	protected Map<Object, Object> initProperties;
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected ServiceEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies editPolicies;
 
 	// protected Map<String, ConfigRegistry> configRegistryMap = new HashMap<String, ConfigRegistry>();
-	protected AccessTokenProvider accessTokenSupport;
+	protected AccessTokenHandler accessTokenHandler;
 
 	/**
 	 * 
@@ -47,18 +51,18 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	 */
 	public ConfigRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new ServiceEditPoliciesImpl(ConfigRegistryService.class, this);
-		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(ConfigRegistryService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
-	/** LifecycleAware */
+	/** ILifecycle */
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		ConfigRegistryConfigPropertiesHandler.getInstance().addPropertyChangeListener(this);
@@ -101,13 +105,13 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
-	/** ConnectionAware */
+	/** ConnectionProvider */
 	@Override
 	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
-	/** WebServiceAware */
+	/** IWebService */
 	@Override
 	public String getName() {
 		return ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__NAME, this.initProperties);
@@ -131,10 +135,9 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 		return ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT, this.initProperties);
 	}
 
-	/** EditPoliciesAwareService */
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
 	/**

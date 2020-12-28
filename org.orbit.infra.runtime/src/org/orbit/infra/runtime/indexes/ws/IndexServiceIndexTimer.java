@@ -13,7 +13,7 @@ import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.service.WebServiceHelper;
 import org.origin.common.thread.IndexTimer;
 import org.origin.common.thread.IndexTimerImpl;
 import org.origin.common.util.MapHelper;
@@ -65,7 +65,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			IndexService service = getService();
 
 			String name = service.getName();
-			String baseURL = WebServiceAwareHelper.INSTANCE.getURL(service);
+			String baseURL = WebServiceHelper.INSTANCE.getURL(service);
 			String hostURL = service.getHostURL();
 			String contextRoot = service.getContextRoot();
 
@@ -93,7 +93,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 
 			Integer indexItemId = indexItem.getIndexItemId();
 			String name = service.getName();
-			String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+			String url = WebServiceHelper.INSTANCE.getURL(service);
 			// String hostURL = service.getHostURL();
 			// String contextRoot = service.getContextRoot();
 

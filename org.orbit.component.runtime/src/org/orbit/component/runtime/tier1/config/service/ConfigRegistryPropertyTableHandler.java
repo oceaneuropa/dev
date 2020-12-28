@@ -8,12 +8,12 @@ import java.util.List;
 import org.orbit.component.runtime.model.configregistry.EPath;
 import org.orbit.component.runtime.model.configregistry.RegistryPropertyVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
 
-public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
+public class ConfigRegistryPropertyTableHandler implements DatabaseTableProvider {
 
 	public static ConfigRegistryPropertyTableHandler INSTANCE = new ConfigRegistryPropertyTableHandler();
 
@@ -26,7 +26,7 @@ public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    accountId varchar(50) NOT NULL,");
 			sb.append("    path varchar(2000) NOT NULL,");
@@ -35,7 +35,7 @@ public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (accountId, path, name)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    accountId varchar(50) NOT NULL,");
 			sb.append("    path varchar(2000) NOT NULL,");

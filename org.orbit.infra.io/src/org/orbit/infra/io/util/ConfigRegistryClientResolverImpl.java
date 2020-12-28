@@ -36,7 +36,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 			String contextRoot = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 			String baseURL = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 			if (hostURL != null && baseURL != null) {
-				serviceURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+				serviceURL = WebServiceHelper.INSTANCE.getURL(hostURL, contextRoot);
 			} else if (baseURL != null) {
 				serviceURL = baseURL;
 			}

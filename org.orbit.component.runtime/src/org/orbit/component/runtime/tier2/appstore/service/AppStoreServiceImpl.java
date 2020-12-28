@@ -12,27 +12,34 @@ import java.util.Properties;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class AppStoreServiceImpl implements AppStoreService {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected AppCategoryTableHandler categoryTableHandler;
 	protected AppMetadataTableHandler appTableHandler;
-
-	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -40,12 +47,13 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	 */
 	public AppStoreServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.APP_STORE_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(AppStoreService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.APP_STORE_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -177,6 +185,7 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 		}
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_APP_STORE_NAME);
@@ -200,6 +209,11 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	public String getContextRoot() {
 		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	/**

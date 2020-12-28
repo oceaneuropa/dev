@@ -12,7 +12,7 @@ import org.orbit.platform.sdk.util.ExtensibleServiceEditPolicy;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -21,11 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Adapter to start NodeControlWSApplication when NodeControlService becomes available and to stop NodeControlWSApplication when NodeControlService becomes
- * unavailable.
+ * Adapter to start NodeControlWSApplication when NodeControlService becomes available and to stop NodeControlWSApplication when NodeControlService becomes unavailable.
  * 
  */
-public class NodeControlServiceAdapter implements LifecycleAware {
+public class NodeControlServiceAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(NodeControlServiceAdapter.class);
 
@@ -47,10 +46,7 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<NodeControlService, NodeControlService>(bundleContext, NodeControlService.class, new ServiceTrackerCustomizer<NodeControlService, NodeControlService>() {
@@ -78,10 +74,6 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {

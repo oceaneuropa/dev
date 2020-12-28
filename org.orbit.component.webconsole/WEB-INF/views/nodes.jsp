@@ -85,75 +85,75 @@
 				</tr>
 				<%
 					} else {
-						for (NodeInfo nodeInfo : nodeInfos) {
-							String id = nodeInfo.getId();
-							String name = nodeInfo.getName();
-							URI uri = nodeInfo.getUri();
-							String path = (uri != null) ? uri.getPath() : "(n/a)";
-							String typeId = (String) nodeInfo.getAttributes().get("typeId");
+								for (NodeInfo nodeInfo : nodeInfos) {
+									String id = nodeInfo.getId();
+									String name = nodeInfo.getName();
+									URI uri = nodeInfo.getUri();
+									String path = (uri != null) ? uri.getPath() : "(n/a)";
+									String typeId = (String) nodeInfo.getAttributes().get("typeId");
 
-							boolean isOnline = nodeInfo.getRuntimeStatus().isOnline();
-							String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
-							String statusStr1 = (isOnline)? "Online" : "Offline";
-							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
-							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
+									boolean isOnline = nodeInfo.getRuntimeStatus().isOnline();
+									String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
+									String statusStr1 = (isOnline)? "Online" : "Offline";
+									String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
+									String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 
-							String metadataStr = "";
-							
-							String jvmName = null;
-							String pid = null;
-							if (nodeInfo.getRuntimeProperties().containsKey("jvm_name")) {
-								jvmName = (String) nodeInfo.getRuntimeProperties().get("jvm_name");
-								metadataStr += "jvm_name = " + jvmName;
-							}
-							if (nodeInfo.getRuntimeProperties().containsKey("pid")) {
-								pid = (String) nodeInfo.getRuntimeProperties().get("pid");
+									String metadataStr = "";
+									
+									String jvmName = null;
+									String pid = null;
+									if (nodeInfo.getRuntimeProperties().containsKey("jvm_name")) {
+										jvmName = (String) nodeInfo.getRuntimeProperties().get("jvm_name");
+										metadataStr += "jvm_name = " + jvmName;
+									}
+									if (nodeInfo.getRuntimeProperties().containsKey("pid")) {
+										pid = (String) nodeInfo.getRuntimeProperties().get("pid");
 
-								if (!metadataStr.isEmpty()) {
-									metadataStr += "<br/>";
-								}
-								metadataStr += "pid = " + pid;
-							}
-							if (jvmName == null) {
-								jvmName = "";
-							}
-							if (pid == null) {
-								pid = "";
-							}
+										if (!metadataStr.isEmpty()) {
+											metadataStr += "<br/>";
+										}
+										metadataStr += "pid = " + pid;
+									}
+									if (jvmName == null) {
+										jvmName = "";
+									}
+									if (pid == null) {
+										pid = "";
+									}
 
-							String hostURL = null;
-							String currContextRoot = null;
-							String nodePlatformId = null;
-							String currUrl = null;
-							String platformHome = null;
-							IndexItem indexItem = nodeIdToIndexItemMap.get(id);
+									String hostURL = null;
+									String currContextRoot = null;
+									String nodePlatformId = null;
+									String currUrl = null;
+									String platformHome = null;
+									IndexItem indexItem = nodeIdToIndexItemMap.get(id);
 
-							if (indexItem != null) {
-								hostURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
-								currContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
-								nodePlatformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
-								currUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, currContextRoot);
-								platformHome = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_HOME);
+									if (indexItem != null) {
+										hostURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+										currContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+										nodePlatformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
+										currUrl = WebServiceHelper.INSTANCE.getURL(hostURL, currContextRoot);
+										platformHome = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_HOME);
 
-								if (!metadataStr.isEmpty()) {
-									metadataStr += "<br/>";
-								}
-								metadataStr += InfraConstants.SERVICE__HOST_URL + " = " + hostURL + "<br/>";
-								metadataStr += InfraConstants.SERVICE__CONTEXT_ROOT + " = " + currContextRoot + "<br/>";
-								metadataStr += PlatformConstants.IDX_PROP__PLATFORM_ID + " = " + nodePlatformId + "<br/>";
-								if (currUrl != null) {
-									metadataStr += "Platform URL = " + currUrl + "<br/>";	
-								}
-								if (platformHome != null) {
-									metadataStr += PlatformConstants.IDX_PROP__PLATFORM_HOME + " = " + platformHome + "<br/>";	
-								}
-							}
+										if (!metadataStr.isEmpty()) {
+											metadataStr += "<br/>";
+										}
+										metadataStr += InfraConstants.SERVICE__HOST_URL + " = " + hostURL + "<br/>";
+										metadataStr += InfraConstants.SERVICE__CONTEXT_ROOT + " = " + currContextRoot + "<br/>";
+										metadataStr += PlatformConstants.IDX_PROP__PLATFORM_ID + " = " + nodePlatformId + "<br/>";
+										if (currUrl != null) {
+											metadataStr += "Platform URL = " + currUrl + "<br/>";	
+										}
+										if (platformHome != null) {
+											metadataStr += PlatformConstants.IDX_PROP__PLATFORM_HOME + " = " + platformHome + "<br/>";	
+										}
+									}
 
-							id = StringUtil.get(id);
-							name = StringUtil.get(name);
-							hostURL = StringUtil.get(hostURL, "");
-							currContextRoot = StringUtil.get(currContextRoot, "");
-							platformHome = StringUtil.get(platformHome, "");
+									id = StringUtil.get(id);
+									name = StringUtil.get(name);
+									hostURL = StringUtil.get(hostURL, "");
+									currContextRoot = StringUtil.get(currContextRoot, "");
+									platformHome = StringUtil.get(platformHome, "");
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>

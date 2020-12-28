@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
@@ -19,7 +19,7 @@ import org.origin.common.util.DateUtil;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class IndexItemsTableHandler implements DatabaseTableAware {
+public class IndexItemsTableHandler implements DatabaseTableProvider {
 
 	/**
 	 * 
@@ -128,7 +128,7 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		String sql = "";
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId int NOT NULL AUTO_INCREMENT,";
 			// sql += " indexProviderId varchar(500) NOT NULL,";
@@ -140,7 +140,7 @@ public class IndexItemsTableHandler implements DatabaseTableAware {
 			sql += "	PRIMARY KEY (indexItemId)";
 			sql += ");";
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId serial NOT NULL,";
 			// sql += " indexProviderId varchar(500) NOT NULL,";

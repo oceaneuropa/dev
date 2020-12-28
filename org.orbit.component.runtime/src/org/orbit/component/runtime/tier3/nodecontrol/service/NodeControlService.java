@@ -7,10 +7,15 @@ import java.util.Map;
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.node.INode;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface NodeControlService extends WebServiceAware, AccessTokenAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface NodeControlService extends IWebService, AccessTokenProvider {
 
 	ServiceEditPolicies getEditPolicies();
 

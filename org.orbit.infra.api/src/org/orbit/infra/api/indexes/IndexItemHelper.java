@@ -8,7 +8,7 @@ import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.ServiceMetadataDTO;
-import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.service.WebServiceHelper;
 
 public class IndexItemHelper {
 
@@ -142,7 +142,7 @@ public class IndexItemHelper {
 			} else {
 				String hostUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
 				String contextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
-				serviceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostUrl, contextRoot);
+				serviceUrl = WebServiceHelper.INSTANCE.getURL(hostUrl, contextRoot);
 			}
 		}
 		return serviceUrl;

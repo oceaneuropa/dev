@@ -17,11 +17,12 @@ import org.orbit.component.runtime.common.token.TokenUtil;
 import org.orbit.component.runtime.common.token.UserToken;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.Activator;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.JWTUtil;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -30,14 +31,22 @@ import org.osgi.framework.ServiceRegistration;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-public class AuthServiceImpl implements AuthService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class AuthServiceImpl implements AuthService {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected TokenManager tokenManager;
 	protected String tokenSecret;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -45,12 +54,13 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 */
 	public AuthServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.AUTH_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(AuthService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.AUTH_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -120,6 +130,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		// this.eventBus = null;
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		return (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_NAME);
@@ -141,6 +152,11 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	@Override
 	public String getContextRoot() {
 		return (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_CONTEXT_ROOT);
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	@Override

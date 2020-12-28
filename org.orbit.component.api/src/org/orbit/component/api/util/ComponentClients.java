@@ -13,12 +13,17 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.client.WSClientConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ComponentClients implements LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ComponentClients implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ComponentClients.class);
 

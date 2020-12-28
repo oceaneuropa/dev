@@ -8,12 +8,12 @@ import java.util.Map;
 
 import org.orbit.component.runtime.model.appstore.AppCategory;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
 
-public class AppCategoryTableHandler implements DatabaseTableAware {
+public class AppCategoryTableHandler implements DatabaseTableProvider {
 
 	public static AppCategoryTableHandler INSTANCE = new AppCategoryTableHandler();
 
@@ -26,7 +26,7 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    categoryId varchar(500) NOT NULL,");
 			sb.append("    namespace varchar(500) NOT NULL,");
@@ -36,7 +36,7 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (categoryId)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    categoryId varchar(500) NOT NULL,");
 			sb.append("    namespace varchar(500) NOT NULL,");

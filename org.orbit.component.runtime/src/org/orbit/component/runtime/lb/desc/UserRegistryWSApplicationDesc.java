@@ -4,16 +4,16 @@ import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.IWebService;
 
 public class UserRegistryWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
-	 * @param webServiceAware
+	 * @param webService
 	 */
-	public UserRegistryWSApplicationDesc(WebServiceAware webServiceAware) {
-		super(webServiceAware);
+	public UserRegistryWSApplicationDesc(IWebService webService) {
+		super(webService);
 		setRemoteFeature(FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO);
 
 		WSResourceDesc userAccountsWSResource = new WSResourceDesc(this, "/useraccounts");

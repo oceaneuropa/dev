@@ -11,43 +11,46 @@ import java.util.Properties;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.missioncontrol.Mission;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissionControlServiceImpl implements MissionControlService, ConnectionAware, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class MissionControlServiceImpl implements MissionControlService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
-	protected ServiceEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies editPolicies;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected MissionPersistenceHandler persistenceHandler;
-	protected AccessTokenProvider accessTokenSupport;
+	protected AccessTokenHandler accessTokenHandler;
 
 	public MissionControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new ServiceEditPoliciesImpl();
-		this.wsEditPolicies.setService(MissionControlService.class, this);
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.MISSION_CONTROL_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl();
+		this.editPolicies.setService(MissionControlService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.MISSION_CONTROL_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -102,11 +105,13 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 		this.persistenceHandler = new MissionPersistenceHandlerDatabaseImpl(this);
 	}
 
+	/** ConnectionProvider */
 	@Override
 	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_MISSION_CONTROL_NAME);
@@ -134,7 +139,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
 	/**

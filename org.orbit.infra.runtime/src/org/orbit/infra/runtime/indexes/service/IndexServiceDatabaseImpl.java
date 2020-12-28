@@ -15,13 +15,14 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
+public class IndexServiceDatabaseImpl implements IndexService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceDatabaseImpl.class);
 
@@ -41,9 +42,11 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenProvider accessTokenSupport;
 
 	protected IndexProvidersTableHandler indexProvidersTableHandler;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
 
 	/**
 	 * 
@@ -51,13 +54,14 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 	 */
 	public IndexServiceDatabaseImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(IndexService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.INDEX_ADMIN);
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -194,6 +198,7 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
@@ -220,6 +225,11 @@ public class IndexServiceDatabaseImpl implements IndexService, LifecycleAware {
 	public String getContextRoot() {
 		String contextRoot = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, String.class);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	/**

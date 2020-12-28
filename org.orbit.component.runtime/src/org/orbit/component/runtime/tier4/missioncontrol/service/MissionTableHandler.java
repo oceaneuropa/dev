@@ -11,12 +11,12 @@ import java.util.Map;
 
 import org.orbit.component.runtime.model.missioncontrol.MissionVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
 
-public class MissionTableHandler implements DatabaseTableAware {
+public class MissionTableHandler implements DatabaseTableProvider {
 
 	public static Map<String, MissionTableHandler> tableHandlerMap = new HashMap<String, MissionTableHandler>();
 
@@ -138,7 +138,7 @@ public class MissionTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		String sql = "";
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	id int NOT NULL AUTO_INCREMENT,";
 			sql += "	name varchar(500) NOT NULL,";
@@ -147,7 +147,7 @@ public class MissionTableHandler implements DatabaseTableAware {
 			sql += "	PRIMARY KEY (indexItemId)";
 			sql += ");";
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	id serial NOT NULL,";
 			sql += "	name varchar(500) NOT NULL,";

@@ -7,18 +7,17 @@ import org.orbit.infra.model.subs.SubsMapping;
 import org.orbit.infra.model.subs.SubsSource;
 import org.orbit.infra.model.subs.SubsTarget;
 import org.orbit.infra.model.subs.SubsType;
-import org.origin.common.jdbc.ConnectionAware;
-import org.origin.common.rest.editpolicy.EditPoliciesAware;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public interface SubsServerService extends WebServiceAware, ConnectionAware, EditPoliciesAware, AccessTokenAware {
+public interface SubsServerService extends IWebService, ConnectionProvider, AccessTokenProvider {
 
 	// ------------------------------------------------------
 	// Source Types

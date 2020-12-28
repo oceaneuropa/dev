@@ -12,20 +12,26 @@ import java.util.Properties;
 
 import org.orbit.infra.model.extensionregistry.ExtensionItemVO;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ExtensionRegistryServiceImpl implements ExtensionRegistryService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ExtensionRegistryServiceImpl.class);
 
@@ -33,7 +39,9 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected AccessTokenProvider accessTokenSupport;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
 
 	/**
 	 * 
@@ -41,13 +49,14 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 	 */
 	public ExtensionRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.EXTENSIONS_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(ExtensionRegistryService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.EXTENSIONS_ADMIN);
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -155,6 +164,7 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = getProperty(InfraConstants.COMPONENT_EXTENSION_REGISTRY_NAME, String.class);
@@ -181,6 +191,11 @@ public class ExtensionRegistryServiceImpl implements ExtensionRegistryService, L
 	public String getContextRoot() {
 		String contextRoot = getProperty(InfraConstants.COMPONENT_EXTENSION_REGISTRY_CONTEXT_ROOT, String.class);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	/**

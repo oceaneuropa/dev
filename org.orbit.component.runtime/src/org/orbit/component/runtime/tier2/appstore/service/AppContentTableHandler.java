@@ -8,13 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 
-public class AppContentTableHandler implements DatabaseTableAware {
+public class AppContentTableHandler implements DatabaseTableProvider {
 
-	public static AppContentTableHandler INSTANCE_FOR_MYSQL = new AppContentTableHandler(DatabaseTableAware.MYSQL);
-	public static AppContentTableHandler INSTANCE_FOR_POSTGRESQL = new AppContentTableHandler(DatabaseTableAware.POSTGRESQL);
+	public static AppContentTableHandler INSTANCE_FOR_MYSQL = new AppContentTableHandler(DatabaseTableProvider.MYSQL);
+	public static AppContentTableHandler INSTANCE_FOR_POSTGRESQL = new AppContentTableHandler(DatabaseTableProvider.POSTGRESQL);
 
 	protected String database;
 
@@ -31,7 +31,7 @@ public class AppContentTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    appId varchar(500) NOT NULL,");
 			sb.append("    appContent mediumblob,");
@@ -40,7 +40,7 @@ public class AppContentTableHandler implements DatabaseTableAware {
 			// sb.append(" FOREIGN KEY (fileId) REFERENCES FsFileMetadata(fileId)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    appId varchar(500) NOT NULL,");
 			sb.append("    appContent bytea,");
@@ -107,7 +107,7 @@ public class AppContentTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean setContent(Connection conn, String appId, InputStream inputStream) throws SQLException {
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=?";
@@ -124,7 +124,7 @@ public class AppContentTableHandler implements DatabaseTableAware {
 				DatabaseUtil.closeQuietly(pstmt, true);
 			}
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(this.database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=?";

@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier1.session.service;
 
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.osgi.framework.BundleContext;
 
 public class OAuth2ServiceImpl implements OAuth2Service {
@@ -19,6 +20,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		return null;
@@ -31,6 +33,11 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
 	@Override
 	public String getContextRoot() {
+		return null;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
 		return null;
 	}
 

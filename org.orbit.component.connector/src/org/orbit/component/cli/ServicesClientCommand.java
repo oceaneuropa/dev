@@ -20,7 +20,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
@@ -29,7 +29,7 @@ import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.service.AccessTokenAware;
+import org.origin.common.service.AccessTokenProvider;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
@@ -43,7 +43,7 @@ import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
-public class ServicesClientCommand implements Annotated, CommandActivator, AccessTokenAware {
+public class ServicesClientCommand implements Annotated, CommandActivator, AccessTokenProvider {
 
 	public static final String ID = "org.orbit.component.cli.ServicesClientCommand";
 
@@ -76,10 +76,10 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 	@Dependency
 	protected DomainServiceConnectorV1 domainServiceConnector;
 
-	protected AccessTokenProvider accessTokenSupport;
+	protected AccessTokenHandler accessTokenHandler;
 
 	public ServicesClientCommand() {
-		this.accessTokenSupport = new AccessTokenProvider("orbit", OrbitRoles.DFS_ADMIN);
+		this.accessTokenHandler = new AccessTokenHandler("orbit", OrbitRoles.DFS_ADMIN);
 	}
 
 	protected String getScheme() {
@@ -115,10 +115,10 @@ public class ServicesClientCommand implements Annotated, CommandActivator, Acces
 	// protected IndexServiceClient getIndexService() {
 	// return InfraClients.getInstance().getIndexService(this.properties);
 	// }
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 

@@ -3,14 +3,17 @@ package org.orbit.component.runtime.tier4.missioncontrol.service;
 import java.util.List;
 
 import org.orbit.component.runtime.model.missioncontrol.Mission;
-import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface MissionControlService extends WebServiceAware, AccessTokenAware {
-
-	ServiceEditPolicies getEditPolicies();
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface MissionControlService extends IWebService, ConnectionProvider, AccessTokenProvider {
 
 	List<Mission> getMissions(String typeId) throws ServerException;
 

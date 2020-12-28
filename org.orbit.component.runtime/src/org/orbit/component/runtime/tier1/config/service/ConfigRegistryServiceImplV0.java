@@ -10,22 +10,31 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.orbit.component.runtime.ComponentConstants;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ConfigRegistryServiceImplV0 implements ConfigRegistryServiceV0, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ConfigRegistryServiceImplV0 implements ConfigRegistryServiceV0 {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected Map<String, ConfigRegistry> accountIdToRegistryMap = new HashMap<String, ConfigRegistry>();
-	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -33,12 +42,13 @@ public class ConfigRegistryServiceImplV0 implements ConfigRegistryServiceV0, Lif
 	 */
 	public ConfigRegistryServiceImplV0(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(ConfigRegistryServiceV0.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.CONFIG_REGISTRY_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -170,6 +180,7 @@ public class ConfigRegistryServiceImplV0 implements ConfigRegistryServiceV0, Lif
 		}
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_CONFIG_REGISTRY_NAME);
@@ -193,6 +204,11 @@ public class ConfigRegistryServiceImplV0 implements ConfigRegistryServiceV0, Lif
 	public String getContextRoot() {
 		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	@Override

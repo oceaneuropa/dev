@@ -4,18 +4,24 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.orbit.infra.runtime.configregistry.service.impl.ConfigRegistryServiceImpl;
+import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.IProcess;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ConfigRegistryServiceActivator implements ServiceActivator {
 
 	public static final String ID = "org.orbit.infra.runtime.ConfigRegistryServiceActivator";
 
 	public static ConfigRegistryServiceActivator INSTANCE = new ConfigRegistryServiceActivator();
 
+	/** ILifecycle */
 	@Override
 	public void start(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
@@ -34,8 +40,8 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 
 		// Stop service
 		ConfigRegistryService service = process.getAdapter(ConfigRegistryService.class);
-		if (service instanceof LifecycleAware) {
-			((LifecycleAware) service).stop(bundleContext);
+		if (service instanceof ILifecycle) {
+			((ILifecycle) service).stop(bundleContext);
 		}
 	}
 

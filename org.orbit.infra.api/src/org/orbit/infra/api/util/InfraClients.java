@@ -9,12 +9,17 @@ import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.subscription.SubsServerAPI;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.client.WSClientConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InfraClients implements LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class InfraClients implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(InfraClients.class);
 
@@ -29,6 +34,7 @@ public class InfraClients implements LifecycleAware {
 	protected ServiceConnectorAdapter<ConfigRegistryClient> configRegistryConnector;
 	protected ServiceConnectorAdapter<SubsServerAPI> subsServerConnector;
 
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.indexServiceConnector = new ServiceConnectorAdapter<IndexServiceClient>(IndexServiceClient.class);

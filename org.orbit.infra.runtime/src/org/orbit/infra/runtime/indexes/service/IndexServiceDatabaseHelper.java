@@ -15,7 +15,7 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.orbit.infra.model.indexes.IndexItemVO;
-import org.origin.common.jdbc.ConnectionAware;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -47,7 +47,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean hasActivePendingRequestsInDatabase(ConnectionAware connAware, Integer requestId) throws ServerException {
+	public boolean hasActivePendingRequestsInDatabase(ConnectionProvider connAware, Integer requestId) throws ServerException {
 		boolean hasActivePendingRequests = false;
 		Connection conn = null;
 		try {
@@ -77,7 +77,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItemRequestVO createNewRequestInDatabase(ConnectionAware connAware, String indexProviderId, String command, String argumentsString) throws ServerException {
+	public IndexItemRequestVO createNewRequestInDatabase(ConnectionProvider connAware, String indexProviderId, String command, String argumentsString) throws ServerException {
 		IndexItemRequestVO newRequestVO = null;
 		Connection conn = null;
 		try {
@@ -102,7 +102,7 @@ public class IndexServiceDatabaseHelper {
 	 * @param requestId
 	 * @param date
 	 */
-	public void updateRequestLastUpdateTimeInDatabase(ConnectionAware connAware, Integer requestId, Date date) {
+	public void updateRequestLastUpdateTimeInDatabase(ConnectionProvider connAware, Integer requestId, Date date) {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -123,7 +123,7 @@ public class IndexServiceDatabaseHelper {
 	 * @param requestUpdaterHandle
 	 * @throws ServerException
 	 */
-	public void completeRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
+	public void completeRequestInDatabase(ConnectionProvider connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -152,7 +152,7 @@ public class IndexServiceDatabaseHelper {
 	 * @param requestUpdaterHandle
 	 * @throws ServerException
 	 */
-	public void cancelRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
+	public void cancelRequestInDatabase(ConnectionProvider connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -180,7 +180,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public List<IndexItem> getIndexItemsFromDatabase(ConnectionAware connAware) throws ServerException {
+	public List<IndexItem> getIndexItemsFromDatabase(ConnectionProvider connAware) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getIndexItemsFromDatabase()");
 		}
@@ -220,7 +220,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItemVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws ServerException {
+	public IndexItemVO getIndexItemFromDatabase(ConnectionProvider connAware, Integer indexItemId) throws ServerException {
 		IndexItemVO indexItemVO = null;
 		Connection conn = null;
 		try {
@@ -267,7 +267,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItemVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws ServerException {
+	public IndexItemVO createIndexItemInDatabase(ConnectionProvider connAware, String indexProviderId, String type, String name, String propertiesString) throws ServerException {
 		IndexItemVO newIndexItemVO = null;
 		Connection conn = null;
 		try {
@@ -293,7 +293,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean deleteIndexItemInDatababse(ConnectionAware connAware, Integer indexItemId) throws ServerException {
+	public boolean deleteIndexItemInDatababse(ConnectionProvider connAware, Integer indexItemId) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -316,7 +316,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean updateIndexItemPropertiesInDatabase(ConnectionAware connAware, Integer indexItemId, Map<String, Object> allProperties, Date lastUpdateTime) throws ServerException {
+	public boolean updateIndexItemPropertiesInDatabase(ConnectionProvider connAware, Integer indexItemId, Map<String, Object> allProperties, Date lastUpdateTime) throws ServerException {
 		Connection conn = null;
 		try {
 			String propertiesString = JSONUtil.toJsonString(allProperties);
@@ -337,7 +337,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public int getLatestRevisionIdFromDatabase(ConnectionAware connAware) throws ServerException {
+	public int getLatestRevisionIdFromDatabase(ConnectionProvider connAware) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getLatestRevisionIdFromDatabase()");
 		}
@@ -367,7 +367,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public List<IndexItemRevisionVO> getRevisionsFromDatabase(ConnectionAware connAware, int startRevisionId, int endRevisionId) throws ServerException {
+	public List<IndexItemRevisionVO> getRevisionsFromDatabase(ConnectionProvider connAware, int startRevisionId, int endRevisionId) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getRevisionsFromDatabase()");
 		}
@@ -402,7 +402,7 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws ServerException
 	 */
-	public IndexItemRevisionVO createRevisionInDatabase(ConnectionAware connAware, String indexProviderId, String command, Map<String, Object> commandArguments, String undoCommand, Map<String, Object> undoCommandArguments) throws ServerException {
+	public IndexItemRevisionVO createRevisionInDatabase(ConnectionProvider connAware, String indexProviderId, String command, Map<String, Object> commandArguments, String undoCommand, Map<String, Object> undoCommandArguments) throws ServerException {
 		IndexItemRevisionVO newRevisionVO = null;
 		Connection conn = null;
 		try {

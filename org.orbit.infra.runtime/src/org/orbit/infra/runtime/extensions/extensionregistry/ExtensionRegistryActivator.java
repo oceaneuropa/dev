@@ -4,18 +4,24 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServiceImpl;
+import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.IProcess;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ExtensionRegistryActivator implements ServiceActivator {
 
 	public static final String ID = "org.orbit.infra.runtime.ExtensionRegistryActivator";
 
 	public static ExtensionRegistryActivator INSTANCE = new ExtensionRegistryActivator();
 
+	/** ILifecycle */
 	@Override
 	public void start(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
@@ -34,8 +40,8 @@ public class ExtensionRegistryActivator implements ServiceActivator {
 
 		// Stop ExtensionRegistryService
 		ExtensionRegistryService service = process.getAdapter(ExtensionRegistryService.class);
-		if (service instanceof LifecycleAware) {
-			((LifecycleAware) service).stop(bundleContext);
+		if (service instanceof ILifecycle) {
+			((ILifecycle) service).stop(bundleContext);
 		}
 	}
 

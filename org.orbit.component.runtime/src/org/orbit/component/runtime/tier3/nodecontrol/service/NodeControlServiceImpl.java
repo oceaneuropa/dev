@@ -22,7 +22,7 @@ import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.common.PropertiesRegulator;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.launch.LaunchConfig;
@@ -41,7 +41,6 @@ import org.origin.common.resources.util.WorkspaceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @see HomeAgentServiceImpl for IEditingDomain
  *
  */
-public class NodeControlServiceImpl implements NodeControlService, LifecycleAware {
+public class NodeControlServiceImpl implements NodeControlService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(NodeControlServiceImpl.class);
 
@@ -60,10 +59,10 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IWorkspace workspace;
-	protected ServiceEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies editPolicies;
 
 	protected boolean useScriptLaunch = false;
-	protected AccessTokenProvider accessTokenSupport;
+	protected AccessTokenHandler accessTokenHandler;
 
 	/**
 	 * 
@@ -71,14 +70,14 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	 */
 	public NodeControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new ServiceEditPoliciesImpl();
-		this.wsEditPolicies.setService(NodeControlService.class, this);
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.NODE_CONTROL_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl();
+		this.editPolicies.setService(NodeControlService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.NODE_CONTROL_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -167,6 +166,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		this.properties = properties;
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_NAME);
@@ -223,7 +223,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
 	@Override

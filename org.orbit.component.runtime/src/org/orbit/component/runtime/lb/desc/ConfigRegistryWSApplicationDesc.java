@@ -2,16 +2,16 @@ package org.orbit.component.runtime.lb.desc;
 
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSApplicationDesc;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.IWebService;
 
 public class ConfigRegistryWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
-	 * @param webServiceAware
+	 * @param webService
 	 */
-	public ConfigRegistryWSApplicationDesc(WebServiceAware webServiceAware) {
-		super(webServiceAware);
+	public ConfigRegistryWSApplicationDesc(IWebService webService) {
+		super(webService);
 		setRemoteFeature(FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO);
 
 		// WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");

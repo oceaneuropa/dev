@@ -12,12 +12,13 @@ import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
@@ -25,15 +26,23 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class UserRegistryServiceImpl implements UserRegistryService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected UserAccountPersistence userAccountPersistence;
-	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -41,12 +50,13 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 */
 	public UserRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.USER_ACCOUNTS_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(UserRegistryService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.USER_ACCOUNTS_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -103,6 +113,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		}
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_USER_REGISTRY_NAME);
@@ -126,6 +137,11 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public String getContextRoot() {
 		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	/**

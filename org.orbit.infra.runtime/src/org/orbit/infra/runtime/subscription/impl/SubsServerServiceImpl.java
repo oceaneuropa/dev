@@ -20,7 +20,7 @@ import org.orbit.infra.runtime.subscription.util.SubsSourcesTableHandler;
 import org.orbit.infra.runtime.subscription.util.SubsTargetTypesTableHandler;
 import org.orbit.infra.runtime.subscription.util.SubsTargetsTableHandler;
 import org.orbit.infra.runtime.util.SubsServiceConfigPropertiesHandler;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
@@ -43,8 +43,8 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	protected Properties databaseProperties;
 
 	protected ServiceRegistration<?> serviceRegistry;
-	protected ServiceEditPolicies wsEditPolicies;
-	protected AccessTokenProvider accessTokenProvider;
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
 
 	protected SubsSourceTypesTableHandler sourceTypesTableHandler;
 	protected SubsTargetTypesTableHandler targetTypesTableHandler;
@@ -58,18 +58,18 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 	 */
 	public SubsServerServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new ServiceEditPoliciesImpl(SubsServerService.class, this);
-		this.accessTokenProvider = new AccessTokenProvider(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.SUBS_SERVER_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(SubsServerService.class, this);
+		this.accessTokenHandler = new AccessTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.SUBS_SERVER_ADMIN);
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenProvider.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
-	/** LifecycleAware */
+	/** ILifecycle */
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		SubsServiceConfigPropertiesHandler.getInstance().addPropertyChangeListener(this);
@@ -134,13 +134,13 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
-	/** ConnectionAware */
+	/** ConnectionProvider */
 	@Override
 	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
-	/** WebServiceAware */
+	/** IWebService */
 	@Override
 	public String getName() {
 		return SubsServiceConfigPropertiesHandler.getInstance().getProperty(InfraConstants.SUBS_SERVER__NAME, this.initProperties);
@@ -164,10 +164,9 @@ public class SubsServerServiceImpl implements SubsServerService, PropertyChangeL
 		return SubsServiceConfigPropertiesHandler.getInstance().getProperty(InfraConstants.SUBS_SERVER__CONTEXT_ROOT, this.initProperties);
 	}
 
-	/** EditPoliciesAwareService */
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
 	/** SubsServerService */

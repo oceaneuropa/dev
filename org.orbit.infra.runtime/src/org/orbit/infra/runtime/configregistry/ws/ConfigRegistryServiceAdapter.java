@@ -12,7 +12,7 @@ import org.orbit.platform.sdk.util.ExtensibleServiceEditPolicy;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -20,7 +20,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfigRegistryServiceAdapter implements LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ConfigRegistryServiceAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ConfigRegistryServiceAdapter.class);
 
@@ -41,14 +46,11 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	// public IndexServiceClient getIndexProvider() {
-	// return InfraClients.getInstance().getIndexService(this.properties, true);
-	// }
-
 	public ConfigRegistryService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		LOG.debug("start()");
@@ -141,3 +143,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	}
 
 }
+
+// public IndexServiceClient getIndexProvider() {
+// return InfraClients.getInstance().getIndexService(this.properties, true);
+// }

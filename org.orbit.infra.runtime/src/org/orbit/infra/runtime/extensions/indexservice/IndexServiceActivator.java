@@ -7,7 +7,7 @@ import org.orbit.infra.runtime.indexes.service.IndexServiceInMemoryImpl;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -19,6 +19,7 @@ public class IndexServiceActivator implements ServiceActivator {
 
 	public static final String ID = "org.orbit.infra.runtime.IndexServiceActivator";
 
+	/** ILifecycle */
 	@Override
 	public void start(ProcessContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
@@ -36,8 +37,8 @@ public class IndexServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 
 		IndexService indexService = process.getAdapter(IndexService.class);
-		if (indexService instanceof LifecycleAware) {
-			((LifecycleAware) indexService).stop(bundleContext);
+		if (indexService instanceof ILifecycle) {
+			((ILifecycle) indexService).stop(bundleContext);
 		}
 	}
 

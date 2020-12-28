@@ -26,15 +26,16 @@ import org.orbit.infra.model.indexes.IndexProviderItem;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceDatabaseHelper;
+import org.origin.common.command.Command;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.command.Command;
 import org.origin.common.command.CommandStack;
 import org.origin.common.command.EditingDomain;
-import org.origin.common.jdbc.ConnectionAware;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.CommandRequestHandler;
@@ -48,7 +49,7 @@ import org.osgi.framework.BundleContext;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, CommandRequestHandler {
+public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServiceUpdatable, ConnectionProvider, CommandRequestHandler {
 
 	// index item attribute names
 	public static String INDEX_ITEM_ID_ATTR = "indexItemId";
@@ -108,7 +109,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		this.indexServiceConfig = indexServiceConfig;
 	}
 
-	/** AccessTokenAware */
+	/** AccessTokenProvider */
 	@Override
 	public String getAccessToken() {
 		return null;
@@ -126,11 +127,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		return IndexServiceDatabaseHelper.INSTANCE;
 	}
 
-	/**
-	 * implement ConnectionAware interface
-	 * 
-	 * @throws SQLException
-	 */
+	/** ConnectionProvider */
 	@Override
 	public Connection getConnection() throws SQLException {
 		return this.indexServiceConfig.getConnection();
@@ -164,25 +161,35 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	// ------------------------------------------------------------------------------------------------------------
 	// Methods accessing config properties
 	// ------------------------------------------------------------------------------------------------------------
+	/** IWebService */
+	@Override
 	public String getName() {
 		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_NAME, null);
 		return null;
 	}
 
+	@Override
 	public String getHostURL() {
 		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
 		return null;
 	}
 
+	@Override
 	public String getContextRoot() {
 		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
+		return null;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
 		return null;
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
 	// Methods for lifecycle
 	// ------------------------------------------------------------------------------------------------------------
-	/** implement LifecycleAware interface */
+	/** ILifecycle */
+	@Override
 	public synchronized void start(BundleContext bundleContext) {
 		if (debug) {
 			System.out.println(getClassName() + ".start()");
@@ -246,6 +253,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 	}
 
+	@Override
 	public synchronized void stop(BundleContext bundleContext) {
 		if (debug) {
 			System.out.println(getClassName() + ".stop()");
@@ -429,7 +437,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		CommandContext context = new CommandContext();
 		context.adapt(IndexService.class, this);
 		context.adapt(CommandRequestHandler.class, this);
-		context.adapt(ConnectionAware.class, this);
+		context.adapt(ConnectionProvider.class, this);
 
 		if (cachedRevisionId <= 0) {
 			// data is not cached

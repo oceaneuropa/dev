@@ -7,7 +7,7 @@ import org.orbit.component.runtime.tier1.account.service.impl.UserRegistryServic
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ProcessContext;
 import org.orbit.platform.sdk.ServiceActivator;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -39,8 +39,8 @@ public class UserRegistryServiceActivator implements ServiceActivator {
 
 		// Stop UserRegistryService
 		UserRegistryService userRegistry = process.getAdapter(UserRegistryService.class);
-		if (userRegistry instanceof LifecycleAware) {
-			((LifecycleAware) userRegistry).stop(bundleContext);
+		if (userRegistry instanceof ILifecycle) {
+			((ILifecycle) userRegistry).stop(bundleContext);
 		}
 	}
 

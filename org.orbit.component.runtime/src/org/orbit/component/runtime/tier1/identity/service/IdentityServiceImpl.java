@@ -19,16 +19,17 @@ import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
 import org.orbit.platform.sdk.PlatformConstants;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.JWTTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.annotation.Secured;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
@@ -36,15 +37,23 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IdentityServiceImpl implements IdentityService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IdentityServiceImpl implements IdentityService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IdentityServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
+
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected UserAccountPersistence userAccountPersistence;
-	protected AccessTokenProvider accessTokenSupport;
 
 	/**
 	 * 
@@ -52,12 +61,13 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	 */
 	public IdentityServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.IDENTITY_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(IdentityService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.IDENTITY_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -122,6 +132,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 		return this.userAccountPersistence;
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_NAME);
@@ -145,6 +156,11 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	public String getContextRoot() {
 		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_CONTEXT_ROOT);
 		return contextRoot;
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	protected String getJWTTokenSecret() {

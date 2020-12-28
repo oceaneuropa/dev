@@ -8,10 +8,15 @@ import org.orbit.component.runtime.model.identity.RefreshTokenResponse;
 import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface IdentityService extends WebServiceAware, AccessTokenAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface IdentityService extends IWebService, AccessTokenProvider {
 
 	boolean usernameExists(String username) throws ServerException;
 

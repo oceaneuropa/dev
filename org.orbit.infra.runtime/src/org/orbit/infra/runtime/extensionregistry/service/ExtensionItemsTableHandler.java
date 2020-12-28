@@ -11,12 +11,12 @@ import java.util.Map;
 
 import org.orbit.infra.model.extensionregistry.ExtensionItemVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
 
-public class ExtensionItemsTableHandler implements DatabaseTableAware {
+public class ExtensionItemsTableHandler implements DatabaseTableProvider {
 
 	public static Map<String, ExtensionItemsTableHandler> tableHandlerMap = new HashMap<String, ExtensionItemsTableHandler>();
 
@@ -137,7 +137,7 @@ public class ExtensionItemsTableHandler implements DatabaseTableAware {
 	@Override
 	public String getCreateTableSQL(String database) {
 		String sql = "";
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	id int NOT NULL AUTO_INCREMENT,";
 			// sql += " platformId varchar(250) NOT NULL,";
@@ -151,7 +151,7 @@ public class ExtensionItemsTableHandler implements DatabaseTableAware {
 			sql += "	PRIMARY KEY (id)";
 			sql += ");";
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	id serial NOT NULL,";
 			// sql += " platformId varchar(250) NOT NULL,";

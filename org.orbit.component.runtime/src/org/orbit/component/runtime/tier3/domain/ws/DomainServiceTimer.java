@@ -12,7 +12,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.service.WebServiceHelper;
 import org.origin.common.util.MapHelper;
 
 public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementService> {
@@ -41,7 +41,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+		String baseURL = WebServiceHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
@@ -62,7 +62,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+		String baseURL = WebServiceHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 

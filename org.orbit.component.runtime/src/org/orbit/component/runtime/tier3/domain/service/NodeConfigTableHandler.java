@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
 
-public class NodeConfigTableHandler implements DatabaseTableAware {
+public class NodeConfigTableHandler implements DatabaseTableProvider {
 
 	public static NodeConfigTableHandler INSTANCE = new NodeConfigTableHandler();
 
@@ -25,7 +25,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id varchar(500) NOT NULL,");
 			sb.append("    machineId varchar(500) NOT NULL,");
@@ -37,7 +37,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (id)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id varchar(500) NOT NULL,");
 			sb.append("    machineId varchar(500) NOT NULL,");

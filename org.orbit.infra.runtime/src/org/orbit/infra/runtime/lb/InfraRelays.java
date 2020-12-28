@@ -9,8 +9,8 @@ import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
-import org.origin.common.service.WebServiceAware;
-import org.origin.common.service.WebServiceAwareImpl;
+import org.origin.common.service.IWebService;
+import org.origin.common.service.WebServiceImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
 import org.osgi.framework.BundleContext;
@@ -82,10 +82,10 @@ public class InfraRelays {
 			return null;
 		}
 
-		WebServiceAware webServiceAware = new WebServiceAwareImpl(name, hostURL, contextRoot);
+		IWebService webService = new WebServiceImpl(name, hostURL, contextRoot);
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
-		IndexServiceWSApplicationRelay relay = new IndexServiceWSApplicationRelay(webServiceAware, uriSwitcher);
+		IndexServiceWSApplicationRelay relay = new IndexServiceWSApplicationRelay(webService, uriSwitcher);
 		return relay;
 	}
 
@@ -136,10 +136,10 @@ public class InfraRelays {
 			return null;
 		}
 
-		WebServiceAware webServiceAware = new WebServiceAwareImpl(name, hostURL, contextRoot);
+		IWebService webService = new WebServiceImpl(name, hostURL, contextRoot);
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
-		ExtensionRegistryWSApplicationRelay relay = new ExtensionRegistryWSApplicationRelay(webServiceAware, uriSwitcher);
+		ExtensionRegistryWSApplicationRelay relay = new ExtensionRegistryWSApplicationRelay(webService, uriSwitcher);
 		return relay;
 	}
 
@@ -181,10 +181,10 @@ public class InfraRelays {
 			return null;
 		}
 
-		WebServiceAware webServiceAware = new WebServiceAwareImpl(name, hostURL, contextRoot);
+		IWebService webService = new WebServiceImpl(name, hostURL, contextRoot);
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
-		ConfigRegistryWSApplicationRelay relay = new ConfigRegistryWSApplicationRelay(webServiceAware, uriSwitcher);
+		ConfigRegistryWSApplicationRelay relay = new ConfigRegistryWSApplicationRelay(webService, uriSwitcher);
 		return relay;
 	}
 

@@ -94,8 +94,8 @@ public class IndexServicePrinter {
 
 	protected Map<?, ?> getIndexServiceConfigProperties() {
 		Map<?, ?> properties = null;
-		// if (this.indexService instanceof PropertiesAware) {
-		// properties = ((PropertiesAware) this.indexService).getProperties();
+		// if (this.indexService instanceof ConfigPropertiesProvider) {
+		// properties = ((ConfigPropertiesProvider) this.indexService).getProperties();
 		// }
 		return properties;
 	}

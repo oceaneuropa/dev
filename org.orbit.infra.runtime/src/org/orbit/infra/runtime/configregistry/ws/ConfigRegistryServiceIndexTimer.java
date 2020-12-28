@@ -11,7 +11,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
-import org.origin.common.service.WebServiceAwareHelper;
+import org.origin.common.service.WebServiceHelper;
 import org.origin.common.util.MapHelper;
 
 public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryService> {
@@ -41,7 +41,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+		String baseURL = WebServiceHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);
@@ -61,7 +61,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+		String baseURL = WebServiceHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);

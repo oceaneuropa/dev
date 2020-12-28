@@ -11,7 +11,7 @@ import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
-import org.origin.common.service.WebServiceAwareImpl;
+import org.origin.common.service.WebServiceImpl;
 import org.osgi.framework.BundleContext;
 
 public class AppStoreRelayControl extends WSRelayControlImpl {
@@ -25,7 +25,7 @@ public class AppStoreRelayControl extends WSRelayControlImpl {
 		// Start relay ws app
 		WSRelayApplication wsApp = this.wsAppMap.get(url);
 		if (wsApp == null) {
-			AppStoreWSApplicationDesc wsAppDesc = new AppStoreWSApplicationDesc(new WebServiceAwareImpl(null, null, contextRoot));
+			AppStoreWSApplicationDesc wsAppDesc = new AppStoreWSApplicationDesc(new WebServiceImpl(null, null, contextRoot));
 			Switcher<URI> switcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 			WSRelayApplication newWsApp = new WSRelayApplication(wsAppDesc, switcher, factory);
 			newWsApp.start(bundleContext);

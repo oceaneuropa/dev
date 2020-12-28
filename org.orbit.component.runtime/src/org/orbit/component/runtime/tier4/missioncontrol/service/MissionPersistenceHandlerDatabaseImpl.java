@@ -8,37 +8,42 @@ import java.util.List;
 
 import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.orbit.component.runtime.model.missioncontrol.MissionVO;
-import org.origin.common.jdbc.ConnectionAware;
+import org.origin.common.jdbc.ConnectionProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistenceHandler {
 
-	protected ConnectionAware connAware;
+	protected ConnectionProvider connProvivder;
 
-	public MissionPersistenceHandlerDatabaseImpl(ConnectionAware connAware) {
-		checkConnectionAware(connAware);
-		this.connAware = connAware;
+	public MissionPersistenceHandlerDatabaseImpl(ConnectionProvider connProvider) {
+		checkConnectionProvider(connProvider);
+		this.connProvivder = connProvider;
 	}
 
-	public ConnectionAware getConnectionAware() {
-		return this.connAware;
+	public ConnectionProvider getConnectionProvider() {
+		return this.connProvivder;
 	}
 
-	public void setConnectionAware(ConnectionAware connAware) {
-		this.connAware = connAware;
+	public void setConnectionProvider(ConnectionProvider connProvider) {
+		this.connProvivder = connProvider;
 	}
 
 	protected Connection getConnection() throws SQLException {
-		Connection conn = this.connAware.getConnection();
+		Connection conn = this.connProvivder.getConnection();
 		if (conn == null) {
 			throw new IllegalStateException("Connection is null.");
 		}
 		return conn;
 	}
 
-	protected void checkConnectionAware(ConnectionAware connAware) {
-		if (connAware == null) {
-			throw new IllegalArgumentException("Connection is null.");
+	protected void checkConnectionProvider(ConnectionProvider connProvider) {
+		if (connProvider == null) {
+			throw new IllegalArgumentException("ConnectionProvider is null.");
 		}
 	}
 

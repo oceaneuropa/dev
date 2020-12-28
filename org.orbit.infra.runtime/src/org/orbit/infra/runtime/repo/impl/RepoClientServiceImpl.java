@@ -39,7 +39,7 @@ public class RepoClientServiceImpl implements RepoClientService {
 	protected File reposFile;
 	protected Repos reposObj;
 	protected ServiceRegistration<?> serviceRegistry;
-	protected ServiceEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies editPolicies;
 
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class RepoClientServiceImpl implements RepoClientService {
 		}
 	}
 
-	/** WebServiceAware interface */
+	/** IWebService */
 	@Override
 	public String getName() {
 		return this.name;
@@ -68,7 +68,7 @@ public class RepoClientServiceImpl implements RepoClientService {
 
 	@Override
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -84,13 +84,12 @@ public class RepoClientServiceImpl implements RepoClientService {
 		this.contextRoot = contextRoot;
 	}
 
-	/** EditPoliciesAwareService interface */
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
-		return this.wsEditPolicies;
+		return this.editPolicies;
 	}
 
-	/** LifecycleAware interface */
+	/** ILifecycle */
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		// 1. Load repos metadata from {repos_home}/repos.json file
@@ -123,7 +122,7 @@ public class RepoClientServiceImpl implements RepoClientService {
 		}
 
 		// 3. Create EditPolicies
-		this.wsEditPolicies = new ServiceEditPoliciesImpl(RepoClientService.class, this);
+		this.editPolicies = new ServiceEditPoliciesImpl(RepoClientService.class, this);
 
 		// 4. Register RepoClientService
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -167,7 +166,7 @@ public class RepoClientServiceImpl implements RepoClientService {
 		}
 
 		// Dispose EditPolicies
-		this.wsEditPolicies = null;
+		this.editPolicies = null;
 
 		// Dispose data
 		if (this.reposObj != null) {

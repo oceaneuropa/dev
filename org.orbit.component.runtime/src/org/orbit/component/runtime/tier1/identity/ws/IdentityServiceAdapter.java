@@ -9,7 +9,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -17,7 +17,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IdentityServiceAdapter implements LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class IdentityServiceAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IdentityServiceAdapter.class);
 
@@ -38,10 +43,7 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<IdentityService, IdentityService>(bundleContext, IdentityService.class, new ServiceTrackerCustomizer<IdentityService, IdentityService>() {
@@ -72,10 +74,6 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {

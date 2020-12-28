@@ -8,7 +8,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -20,7 +20,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * Adapter to start OAuth2WSApplication when OAuth2Service becomes available and to stop OAuth2WSApplication when OAuth2Service becomes unavailable.
  * 
  */
-public class OAuth2ServiceAdapter implements LifecycleAware {
+public class OAuth2ServiceAdapter implements ILifecycle {
 
 	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<OAuth2Service, OAuth2Service> serviceTracker;
@@ -31,26 +31,23 @@ public class OAuth2ServiceAdapter implements LifecycleAware {
 	public OAuth2ServiceAdapter() {
 	}
 
-//	public OAuth2ServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-//	}
+	// public OAuth2ServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+	// this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	// }
 
 	public OAuth2Service getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-//	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-//		return indexProviderLoadBalancer;
-//	}
-//
-//	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-//		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-//	}
+	// public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
+	// return indexProviderLoadBalancer;
+	// }
+	//
+	// public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
+	// this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	// }
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<OAuth2Service, OAuth2Service>(bundleContext, OAuth2Service.class, new ServiceTrackerCustomizer<OAuth2Service, OAuth2Service>() {
@@ -80,10 +77,6 @@ public class OAuth2ServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {

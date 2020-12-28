@@ -6,16 +6,16 @@ import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.IWebService;
 
 public class AppStoreWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
-	 * @param webServiceAware
+	 * @param webService
 	 */
-	public AppStoreWSApplicationDesc(WebServiceAware webServiceAware) {
-		super(webServiceAware);
+	public AppStoreWSApplicationDesc(IWebService webService) {
+		super(webService);
 		setRemoteFeature(FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO);
 
 		// WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");

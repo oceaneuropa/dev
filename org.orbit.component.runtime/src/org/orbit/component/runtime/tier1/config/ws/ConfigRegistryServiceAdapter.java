@@ -10,7 +10,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -22,30 +22,26 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-public class ConfigRegistryServiceAdapter implements LifecycleAware {
+public class ConfigRegistryServiceAdapter implements ILifecycle {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0> serviceTracker;
 	protected ConfigRegistryWSApplication webApp;
-	// protected ConfigRegistryServiceIndexTimer indexTimer;
 	protected ServiceIndexTimer<ConfigRegistryServiceV0> indexTimer;
 
+	/**
+	 * 
+	 * @param properties
+	 */
 	public ConfigRegistryServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
 	}
-
-	// public IndexServiceClient getIndexProvider() {
-	// return InfraClients.getInstance().getIndexService(this.properties, true);
-	// }
 
 	public ConfigRegistryServiceV0 getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<ConfigRegistryServiceV0, ConfigRegistryServiceV0>(bundleContext, ConfigRegistryServiceV0.class, new ServiceTrackerCustomizer<ConfigRegistryServiceV0, ConfigRegistryServiceV0>() {
@@ -73,10 +69,6 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
@@ -134,6 +126,11 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	}
 
 }
+
+// protected ConfigRegistryServiceIndexTimer indexTimer;
+// public IndexServiceClient getIndexProvider() {
+// return InfraClients.getInstance().getIndexService(this.properties, true);
+// }
 
 // protected Extension urlProviderExtension;
 

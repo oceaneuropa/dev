@@ -15,20 +15,26 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
-import org.orbit.platform.sdk.http.AccessTokenProvider;
+import org.orbit.platform.sdk.http.AccessTokenHandler;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.resources.IWorkspaceService;
 import org.origin.common.resources.WorkspaceServiceFactory;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class DomainManagementServiceImpl implements DomainManagementService, LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class DomainManagementServiceImpl implements DomainManagementService {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -36,21 +42,27 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	protected Properties workspaceProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 
+	protected ServiceEditPolicies editPolicies;
+	protected AccessTokenHandler accessTokenHandler;
+
 	protected MachineConfigTableHandler machineConfigTableHandler = MachineConfigTableHandler.INSTANCE;
 	protected PlatformConfigTableHandler platformConfigTableHandler = PlatformConfigTableHandler.INSTANCE;
 	protected NodeConfigTableHandler nodeConfigTableHandler = NodeConfigTableHandler.INSTANCE;
 	protected IWorkspaceService workspaceService;
 
-	protected AccessTokenProvider accessTokenSupport;
-
+	/**
+	 * 
+	 * @param initProperties
+	 */
 	public DomainManagementServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.accessTokenSupport = new AccessTokenProvider(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN);
+		this.editPolicies = new ServiceEditPoliciesImpl(DomainManagementService.class, true);
+		this.accessTokenHandler = new AccessTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN);
 	}
 
 	@Override
 	public String getAccessToken() {
-		String tokenValue = this.accessTokenSupport.getAccessToken();
+		String tokenValue = this.accessTokenHandler.getAccessToken();
 		return tokenValue;
 	}
 
@@ -174,6 +186,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
+	/** IWebService */
 	@Override
 	public String getName() {
 		return (String) this.properties.get(ComponentConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
@@ -195,6 +208,11 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	@Override
 	public String getContextRoot() {
 		return (String) this.properties.get(ComponentConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+	}
+
+	@Override
+	public ServiceEditPolicies getEditPolicies() {
+		return this.editPolicies;
 	}
 
 	/**

@@ -6,7 +6,7 @@ import org.orbit.infra.api.util.IndexServiceUtil;
 import org.orbit.platform.sdk.ISystemPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.PlatformSDKActivator;
-import org.origin.common.service.AccessTokenAware;
+import org.origin.common.service.AccessTokenProvider;
 import org.origin.common.thread.IndexTimerImpl;
 
 public abstract class ServiceIndexTimer<RUNTIME_SERVICE> extends IndexTimerImpl<IndexServiceClient, RUNTIME_SERVICE, IndexItem> {
@@ -61,8 +61,8 @@ public abstract class ServiceIndexTimer<RUNTIME_SERVICE> extends IndexTimerImpl<
 
 		String accessToken = null;
 		RUNTIME_SERVICE service = getService();
-		if (service instanceof AccessTokenAware) {
-			accessToken = ((AccessTokenAware) service).getAccessToken();
+		if (service instanceof AccessTokenProvider) {
+			accessToken = ((AccessTokenProvider) service).getAccessToken();
 		}
 
 		IndexServiceClient indexService = IndexServiceUtil.getClient(accessToken);

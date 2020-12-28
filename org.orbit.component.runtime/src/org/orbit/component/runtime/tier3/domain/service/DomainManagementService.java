@@ -7,10 +7,15 @@ import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.origin.common.resources.IWorkspaceService;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface DomainManagementService extends WebServiceAware, AccessTokenAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface DomainManagementService extends IWebService, AccessTokenProvider {
 
 	// ------------------------------------------------------
 	// Machine management

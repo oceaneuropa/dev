@@ -16,7 +16,7 @@ import java.util.Map;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.origin.common.jdbc.AbstractResultSetHandler;
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.origin.common.jdbc.DatabaseTableProvider;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
@@ -39,7 +39,7 @@ import org.origin.common.util.StringUtil;
 
  * 
  */
-public class AppMetadataTableHandler implements DatabaseTableAware {
+public class AppMetadataTableHandler implements DatabaseTableProvider {
 
 	// public static AppMetadataTableHandler INSTANCE_FOR_MYSQL = new AppMetadataTableHandler(DatabaseTableAware.MYSQL);
 	// public static AppMetadataTableHandler INSTANCE_FOR_POSTGRESQL = new AppMetadataTableHandler(DatabaseTableAware.POSTGRESQL);
@@ -59,7 +59,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		StringBuilder sb = new StringBuilder();
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id int NOT NULL AUTO_INCREMENT,"); // unique id
 			sb.append("    appId varchar(500) NOT NULL,");
@@ -76,7 +76,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (id)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    id serial NOT NULL,"); // unique id
 			sb.append("    appId varchar(500) NOT NULL,");
@@ -573,7 +573,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	public byte[] getContent(Connection conn, String appId, String appVersion) throws SQLException {
 		byte[] bytes = null;
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(this.database)) {
 			InputStream inputStream = null;
 			ResultSet rs = null;
 			PreparedStatement pstmt = null;
@@ -600,7 +600,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 				DatabaseUtil.closeQuietly(pstmt, true);
 			}
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(this.database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(this.database)) {
 			ResultSet rs = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -645,7 +645,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	public InputStream getContentInputStream(Connection conn, String appId, String appVersion) throws SQLException {
 		InputStream inputStream = null;
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(this.database)) {
 			ResultSet rs = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -663,7 +663,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 				DatabaseUtil.closeQuietly(pstmt, true);
 			}
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(this.database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(this.database)) {
 			ResultSet rs = null;
 			PreparedStatement pstmt = null;
 			try {
@@ -717,7 +717,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 		}
 		int contentLength = bytes.length;
 
-		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
+		if (DatabaseTableProvider.MYSQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=? AND appVersion=?";
@@ -735,7 +735,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 				DatabaseUtil.closeQuietly(pstmt, true);
 			}
 
-		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(this.database)) {
+		} else if (DatabaseTableProvider.POSTGRESQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=? AND appVersion=?";

@@ -10,7 +10,7 @@ import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServic
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.LifecycleAware;
+import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -18,7 +18,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExtensionRegistryAdapter implements LifecycleAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public class ExtensionRegistryAdapter implements ILifecycle {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ExtensionRegistryAdapter.class);
 
@@ -46,14 +51,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
-	// public IndexServiceClient getIndexProvider() {
-	// return InfraClients.getInstance().getIndexService(this.properties, true);
-	// }
-
-	/**
-	 * 
-	 * @param bundleContext
-	 */
+	/** ILifecycle */
 	@Override
 	public void start(final BundleContext bundleContext) {
 		LOG.debug("start()");
@@ -84,10 +82,6 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 		this.serviceTracker.open();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
 	@Override
 	public void stop(final BundleContext bundleContext) {
 		LOG.debug("stop()");
@@ -140,3 +134,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 	}
 
 }
+
+// public IndexServiceClient getIndexProvider() {
+// return InfraClients.getInstance().getIndexService(this.properties, true);
+// }

@@ -5,16 +5,20 @@ import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.AccessTokenAware;
-import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.AccessTokenProvider;
+import org.origin.common.service.IWebService;
 
-public interface AuthService extends WebServiceAware, AccessTokenAware {
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
+public interface AuthService extends IWebService, AccessTokenProvider {
 
 	/**
 	 * Grant type constants
 	 * 
-	 * "client_credentials" for app authorization. A third party app wants to access a resource (e.g. photos, contacts, etc.) of the user. This will be useful
-	 * when apps are available.
+	 * "client_credentials" for app authorization. A third party app wants to access a resource (e.g. photos, contacts, etc.) of the user. This will be useful when apps are available.
 	 * 
 	 * "user_credentials" for user authorization
 	 * 
