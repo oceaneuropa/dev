@@ -24,7 +24,7 @@ public class AppStoreServiceAdapterV1 {
 
 	// protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
-	protected AppStoreWSApplication webServiceApp;
+	protected AppStoreWSApplication webApp;
 	protected AppStoreServiceIndexTimer serviceIndexTimer;
 
 //	public AppStoreServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
@@ -80,8 +80,8 @@ public class AppStoreServiceAdapterV1 {
 		LOG.info("doStart()");
 
 		// Start web service
-		this.webServiceApp = new AppStoreWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
-		this.webServiceApp.start(bundleContext);
+		this.webApp = new AppStoreWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp.start(bundleContext);
 
 		// Start index timer
 		// IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -104,9 +104,9 @@ public class AppStoreServiceAdapterV1 {
 		}
 
 		// Stop web service
-		if (this.webServiceApp != null) {
-			this.webServiceApp.stop(bundleContext);
-			this.webServiceApp = null;
+		if (this.webApp != null) {
+			this.webApp.stop(bundleContext);
+			this.webApp = null;
 		}
 	}
 

@@ -5,6 +5,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ComponentRuntimeActivator implements BundleActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ComponentRuntimeActivator.class);

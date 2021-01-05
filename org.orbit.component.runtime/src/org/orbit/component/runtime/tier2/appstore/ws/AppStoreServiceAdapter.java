@@ -2,13 +2,9 @@ package org.orbit.component.runtime.tier2.appstore.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.platform.sdk.PlatformSDKActivator;
-import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.service.ILifecycle;
 import org.osgi.framework.BundleContext;
@@ -52,6 +48,7 @@ public class AppStoreServiceAdapter implements ILifecycle {
 			@Override
 			public AppStoreService addingService(ServiceReference<AppStoreService> reference) {
 				AppStoreService service = bundleContext.getService(reference);
+				doStop(bundleContext, service);
 				doStart(bundleContext, service);
 				return service;
 			}
@@ -82,27 +79,11 @@ public class AppStoreServiceAdapter implements ILifecycle {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, AppStoreService service) {
-		// Start web app
 		this.webApp = new AppStoreWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
 
-		// Start indexing timer
-		// IndexServiceClient indexProvider = getIndexProvider();
-		// this.indexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
-		// this.indexTimer.start();
-
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.APP_STORE_INDEXER_ID);
-		if (extension != null) {
-			// String indexProviderId = extension.getId();
-			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<AppStoreService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
-			if (indexTimerFactory != null) {
-				this.indexTimer = indexTimerFactory.create(service);
-				if (this.indexTimer != null) {
-					this.indexTimer.start();
-				}
-			}
-		}
+		this.indexTimer = new AppStoreServiceIndexTimer(service);
+		this.indexTimer.start();
 	}
 
 	/**
@@ -111,13 +92,11 @@ public class AppStoreServiceAdapter implements ILifecycle {
 	 * @param service
 	 */
 	protected void doStop(BundleContext bundleContext, AppStoreService service) {
-		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();
 			this.indexTimer = null;
 		}
 
-		// Stop web app
 		if (this.webApp != null) {
 			this.webApp.stop(bundleContext);
 			this.webApp = null;
@@ -125,6 +104,30 @@ public class AppStoreServiceAdapter implements ILifecycle {
 	}
 
 }
+
+/*-
+// Impl - 1
+// Start indexing timer
+// IndexServiceClient indexProvider = getIndexProvider();
+// this.indexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
+// this.indexTimer.start();
+*/
+
+/*-
+// Impl - 2
+IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.APP_STORE_INDEXER_ID);
+if (extension != null) {
+	// String indexProviderId = extension.getId();
+	@SuppressWarnings("unchecked")
+	ServiceIndexTimerFactory<AppStoreService> indexTimerFactory = extension.createInstance(ServiceIndexTimerFactory.class);
+	if (indexTimerFactory != null) {
+		this.indexTimer = indexTimerFactory.create(service);
+		if (this.indexTimer != null) {
+			this.indexTimer.start();
+		}
+	}
+}
+*/
 
 // protected AppStoreServiceIndexTimer indexTimer;
 

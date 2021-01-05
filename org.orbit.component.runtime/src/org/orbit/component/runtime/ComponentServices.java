@@ -26,20 +26,20 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ComponentServices {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ComponentServices.class);
 
-	private static Object lock = new Object[0];
-	private static ComponentServices instance = null;
+	protected static ComponentServices instance = new ComponentServices();
 
 	public static ComponentServices getInstance() {
 		if (instance == null) {
-			synchronized (lock) {
-				if (instance == null) {
-					instance = new ComponentServices();
-				}
-			}
+			instance = new ComponentServices();
 		}
 		return instance;
 	}
@@ -69,7 +69,6 @@ public class ComponentServices {
 	 */
 	public void start(final BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		this.properties = properties;
 
 		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProviderClient>(IndexProviderClient.class) {
@@ -93,6 +92,10 @@ public class ComponentServices {
 		doStop(bundleContext);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void doStart(BundleContext bundleContext) {
 		// Start service adapters
 		// tier1
@@ -124,6 +127,10 @@ public class ComponentServices {
 		this.missionControlServiceAdapter.start(bundleContext);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void doStop(BundleContext bundleContext) {
 		// Stop service adapters
 		// tier4

@@ -3,6 +3,11 @@ package org.orbit.component.runtime.common.ws;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.service.IWebService;
 
+/**
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class OrbitWSApplication extends AbstractJerseyWSApplication {
 
 	/**
@@ -24,6 +29,7 @@ public class OrbitWSApplication extends AbstractJerseyWSApplication {
 
 }
 
+/*-
 // @Override
 // protected int checkFeature(int feature) {
 // feature = super.checkFeature(feature);
@@ -36,3 +42,4 @@ public class OrbitWSApplication extends AbstractJerseyWSApplication {
 // }
 // return feature;
 // }
+*/
