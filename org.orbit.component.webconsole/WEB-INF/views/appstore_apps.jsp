@@ -84,9 +84,9 @@
 					<% } %>
 				</td>
 				<td class="td1">
+					<a class="action01" href="javascript:uploadApp('<%=id%>', '<%=appId%>', '<%=appVersion%>')">Upload</a>
 					<a class="action01" href="javascript:changeApp('<%=id%>', '<%=appId%>', '<%=appVersion%>', '<%=type%>', '<%=name%>', '<%=fileName%>', '<%=desc%>')">Edit</a> 
 					<a class="action01" href="<%=contextRoot%>/appstore/appproperties?appId=<%=appId%>&appVersion=<%=appVersion%>">Properties</a>
-					<a class="action01" href="javascript:uploadApp('<%=id%>', '<%=appId%>', '<%=appVersion%>')">Upload</a>
 					<!-- 
 					<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank">Download</a>
 					<a class="action01" target="_blank" href="/orbit/webconsole/public/apps/<%=appId%>_<%=appVersion%>/MANIFEST.MF">MANIFEST.MF</a>

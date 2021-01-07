@@ -1,0 +1,26 @@
+{
+	"id" : "org.orbit.app.note",
+	"version" : "1.0.0",
+	"name" : "Note Diagram Editor",
+	"type" : "diagram editor",
+	"description" : "A diagram editor to edit notes",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.orbit.app.note.ui", "Bundle-Version" : "1.0.0"}
+	],
+	"classpath" : [
+		"plugins/org.orbit.app.note.ui_1.0.0.jar"
+	],
+	"WEB-INF" : [
+		{ "name" : "icon_s", "type" : "image", "value" : "images/note_01_64x64.png"},
+		{ "name" : "icon_m", "type" : "image", "value" : "images/note_01_128x128.png"},
+		{ "name" : "icon_l", "type" : "image", "value" : "images/note_01_128x128.png"}
+	],
+	"properties" : [
+		{ "name" : "prop1", "value" : "value1"},
+		{ "name" : "prop2", "value" : "value2"}
+	],
+	"preferences" : [
+		{ "name" : "timeout",      "value" : "100",           		"type" : "integer", "edit" : "text"},
+		{ "name" : "defaultTitle", "value" : "Note Diagram Editor", "type" : "string",  "edit" : "text"}
+	]
+}
