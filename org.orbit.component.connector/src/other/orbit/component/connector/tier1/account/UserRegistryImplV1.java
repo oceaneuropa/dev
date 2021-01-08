@@ -369,6 +369,10 @@ public class UserRegistryImplV1 implements UserAccountClient {
 		return this.adaptorSupport.getAdapter(adapter);
 	}
 
+	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
 }
 
 // ClientConfiguration clientConfig = getClientConfiguration(this.properties);

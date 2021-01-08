@@ -360,6 +360,10 @@ public class IConfigElementImpl implements IConfigElement {
 		return this.adaptorSupport.getAdapter(adapter);
 	}
 
+	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
 }
 
 // long getDateCreated();

@@ -151,4 +151,9 @@ public class IndexItemImpl implements IndexItem {
 		return this.adaptorSupport.getAdapter(adapter);
 	}
 
+	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
+
 }

@@ -164,6 +164,11 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 	}
 
 	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return null;
+	}
+
+	@Override
 	public boolean close() throws ClientException {
 		return false;
 	}

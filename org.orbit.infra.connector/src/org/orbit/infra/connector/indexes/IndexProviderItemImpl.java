@@ -127,4 +127,9 @@ public class IndexProviderItemImpl implements IndexProviderItem {
 		return this.adaptorSupport.getAdapter(adapter);
 	}
 
+	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
+
 }

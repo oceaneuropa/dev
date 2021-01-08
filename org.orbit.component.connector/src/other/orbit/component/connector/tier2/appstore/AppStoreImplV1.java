@@ -347,6 +347,11 @@ public class AppStoreImplV1 implements AppStoreClient {
 	}
 
 	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
+
+	@Override
 	public String echo(String message) throws ClientException {
 		// TODO Auto-generated method stub
 		return null;

@@ -476,6 +476,11 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return this.adaptorSupport.getAdaptedClasses();
+	}
+
+	@Override
 	public boolean isProxy() {
 		return false;
 	}

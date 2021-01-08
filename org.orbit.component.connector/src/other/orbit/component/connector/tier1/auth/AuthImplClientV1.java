@@ -146,6 +146,11 @@ public class AuthImplClientV1 implements AuthClient {
 	}
 
 	@Override
+	public <T> Class<T>[] getAdaptedClasses() {
+		return null;
+	}
+
+	@Override
 	public boolean close() throws ClientException {
 		return false;
 	}
